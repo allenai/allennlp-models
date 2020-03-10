@@ -15,7 +15,7 @@ from allennlp.modules.matrix_attention.linear_matrix_attention import LinearMatr
 from allennlp.nn import InitializerApplicator, util
 from allennlp.training.metrics import Average, BooleanAccuracy, CategoricalAccuracy
 
-from .. import squad_eval
+from ..common import squad_eval
 
 logger = logging.getLogger(__name__)
 

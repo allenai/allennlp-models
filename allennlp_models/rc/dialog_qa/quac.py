@@ -10,7 +10,7 @@ from allennlp.data.instance import Instance
 from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenIndexer
 from allennlp.data.tokenizers import Token, Tokenizer, SpacyTokenizer
 
-from .. import reader_utils
+from ..common import reader_utils
 
 logger = logging.getLogger(__name__)
 
