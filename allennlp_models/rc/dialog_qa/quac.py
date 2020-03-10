@@ -130,7 +130,8 @@ class QuACReader(DatasetReader):
         question_list_tokens = [self._tokenizer.tokenize(q) for q in question_text_list]
         # Map answer texts to "CANNOTANSWER" if more than half of them marked as so.
         additional_metadata["answer_texts_list"] = [
-            reader_utils.handle_cannot(ans_list) for ans_list in additional_metadata["answer_texts_list"]
+            reader_utils.handle_cannot(ans_list)
+            for ans_list in additional_metadata["answer_texts_list"]
         ]
         return reader_utils.make_reading_comprehension_instance_quac(
             question_list_tokens,

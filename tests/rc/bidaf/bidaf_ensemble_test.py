@@ -14,8 +14,7 @@ class BidafEnsembleTest(ModelTestCase):
     def setUp(self):
         super().setUp()
         self.set_up_model(
-            FIXTURES_ROOT / "rc" / "bidaf" / "experiment.json",
-            FIXTURES_ROOT / "rc" / "squad.json"
+            FIXTURES_ROOT / "rc" / "bidaf" / "experiment.json", FIXTURES_ROOT / "rc" / "squad.json"
         )
         self.model.eval()
 

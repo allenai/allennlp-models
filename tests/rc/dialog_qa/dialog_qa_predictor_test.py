@@ -37,7 +37,9 @@ class TestDialogQAPredictor:
             ]
         }
 
-        archive = load_archive(FIXTURES_ROOT / "rc" / "dialog_qa" / "serialization" / "model.tar.gz")
+        archive = load_archive(
+            FIXTURES_ROOT / "rc" / "dialog_qa" / "serialization" / "model.tar.gz"
+        )
         predictor = Predictor.from_archive(archive, "dialog_qa")
 
         result = predictor.predict_json(inputs)
@@ -113,7 +115,9 @@ class TestDialogQAPredictor:
             },
         ]
 
-        archive = load_archive(FIXTURES_ROOT / "rc" / "dialog_qa" / "serialization" / "model.tar.gz")
+        archive = load_archive(
+            FIXTURES_ROOT / "rc" / "dialog_qa" / "serialization" / "model.tar.gz"
+        )
         predictor = Predictor.from_archive(archive, "dialog_qa")
 
         results = predictor.predict_batch_json(inputs)

@@ -11,8 +11,7 @@ class NumericallyAugmentedQaNetTest(ModelTestCase):
     def setUp(self):
         super().setUp()
         self.set_up_model(
-            FIXTURES_ROOT / "rc" / "naqanet" / "experiment.json",
-            FIXTURES_ROOT / "rc" / "drop.json"
+            FIXTURES_ROOT / "rc" / "naqanet" / "experiment.json", FIXTURES_ROOT / "rc" / "drop.json"
         )
 
     @flaky(max_runs=3, min_passes=1)
