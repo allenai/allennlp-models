@@ -1,0 +1,40 @@
+#### TESTING-RELATED PACKAGES ####
+
+# Checks style, syntax, and other useful errors.
+flake8
+
+# Static type checking
+mypy==0.761
+
+# Automatic code formatting
+black
+
+# For creating git precommit hooks
+pre-commit==2.1.1
+
+# Allows generation of coverage reports with pytest.
+pytest-cov
+
+# Allows codecov to generate coverage reports
+coverage
+codecov
+
+# Required to run sanic tests
+aiohttp
+
+#### DOC-RELATED PACKAGES ####
+
+# YAML manipulation
+ruamel.yaml
+
+mathy_pydoc>=0.6.7,<0.7.0
+markdown-include==0.5.1
+# Package for the material theme for mkdocs
+mkdocs-material==4.6.3
+
+#### PACKAGE-UPLOAD PACKAGES ####
+
+# Pypi uploads
+twine>=1.11.0
+setuptools
+wheel
