@@ -163,7 +163,7 @@ class TriviaQaReader(DatasetReader):
             question_tokens = self._tokenizer.tokenize(question_text)
         if not passage_tokens:
             passage_tokens = self._tokenizer.tokenize(passage_text)
-        return util.make_reading_comprehension_instance(
+        return reader_utils.make_reading_comprehension_instance(
             question_tokens,
             passage_tokens,
             self._token_indexers,
