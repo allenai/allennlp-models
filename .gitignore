@@ -1,0 +1,44 @@
+# build artifacts
+
+.eggs/
+.mypy_cache
+allennlp_models.egg-info/
+build/
+dist/
+
+
+# dev tools
+
+.envrc
+.python-version
+.idea
+/*.iml
+
+
+# jupyter notebooks
+
+.ipynb_checkpoints
+
+
+# miscellaneous
+
+.cache/
+allennlp/tools/EVALB/evalb.dSYM/
+doc/_build/
+*.swp
+.DS_Store
+/output_path/
+
+
+# python
+
+*.pyc
+*.pyo
+__pycache__
+
+
+# testing and continuous integration
+
+.coverage
+.pytest_cache/
+
