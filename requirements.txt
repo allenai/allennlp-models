@@ -3,3 +3,5 @@ git+https://github.com/allenai/allennlp.git@4b4ffb0ebe7a369c63d7a617621bda911872
 
 # For RC models
 word2number>=1.1
+py-rouge==1.1
+nltk
