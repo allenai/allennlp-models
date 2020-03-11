@@ -4,12 +4,17 @@ from allennlp.predictors import Predictor
 
 from allennlp_models.syntax import BiaffineDependencyParserPredictor
 
+
 class TestBiaffineDependencyParser(AllenNlpTestCase):
     def test_uses_named_inputs(self):
         inputs = {"sentence": "Please could you parse this sentence?"}
 
         archive = load_archive(
-            self.FIXTURES_ROOT / "syntax" / "biaffine_dependency_parser" / "serialization" / "model.tar.gz"
+            self.FIXTURES_ROOT
+            / "syntax"
+            / "biaffine_dependency_parser"
+            / "serialization"
+            / "model.tar.gz"
         )
         predictor = Predictor.from_archive(archive, "biaffine-dependency-parser")
 
@@ -94,7 +99,11 @@ class TestBiaffineDependencyParser(AllenNlpTestCase):
         ]
 
         archive = load_archive(
-            self.FIXTURES_ROOT / "syntax" / "biaffine_dependency_parser" / "serialization" / "model.tar.gz"
+            self.FIXTURES_ROOT
+            / "syntax"
+            / "biaffine_dependency_parser"
+            / "serialization"
+            / "model.tar.gz"
         )
         predictor = Predictor.from_archive(archive, "biaffine-dependency-parser")
 
@@ -114,7 +123,11 @@ class TestBiaffineDependencyParser(AllenNlpTestCase):
     def test_predictor_uses_dataset_reader_to_determine_pos_set(self):
 
         archive = load_archive(
-            self.FIXTURES_ROOT / "syntax" / "biaffine_dependency_parser" / "serialization" / "model.tar.gz"
+            self.FIXTURES_ROOT
+            / "syntax"
+            / "biaffine_dependency_parser"
+            / "serialization"
+            / "model.tar.gz"
         )
         predictor = Predictor.from_archive(archive, "biaffine-dependency-parser")
 
