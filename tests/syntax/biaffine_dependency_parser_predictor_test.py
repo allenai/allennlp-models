@@ -3,6 +3,7 @@ from allennlp.models.archival import load_archive
 from allennlp.predictors import Predictor
 
 from allennlp_models.syntax import BiaffineDependencyParserPredictor
+from tests import FIXTURES_ROOT
 
 
 class TestBiaffineDependencyParser(AllenNlpTestCase):
@@ -10,7 +11,7 @@ class TestBiaffineDependencyParser(AllenNlpTestCase):
         inputs = {"sentence": "Please could you parse this sentence?"}
 
         archive = load_archive(
-            self.FIXTURES_ROOT
+            FIXTURES_ROOT
             / "syntax"
             / "biaffine_dependency_parser"
             / "serialization"
@@ -99,7 +100,7 @@ class TestBiaffineDependencyParser(AllenNlpTestCase):
         ]
 
         archive = load_archive(
-            self.FIXTURES_ROOT
+            FIXTURES_ROOT
             / "syntax"
             / "biaffine_dependency_parser"
             / "serialization"
@@ -123,7 +124,7 @@ class TestBiaffineDependencyParser(AllenNlpTestCase):
     def test_predictor_uses_dataset_reader_to_determine_pos_set(self):
 
         archive = load_archive(
-            self.FIXTURES_ROOT
+            FIXTURES_ROOT
             / "syntax"
             / "biaffine_dependency_parser"
             / "serialization"
