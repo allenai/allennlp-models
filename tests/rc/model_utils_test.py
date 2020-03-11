@@ -3,7 +3,6 @@ import torch
 from allennlp.common.testing import AllenNlpTestCase
 
 from allennlp_models.rc.common.model_utils import get_best_span
-from tests import FIXTURES_ROOT
 
 
 class TestRcUtil(AllenNlpTestCase):
