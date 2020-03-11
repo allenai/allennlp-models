@@ -19,13 +19,6 @@ jobs:
       run: |
         pip install -r requirements.txt
         pip install pytest pytest-cov flake8 black mypy
-    - name: Run tests
-      run: |
-        pytest --cov=allennlp_models/ --cov-report=xml
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1.0.2
-      with:
-        token: da233513-af22-4b18-a7c4-e70467fc05e3
     - name: Lint
       run: |
         flake8 -v
@@ -33,3 +26,10 @@ jobs:
     - name: Type check
       run: |
         mypy allennlp_models --ignore-missing-imports --no-strict-optional --no-site-packages
+    - name: Run tests
+      run: |
+        pytest --cov=allennlp_models/ --cov-report=xml
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1.0.2
+      with:
+        token: da233513-af22-4b18-a7c4-e70467fc05e3
