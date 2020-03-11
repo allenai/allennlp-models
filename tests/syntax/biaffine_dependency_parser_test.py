@@ -6,6 +6,7 @@ from tests import FIXTURES_ROOT
 
 from allennlp_models.syntax import BiaffineDependencyParser
 
+
 class BiaffineDependencyParserTest(ModelTestCase):
     def setUp(self):
         super().setUp()
