@@ -3,12 +3,16 @@ from nltk import Tree
 from allennlp.data.dataset_readers.dataset_utils import Ontonotes
 from allennlp.common.testing import AllenNlpTestCase
 
+from tests import FIXTURES_ROOT
+
+CONLL_PATH = FIXTURES_ROOT / "syntax" / "srl" / "conll_2012"
+
 
 class TestOntonotes(AllenNlpTestCase):
     def test_dataset_iterator(self):
         reader = Ontonotes()
         annotated_sentences = list(
-            reader.dataset_iterator(self.FIXTURES_ROOT / "conll_2012" / "subdomain")
+            reader.dataset_iterator(CONLL_PATH / "subdomain")
         )
         annotation = annotated_sentences[0]
         assert annotation.document_id == "test/test/01/test_001"
@@ -463,16 +467,16 @@ class TestOntonotes(AllenNlpTestCase):
 
     def test_dataset_path_iterator(self):
         reader = Ontonotes()
-        files = list(reader.dataset_path_iterator(self.FIXTURES_ROOT / "conll_2012"))
+        files = list(reader.dataset_path_iterator(CONLL_PATH))
         expected_paths = [
-            str(self.FIXTURES_ROOT / "conll_2012" / "subdomain" / "example.gold_conll"),
-            str(self.FIXTURES_ROOT / "conll_2012" / "subdomain2" / "example.gold_conll"),
+            str(CONLL_PATH / "subdomain" / "example.gold_conll"),
+            str(CONLL_PATH / "subdomain2" / "example.gold_conll"),
         ]
         assert len(files) == len(expected_paths)
         assert set(files) == set(expected_paths)
 
     def test_ontonotes_can_read_conll_file_with_multiple_documents(self):
         reader = Ontonotes()
-        file_path = self.FIXTURES_ROOT / "coref" / "coref.gold_conll"
+        file_path = FIXTURES_ROOT / "coref" / "coref.gold_conll"
         documents = list(reader.dataset_document_iterator(file_path))
         assert len(documents) == 4
