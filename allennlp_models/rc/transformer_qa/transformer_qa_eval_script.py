@@ -1,7 +1,7 @@
 import json
 import logging
 import time
-from typing import Iterable, List
+from typing import Iterable, List, Set
 
 from allennlp.common.checks import check_for_gpu
 from allennlp.data import Instance
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     def make_batches(
         instances: Iterable[Instance], batch_size: int = 64
     ) -> Iterable[List[Instance]]:
-        current_batch = []
+        current_batch: List[Instance] = []
         for qid_instances in batch_instances_by_qid(instances):
             if len(qid_instances) + len(current_batch) < batch_size:
                 current_batch.extend(qid_instances)
@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
     # Run model and evaluate results
     last_logged_scores_time = time.monotonic()
-    ids_seen = set()
+    ids_seen: Set[str] = set()
     metric = SquadEmAndF1()
     answers = {}
     for batch in make_batches(tqdm(instances, desc="Evaluating instances")):

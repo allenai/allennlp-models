@@ -1,3 +1,3 @@
 from .biaffine_dependency_parser import BiaffineDependencyParser
-from .universal_dependencies_reader import UniversalDependenciesDatasetReader
-from .biaffine_dependency_parser_predictor import BiaffineDependencyParserPredictor
+from .biaffine_dependency_parser import BiaffineDependencyParserPredictor
+from .biaffine_dependency_parser import UniversalDependenciesDatasetReader
