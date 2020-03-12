@@ -1,18 +1,17 @@
 import pytest
 
-from allennlp.data.dataset_readers.semantic_role_labeling import (
-    SrlReader,
-    _convert_tags_to_wordpiece_tags,
-)
 from allennlp.common.util import ensure_list
 from allennlp.common.testing import AllenNlpTestCase
+
+from allennlp_models.syntax.srl.srl_reader import SrlReader, _convert_tags_to_wordpiece_tags
+from tests import FIXTURES_ROOT
 
 
 class TestSrlReader:
     @pytest.mark.parametrize("lazy", (True, False))
     def test_read_from_file(self, lazy):
         conll_reader = SrlReader(lazy=lazy)
-        instances = conll_reader.read(AllenNlpTestCase.FIXTURES_ROOT / "conll_2012" / "subdomain")
+        instances = conll_reader.read(FIXTURES_ROOT / "syntax" / "srl" / "conll_2012" / "subdomain")
         instances = ensure_list(instances)
 
         fields = instances[0].fields
@@ -168,7 +167,7 @@ class TestSrlReader:
     def test_srl_reader_can_filter_by_domain(self):
 
         conll_reader = SrlReader(domain_identifier="subdomain2")
-        instances = conll_reader.read(AllenNlpTestCase.FIXTURES_ROOT / "conll_2012")
+        instances = conll_reader.read(FIXTURES_ROOT / "syntax" / "srl" / "conll_2012")
         instances = ensure_list(instances)
         # If we'd included the folder, we'd have 9 instances.
         assert len(instances) == 2
@@ -278,7 +277,7 @@ class TestBertSrlReader(AllenNlpTestCase):
 
     def test_read_from_file(self):
         conll_reader = self.reader
-        instances = conll_reader.read(AllenNlpTestCase.FIXTURES_ROOT / "conll_2012" / "subdomain")
+        instances = conll_reader.read(FIXTURES_ROOT / "syntax" / "srl" / "conll_2012" / "subdomain")
         instances = ensure_list(instances)
         fields = instances[0].fields
         tokens = fields["metadata"]["words"]

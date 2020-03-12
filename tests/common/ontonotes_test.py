@@ -1,8 +1,8 @@
 from nltk import Tree
 
-from allennlp.data.dataset_readers.dataset_utils import Ontonotes
 from allennlp.common.testing import AllenNlpTestCase
 
+from allennlp_models.common.ontonotes import Ontonotes
 from tests import FIXTURES_ROOT
 
 CONLL_PATH = FIXTURES_ROOT / "syntax" / "srl" / "conll_2012"

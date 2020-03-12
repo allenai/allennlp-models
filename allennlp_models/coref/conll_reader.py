@@ -9,8 +9,9 @@ from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.instance import Instance
 from allennlp.data.tokenizers import PretrainedTransformerTokenizer
 from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenIndexer
-from allennlp.data.dataset_readers.coreference_resolution.util import make_coref_instance
-from allennlp.data.dataset_readers.dataset_utils import Ontonotes
+
+from allennlp_models.common.ontonotes import Ontonotes
+from allennlp_models.coref.util import make_coref_instance
 
 logger = logging.getLogger(__name__)
 

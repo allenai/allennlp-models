@@ -2,9 +2,11 @@ from typing import List, Tuple
 
 import pytest
 
-from allennlp.data.dataset_readers import PrecoReader
 from allennlp.common.util import ensure_list
 from allennlp.common.testing import AllenNlpTestCase
+
+from allennlp_models.coref import PrecoReader
+from tests import FIXTURES_ROOT
 
 
 class TestPrecoReader:
@@ -16,7 +18,7 @@ class TestPrecoReader:
             max_span_width=self.span_width, remove_singleton_clusters=remove_singleton_clusters
         )
         instances = ensure_list(
-            conll_reader.read(str(AllenNlpTestCase.FIXTURES_ROOT / "coref" / "preco.jsonl"))
+            conll_reader.read(str(FIXTURES_ROOT / "coref" / "preco.jsonl"))
         )
 
         assert len(instances) == 3

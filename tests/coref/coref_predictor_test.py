@@ -6,6 +6,8 @@ from allennlp.models.archival import load_archive
 from allennlp.predictors import Predictor
 from allennlp.predictors import CorefPredictor
 
+from tests import FIXTURES_ROOT
+
 
 class TestCorefPredictor(AllenNlpTestCase):
     def test_uses_named_inputs(self):
@@ -13,7 +15,7 @@ class TestCorefPredictor(AllenNlpTestCase):
             "document": "This is a single string document about a test. Sometimes it "
             "contains coreferent parts."
         }
-        archive = load_archive(self.FIXTURES_ROOT / "coref" / "serialization" / "model.tar.gz")
+        archive = load_archive(FIXTURES_ROOT / "coref" / "serialization" / "model.tar.gz")
         predictor = Predictor.from_archive(archive, "coreference-resolution")
 
         result = predictor.predict_json(inputs)
@@ -79,7 +81,7 @@ class TestCorefPredictor(AllenNlpTestCase):
         """Tests I/O of coref_resolved method"""
 
         document = "This is a test sentence."
-        archive = load_archive(self.FIXTURES_ROOT / "coref" / "serialization" / "model.tar.gz")
+        archive = load_archive(FIXTURES_ROOT / "coref" / "serialization" / "model.tar.gz")
         predictor = Predictor.from_archive(archive, "coreference-resolution")
         result = predictor.coref_resolved(document)
         assert isinstance(result, str)
@@ -130,7 +132,7 @@ class TestCorefPredictor(AllenNlpTestCase):
             "document": "This is a single string document about a test. Sometimes it "
             "contains coreferent parts."
         }
-        archive = load_archive(self.FIXTURES_ROOT / "coref" / "serialization" / "model.tar.gz")
+        archive = load_archive(FIXTURES_ROOT / "coref" / "serialization" / "model.tar.gz")
         predictor = Predictor.from_archive(archive, "coreference-resolution")
 
         instance = predictor._json_to_instance(inputs)

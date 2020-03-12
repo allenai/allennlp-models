@@ -1,15 +1,16 @@
 import pytest
 
-from allennlp.data.dataset_readers.ontonotes_ner import OntonotesNamedEntityRecognition
 from allennlp.common.util import ensure_list
-from allennlp.common.testing import AllenNlpTestCase
+
+from allennlp_models.ner.ontonotes_ner_reader import OntonotesNamedEntityRecognition
+from tests import FIXTURES_ROOT
 
 
 class TestOntonotesNamedEntityRecognitionReader:
     @pytest.mark.parametrize("lazy", (True, False))
     def test_read_from_file(self, lazy):
         conll_reader = OntonotesNamedEntityRecognition(lazy=lazy)
-        instances = conll_reader.read(AllenNlpTestCase.FIXTURES_ROOT / "conll_2012" / "subdomain")
+        instances = conll_reader.read(FIXTURES_ROOT / "syntax" / "srl" / "conll_2012" / "subdomain")
         instances = ensure_list(instances)
 
         fields = instances[0].fields
@@ -75,6 +76,6 @@ class TestOntonotesNamedEntityRecognitionReader:
 
     def test_ner_reader_can_filter_by_domain(self):
         conll_reader = OntonotesNamedEntityRecognition(domain_identifier="subdomain2")
-        instances = conll_reader.read(AllenNlpTestCase.FIXTURES_ROOT / "conll_2012")
+        instances = conll_reader.read(FIXTURES_ROOT / "syntax" / "srl" / "conll_2012")
         instances = ensure_list(instances)
         assert len(instances) == 1

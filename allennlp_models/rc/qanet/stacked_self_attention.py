@@ -6,13 +6,13 @@ from torch.nn import Dropout
 
 from allennlp.modules.feedforward import FeedForward
 from allennlp.modules.layer_norm import LayerNorm
-from allennlp.modules.seq2seq_encoders.multi_head_self_attention import MultiHeadSelfAttention
 from allennlp.modules.seq2seq_encoders.seq2seq_encoder import Seq2SeqEncoder
 from allennlp.nn.activations import Activation
 from allennlp.nn.util import add_positional_features
+from allennlp_models.rc.qanet.multi_head_self_attention import MultiHeadSelfAttention
 
-# exist_ok has to be true until we remove this from the core library
-@Seq2SeqEncoder.register("stacked_self_attention", exist_ok=True)
+
+@Seq2SeqEncoder.register("stacked_self_attention")
 class StackedSelfAttentionEncoder(Seq2SeqEncoder):
     """
     Implements a stacked self-attention encoder similar to, but different from, the Transformer architecture in

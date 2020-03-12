@@ -1,6 +1,7 @@
 import logging
 from typing import Dict, List, Iterable
 
+from allennlp.data.dataset_readers.dataset_utils import to_bioul
 from overrides import overrides
 
 from allennlp.common.file_utils import cached_path
@@ -10,8 +11,8 @@ from allennlp.data.fields import Field, TextField, SequenceLabelField, MetadataF
 from allennlp.data.instance import Instance
 from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenIndexer
 from allennlp.data.tokenizers import Token
-from allennlp.data.dataset_readers.dataset_utils import Ontonotes, OntonotesSentence, to_bioul
 
+from allennlp_models.common.ontonotes import Ontonotes, OntonotesSentence
 
 logger = logging.getLogger(__name__)
 

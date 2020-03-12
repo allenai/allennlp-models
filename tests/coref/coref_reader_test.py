@@ -2,10 +2,12 @@ from typing import List, Tuple
 
 import pytest
 
-from allennlp.data.dataset_readers import ConllCorefReader
 from allennlp.data.tokenizers import PretrainedTransformerTokenizer
 from allennlp.common.util import ensure_list
 from allennlp.common.testing import AllenNlpTestCase
+
+from allennlp_models.coref import ConllCorefReader
+from tests import FIXTURES_ROOT
 
 
 class TestCorefReader:
@@ -15,7 +17,7 @@ class TestCorefReader:
     def test_read_from_file(self, lazy):
         conll_reader = ConllCorefReader(max_span_width=self.span_width, lazy=lazy)
         instances = ensure_list(
-            conll_reader.read(str(AllenNlpTestCase.FIXTURES_ROOT / "coref" / "coref.gold_conll"))
+            conll_reader.read(str(FIXTURES_ROOT / "coref" / "coref.gold_conll"))
         )
 
         assert len(instances) == 4
@@ -191,7 +193,7 @@ class TestCorefReader:
             max_span_width=self.span_width, wordpiece_modeling_tokenizer=tokenizer
         )
         instances = ensure_list(
-            conll_reader.read(str(AllenNlpTestCase.FIXTURES_ROOT / "coref" / "coref.gold_conll"))
+            conll_reader.read(str(FIXTURES_ROOT / "coref" / "coref.gold_conll"))
         )
 
         assert len(instances) == 4
@@ -292,13 +294,13 @@ class TestCorefReader:
     def test_max_sentences(self):
         conll_reader = ConllCorefReader(max_span_width=self.span_width)
         instances = ensure_list(
-            conll_reader.read(str(AllenNlpTestCase.FIXTURES_ROOT / "coref" / "coref.gold_conll"))
+            conll_reader.read(str(FIXTURES_ROOT / "coref" / "coref.gold_conll"))
         )
 
         limited_conll_reader = ConllCorefReader(max_span_width=self.span_width, max_sentences=2)
         limited_instances = ensure_list(
             limited_conll_reader.read(
-                str(AllenNlpTestCase.FIXTURES_ROOT / "coref" / "coref.gold_conll")
+                str(FIXTURES_ROOT / "coref" / "coref.gold_conll")
             )
         )
 

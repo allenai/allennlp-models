@@ -1,8 +1,9 @@
 from numpy.testing import assert_allclose
 
 from allennlp.common.testing import AllenNlpTestCase
-from allennlp.models.srl_util import convert_bio_tags_to_conll_format
-from allennlp.training.metrics import SrlEvalScorer
+
+from allennlp_models.syntax.srl.srl_eval_scorer import SrlEvalScorer
+from allennlp_models.syntax.srl.util import convert_bio_tags_to_conll_format
 
 
 class SrlEvalScorerTest(AllenNlpTestCase):

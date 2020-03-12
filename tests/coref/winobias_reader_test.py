@@ -2,9 +2,11 @@ from typing import List, Tuple
 
 import pytest
 
-from allennlp.data.dataset_readers import WinobiasReader
 from allennlp.common.util import ensure_list
 from allennlp.common.testing import AllenNlpTestCase
+
+from allennlp_models.coref import WinobiasReader
+from tests import FIXTURES_ROOT
 
 
 class TestWinobiasReader:
@@ -14,7 +16,7 @@ class TestWinobiasReader:
     def test_read_from_file(self, lazy):
         conll_reader = WinobiasReader(max_span_width=self.span_width, lazy=lazy)
         instances = ensure_list(
-            conll_reader.read(str(AllenNlpTestCase.FIXTURES_ROOT / "coref" / "winobias.sample"))
+            conll_reader.read(str(FIXTURES_ROOT / "coref" / "winobias.sample"))
         )
 
         assert len(instances) == 2

@@ -10,13 +10,14 @@ from overrides import overrides
 
 from allennlp.common.checks import ConfigurationError
 from allennlp.training.metrics.metric import Metric
-from allennlp.models.srl_util import write_conll_formatted_tags_to_file
+
+from allennlp_models.syntax.srl.util import write_conll_formatted_tags_to_file
 
 logger = logging.getLogger(__name__)
 
 DEFAULT_SRL_EVAL_PATH = os.path.abspath(
     os.path.join(
-        os.path.dirname(os.path.realpath(__file__)), os.pardir, os.pardir, "tools", "srl-eval.pl"
+        os.path.dirname(os.path.realpath(__file__)), "srl-eval.pl"
     )
 )
 

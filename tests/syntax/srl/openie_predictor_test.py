@@ -1,12 +1,10 @@
 from allennlp.common.testing import AllenNlpTestCase
 from allennlp.models.archival import load_archive
 from allennlp.predictors import Predictor
-from allennlp.predictors.open_information_extraction import (
-    consolidate_predictions,
-    get_predicate_text,
-)
-from allennlp.predictors.open_information_extraction import sanitize_label
 from allennlp.data.tokenizers.spacy_tokenizer import SpacyTokenizer
+
+from allennlp_models.syntax.srl.openie_predictor import sanitize_label, consolidate_predictions, get_predicate_text
+from tests import FIXTURES_ROOT
 
 
 class TestOpenIePredictor(AllenNlpTestCase):
@@ -18,7 +16,7 @@ class TestOpenIePredictor(AllenNlpTestCase):
             "sentence": "Angela Merkel met and spoke to her EU counterparts during the climate summit."
         }
 
-        archive = load_archive(self.FIXTURES_ROOT / "srl" / "serialization" / "model.tar.gz")
+        archive = load_archive(FIXTURES_ROOT / "syntax" / "srl" / "serialization" / "model.tar.gz")
         predictor = Predictor.from_archive(archive, "open-information-extraction")
 
         result = predictor.predict_json(inputs)
@@ -61,7 +59,7 @@ class TestOpenIePredictor(AllenNlpTestCase):
         Tests whether the model copes with sentences without verbs.
         """
         input1 = {"sentence": "Blah no verb sentence."}
-        archive = load_archive(self.FIXTURES_ROOT / "srl" / "serialization" / "model.tar.gz")
+        archive = load_archive(FIXTURES_ROOT / "syntax" / "srl" / "serialization" / "model.tar.gz")
         predictor = Predictor.from_archive(archive, "open-information-extraction")
 
         result = predictor.predict_json(input1)

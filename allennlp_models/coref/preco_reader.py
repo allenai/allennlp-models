@@ -5,11 +5,12 @@ from typing import Dict, List, Optional, Tuple
 from overrides import overrides
 
 from allennlp.common.file_utils import cached_path
-from allennlp.data.dataset_readers.coreference_resolution.util import make_coref_instance
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.instance import Instance
 from allennlp.data.tokenizers import PretrainedTransformerTokenizer
 from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenIndexer
+
+from allennlp_models.coref.util import make_coref_instance
 
 logger = logging.getLogger(__name__)
 

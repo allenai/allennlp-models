@@ -8,10 +8,6 @@ import torch.nn.functional as F
 
 from allennlp.common.checks import check_dimensions_match
 from allennlp.data import TextFieldTensors, Vocabulary
-from allennlp.models.srl_util import (
-    convert_bio_tags_to_conll_format,
-    write_bio_formatted_tags_to_file,
-)
 from allennlp.modules import Seq2SeqEncoder, TimeDistributed, TextFieldEmbedder
 from allennlp.modules.token_embedders import Embedding
 from allennlp.models.model import Model
@@ -19,6 +15,7 @@ from allennlp.nn import InitializerApplicator
 from allennlp.nn.util import get_text_field_mask, sequence_cross_entropy_with_logits
 from allennlp.nn.util import get_lengths_from_binary_sequence_mask, viterbi_decode
 from .srl_eval_scorer import SrlEvalScorer, DEFAULT_SRL_EVAL_PATH
+from .util import convert_bio_tags_to_conll_format, write_bio_formatted_tags_to_file
 
 
 @Model.register("srl")

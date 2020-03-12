@@ -4,7 +4,7 @@ import codecs
 import os
 import logging
 
-from allennlp.data.dataset_readers.dataset_utils.ontonotes import TypedSpan
+from allennlp.data.dataset_readers.dataset_utils.span_utils import TypedSpan
 from nltk import Tree
 
 logger = logging.getLogger(__name__)
