@@ -11,9 +11,7 @@ CONLL_PATH = FIXTURES_ROOT / "syntax" / "srl" / "conll_2012"
 class TestOntonotes(AllenNlpTestCase):
     def test_dataset_iterator(self):
         reader = Ontonotes()
-        annotated_sentences = list(
-            reader.dataset_iterator(CONLL_PATH / "subdomain")
-        )
+        annotated_sentences = list(reader.dataset_iterator(CONLL_PATH / "subdomain"))
         annotation = annotated_sentences[0]
         assert annotation.document_id == "test/test/01/test_001"
         assert annotation.sentence_id == 0
