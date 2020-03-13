@@ -3,7 +3,11 @@ from allennlp.models.archival import load_archive
 from allennlp.predictors import Predictor
 from allennlp.data.tokenizers.spacy_tokenizer import SpacyTokenizer
 
-from allennlp_models.syntax.srl.openie_predictor import sanitize_label, consolidate_predictions, get_predicate_text
+from allennlp_models.syntax.srl.openie_predictor import (
+    sanitize_label,
+    consolidate_predictions,
+    get_predicate_text,
+)
 from tests import FIXTURES_ROOT
 
 

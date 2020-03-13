@@ -4,8 +4,11 @@ import os
 import sys
 
 import argparse
+from typing import List
 
 import torch
+
+from allennlp_models.syntax.srl.srl_model import write_to_conll_eval_file
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(os.path.join(__file__, os.pardir))))
 
@@ -14,11 +17,10 @@ from allennlp.common import Params
 from allennlp.models.archival import load_archive
 from allennlp.data.iterators import BasicIterator
 from allennlp.data import DatasetReader
-from allennlp.models.semantic_role_labeler import write_to_conll_eval_file
 from allennlp.nn.util import move_to_device
 
 
-def main(serialization_directory: int, device: int, data: str, prefix: str, domain: str = None):
+def main(serialization_directory: str, device: int, data: str, prefix: str, domain: str = None):
     """
     serialization_directory : str, required.
         The directory containing the serialized weights.
@@ -67,7 +69,7 @@ def main(serialization_directory: int, device: int, data: str, prefix: str, doma
         iterator = BasicIterator(batch_size=32)
         iterator.index_with(model.vocab)
 
-        model_predictions = []
+        model_predictions: List[List[str]] = []
         batches = iterator(instances, num_epochs=1, shuffle=False)
         for batch in Tqdm.tqdm(batches):
             batch = move_to_device(batch, device)

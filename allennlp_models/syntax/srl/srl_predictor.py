@@ -1,5 +1,6 @@
-from typing import List
+from typing import List, Dict
 
+import numpy
 from overrides import overrides
 from spacy.tokens import Doc
 
@@ -183,7 +184,7 @@ class SemanticRoleLabelerPredictor(Predictor):
             instance for instance in batched_instances[-1] if instance is not None
         ]
         # Run the model on the batches.
-        outputs = []
+        outputs: List[Dict[str, numpy.ndarray]] = []
         for batch in batched_instances:
             outputs.extend(self._model.forward_on_instances(batch))
 

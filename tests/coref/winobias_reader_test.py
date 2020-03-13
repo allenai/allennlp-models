@@ -15,9 +15,7 @@ class TestWinobiasReader:
     @pytest.mark.parametrize("lazy", (True, False))
     def test_read_from_file(self, lazy):
         conll_reader = WinobiasReader(max_span_width=self.span_width, lazy=lazy)
-        instances = ensure_list(
-            conll_reader.read(str(FIXTURES_ROOT / "coref" / "winobias.sample"))
-        )
+        instances = ensure_list(conll_reader.read(str(FIXTURES_ROOT / "coref" / "winobias.sample")))
 
         assert len(instances) == 2
 

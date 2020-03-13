@@ -11,6 +11,7 @@ from allennlp.data.dataset_readers.dataset_utils.span_utils import to_bioul
 from tests import FIXTURES_ROOT
 from allennlp_models.syntax.srl import SrlBert
 
+
 class BertSrlTest(ModelTestCase):
     def setUp(self):
 

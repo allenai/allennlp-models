@@ -299,9 +299,7 @@ class TestCorefReader:
 
         limited_conll_reader = ConllCorefReader(max_span_width=self.span_width, max_sentences=2)
         limited_instances = ensure_list(
-            limited_conll_reader.read(
-                str(FIXTURES_ROOT / "coref" / "coref.gold_conll")
-            )
+            limited_conll_reader.read(str(FIXTURES_ROOT / "coref" / "coref.gold_conll"))
         )
 
         assert len(limited_instances) == len(instances) == 4

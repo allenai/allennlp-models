@@ -17,9 +17,7 @@ class TestPrecoReader:
         conll_reader = PrecoReader(
             max_span_width=self.span_width, remove_singleton_clusters=remove_singleton_clusters
         )
-        instances = ensure_list(
-            conll_reader.read(str(FIXTURES_ROOT / "coref" / "preco.jsonl"))
-        )
+        instances = ensure_list(conll_reader.read(str(FIXTURES_ROOT / "coref" / "preco.jsonl")))
 
         assert len(instances) == 3
 

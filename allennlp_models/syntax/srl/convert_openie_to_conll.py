@@ -123,7 +123,7 @@ def extraction_to_conll(ex: Extraction) -> List[str]:
     return ret
 
 
-def interpret_span(text_spans: str) -> List[int]:
+def interpret_span(text_spans: str) -> Tuple[int, int]:
     """
     Return an integer tuple from textual representation of closed/open spans.
     """
@@ -131,7 +131,7 @@ def interpret_span(text_spans: str) -> List[int]:
 
     spans = m.captures(1) + m.captures(2)
 
-    int_spans = []
+    int_spans: List[Tuple[int, int]] = []
     for span in spans:
         ints = [int(s) for s in span[1:-1].split(",")]
         if span[0] == "(":
@@ -144,11 +144,11 @@ def interpret_span(text_spans: str) -> List[int]:
 
         assert len(ints) == 2
 
-        int_spans.append(ints)
+        int_spans.append((ints[0], ints[1]))
 
     # Merge consecutive spans
     ret = []
-    cur_span = int_spans[0]
+    cur_span: Tuple[int, int] = int_spans[0]
     for start, end in int_spans[1:]:
         if start - 1 == cur_span[-1]:
             cur_span = (cur_span[0], end)
@@ -182,7 +182,7 @@ def parse_element(raw_element: str) -> List[Element]:
 
 def read(fn: str) -> Iterable[List[Extraction]]:
     tokenizer = SpacyTokenizer(pos_tags=True)
-    prev_sent = []
+    prev_sent: List[Extraction] = []
 
     with open(fn) as fin:
         for line in tqdm(fin):
