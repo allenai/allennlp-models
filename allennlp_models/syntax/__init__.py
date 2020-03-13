@@ -1,3 +1,5 @@
 from .biaffine_dependency_parser import BiaffineDependencyParser
 from .biaffine_dependency_parser import BiaffineDependencyParserPredictor
 from .biaffine_dependency_parser import UniversalDependenciesDatasetReader
+from .constituency_parser import SpanConstituencyParser
+from .constituency_parser import ConstituencyParserPredictor
