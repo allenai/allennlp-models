@@ -4,7 +4,10 @@ from allennlp.common.testing import AllenNlpTestCase
 from allennlp.models.archival import load_archive
 from allennlp.predictors import Predictor
 
-from allennlp_models.syntax.constituency_parser.constituency_parser_predictor import LINK_TO_LABEL, NODE_TYPE_TO_STYLE
+from allennlp_models.syntax.constituency_parser.constituency_parser_predictor import (
+    LINK_TO_LABEL,
+    NODE_TYPE_TO_STYLE,
+)
 from tests import FIXTURES_ROOT
 
 
