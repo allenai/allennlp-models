@@ -43,8 +43,8 @@ class BidirectionalAttentionFlow(Model):
     phrase_layer : ``Seq2SeqEncoder``
         The encoder (with its own internal stacking) that we will use in between embedding tokens
         and doing the bidirectional attention.
-    similarity_function : ``SimilarityFunction``
-        The similarity function that we will use when comparing encoded passage and question
+    matrix_attention : ``MatrixAttention``
+        The attention function that we will use when comparing encoded passage and question
         representations.
     modeling_layer : ``Seq2SeqEncoder``
         The encoder (with its own internal stacking) that we will use in between the bidirectional
