@@ -85,7 +85,10 @@ class TestUnidirectionalLanguageModelTransformer(TestUnidirectionalLanguageModel
         self.expected_embedding_shape = (2, 8, 16)
 
         self.set_up_model(
-            FIXTURES_ROOT / "lm" / "language_model" / "experiment_unidirectional_transformer.jsonnet",
+            FIXTURES_ROOT
+            / "lm"
+            / "language_model"
+            / "experiment_unidirectional_transformer.jsonnet",
             FIXTURES_ROOT / "lm" / "language_model" / "sentences.txt",
         )
 

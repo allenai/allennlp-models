@@ -8,6 +8,7 @@ from tests import FIXTURES_ROOT
 
 LinearLanguageModelHead
 
+
 class TestHotflip(AllenNlpTestCase):
     def test_targeted_attack_from_json(self):
         inputs = {"sentence": "The doctor ran to the emergency room to see [MASK] patient."}

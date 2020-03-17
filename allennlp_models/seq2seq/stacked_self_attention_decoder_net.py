@@ -11,8 +11,13 @@ from torch.autograd import Variable
 from allennlp.modules.layer_norm import LayerNorm
 from allennlp.nn import util as nn_util
 
-from allennlp_models.lm.bidirectional_lm_transformer import SublayerConnection, subsequent_mask, \
-    PositionwiseFeedForward, PositionalEncoding, MultiHeadedAttention
+from allennlp_models.lm.bidirectional_lm_transformer import (
+    SublayerConnection,
+    subsequent_mask,
+    PositionwiseFeedForward,
+    PositionalEncoding,
+    MultiHeadedAttention,
+)
 from .decoder_net import DecoderNet
 
 

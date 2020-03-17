@@ -3,6 +3,7 @@ from typing import Tuple
 from allennlp.modules.token_embedders.token_embedder import TokenEmbedder
 from .language_model_token_embedder import LanguageModelTokenEmbedder
 
+
 @TokenEmbedder.register("bidirectional_lm_token_embedder")
 class BidirectionalLanguageModelTokenEmbedder(LanguageModelTokenEmbedder):
     """

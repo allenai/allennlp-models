@@ -11,6 +11,7 @@ from allennlp.nn import util, InitializerApplicator
 from allennlp.training.metrics import Perplexity
 from .language_model_heads import LanguageModelHead
 
+
 @Model.register("masked_language_model")
 class MaskedLanguageModel(Model):
     """
