@@ -39,7 +39,6 @@ local number_of_dev_instances = 5;
         "cut_frac": 0,
         "num_steps_per_epoch": std.ceil(number_of_train_instances / batch_size),
       },
-      "should_log_learning_rate": true,
       "grad_clipping": 1.0,
       "num_epochs": epochs,
       "cuda_device": -1
