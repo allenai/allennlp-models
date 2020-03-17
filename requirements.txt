@@ -1,5 +1,5 @@
 # To be changed to allennlp>=1.0 once that's released.
-git+https://github.com/allenai/allennlp.git@ebf246b6b2fc21dafde77ea82cd67c4e9efed7cc
+git+https://github.com/dirkgr/allennlp.git@a050ec8fa22de700abc390dc684e5051b2e018a3
 
 # For RC models
 word2number>=1.1
