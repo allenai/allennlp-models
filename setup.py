@@ -39,8 +39,8 @@ with open("requirements.txt") as requirements_file:
         #
         # As a mitigation, run `pip uninstall allennlp` before installing this
         # package.
-        sha = "a050ec8fa22de700abc390dc684e5051b2e018a3"
-        requirement = f"allennlp @ git+https://github.com/dirkgr/allennlp@{sha}#egg=allennlp"
+        sha = "61ec73b3ad9d8c4524789814bfa687888a71b996"
+        requirement = f"allennlp @ git+https://github.com/allenai/allennlp@{sha}#egg=allennlp"
         install_requirements.append(requirement)
 
 # make pytest-runner a conditional requirement,
