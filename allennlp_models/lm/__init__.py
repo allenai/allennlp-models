@@ -1,5 +1,7 @@
 from allennlp_models.lm.bidirectional_lm import BidirectionalLanguageModel
-from allennlp_models.lm.bidirectional_lm_token_embedder import BidirectionalLanguageModelTokenEmbedder
+from allennlp_models.lm.bidirectional_lm_token_embedder import (
+    BidirectionalLanguageModelTokenEmbedder,
+)
 from allennlp_models.lm.bidirectional_lm_transformer import BidirectionalLanguageModelTransformer
 from allennlp_models.lm.language_model import LanguageModel
 from allennlp_models.lm.language_model_token_embedder import LanguageModelTokenEmbedder

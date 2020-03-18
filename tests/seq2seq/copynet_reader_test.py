@@ -12,11 +12,11 @@ from tests import FIXTURES_ROOT
 class TestCopyNetReader(AllenNlpTestCase):
     def setUp(self):
         super().setUp()
-        params = Params.from_file(
-            FIXTURES_ROOT / "seq2seq" / "copynet" / "experiment.json"
-        )
+        params = Params.from_file(FIXTURES_ROOT / "seq2seq" / "copynet" / "experiment.json")
         self.reader = DatasetReader.from_params(params["dataset_reader"])
-        instances = self.reader.read(FIXTURES_ROOT / "seq2seq" / "copynet" / "data" / "copyover.tsv")
+        instances = self.reader.read(
+            FIXTURES_ROOT / "seq2seq" / "copynet" / "data" / "copyover.tsv"
+        )
         self.instances = ensure_list(instances)
         self.vocab = Vocabulary.from_params(params=params["vocabulary"], instances=instances)
 

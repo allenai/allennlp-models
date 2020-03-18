@@ -8,5 +8,7 @@ from allennlp_models.seq2seq.seq2seq_predictor import Seq2SeqPredictor
 from allennlp_models.seq2seq.seq_decoder import SeqDecoder
 from allennlp_models.seq2seq.simple_seq2seq_model import SimpleSeq2Seq
 from allennlp_models.seq2seq.simple_seq2seq_predictor import SimpleSeq2SeqPredictor
-from allennlp_models.seq2seq.stacked_self_attention_decoder_net import StackedSelfAttentionDecoderNet
+from allennlp_models.seq2seq.stacked_self_attention_decoder_net import (
+    StackedSelfAttentionDecoderNet,
+)
 from allennlp_models.seq2seq.seq2seq_reader import Seq2SeqDatasetReader
