@@ -7,6 +7,8 @@ import argparse
 from typing import List
 
 import torch
+from allennlp.data.dataset_readers.dataset_reader import AllennlpDataset
+from allennlp.data.samplers import BasicBatchSampler, SequentialSampler
 
 from allennlp_models.syntax.srl.srl_model import write_to_conll_eval_file
 
@@ -15,8 +17,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(os.path.join(__file__, os.par
 from allennlp.common.tqdm import Tqdm
 from allennlp.common import Params
 from allennlp.models.archival import load_archive
-from allennlp.data.iterators import BasicIterator
-from allennlp.data import DatasetReader
+from allennlp.data import DatasetReader, DataLoader
 from allennlp.nn.util import move_to_device
 
 
@@ -63,21 +64,18 @@ def main(serialization_directory: str, device: int, data: str, prefix: str, doma
 
     # Load the evaluation data and index it.
     print("reading evaluation data from {}".format(evaluation_data_path))
-    instances = dataset_reader.read(evaluation_data_path)
+    dataset = dataset_reader.read(evaluation_data_path)
 
     with torch.autograd.no_grad():
-        iterator = BasicIterator(batch_size=32)
-        iterator.index_with(model.vocab)
-
+        loader = DataLoader(dataset, sampler=SequentialSampler(dataset), batch_size=32)
         model_predictions: List[List[str]] = []
-        batches = iterator(instances, num_epochs=1, shuffle=False)
-        for batch in Tqdm.tqdm(batches):
+        for batch in Tqdm.tqdm(loader):
             batch = move_to_device(batch, device)
             result = model(**batch)
             predictions = model.decode(result)
             model_predictions.extend(predictions["tags"])
 
-        for instance, prediction in zip(instances, model_predictions):
+        for instance, prediction in zip(dataset, model_predictions):
             fields = instance.fields
             verb_index = fields["metadata"]["verb_index"]
             gold_tags = fields["metadata"]["gold_tags"]
