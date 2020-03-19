@@ -38,7 +38,6 @@ local batch_size = 8;
       "num_epochs": epochs,
       "cut_frac": 0.1,
     },
-    "should_log_learning_rate": true,
     "grad_clipping": 1.0,
     "num_epochs": epochs,
     "cuda_device": -1

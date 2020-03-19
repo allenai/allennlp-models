@@ -42,7 +42,6 @@
         "grad_norm": 1.0,
         "num_epochs": 15,
         "validation_metric": "+f1-measure-overall",
-        "should_log_learning_rate": true,
         "cuda_device": 0,
     },
 
