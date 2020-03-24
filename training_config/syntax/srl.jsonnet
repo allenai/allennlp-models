@@ -16,14 +16,11 @@
         }
       }
     },
-    "initializer": [
-      [
-        "tag_projection_layer.*weight",
-        {
-          "type": "orthogonal"
-        }
+    "initializer": {
+      "regexes": [
+        ["tag_projection_layer.*weight", { "type": "orthogonal" }]
       ]
-    ],
+    },
     "encoder": {
       "type": "alternating_lstm",
       "input_size": 200,
