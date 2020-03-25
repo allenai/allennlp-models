@@ -3,6 +3,7 @@ from allennlp_models.syntax.biaffine_dependency_parser import BiaffineDependency
 from allennlp_models.syntax.biaffine_dependency_parser import UniversalDependenciesDatasetReader
 from allennlp_models.syntax.constituency_parser import SpanConstituencyParser
 from allennlp_models.syntax.constituency_parser import ConstituencyParserPredictor
+from allennlp_models.syntax.constituency_parser import PennTreeBankConstituencySpanDatasetReader
 from allennlp_models.syntax.srl import SrlBert
 from allennlp_models.syntax.srl import SrlReader
 from allennlp_models.syntax.srl import SemanticRoleLabelerPredictor
