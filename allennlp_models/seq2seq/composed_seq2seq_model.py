@@ -100,7 +100,7 @@ class ComposedSeq2Seq(Model):
     ) -> Dict[str, torch.Tensor]:
 
         """
-        Make foward pass on the encoder and decoder for producing the entire target sequence.
+        Make forward pass on the encoder and decoder for producing the entire target sequence.
 
         # Parameters
 
