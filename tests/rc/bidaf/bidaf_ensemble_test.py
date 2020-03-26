@@ -2,7 +2,7 @@ import numpy
 import torch
 from flaky import flaky
 from allennlp.common.testing import ModelTestCase
-from allennlp.data.dataset import Batch
+from allennlp.data import Batch
 
 from allennlp_models.rc.bidaf import BidafEnsemble
 from allennlp_models.rc.bidaf.bidaf_ensemble import ensemble
