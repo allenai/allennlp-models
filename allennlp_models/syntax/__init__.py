@@ -9,3 +9,4 @@ from allennlp_models.syntax.srl import SrlReader
 from allennlp_models.syntax.srl import SemanticRoleLabelerPredictor
 from allennlp_models.syntax.srl import SemanticRoleLabeler
 from allennlp_models.syntax.srl import SrlEvalScorer
+from allennlp_models.syntax.srl import OpenIePredictor
