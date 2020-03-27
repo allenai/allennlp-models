@@ -13,7 +13,7 @@ from allennlp.data.tokenizers import PretrainedTransformerTokenizer
 logger = logging.getLogger(__name__)
 
 
-@DatasetReader.register("masked_language_modeling")
+@DatasetReader.register("masked_language_model")
 class MaskedLanguageModelingReader(DatasetReader):
     """
     Reads a text file and converts it into a `Dataset` suitable for training a masked language
