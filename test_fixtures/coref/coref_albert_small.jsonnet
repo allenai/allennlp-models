@@ -7,9 +7,8 @@ local max_length = 128;
 local feature_size = 20;
 local max_span_width = 5;
 
-local bert_dim = 768;  # uniquely determined by bert_model
-local lstm_dim = 32;
-local span_embedding_dim = 4 * lstm_dim + bert_dim + feature_size;
+local transformer_dim = 768;  # uniquely determined by bert_model
+local span_embedding_dim = 3 * transformer_dim + feature_size;
 local span_pair_embedding_dim = 3 * span_embedding_dim + feature_size;
 
 {
@@ -38,11 +37,8 @@ local span_pair_embedding_dim = 3 * span_embedding_dim + feature_size;
       }
     },
     "context_layer": {
-        "type": "lstm",
-        "bidirectional": true,
-        "hidden_size": lstm_dim,
-        "input_size": bert_dim,
-        "num_layers": 1
+        "type": "pass_through",
+        "input_dim": transformer_dim
     },
     "mention_feedforward": {
         "input_dim": span_embedding_dim,

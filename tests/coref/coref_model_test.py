@@ -35,7 +35,7 @@ class CorefTest(ModelTestCase):
 
     def test_coref_bert_model_can_train_save_and_load(self):
         self.set_up_model(
-            FIXTURES_ROOT / "coref" / "coref_bert_lstm_small.jsonnet",
+            FIXTURES_ROOT / "coref" / "coref_albert_small.jsonnet",
             FIXTURES_ROOT / "coref" / "coref.gold_conll",
         )
         self.ensure_model_can_train_save_and_load(
