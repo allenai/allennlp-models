@@ -1,27 +1,3 @@
-import logging
-import math
-from typing import Any, Dict, List, Tuple
-
-import torch
-import torch.nn.functional as F
-from overrides import overrides
-
-from allennlp.data import TextFieldTensors, Vocabulary
-from allennlp.models.model import Model
-from allennlp.modules.token_embedders import Embedding
-from allennlp.modules import FeedForward, GatedSum
-from allennlp.modules import Seq2SeqEncoder, TimeDistributed, TextFieldEmbedder
-from allennlp.modules.span_extractors import SelfAttentiveSpanExtractor, EndpointSpanExtractor
-from allennlp.nn import util, InitializerApplicator
-
-from allennlp_models.coref.conll_coref_scores import ConllCorefScores
-from allennlp_models.coref.mention_recall_metric import MentionRecall
-
-logger = logging.getLogger(__name__)
-
-
-
-
 from pytest import approx
 
 from allennlp.common.testing import AllenNlpTestCase
