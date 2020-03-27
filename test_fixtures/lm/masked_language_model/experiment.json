@@ -1,6 +1,7 @@
 {
   "dataset_reader": {
-    "type": "masked_language_modeling"
+    "type": "masked_language_model",
+    "model_name": "albert-base-v2"
   },
   "train_data_path": "test_fixtures/lm/language_model/sentences.txt",
   "validation_data_path": "test_fixtures/lm/language_model/sentences.txt",
@@ -9,21 +10,20 @@
     "text_field_embedder": {
       "token_embedders": {
         "tokens": {
-          "type": "embedding",
-          "embedding_dim": 4
+          "type": "pretrained_transformer",
+          "model_name": "albert-base-v2"
         }
       }
     },
     "language_model_head": {
       "type": "linear",
-      "input_dim": 4,
-      "vocab_namespace": "tokens"
-    },
-    "target_namespace": "tokens"
+      "input_dim": 768,
+      "vocab_namespace": "tags"
+    }
   },
   "data_loader": {
-    "batch_size": 32,
-},
+    "batch_size": 32
+  },
   "trainer": {
     "num_epochs": 1,
     "cuda_device" : -1,
