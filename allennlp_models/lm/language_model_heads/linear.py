@@ -2,7 +2,7 @@ from overrides import overrides
 import torch
 
 from allennlp.data import Vocabulary
-from .language_model_head import LanguageModelHead
+from allennlp_models.lm.language_model_heads.language_model_head import LanguageModelHead
 
 
 @LanguageModelHead.register("linear")
