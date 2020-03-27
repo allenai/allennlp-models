@@ -1,13 +1,17 @@
 from typing import Dict, List, Optional
 import logging
+import copy
 
 from overrides import overrides
 
 from allennlp.data.instance import Instance
+from allennlp.data.tokenizers.tokenizer import Tokenizer
 from allennlp.data.tokenizers import Token
+from allennlp.data.tokenizers.whitespace_tokenizer import WhitespaceTokenizer
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
+from allennlp.data.token_indexers.token_indexer import TokenIndexer
 from allennlp.data.fields import IndexField, Field, ListField, TextField
-from allennlp.data.token_indexers import PretrainedTransformerIndexer
+from allennlp.data.token_indexers import SingleIdTokenIndexer, PretrainedTransformerIndexer
 from allennlp.data.tokenizers import PretrainedTransformerTokenizer
 
 logger = logging.getLogger(__name__)
@@ -37,10 +41,14 @@ class MaskedLanguageModelingReader(DatasetReader):
         Name of the pretrained model.
     """
 
-    def __init__(self, model_name: str = "bert-base-cased", **kwargs,) -> None:
+    def __init__(
+        self, model_name: str = "bert-base-cased", **kwargs,
+    ) -> None:
         super().__init__(**kwargs)
         self._tokenizer = PretrainedTransformerTokenizer(model_name=model_name)
-        self._token_indexers = {"tokens": PretrainedTransformerIndexer(model_name=model_name)}
+        self._token_indexers = {
+            "tokens": PretrainedTransformerIndexer(model_name=model_name)
+        }
 
     @overrides
     def _read(self, file_path: str):
