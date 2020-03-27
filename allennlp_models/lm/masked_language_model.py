@@ -9,7 +9,7 @@ from allennlp.models.model import Model
 from allennlp.modules import Seq2SeqEncoder, TextFieldEmbedder
 from allennlp.nn import util, InitializerApplicator
 from allennlp.training.metrics import Perplexity
-from allennlp_models.lm.language_model_heads import LanguageModelHead
+from .language_model_heads import LanguageModelHead
 
 
 @Model.register("masked_language_model")
@@ -101,7 +101,7 @@ class MaskedLanguageModel(Model):
             if len(target_ids) != 1:
                 targets = target_ids["bert"]["token_ids"]
             else:
-                targets = target_ids["tokens"]["token_ids"]
+                targets = list(target_ids.values())[0]["tokens"]
         mask_positions = mask_positions.squeeze(-1)
         batch_size, num_masks = mask_positions.size()
         if targets is not None and targets.size() != mask_positions.size():
