@@ -1,5 +1,5 @@
 from allennlp.common.testing import ModelTestCase
-from allennlp.data.dataset import Batch
+from allennlp.data import Batch
 
 from tests import FIXTURES_ROOT
 

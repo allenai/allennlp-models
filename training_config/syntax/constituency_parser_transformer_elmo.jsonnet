@@ -31,12 +31,14 @@
         "embedding_dim": 50,
         "vocab_namespace": "pos"
       },
-      "initializer": [
-        ["tag_projection_layer.*weight", {"type": "xavier_normal"}],
-        ["feedforward_layer.*weight", {"type": "xavier_normal"}],
-        ["encoder._module.weight_ih.*", {"type": "xavier_normal"}],
-        ["encoder._module.weight_hh.*", {"type": "orthogonal"}]
-      ],
+      "initializer": {
+        "regexes": [
+          ["tag_projection_layer.*weight", {"type": "xavier_normal"}],
+          ["feedforward_layer.*weight", {"type": "xavier_normal"}],
+          ["encoder._module.weight_ih.*", {"type": "xavier_normal"}],
+          ["encoder._module.weight_hh.*", {"type": "orthogonal"}]
+        ],
+      },
       "encoder": {
         "type": "lstm",
         "input_size": 1074,

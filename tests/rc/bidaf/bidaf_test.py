@@ -8,7 +8,7 @@ from allennlp.common import Params
 from allennlp.common.checks import ConfigurationError
 from allennlp.common.testing import ModelTestCase
 from allennlp.data import DatasetReader, Vocabulary
-from allennlp.data.dataset import Batch
+from allennlp.data import Batch
 from allennlp.models import Model
 
 from allennlp_models.rc.bidaf import BidirectionalAttentionFlow

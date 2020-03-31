@@ -22,7 +22,7 @@ class TestInterpret(AllenNlpTestCase):
         assert "instance_1" in interpretation
         assert "grad_input_1" in interpretation["instance_1"]
         grad_input_1 = interpretation["instance_1"]["grad_input_1"]
-        assert len(grad_input_1) == 16  # 16 words in input
+        assert len(grad_input_1) == 22  # 22 wordpieces in input
 
         # two interpretations should be identical for gradient
         repeat_interpretation = interpreter.saliency_interpret_from_json(inputs)

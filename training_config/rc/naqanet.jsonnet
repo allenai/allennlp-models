@@ -121,12 +121,13 @@
             "counting"
         ]
     },
-  "data_loader": {
-    "batch_sampler": {
-      "type": "bucket",
-      "batch_size": 16
-    }
-  },
+
+    "data_loader": {
+        "batch_sampler": {
+            "type": "bucket",
+            "batch_size": 16
+        }
+    },
 
     "trainer": {
         "num_epochs": 50,

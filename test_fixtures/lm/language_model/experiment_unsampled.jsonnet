@@ -64,6 +64,8 @@
       "type": "sgd",
       "lr": 0.01
     },
-    "log_batch_size_period": 1
+    "tensorboard_writer": {
+      "batch_size_interval": 1
+    }
   }
 }

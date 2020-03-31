@@ -22,14 +22,11 @@
                 }
             }
         },
-        "initializer": [
-            [
-                "tag_projection_layer.*weight",
-                {
-                    "type": "orthogonal"
-                }
-            ]
-        ],
+        "initializer": {
+            "regexes": [
+                ["tag_projection_layer.*weight", {"type": "orthogonal"}]
+            ],
+        },
         // NOTE: This configuration is correct, but slow.
         "encoder": {
             "type": "alternating_lstm",

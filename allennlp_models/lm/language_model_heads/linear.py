@@ -2,7 +2,7 @@ from overrides import overrides
 import torch
 
 from allennlp.data import Vocabulary
-from .language_model_head import LanguageModelHead
+from allennlp_models.lm.language_model_heads.language_model_head import LanguageModelHead
 
 
 @LanguageModelHead.register("linear")
@@ -18,6 +18,8 @@ class LinearLanguageModelHead(LanguageModelHead):
         super().__init__()
         self.input_dim = input_dim
         self.output_dim = vocab.get_vocab_size(vocab_namespace)
+        if self.output_dim <= 0:
+            raise ValueError("We can't embed into an empty vocabulary.")
         self.linear = torch.nn.Linear(self.input_dim, self.output_dim)
 
     @overrides

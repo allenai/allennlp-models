@@ -121,12 +121,12 @@
             ]
         ]
     },
-  "data_loader": {
-    "batch_sampler": {
-      "type": "bucket",
-      "batch_size": 25
-    }
-  },
+    "data_loader": {
+        "batch_sampler": {
+          "type": "bucket",
+          "batch_size": 25
+        }
+    },
     "trainer": {
         "num_epochs": 50,
         "grad_norm": 5,
