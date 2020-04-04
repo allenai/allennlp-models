@@ -97,7 +97,7 @@ class TestBiaffineDependencyParser(AllenNlpTestCase):
         inputs = [
             {"sentence": "What kind of test succeeded on its first attempt?"},
             {"sentence": "What kind of test succeeded on its first attempt at batch processing?"},
-            {"sentence": "James ate some cheese whilst thinking about the play."}
+            {"sentence": "James ate some cheese whilst thinking about the play."},
         ]
 
         archive = load_archive(
