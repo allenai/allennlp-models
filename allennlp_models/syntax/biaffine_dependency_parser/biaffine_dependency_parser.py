@@ -593,7 +593,10 @@ class BiaffineDependencyParser(Model):
             instance_head_tags[0] = 0
             heads.append(instance_heads)
             head_tags.append(instance_head_tags)
-        return torch.from_numpy(numpy.stack(heads)), torch.from_numpy(numpy.stack(head_tags))
+        return (
+            torch.from_numpy(numpy.stack(heads)).to(batch_energy.device),
+            torch.from_numpy(numpy.stack(head_tags)).to(batch_energy.device)
+        )
 
     def _get_head_tags(
         self,
