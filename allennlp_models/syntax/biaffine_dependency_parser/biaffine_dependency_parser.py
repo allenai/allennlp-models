@@ -240,7 +240,7 @@ class BiaffineDependencyParser(Model):
 
         if head_indices is not None and head_tags is not None:
             evaluation_mask = self._get_mask_for_eval(mask[:, 1:], pos_tags)
-            # We calculate attatchment scores for the whole sentence
+            # We calculate attachment scores for the whole sentence
             # but excluding the symbolic ROOT token at the start,
             # which is why we start from the second element in the sequence.
             self._attachment_scores(
