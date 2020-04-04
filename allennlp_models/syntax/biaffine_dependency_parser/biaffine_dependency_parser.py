@@ -587,7 +587,7 @@ class BiaffineDependencyParser(Model):
             for child, parent in enumerate(instance_heads):
                 instance_head_tags.append(tag_ids[parent, child].item())
             # We don't care what the head or tag is for the root token, but by default it's
-            # not necesarily the same in the batched vs unbatched case, which is annoying.
+            # not necessarily the same in the batched vs unbatched case, which is annoying.
             # Here we'll just set them to zero.
             instance_heads[0] = 0
             instance_head_tags[0] = 0
