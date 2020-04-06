@@ -76,7 +76,9 @@ class TransformerSquadReader(DatasetReader):
         self.skip_invalid_examples = skip_invalid_examples
         self.max_query_length = max_query_length
         self.non_content_type_id = max(
-            self._tokenizer.tokenizer.encode_plus("left", "right")["token_type_ids"]
+            self._tokenizer.tokenizer.encode_plus("left", "right", return_token_type_ids=True)[
+                "token_type_ids"
+            ]
         )
 
         # workaround for a bug in the transformers library
