@@ -30,7 +30,7 @@
         "recurrent_dropout_probability": 0.3,
         "use_highway": true
       },
-      "use_mst_decoding_for_validation": false,
+      "use_mst_decoding_for_validation": true,
       "arc_representation_dim": 500,
       "tag_representation_dim": 100,
       "dropout": 0.3,
