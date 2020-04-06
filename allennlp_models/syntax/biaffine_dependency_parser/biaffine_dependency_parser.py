@@ -240,7 +240,7 @@ class BiaffineDependencyParser(Model):
 
         if head_indices is not None and head_tags is not None:
             evaluation_mask = self._get_mask_for_eval(mask[:, 1:], pos_tags)
-            # We calculate attatchment scores for the whole sentence
+            # We calculate attachment scores for the whole sentence
             # but excluding the symbolic ROOT token at the start,
             # which is why we start from the second element in the sequence.
             self._attachment_scores(
@@ -587,13 +587,16 @@ class BiaffineDependencyParser(Model):
             for child, parent in enumerate(instance_heads):
                 instance_head_tags.append(tag_ids[parent, child].item())
             # We don't care what the head or tag is for the root token, but by default it's
-            # not necesarily the same in the batched vs unbatched case, which is annoying.
+            # not necessarily the same in the batched vs unbatched case, which is annoying.
             # Here we'll just set them to zero.
             instance_heads[0] = 0
             instance_head_tags[0] = 0
             heads.append(instance_heads)
             head_tags.append(instance_head_tags)
-        return torch.from_numpy(numpy.stack(heads)), torch.from_numpy(numpy.stack(head_tags))
+        return (
+            torch.from_numpy(numpy.stack(heads)).to(batch_energy.device),
+            torch.from_numpy(numpy.stack(head_tags)).to(batch_energy.device),
+        )
 
     def _get_head_tags(
         self,

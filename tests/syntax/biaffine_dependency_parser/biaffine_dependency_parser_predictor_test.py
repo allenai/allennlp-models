@@ -97,6 +97,7 @@ class TestBiaffineDependencyParser(AllenNlpTestCase):
         inputs = [
             {"sentence": "What kind of test succeeded on its first attempt?"},
             {"sentence": "What kind of test succeeded on its first attempt at batch processing?"},
+            {"sentence": "James ate some cheese whilst thinking about the play."},
         ]
 
         archive = load_archive(
@@ -109,7 +110,7 @@ class TestBiaffineDependencyParser(AllenNlpTestCase):
         predictor = Predictor.from_archive(archive, "biaffine-dependency-parser")
 
         results = predictor.predict_batch_json(inputs)
-        assert len(results) == 2
+        assert len(results) == 3
 
         for result in results:
             sequence_length = len(result.get("words"))
