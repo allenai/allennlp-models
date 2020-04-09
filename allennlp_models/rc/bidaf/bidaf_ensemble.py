@@ -1,12 +1,11 @@
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 
 from overrides import overrides
 import torch
 
 from allennlp.common.checks import ConfigurationError
-from allennlp.models.ensemble import Ensemble
 from allennlp.models.archival import load_archive
-from allennlp.models.model import Model
+from allennlp.models.model import Model, remove_pretrained_embedding_params
 from allennlp.common import Params
 from allennlp.data import Vocabulary
 
@@ -16,7 +15,7 @@ from ..common import SquadEmAndF1
 
 
 @Model.register("bidaf-ensemble")
-class BidafEnsemble(Ensemble):
+class BidafEnsemble(Model):
     """
     This class ensembles the output from multiple BiDAF models.
 
@@ -24,7 +23,16 @@ class BidafEnsemble(Ensemble):
     """
 
     def __init__(self, submodels: List[BidirectionalAttentionFlow]) -> None:
-        super().__init__(submodels)
+        vocab = submodels[0].vocab
+        for submodel in submodels:
+            if submodel.vocab != vocab:
+                raise ConfigurationError("Vocabularies in ensemble differ")
+
+        super().__init__(vocab, None)
+
+        # Using ModuleList propagates calls to .eval() so dropout is disabled on the submodels in evaluation
+        # and prediction.
+        self.submodels = torch.nn.ModuleList(submodels)
 
         self._squad_metrics = SquadEmAndF1()
 
@@ -120,6 +128,39 @@ class BidafEnsemble(Ensemble):
             submodels.append(load_archive(path).model)
 
         return cls(submodels=submodels)
+
+    @classmethod
+    def _load(
+            cls,
+            config: Params,
+            serialization_dir: str,
+            weights_file: Optional[str] = None,
+            cuda_device: int = -1,
+            opt_level: Optional[str] = None,
+    ) -> Model:
+        """
+        Ensembles don't have vocabularies or weights of their own, so they override _load.
+        """
+        if opt_level is not None:
+            raise NotImplementedError(f"{cls.__name__} does not support AMP yet.")
+
+        model_params = config.get("model")
+
+        # The experiment config tells us how to _train_ a model, including where to get pre-trained
+        # embeddings from.  We're now _loading_ the model, so those embeddings will already be
+        # stored in our weights.  We don't need any pretrained weight file anymore, and we don't
+        # want the code to look for it, so we remove it from the parameters here.
+        remove_pretrained_embedding_params(model_params)
+        model = Model.from_params(vocab=None, params=model_params)
+
+        # Force model to cpu or gpu, as appropriate, to make sure that the embeddings are
+        # in sync with the weights
+        if cuda_device >= 0:
+            model.cuda(cuda_device)
+        else:
+            model.cpu()
+
+        return model
 
 
 def ensemble(subresults: List[Dict[str, torch.Tensor]]) -> torch.Tensor:
