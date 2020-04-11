@@ -1,0 +1,5 @@
+from allennlp_models.nli.snli_reader import SnliReader
+from allennlp_models.nli.decomposable_attention_model import DecomposableAttention
+from allennlp_models.nli.bimpm_model import BiMpm
+from allennlp_models.nli.esim_model import ESIM
+from allennlp_models.nli.quora_paraphrase_reader import QuoraParaphraseDatasetReader
