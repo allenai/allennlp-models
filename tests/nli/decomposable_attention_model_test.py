@@ -34,7 +34,9 @@ class TestDecomposableAttention(ModelTestCase):
         self.ensure_batch_predictions_are_consistent()
 
     def test_model_load(self):
-        params = Params.from_file(FIXTURES_ROOT / "nli" / "decomposable_attention" / "experiment.json")
+        params = Params.from_file(
+            FIXTURES_ROOT / "nli" / "decomposable_attention" / "experiment.json"
+        )
         model = Model.load(
             params,
             serialization_dir=FIXTURES_ROOT / "nli" / "decomposable_attention" / "serialization",

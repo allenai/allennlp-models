@@ -131,12 +131,12 @@ class BidafEnsemble(Model):
 
     @classmethod
     def _load(
-            cls,
-            config: Params,
-            serialization_dir: str,
-            weights_file: Optional[str] = None,
-            cuda_device: int = -1,
-            opt_level: Optional[str] = None,
+        cls,
+        config: Params,
+        serialization_dir: str,
+        weights_file: Optional[str] = None,
+        cuda_device: int = -1,
+        opt_level: Optional[str] = None,
     ) -> Model:
         """
         Ensembles don't have vocabularies or weights of their own, so they override _load.
