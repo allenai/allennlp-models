@@ -39,7 +39,7 @@ with open("requirements.txt") as requirements_file:
         #
         # As a mitigation, run `pip uninstall allennlp` before installing this
         # package.
-        sha = "6a940f92ab2ff1ae1fa91b10f8ff130355c6bc7f"
+        sha = "051d2082641f6e38e9783de8bbfeeb187b7ad00c"
         requirement = f"allennlp @ git+https://github.com/allenai/allennlp@{sha}#egg=allennlp"
         install_requirements.append(requirement)
 
