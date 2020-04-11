@@ -95,7 +95,7 @@
     "num_epochs": 75,
     "grad_norm": 10.0,
     "patience": 5,
-    "cuda_device": 0,
+    "cuda_device": -1,
     "learning_rate_scheduler": {
       "type": "reduce_on_plateau",
       "factor": 0.5,
