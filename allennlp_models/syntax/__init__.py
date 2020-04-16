@@ -10,3 +10,5 @@ from allennlp_models.syntax.srl import SemanticRoleLabelerPredictor
 from allennlp_models.syntax.srl import SemanticRoleLabeler
 from allennlp_models.syntax.srl import SrlEvalScorer
 from allennlp_models.syntax.srl import OpenIePredictor
+from allennlp_models.syntax.semantic_dependencies import GraphParser
+from allennlp_models.syntax.semantic_dependencies import SemanticDependenciesDatasetReader
