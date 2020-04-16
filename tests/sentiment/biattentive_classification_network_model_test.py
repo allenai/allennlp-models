@@ -14,12 +14,8 @@ class BiattentiveClassificationNetworkTest(ModelTestCase):
     def setUp(self):
         super().setUp()
         self.set_up_model(
-            FIXTURES_ROOT
-            / "sentiment"
-            / "biattentive_classification_network" / "experiment.json",
-            FIXTURES_ROOT
-            / "sentiment"
-            / "sst.txt",
+            FIXTURES_ROOT / "sentiment" / "biattentive_classification_network" / "experiment.json",
+            FIXTURES_ROOT / "sentiment" / "sst.txt",
         )
 
     def test_maxout_bcn_can_train_save_and_load(self):
@@ -37,7 +33,8 @@ class BiattentiveClassificationNetworkTest(ModelTestCase):
         self.ensure_model_can_train_save_and_load(
             FIXTURES_ROOT
             / "sentiment"
-            / "biattentive_classification_network" / "elmo_experiment.json"
+            / "biattentive_classification_network"
+            / "elmo_experiment.json"
         )
 
     def test_output_only_elmo_bcn_can_train_save_and_load(self):
@@ -88,7 +85,8 @@ class BiattentiveClassificationNetworkTest(ModelTestCase):
         params = Params.from_file(
             FIXTURES_ROOT
             / "sentiment"
-            / "biattentive_classification_network" / "elmo_experiment.json"
+            / "biattentive_classification_network"
+            / "elmo_experiment.json"
         )
         # Elmo is specified in the model, but set both flags to false.
         params["model"]["use_input_elmo"] = False
@@ -101,7 +99,8 @@ class BiattentiveClassificationNetworkTest(ModelTestCase):
         params = Params.from_file(
             FIXTURES_ROOT
             / "sentiment"
-            / "biattentive_classification_network" / "elmo_experiment.json"
+            / "biattentive_classification_network"
+            / "elmo_experiment.json"
         )
         # Elmo is specified in the model, with num_output_representations=2. Set
         # only one flag to true.
