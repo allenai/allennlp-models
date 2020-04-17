@@ -23,6 +23,15 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
 
+    - name: Test if condition
+      if: ${{ matrix.python }} == '3.7'
+      run:
+        echo ${{ matrx.python }}
+
+    - name: Exit early
+      run:
+        exit 1
+
     - uses: actions/cache@v1
       with:
         path: ~/.cache/pip
