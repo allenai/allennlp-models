@@ -38,18 +38,21 @@ jobs:
         pip install --upgrade -r <(grep -Ev '^allennlp$' requirements.txt)
         pip install --upgrade -r dev-requirements.txt
 
+    - name: Show pip freeze
+      run: |
+        pip freeze
+
     - name: Lint
       run: |
-        flake8 -v
-        black -v --check .
+        make lint
 
     - name: Type check
       run: |
-        mypy allennlp_models --ignore-missing-imports --no-strict-optional --no-site-packages
+        make typecheck
 
     - name: Run tests
       run: |
-        pytest --cov=allennlp_models/ --cov-report=xml
+        make test-with-cov
 
     - name: Upload coverage to Codecov
       if: matrix.python == '3.7'

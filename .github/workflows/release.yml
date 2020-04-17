@@ -26,16 +26,15 @@ jobs:
 
     - name: Lint
       run: |
-        flake8 -v
-        black -v --check .
+        make lint
 
     - name: Type check
       run: |
-        mypy allennlp_models --ignore-missing-imports --no-strict-optional --no-site-packages
+        make typecheck
 
     - name: Run tests
       run: |
-        pytest -v
+        make test
 
     - name: Build Package
       run: |
