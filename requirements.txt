@@ -1,6 +1,4 @@
-# To be changed to allennlp>=1.0 once that's released.
-git+https://github.com/allenai/allennlp.git@6056f1a12110990ae21fe4b62bf106d388e5d149
-
+allennlp
 # For RC models
 word2number>=1.1
 py-rouge==1.1
