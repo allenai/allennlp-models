@@ -1,0 +1,47 @@
+name: PyPI Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    needs: build
+    if: github.repository == 'allenai/allennlp-models'
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+
+    - name: Install requirements
+      run: |
+        pip install -e .
+        pip install -r dev-requirements.txt
+
+    - name: Lint
+      run: |
+        make lint
+
+    - name: Type check
+      run: |
+        make typecheck
+
+    - name: Run tests
+      run: |
+        make test
+
+    - name: Build Package
+      run: |
+        python setup.py bdist_wheel sdist
+
+    - name: Upload to PyPI
+      env:
+        PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: twine upload -u $PYPI_USERNAME -p $PYPI_PASSWORD dist/*

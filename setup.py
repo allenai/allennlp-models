@@ -25,22 +25,9 @@ with open("allennlp_models/version.py") as version_file:
 # cross-library integration testing.
 with open("requirements.txt") as requirements_file:
     install_requirements = requirements_file.readlines()
-    install_requirements = [
-        r for r in install_requirements if "git+https://github.com/allenai/allennlp" not in r
-    ]
+    install_requirements = [r for r in install_requirements if r != "allennlp"]
     if not os.environ.get("EXCLUDE_ALLENNLP_IN_SETUP"):
-        # Warning: This will not give you the desired version if you've already
-        # installed allennlp! See https://github.com/pypa/pip/issues/5898.
-        #
-        # There used to be an alternative to this using `dependency_links`
-        # (https://stackoverflow.com/questions/3472430), but pip decided to
-        # remove this in version 19 breaking numerous projects in the process.
-        # See https://github.com/pypa/pip/issues/6162.
-        #
-        # As a mitigation, run `pip uninstall allennlp` before installing this
-        # package.
-        sha = "6056f1a12110990ae21fe4b62bf106d388e5d149"
-        requirement = f"allennlp @ git+https://github.com/allenai/allennlp@{sha}#egg=allennlp"
+        requirement = f"allennlp=={VERSION['VERSION']}"
         install_requirements.append(requirement)
 
 # make pytest-runner a conditional requirement,
