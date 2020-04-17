@@ -8,7 +8,7 @@ on:
     branches:
     - master
   schedule:
-    - cron: '0 10 * * *' # run at 10 AM UTC every day.
+    - cron: '17 10 * * *' # run at 10 AM UTC every day.
 
 jobs:
   build:
@@ -35,8 +35,8 @@ jobs:
     - name: Install requirements
       run: |
         pip install --upgrade git+https://github.com/allenai/allennlp.git@master
-        pip install -r requirements.txt
-        pip install -r dev-requirements.txt
+        pip install --upgrade -r requirements.txt
+        pip install --upgrade -r dev-requirements.txt
 
     - name: Lint
       run: |
