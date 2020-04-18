@@ -6,7 +6,6 @@ on:
 
 jobs:
   deploy:
-    needs: build
     if: github.repository == 'allenai/allennlp-models'
 
     runs-on: ubuntu-latest
@@ -42,6 +41,5 @@ jobs:
 
     - name: Upload to PyPI
       env:
-        PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
         PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-      run: twine upload -u $PYPI_USERNAME -p $PYPI_PASSWORD dist/*
+      run: twine upload -u allennlp -p $PYPI_PASSWORD dist/*
