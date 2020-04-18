@@ -6,7 +6,6 @@ on:
 
 jobs:
   deploy:
-    needs: build
     if: github.repository == 'allenai/allennlp-models'
 
     runs-on: ubuntu-latest
