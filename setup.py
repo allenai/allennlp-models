@@ -24,7 +24,9 @@ with open("allennlp_models/version.py") as version_file:
 # Load requirements.txt with a special case for allennlp so we can handle
 # cross-library integration testing.
 with open("requirements.txt") as requirements_file:
-    install_requirements = requirements_file.readlines()
+    install_requirements = filter(
+        lambda l: l and not l.startswith("#"), map(lambda l: l.strip(), requirements_file)
+    )
     install_requirements = [r for r in install_requirements if r != "allennlp"]
     if not os.environ.get("EXCLUDE_ALLENNLP_IN_SETUP"):
         requirement = f"allennlp=={VERSION['VERSION']}"
