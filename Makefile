@@ -13,4 +13,4 @@ test :
 
 .PHONY : test-with-cov
 test-with-cov :
-	pytest --color=yes -rf --cov-config=.coveragerc --cov-report=xml --cov=allennlp_models/ --durations=40
+	pytest --color=yes -rf --cov-config=.coveragerc --cov=allennlp_models/ --durations=40
