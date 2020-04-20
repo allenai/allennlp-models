@@ -14,6 +14,7 @@ per-file-ignores =
     # __init__.py files are allowed to have unused imports and lines-too-long
     allennlp_models/__init__.py:F401
     allennlp_models/**/__init__.py:F401,E501
+    allennlp_plugins/**/__init__.py:F401
 
     # tests don't have to respect
     #  E501: line length

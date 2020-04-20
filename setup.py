@@ -60,8 +60,8 @@ setup(
     author_email="allennlp@allenai.org",
     license="Apache",
     packages=find_packages(
-      exclude=["*.tests", "*.tests.*", "tests.*", "tests"],
-      include=["allennlp_plugins.*", "allennlp_models"]
+        exclude=["*.tests", "*.tests.*", "tests.*", "tests"],
+        include=["allennlp_plugins.*", "allennlp_models"],
     ),
     install_requires=install_requirements,
     setup_requires=setup_requirements,
