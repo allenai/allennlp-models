@@ -9,8 +9,8 @@ typecheck :
 
 .PHONY : test
 test :
-	pytest -v --color=yes
+	pytest --color=yes -rf --durations=40
 
 .PHONY : test-with-cov
 test-with-cov :
-	pytest -v --color=yes --cov=allennlp_models/ --cov-report=xml
+	pytest --color=yes -rf --cov-config=.coveragerc --cov=allennlp_models/ --durations=40
