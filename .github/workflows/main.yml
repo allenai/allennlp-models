@@ -18,7 +18,7 @@ jobs:
         python: ['3.6', '3.7']
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - name: Setup Python
       uses: actions/setup-python@v1
@@ -34,6 +34,7 @@ jobs:
 
     - name: Install requirements
       run: |
+        pip install --upgrade pip setuptools wheel
         pip install --upgrade git+https://github.com/allenai/allennlp.git@master
         pip install --upgrade -r <(grep -Ev '^allennlp$' requirements.txt)
         pip install --upgrade -r dev-requirements.txt
