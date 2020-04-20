@@ -59,7 +59,10 @@ setup(
     author="Allen Institute for Artificial Intelligence",
     author_email="allennlp@allenai.org",
     license="Apache",
-    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
+    packages=find_packages(
+      exclude=["*.tests", "*.tests.*", "tests.*", "tests"],
+      include=["allennlp_plugins.*", "allennlp_models"]
+    ),
     install_requires=install_requirements,
     setup_requires=setup_requirements,
     tests_require=["pytest", "flaky", "responses>=0.7"],
