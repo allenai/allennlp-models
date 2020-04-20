@@ -57,6 +57,11 @@ jobs:
 
     - name: Upload coverage to Codecov
       if: matrix.python == '3.7'
-      uses: codecov/codecov-action@v1.0.2
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
+      run: |
+        # Ignore codecov failures as the codecov server is not
+        # very reliable but we don't want to report a failure
+        # in the github UI just because the coverage report failed to
+        # be published.
+        codecov || echo "codecov upload failed"
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
