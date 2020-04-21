@@ -81,17 +81,21 @@ def char_span_to_token_span(
         token_offsets[start_index] is None or token_offsets[start_index][0] < character_span[0]
     ):
         start_index += 1
-    if start_index >= len(token_offsets):
-        raise ValueError(f"Character span %r outside the range of the given tokens.")
-    # start_index should now be pointing at the span start index.
-    if token_offsets[start_index][0] > character_span[0]:
-        if start_index <= 0:
-            raise ValueError(f"Character span %r outside the range of the given tokens.")
-        # In this case, a tokenization or labeling issue made us go too far - the character span we're looking for
-        # actually starts in the previous token. We'll back up one. Note that this might have us starting at a None
-        # token.
-        logger.debug("Bad labelling or tokenization - start offset doesn't match")
+
+    # If we overshot and the token prior to start_index ends after the first character, back up.
+    if (
+        start_index > 0
+        and (
+            token_offsets[start_index - 1] is not None
+            and token_offsets[start_index - 1][1] > character_span[0]
+        )
+        or (
+            token_offsets[start_index] is not None
+            and token_offsets[start_index][0] > character_span[0]
+        )
+    ):
         start_index -= 1
+
     if token_offsets[start_index] is None or token_offsets[start_index][0] != character_span[0]:
         error = True
 
