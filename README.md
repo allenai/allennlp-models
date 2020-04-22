@@ -10,6 +10,9 @@
     <a href="https://github.com/allenai/allennlp-models/actions">
         <img alt="Build" src="https://github.com/allenai/allennlp-models/workflows/CI/badge.svg?event=push&branch=master">
     </a>
+    <a href="https://pypi.org/project/allennlp-models/">
+        <img alt="PyPI" src="https://img.shields.io/pypi/v/allennlp-models">
+    </a>
     <a href="https://github.com/allenai/allennlp-models/blob/master/LICENSE">
         <img alt="License" src="https://img.shields.io/github/license/allenai/allennlp-models.svg?color=blue&cachedrop">
     </a>
