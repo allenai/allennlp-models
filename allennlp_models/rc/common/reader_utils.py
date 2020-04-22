@@ -69,7 +69,7 @@ def char_span_to_token_span(
     token_span : ``Tuple[int, int]``
         `Inclusive` span start and end token indices that match as closely as possible to the input
         character spans.
-    error : ``bool``
+    exact : ``bool``
         Whether the token spans match the input character spans exactly.  If this is ``False``, it
         means there was an error in either the tokenization or the annotated character span.
     """
