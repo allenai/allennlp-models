@@ -28,16 +28,14 @@ jobs:
     - uses: actions/cache@v1
       with:
         path: ${{ env.pythonLocation }}
-        key: ${{ runner.os }}-pydeps-${{ matrix.python }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pydeps-${{ matrix.python }}
+        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
 
     - name: Install requirements
       run: |
         pip install --upgrade pip setuptools wheel
         pip install --upgrade git+https://github.com/allenai/allennlp.git@master
-        pip install --upgrade -r <(grep -Ev '^allennlp$' requirements.txt)
-        pip install --upgrade -r dev-requirements.txt
+        pip install --upgrade --upgrade-strategy eager -r <(grep -Ev '^allennlp$' requirements.txt)
+        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
 
     - name: Show pip freeze
       run: |
