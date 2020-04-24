@@ -70,28 +70,31 @@ def char_span_to_token_span(
         `Inclusive` span start and end token indices that match as closely as possible to the input
         character spans.
     error : ``bool``
-        Whether the token spans match the input character spans exactly.  If this is ``False``, it
-        means there was an error in either the tokenization or the annotated character span.
+        Whether there was an error while matching the token spans exactly. If this is ``True``, it
+        means there was an error in either the tokenization or the annotated character span. If this
+        is ``False``, it means that we found tokens that match the character span exactly.
     """
-    # We have token offsets into the passage from the tokenizer; we _should_ be able to just find
-    # the tokens that have the same offsets as our span.
     error = False
     start_index = 0
     while start_index < len(token_offsets) and (
         token_offsets[start_index] is None or token_offsets[start_index][0] < character_span[0]
     ):
         start_index += 1
-    if start_index >= len(token_offsets):
-        raise ValueError(f"Character span %r outside the range of the given tokens.")
-    # start_index should now be pointing at the span start index.
-    if token_offsets[start_index][0] > character_span[0]:
-        if start_index <= 0:
-            raise ValueError(f"Character span %r outside the range of the given tokens.")
-        # In this case, a tokenization or labeling issue made us go too far - the character span we're looking for
-        # actually starts in the previous token. We'll back up one. Note that this might have us starting at a None
-        # token.
-        logger.debug("Bad labelling or tokenization - start offset doesn't match")
+
+    # If we overshot and the token prior to start_index ends after the first character, back up.
+    if (
+        start_index > 0
+        and (
+            token_offsets[start_index - 1] is not None
+            and token_offsets[start_index - 1][1] > character_span[0]
+        )
+        or (
+            token_offsets[start_index] is not None
+            and token_offsets[start_index][0] > character_span[0]
+        )
+    ):
         start_index -= 1
+
     if token_offsets[start_index] is None or token_offsets[start_index][0] != character_span[0]:
         error = True
 
