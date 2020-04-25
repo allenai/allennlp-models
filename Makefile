@@ -1,3 +1,7 @@
+.PHONY : version
+version :
+	@python -c 'from allennlp_models.version import VERSION; print(f"AllenNLP Models v{VERSION}")'
+
 .PHONY : lint
 lint :
 	flake8 -v
