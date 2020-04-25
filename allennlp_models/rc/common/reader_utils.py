@@ -103,6 +103,15 @@ def char_span_to_token_span(
         token_offsets[end_index] is None or token_offsets[end_index][1] < character_span[1]
     ):
         end_index += 1
+    if end_index == len(token_offsets):
+        # We want a character span that goes beyond the last token. Let's see if this is salvageable.
+        # We consider this salvageable if the span we're looking for starts before the last token ends.
+        # In other words, we don't salvage if the whole span comes after the tokens end.
+        if character_span[0] < token_offsets[-1][1]:
+            # We also want to make sure we aren't way off. We need to be within 8 characters to salvage.
+            if character_span[1] - 8 < token_offsets[-1][1]:
+                end_index -= 1
+
     if end_index >= len(token_offsets):
         raise ValueError(f"Character span %r outside the range of the given tokens.")
     if end_index == start_index and token_offsets[end_index][1] > character_span[1]:
