@@ -5,9 +5,51 @@ on:
     types: [published]
 
 jobs:
-  deploy:
-    if: github.repository == 'allenai/allennlp-models'
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.6', '3.7']
 
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python }}
+
+    - uses: actions/cache@v1
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+
+    - name: Install requirements
+      run: |
+        pip install --upgrade pip setuptools wheel
+        pip install --upgrade git+https://github.com/allenai/allennlp.git@master
+        pip install --upgrade --upgrade-strategy eager -r <(grep -Ev '^allennlp$' requirements.txt)
+        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
+
+    - name: Show pip freeze
+      run: |
+        pip freeze
+
+    - name: Lint
+      run: |
+        make lint
+
+    - name: Type check
+      run: |
+        make typecheck
+
+    - name: Run tests
+      run: |
+        make test
+
+  build_package:
+    name: Build Package
     runs-on: ubuntu-latest
 
     steps:
@@ -24,21 +66,76 @@ jobs:
         pip install -e .
         pip install -r dev-requirements.txt
 
-    - name: Lint
+    - name: Check version and release tag match
       run: |
-        make lint
-
-    - name: Type check
-      run: |
-        make typecheck
-
-    - name: Run tests
-      run: |
-        make test
+        # Remove 'refs/tags/' to get the actual tag from the release.
+        TAG=${GITHUB_REF#refs/tags/};
+        VERSION=$(scripts/get_version.py current)
+        if [ "$TAG" != "$VERSION" ]; then
+            echo "Bad tag or version. Tag $TAG does not match $VERSION";
+            exit 1;
+        fi
 
     - name: Build Package
       run: |
         python setup.py bdist_wheel sdist
+
+    - name: Save package
+      uses: actions/upload-artifact@v1
+      with:
+        name: models-package
+        path: dist
+
+  test_package:
+    name: Test Package
+    needs: [build_package]  # needs the package artifact created from 'build_package' job.
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.6', '3.7']
+
+    steps:
+    - name: Setup Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python }}
+
+    - name: Install requirements
+      run: |
+        pip install --upgrade pip setuptools wheel
+
+    - name: Download models package
+      uses: actions/download-artifact@v1
+      with:
+        name: models-package
+        path: dist
+
+    - name: Install models package
+      run: |
+        pip install $(ls dist/*.whl)
+
+  publish:
+    name: PyPI
+    needs: [check, build_package, test_package]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+
+    - name: Install requirements
+      run: |
+        pip install --upgrade pip setuptools wheel twine
+
+    - name: Download models package
+      uses: actions/download-artifact@v1
+      with:
+        name: models-package
+        path: dist
 
     - name: Upload to PyPI
       env:
