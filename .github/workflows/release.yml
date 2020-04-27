@@ -114,6 +114,10 @@ jobs:
       run: |
         pip install $(ls dist/*.whl)
 
+    - name: Ensure models plugin found
+      run: |
+        python -c 'from allennlp.common.plugins import discover_plugins; assert "allennlp_plugins.allennlp_models" in list(discover_plugins())'
+
   publish:
     name: PyPI
     needs: [check, build_package, test_package]
