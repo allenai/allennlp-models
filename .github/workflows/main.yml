@@ -63,24 +63,3 @@ jobs:
         codecov || echo "codecov upload failed"
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-  build_package:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Setup Python
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.7
-
-    - name: Install requirements
-      run: |
-        pip install --upgrade pip setuptools wheel
-        pip install -e .
-        pip install -r dev-requirements.txt
-
-    - name: Build Package
-      run: |
-        python setup.py bdist_wheel sdist
