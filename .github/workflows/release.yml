@@ -5,8 +5,8 @@ on:
     types: [published]
 
 jobs:
-  check:
-    name: Check
+  build:
+    name: Build
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -19,46 +19,6 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python }}
-
-    - uses: actions/cache@v1
-      with:
-        path: ${{ env.pythonLocation }}
-        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
-
-    - name: Install requirements
-      run: |
-        pip install --upgrade pip setuptools wheel
-        pip install --upgrade git+https://github.com/allenai/allennlp.git@master
-        pip install --upgrade --upgrade-strategy eager -r <(grep -Ev '^allennlp$' requirements.txt)
-        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
-
-    - name: Show pip freeze
-      run: |
-        pip freeze
-
-    - name: Lint
-      run: |
-        make lint
-
-    - name: Type check
-      run: |
-        make typecheck
-
-    - name: Run tests
-      run: |
-        make test
-
-  build_package:
-    name: Build Package
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Setup Python
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.7
 
     - name: Install requirements
       run: |
@@ -76,19 +36,36 @@ jobs:
             exit 1;
         fi
 
+    - name: Show pip freeze
+      run: |
+        pip freeze
+
+    - name: Lint
+      run: |
+        make lint
+
+    - name: Type check
+      run: |
+        make typecheck
+
+    - name: Run tests
+      run: |
+        make test
+
     - name: Build Package
       run: |
         python setup.py bdist_wheel sdist
 
     - name: Save package
+      if: matrix.python == '3.7'
       uses: actions/upload-artifact@v1
       with:
         name: models-package
         path: dist
 
-  test_package:
-    name: Test Package
-    needs: [build_package]  # needs the package artifact created from 'build_package' job.
+  test:
+    name: Test
+    needs: [build]  # needs the package artifact created from 'build_package' job.
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -120,7 +97,7 @@ jobs:
 
   publish:
     name: PyPI
-    needs: [check, build_package, test_package]
+    needs: [build, test]
     runs-on: ubuntu-latest
 
     steps:
