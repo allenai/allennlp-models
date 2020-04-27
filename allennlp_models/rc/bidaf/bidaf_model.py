@@ -366,3 +366,5 @@ class BidirectionalAttentionFlow(Model):
         span_start_indices = best_spans // passage_length
         span_end_indices = best_spans % passage_length
         return torch.stack([span_start_indices, span_end_indices], dim=-1)
+
+    default_predictor = "reading-comprehension"

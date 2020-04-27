@@ -243,3 +243,5 @@ class BiMpm(Model):
         return {
             metric_name: metric.get_metric(reset) for metric_name, metric in self.metrics.items()
         }
+
+    default_predictor = "textual-entailment"

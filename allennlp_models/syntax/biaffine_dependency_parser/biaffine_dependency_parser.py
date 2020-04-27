@@ -681,3 +681,5 @@ class BiaffineDependencyParser(Model):
     @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return self._attachment_scores.get_metric(reset)
+
+    default_predictor = "biaffine-dependency-parser"

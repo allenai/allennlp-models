@@ -199,3 +199,5 @@ class DecomposableAttention(Model):
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return {"accuracy": self._accuracy.get_metric(reset)}
+
+    default_predictor = "textual-entailment"
