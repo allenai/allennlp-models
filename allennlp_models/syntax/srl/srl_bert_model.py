@@ -277,3 +277,5 @@ class SrlBert(Model):
                 start_transitions[i] = float("-inf")
 
         return start_transitions
+
+    default_predictor = "semantic-role-labeling"
