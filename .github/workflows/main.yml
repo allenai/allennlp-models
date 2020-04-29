@@ -36,7 +36,7 @@ jobs:
 
     - name: Build Package
       run: |
-        python setup.py bdist_wheel sdist
+        EXCLUDE_ALLENNLP_IN_SETUP=true python setup.py bdist_wheel sdist
 
     - name: Save package
       uses: actions/upload-artifact@v1
@@ -67,6 +67,7 @@ jobs:
 
     - name: Install models package
       run: |
+        pip install git+https://github.com/allenai/allennlp.git@26e313b7d11eacf3a78c09c34608ad1bfd7db120
         pip install $(ls dist/*.whl)
 
     - name: Show pip freeze
