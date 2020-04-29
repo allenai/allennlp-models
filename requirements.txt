@@ -1,4 +1,4 @@
-allennlp
+git+https://github.com/allenai/allennlp.git@26e313b7d11eacf3a78c09c34608ad1bfd7db120
 # For RC models
 word2number>=1.1
 py-rouge==1.1
