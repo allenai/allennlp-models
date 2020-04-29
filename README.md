@@ -56,4 +56,4 @@ EXCLUDE_ALLENNLP_IN_SETUP=true pip install -e .
 pip install -r dev-requirements.txt
 ```
 
-Both `allennlp` and `allennlp-models` are developed and tested side-by-side, so they should be kept up-to-date with each other. If you look at the GitHub Actions [workflow for allennlp-models](https://github.com/allenai/allennlp-models/actions), it's always tested against the master branch of allennlp. Similarly, allennlp is always tested against the master branch of allennlp-models.
+Both `allennlp` and `allennlp-models` are developed and tested side-by-side, so they should be kept up-to-date with each other. If you look at the GitHub Actions [workflow for `allennlp-models`](https://github.com/allenai/allennlp-models/actions), it's always tested against the master branch of `allennlp`. Similarly, `allennlp` is always tested against the master branch of `allennlp-models`.
