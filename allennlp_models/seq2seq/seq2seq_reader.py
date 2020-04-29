@@ -1,16 +1,17 @@
 import csv
 from typing import Dict, Optional
 import logging
+import copy
 
 from overrides import overrides
 
 from allennlp.common.checks import ConfigurationError
 from allennlp.common.file_utils import cached_path
-from allennlp.common.util import START_SYMBOL, END_SYMBOL
+from allennlp.common.util import START_SYMBOL, END_SYMBOL, sanitize_ptb_tokenized_string
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.fields import TextField
 from allennlp.data.instance import Instance
-from allennlp.data.tokenizers import Token, Tokenizer, SpacyTokenizer
+from allennlp.data.tokenizers import Tokenizer, SpacyTokenizer
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
 
 logger = logging.getLogger(__name__)
@@ -60,9 +61,14 @@ class Seq2SeqDatasetReader(DatasetReader):
         target_token_indexers: Dict[str, TokenIndexer] = None,
         source_add_start_token: bool = True,
         source_add_end_token: bool = True,
+        target_add_start_token: bool = True,
+        target_add_end_token: bool = True,
+        start_symbol: str = START_SYMBOL,
+        end_symbol: str = END_SYMBOL,
         delimiter: str = "\t",
         source_max_tokens: Optional[int] = None,
         target_max_tokens: Optional[int] = None,
+        ptb_sanitize_strings: bool = False,
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
@@ -72,9 +78,15 @@ class Seq2SeqDatasetReader(DatasetReader):
         self._target_token_indexers = target_token_indexers or self._source_token_indexers
         self._source_add_start_token = source_add_start_token
         self._source_add_end_token = source_add_end_token
+        self._target_add_start_token = target_add_start_token
+        self._target_add_end_token = target_add_end_token
+        self._start_token, self._end_token = self._source_tokenizer.tokenize(
+            start_symbol + " " + end_symbol
+        )
         self._delimiter = delimiter
         self._source_max_tokens = source_max_tokens
         self._target_max_tokens = target_max_tokens
+        self._ptb_sanitize_strings = ptb_sanitize_strings
         self._source_max_exceeded = 0
         self._target_max_exceeded = 0
 
@@ -109,23 +121,28 @@ class Seq2SeqDatasetReader(DatasetReader):
     def text_to_instance(
         self, source_string: str, target_string: str = None
     ) -> Instance:  # type: ignore
+        if self._ptb_sanitize_strings:
+            source_string = sanitize_ptb_tokenized_string(source_string)
+            target_string = sanitize_ptb_tokenized_string(target_string)
 
         tokenized_source = self._source_tokenizer.tokenize(source_string)
         if self._source_max_tokens and len(tokenized_source) > self._source_max_tokens:
             self._source_max_exceeded += 1
             tokenized_source = tokenized_source[: self._source_max_tokens]
         if self._source_add_start_token:
-            tokenized_source.insert(0, Token(START_SYMBOL))
+            tokenized_source.insert(0, copy.deepcopy(self.start_token))
         if self._source_add_end_token:
-            tokenized_source.append(Token(END_SYMBOL))
+            tokenized_source.append(copy.deepcopy(self.end_token))
         source_field = TextField(tokenized_source, self._source_token_indexers)
         if target_string is not None:
             tokenized_target = self._target_tokenizer.tokenize(target_string)
             if self._target_max_tokens and len(tokenized_target) > self._target_max_tokens:
                 self._target_max_exceeded += 1
                 tokenized_target = tokenized_target[: self._target_max_tokens]
-            tokenized_target.insert(0, Token(START_SYMBOL))
-            tokenized_target.append(Token(END_SYMBOL))
+            if self._target_add_start_token:
+                tokenized_target.insert(0, copy.deepcopy(self.start_token))
+            if self._target_add_end_token:
+                tokenized_target.append(copy.deepcopy(self.end_token))
             target_field = TextField(tokenized_target, self._target_token_indexers)
             return Instance({"source_tokens": source_field, "target_tokens": target_field})
         else:

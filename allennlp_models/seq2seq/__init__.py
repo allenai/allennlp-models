@@ -12,3 +12,4 @@ from allennlp_models.seq2seq.stacked_self_attention_decoder_net import (
     StackedSelfAttentionDecoderNet,
 )
 from allennlp_models.seq2seq.seq2seq_reader import Seq2SeqDatasetReader
+from allennlp_models.seq2seq.bart.bart import Bart
