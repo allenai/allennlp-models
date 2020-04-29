@@ -22,4 +22,36 @@
 </p>
 <br/>
 
-To file an issue, please open a ticket on https://github.com/allenai/allennlp and tag it with "Models".
+<div align="center">
+❗️ To file an issue, please open a ticket on https://github.com/allenai/allennlp and tag it with "Models". ❗️
+</div>
+
+## Installing
+
+### From PyPI
+
+`allennlp-models` is available on PyPI. To install with `pip`, just run
+
+```
+pip install --pre allennlp-models
+```
+
+Note that the `allennlp-models` package is tied to the [`allennlp` core package](https://pypi.org/projects/allennlp-models). Therefore when you install the models package you will get the corresponding version of `allennlp` (if you haven't already installed `allennlp`). For example,
+
+```bash
+pip install allennlp-models==1.0.0rc3
+pip freeze | grep allennlp
+# > allennlp==1.0.0rc3
+# > allennlp-models==1.0.0rc3
+```
+
+### From source
+
+If you intend to install the models package from source, then you probably also want to [install `allennlp` from source](https://github.com/allenai/allennlp#installing-from-source).
+Once you have `allennlp` installed, run the following within the same Python environment:
+
+```
+git clone https://github.com/allenai/allennlp-models.git
+EXCLUDE_ALLENNLP_IN_SETUP=true pip install -e .
+pip install -r dev-requirements.txt
+```
