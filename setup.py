@@ -63,11 +63,11 @@ setup(
         exclude=[
             "*.tests",
             "*.tests.*",
-            "tests.*",
-            "tests",
+            "tests*",
             "test_fixtures*",
             "scripts*",
             "training_config*",
+            "models*",
         ],
     ),
     install_requires=install_requirements,
