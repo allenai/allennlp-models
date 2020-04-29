@@ -77,6 +77,11 @@ jobs:
       run: |
         python -c 'from allennlp.common.plugins import discover_plugins; assert "allennlp_plugins.allennlp_models" in list(discover_plugins())'
 
+    - name: Ensure models plugin can be imported
+      run: |
+        python -c 'import allennlp_plugins.allennlp_models' && echo "ok here"
+        python -c 'import allennlp_plugins' || echo "this shouldn't have worked"
+
   check:
     name: Check
     runs-on: ubuntu-latest
