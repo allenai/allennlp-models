@@ -37,7 +37,9 @@ with open("requirements.txt") as requirements_file:
 
     def fix_url_dependencies(req: str) -> str:
         """Pip and setuptools disagree about how URL dependencies should be handled."""
-        m = re.match(r"^(git\+)?(https|ssh)://(git@)?github\.com/([\w-]+)/(?P<name>[\w-]+)\.git", req)
+        m = re.match(
+            r"^(git\+)?(https|ssh)://(git@)?github\.com/([\w-]+)/(?P<name>[\w-]+)\.git", req
+        )
         if m is None:
             return req
         else:
