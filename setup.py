@@ -24,13 +24,36 @@ with open("allennlp_models/version.py") as version_file:
 # Load requirements.txt with a special case for allennlp so we can handle
 # cross-library integration testing.
 with open("requirements.txt") as requirements_file:
-    install_requirements = filter(
-        lambda l: l and not l.startswith("#"), map(lambda l: l.strip(), requirements_file)
-    )
-    install_requirements = [r for r in install_requirements if r != "allennlp"]
-    if not os.environ.get("EXCLUDE_ALLENNLP_IN_SETUP"):
-        requirement = f"allennlp=={VERSION['VERSION']}"
-        install_requirements.append(requirement)
+    import re
+
+    def requirement_is_allennlp(req: str) -> bool:
+        if req == "allennlp":
+            return True
+        if re.match(r"^allennlp[>=<]", req):
+            return True
+        if re.match(r"^(git\+)?(https|ssh)://(git@)?github\.com/allenai/allennlp\.git@", req):
+            return True
+        return False
+
+    def fix_url_dependencies(req: str) -> str:
+        """Pip and setuptools disagree about how URL dependencies should be handled."""
+        m = re.match(r"^(git\+)?(https|ssh)://(git@)?github\.com/([\w-]+)/(?P<name>[\w-]+)\.git", req)
+        if m is None:
+            return req
+        else:
+            return f"{m.group('name')} @ {req}"
+
+    override_allennlp = os.environ.get("OVERRIDE_ALLENNLP_IN_SETUP")
+    install_requirements = (line.strip() for line in requirements_file)
+    install_requirements = [
+        fix_url_dependencies(line)
+        for line in install_requirements
+        if not line.startswith("#")
+        if len(line) > 0
+        if not override_allennlp or not requirement_is_allennlp(line)
+    ]
+    if override_allennlp:
+        install_requirements.append(f"allennlp=={VERSION['VERSION']}")
 
 # make pytest-runner a conditional requirement,
 # per: https://github.com/pytest-dev/pytest-runner#considerations
