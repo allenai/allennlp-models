@@ -31,7 +31,7 @@ with open("requirements.txt") as requirements_file:
             return True
         if re.match(r"^allennlp[>=<]", req):
             return True
-        if re.match(r"^(git\+)?(https|ssh)://(git@)?github\.com/allenai/allennlp\.git@", req):
+        if re.match(r"^(git\+)?(https|ssh)://(git@)?github\.com/allenai/allennlp\.git", req):
             return True
         return False
 
