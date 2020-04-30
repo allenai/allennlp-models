@@ -20,6 +20,13 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
 
+    - name: Set AllenNLP version override
+      run:
+        VERSION=$(./scripts/get_version.py current --minimal)
+        ALLENNLP_VERSION_OVERRIDE="allennlp==$VERSION"
+        echo "Setting ALLENNLP_VERSION_OVERRIDE to $ALLENNLP_VERSION_OVERRIDE"
+        echo "::set-env name=ALLENNLP_VERSION_OVERRIDE::$ALLENNLP_VERSION_OVERRIDE"
+
     - name: Install requirements
       run: |
         pip install --upgrade pip setuptools wheel
@@ -54,8 +61,7 @@ jobs:
 
     - name: Build Package
       run: |
-        VERSION=$(./scripts/get_version.py current --minimal)
-        ALLENNLP_VERSION_OVERRIDE="allennlp==$VERSION" python setup.py bdist_wheel sdist
+        python setup.py bdist_wheel sdist
 
     - name: Save package
       if: matrix.python == '3.7'
