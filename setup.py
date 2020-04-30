@@ -65,6 +65,7 @@ with open("requirements.txt") as requirements_file:
             allennlp_requirements = []
 
     install_requirements.extend(allennlp_requirements)
+    install_requirements = [fix_url_dependencies(req) for req in install_requirements]
 
 # make pytest-runner a conditional requirement,
 # per: https://github.com/pytest-dev/pytest-runner#considerations
