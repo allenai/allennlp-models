@@ -37,8 +37,8 @@ class TestHotflip:
         original_span_start = original_labeled_instance["span_start"].sequence_index
         original_span_end = original_labeled_instance["span_end"].sequence_index
 
-        flipped_span_start = attack["outputs"]["best_span"][0]
-        flipped_span_end = attack["outputs"]["best_span"][1]
+        flipped_span_start = attack["outputs"][0]["best_span"][0]
+        flipped_span_end = attack["outputs"][0]["best_span"][1]
 
         for i, token in enumerate(instance["question"]):
             token = str(token)
