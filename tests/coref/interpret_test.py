@@ -22,7 +22,11 @@ class TestInterpret(AllenNlpTestCase):
         assert "instance_1" in interpretation
         assert "grad_input_1" in interpretation["instance_1"]
         grad_input_1 = interpretation["instance_1"]["grad_input_1"]
-        assert len(grad_input_1) == 22  # 22 wordpieces in input
+
+        # There are 16 tokens in the input.  This gets translated into 22 wordpieces, but we need to
+        # compute gradients on whatever the model considered its "input", which in this case is
+        # tokens, because the model uses a mismatched tokenizer / embedder.
+        assert len(grad_input_1) == 16
 
         # two interpretations should be identical for gradient
         repeat_interpretation = interpreter.saliency_interpret_from_json(inputs)

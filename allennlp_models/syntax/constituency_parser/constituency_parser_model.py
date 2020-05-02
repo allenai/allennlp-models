@@ -494,3 +494,5 @@ class SpanConstituencyParser(Model):
             evalb_metrics = self._evalb_score.get_metric(reset=reset)
             all_metrics.update(evalb_metrics)
         return all_metrics
+
+    default_predictor = "constituency-parser"

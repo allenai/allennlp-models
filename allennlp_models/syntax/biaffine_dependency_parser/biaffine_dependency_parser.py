@@ -28,8 +28,8 @@ logger = logging.getLogger(__name__)
 
 POS_TO_IGNORE = {"`", "''", ":", ",", ".", "PU", "PUNCT", "SYM"}
 
-# exist_ok has to be true until we remove this from the core library
-@Model.register("biaffine_parser", exist_ok=True)
+
+@Model.register("biaffine_parser")
 class BiaffineDependencyParser(Model):
     """
     This dependency parser follows the model of
@@ -681,3 +681,5 @@ class BiaffineDependencyParser(Model):
     @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return self._attachment_scores.get_metric(reset)
+
+    default_predictor = "biaffine-dependency-parser"

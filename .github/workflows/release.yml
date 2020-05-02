@@ -1,0 +1,131 @@
+name: PyPI Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.6', '3.7']
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python }}
+
+    - name: Set AllenNLP version override
+      run:
+        VERSION=$(./scripts/get_version.py current --minimal)
+        ALLENNLP_VERSION_OVERRIDE="allennlp==$VERSION"
+        echo "Setting ALLENNLP_VERSION_OVERRIDE to $ALLENNLP_VERSION_OVERRIDE"
+        echo "::set-env name=ALLENNLP_VERSION_OVERRIDE::$ALLENNLP_VERSION_OVERRIDE"
+
+    - name: Install requirements
+      run: |
+        pip install --upgrade pip setuptools wheel
+        pip install -e .
+        pip install -r dev-requirements.txt
+
+    - name: Check version and release tag match
+      run: |
+        # Remove 'refs/tags/' to get the actual tag from the release.
+        TAG=${GITHUB_REF#refs/tags/};
+        VERSION=$(scripts/get_version.py current)
+        if [ "$TAG" != "$VERSION" ]; then
+            echo "Bad tag or version. Tag $TAG does not match $VERSION";
+            exit 1;
+        fi
+
+    - name: Show pip freeze
+      run: |
+        pip freeze
+
+    - name: Lint
+      run: |
+        make lint
+
+    - name: Type check
+      run: |
+        make typecheck
+
+    - name: Run tests
+      run: |
+        make test
+
+    - name: Build Package
+      run: |
+        python setup.py bdist_wheel sdist
+
+    - name: Save package
+      if: matrix.python == '3.7'
+      uses: actions/upload-artifact@v1
+      with:
+        name: models-package
+        path: dist
+
+  test:
+    name: Test
+    needs: [build]  # needs the package artifact created from 'build_package' job.
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.6', '3.7']
+
+    steps:
+    - name: Setup Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python }}
+
+    - name: Install requirements
+      run: |
+        pip install --upgrade pip setuptools wheel
+
+    - name: Download models package
+      uses: actions/download-artifact@v1
+      with:
+        name: models-package
+        path: dist
+
+    - name: Install models package
+      run: |
+        pip install $(ls dist/*.whl)
+
+    - name: Ensure models plugin found
+      run: |
+        python -c 'from allennlp.common.plugins import discover_plugins; assert "allennlp_plugins.allennlp_models" in list(discover_plugins())'
+
+  publish:
+    name: PyPI
+    needs: [build, test]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+
+    - name: Install requirements
+      run: |
+        pip install --upgrade pip setuptools wheel twine
+
+    - name: Download models package
+      uses: actions/download-artifact@v1
+      with:
+        name: models-package
+        path: dist
+
+    - name: Upload to PyPI
+      env:
+        PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: twine upload -u allennlp -p $PYPI_PASSWORD dist/*

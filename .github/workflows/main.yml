@@ -1,4 +1,5 @@
 name: CI
+
 on:
   pull_request:
     branches:
@@ -6,36 +7,58 @@ on:
   push:
     branches:
     - master
+  schedule:
+    - cron: '17 10 * * *' # run at 10 AM UTC every day.
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.6', '3.7']
+
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
+
     - name: Setup Python
       uses: actions/setup-python@v1
       with:
-        python-version: 3.7
+        python-version: ${{ matrix.python }}
+
     - uses: actions/cache@v1
       with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+        path: ${{ env.pythonLocation }}
+        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+
     - name: Install requirements
       run: |
-        pip install -r requirements.txt
-        pip install pytest pytest-cov flake8 black mypy
+        pip install --upgrade pip setuptools wheel
+        pip install --upgrade --upgrade-strategy eager -r requirements.txt
+        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
+
+    - name: Show pip freeze
+      run: |
+        pip freeze
+
     - name: Lint
       run: |
-        flake8 -v
-        black -v --check .
+        make lint
+
     - name: Type check
       run: |
-        mypy allennlp_models --ignore-missing-imports --no-strict-optional --no-site-packages
+        make typecheck
+
     - name: Run tests
       run: |
-        pytest --cov=allennlp_models/ --cov-report=xml
+        make test-with-cov
+
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1.0.2
-      with:
-        token: da233513-af22-4b18-a7c4-e70467fc05e3
+      if: matrix.python == '3.7'
+      run: |
+        # Ignore codecov failures as the codecov server is not
+        # very reliable but we don't want to report a failure
+        # in the github UI just because the coverage report failed to
+        # be published.
+        codecov || echo "codecov upload failed"
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
