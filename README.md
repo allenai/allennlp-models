@@ -57,6 +57,6 @@ ALLENNLP_VERSION_OVERRIDE='allennlp' pip install -e .
 pip install -r dev-requirements.txt
 ```
 
-The `ALLENNLP_VERSION_OVERRIDE` flag ensures that your local install of `allennlp` won't be overridden. Otherwise `allennlp` will be installed from the latest commit to the master branch on GitHub.
+The `ALLENNLP_VERSION_OVERRIDE` environment variable ensures that the `allennlp` dependency is unpinned so that your local install of `allennlp` will be sufficient. If, however, you haven't installed `allennlp` yet and don't want to manage a local install, just omit this environment variable and `allennlp` will be installed from the master branch on GitHub.
 
 Both `allennlp` and `allennlp-models` are developed and tested side-by-side, so they should be kept up-to-date with each other. If you look at the GitHub Actions [workflow for `allennlp-models`](https://github.com/allenai/allennlp-models/actions), it's always tested against the master branch of `allennlp`. Similarly, `allennlp` is always tested against the master branch of `allennlp-models`.
