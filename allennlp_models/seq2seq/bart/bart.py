@@ -21,6 +21,12 @@ from torch import nn
 class BartEncoder(Seq2SeqEncoder):
     """
     The BART encoder without the token and position embeddings.
+
+    # Parameters
+
+    model_name : `str`, required
+        Name of the pre-trained BART model to use. Available options can be found in
+        `transformers.modeling_bart.BART_PRETRAINED_MODEL_ARCHIVE_MAP`.
     """
 
     def __init__(self, model_name):
@@ -67,11 +73,11 @@ class _BartEncoderWrapper(nn.Module):
         """
         # Parameters
 
-        encoder : `Seq2SeqEncoder`
+        encoder : `Seq2SeqEncoder`, required
             Encoder to be used by `Bart`.
-        embed_tokens : `nn.Embedding`
+        embed_tokens : `nn.Embedding`, required
             The token embedding layer of the BART model.
-        embed_positions:
+        embed_positions : `nn.Embedding`, required
             The positional embedding layer of the BART model.
 
         """
@@ -108,8 +114,8 @@ class Bart(Model):
         model_name: str,
         vocab: Vocabulary,
         indexer: PretrainedTransformerIndexer = None,
-        max_decoding_steps: int = 128,
-        beam_size: int = 5,
+        max_decoding_steps: int = 140,
+        beam_size: int = 4,
         encoder: Seq2SeqEncoder = None,
     ):
         """
@@ -194,7 +200,7 @@ class Bart(Model):
         generating = not self.training
 
         # If no targets are provided, then shift input to right by 1. Bart already does this interally
-        # but it does not
+        # but it does not use them for loss calculation
         if targets is not None:
             target_ids, target_mask = targets["tokens"]["token_ids"], targets["tokens"]["mask"]
         else:
