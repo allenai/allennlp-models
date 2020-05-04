@@ -79,6 +79,14 @@ jobs:
         python: ['3.6', '3.7']
 
     steps:
+    - uses: actions/checkout@v2
+
+    - name: Cleanup directory
+      run: |
+        # Remove the source code so that it doesn't conflict with the wheel
+        # installation.
+        rm -rf allennlp_models/
+
     - name: Setup Python
       uses: actions/setup-python@v1
       with:
@@ -98,9 +106,13 @@ jobs:
       run: |
         pip install $(ls dist/*.whl)
 
-    - name: Ensure models plugin found
+    - name: Ensure models automatically loaded
       run: |
-        python -c 'from allennlp.common.plugins import discover_plugins; assert "allennlp_plugins.allennlp_models" in list(discover_plugins())'
+        ./scripts/ensure_models_found.py
+
+    - name: Ensure versions match
+      run: |
+        ./scripts/ensure_versions_match.py
 
   publish:
     name: PyPI
