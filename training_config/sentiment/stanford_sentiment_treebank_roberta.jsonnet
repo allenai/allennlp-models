@@ -45,7 +45,8 @@ local cls_is_last_token = false;
        "embedding_dim": transformer_dim,
        "cls_is_last_token": cls_is_last_token
     },
-    "dropout": 0.1
+    "dropout": 0.1,
+    "namespace": "tags"
   },
   "data_loader": {
     "batch_sampler": {
