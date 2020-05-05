@@ -15,7 +15,9 @@ class AllenNlpPretrainedTest(AllenNlpTestCase):
 
         result = predictor.predict_json({"passage": passage, "question": question})
 
-        correct = "Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss, Hugo Weaving, and Joe Pantoliano"
+        correct = (
+            "Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss, Hugo Weaving, and Joe Pantoliano"
+        )
 
         assert correct == result["best_span_str"]
 
@@ -78,57 +80,64 @@ class AllenNlpPretrainedTest(AllenNlpTestCase):
                     "O",
                 ],
             },
-            {'verb': 'playing', 'description': 'If you liked [ARG1: the music] [ARG0: we] were [V: playing] '
-                            '[ARGM-TMP: last night] , you will absolutely love what we '
-                            "'re playing tomorrow !",
-             'tags': ['O',
-                      'O',
-                      'O',
-                      'B-ARG1',
-                      'I-ARG1',
-                      'B-ARG0',
-                      'O',
-                      'B-V',
-                      'B-ARGM-TMP',
-                      'I-ARGM-TMP',
-                      'O',
-                      'O',
-                      'O',
-                      'O',
-                      'O',
-                      'O',
-                      'O',
-                      'O',
-                      'O',
-                      'O',
-                      'O'],
-             },
-            {'verb': 'will',
-                'description': '[ARGM-ADV: If you liked the music we were playing last '
-                            'night] , [ARG0: you] [V: will] [ARG1: absolutely love what '
-                            "we 're playing tomorrow] !",
-             'tags': ['B-ARGM-ADV',
-                      'I-ARGM-ADV',
-                      'I-ARGM-ADV',
-                      'I-ARGM-ADV',
-                      'I-ARGM-ADV',
-                      'I-ARGM-ADV',
-                      'I-ARGM-ADV',
-                      'I-ARGM-ADV',
-                      'I-ARGM-ADV',
-                      'I-ARGM-ADV',
-                      'O',
-                      'B-ARG0',
-                      'B-V',
-                      'B-ARG1',
-                      'I-ARG1',
-                      'I-ARG1',
-                      'I-ARG1',
-                      'I-ARG1',
-                      'I-ARG1',
-                      'I-ARG1',
-                      'O'],
-             },
+            {
+                "verb": "playing",
+                "description": "If you liked [ARG1: the music] [ARG0: we] were [V: playing] "
+                "[ARGM-TMP: last night] , you will absolutely love what we "
+                "'re playing tomorrow !",
+                "tags": [
+                    "O",
+                    "O",
+                    "O",
+                    "B-ARG1",
+                    "I-ARG1",
+                    "B-ARG0",
+                    "O",
+                    "B-V",
+                    "B-ARGM-TMP",
+                    "I-ARGM-TMP",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                ],
+            },
+            {
+                "verb": "will",
+                "description": "[ARGM-ADV: If you liked the music we were playing last "
+                "night] , [ARG0: you] [V: will] [ARG1: absolutely love what "
+                "we 're playing tomorrow] !",
+                "tags": [
+                    "B-ARGM-ADV",
+                    "I-ARGM-ADV",
+                    "I-ARGM-ADV",
+                    "I-ARGM-ADV",
+                    "I-ARGM-ADV",
+                    "I-ARGM-ADV",
+                    "I-ARGM-ADV",
+                    "I-ARGM-ADV",
+                    "I-ARGM-ADV",
+                    "I-ARGM-ADV",
+                    "O",
+                    "B-ARG0",
+                    "B-V",
+                    "B-ARG1",
+                    "I-ARG1",
+                    "I-ARG1",
+                    "I-ARG1",
+                    "I-ARG1",
+                    "I-ARG1",
+                    "I-ARG1",
+                    "O",
+                ],
+            },
             {
                 "verb": "love",
                 "description": "[ARGM-ADV: If you liked the music we were playing last night] , [ARG0: you] [ARGM-MOD: will] [ARGM-ADV: absolutely] [V: love] [ARG1: what we 're playing tomorrow] !",
@@ -225,7 +234,7 @@ class AllenNlpPretrainedTest(AllenNlpTestCase):
         assert result["clusters"] == [
             [[0, 0], [10, 10]],
             [[33, 33], [37, 37]],
-            #[[26, 27], [42, 43]],  # Unfortunately the model misses this one.
+            # [[26, 27], [42, 43]],  # Unfortunately the model misses this one.
         ]
         assert result["document"] == [
             "We",
@@ -238,7 +247,7 @@ class AllenNlpPretrainedTest(AllenNlpTestCase):
             "quality",
             ",",
             "but",
-            "we",    # 10
+            "we",  # 10
             "are",
             "very",
             "focused",
@@ -268,7 +277,7 @@ class AllenNlpPretrainedTest(AllenNlpTestCase):
             "I",
             "skimped",
             "on",
-            "some", # 40
+            "some",  # 40
             "of",
             "the",
             "fabric",
@@ -278,7 +287,7 @@ class AllenNlpPretrainedTest(AllenNlpTestCase):
             "quality",
             "ones",
             "are",
-            "developing", # 50
+            "developing",  # 50
             "holes",
             ".",
         ]
@@ -302,9 +311,7 @@ class AllenNlpPretrainedTest(AllenNlpTestCase):
         ]
         assert result["tags"] == ["B-PER", "L-PER", "O", "O", "O", "O", "U-LOC", "O"]
 
-    @pytest.mark.skipif(
-        spacy.__version__ < "2.1", reason="this model changed from 2.0 to 2.1"
-    )
+    @pytest.mark.skipif(spacy.__version__ < "2.1", reason="this model changed from 2.0 to 2.1")
     def test_constituency_parsing(self):
         predictor = pretrained.span_based_constituency_parsing_with_elmo_joshi_2018()
 
@@ -325,8 +332,8 @@ class AllenNlpPretrainedTest(AllenNlpTestCase):
             ".",
         ]
         assert (
-                result["trees"]
-                == "(S (NP (NNP Pierre) (NNP Vinken)) (VP (VP (VBD died) (NP (JJ aged) (CD 81))) (, ;) (VP (VBN immortalised) (S (ADJP (JJ aged) (CD 61))))) (. .))"
+            result["trees"]
+            == "(S (NP (NNP Pierre) (NNP Vinken)) (VP (VP (VBD died) (NP (JJ aged) (CD 81))) (, ;) (VP (VBN immortalised) (S (ADJP (JJ aged) (CD 61))))) (. .))"
         )
 
     def test_dependency_parsing(self):
@@ -352,6 +359,8 @@ class AllenNlpPretrainedTest(AllenNlpTestCase):
 
     def test_openie(self):
         predictor = pretrained.open_information_extraction_stanovsky_2018()
-        result = predictor.predict_json({"sentence": "I'm against picketing, but I don't know how to show it."})
+        result = predictor.predict_json(
+            {"sentence": "I'm against picketing, but I don't know how to show it."}
+        )
         assert "verbs" in result
         assert "words" in result

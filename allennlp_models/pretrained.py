@@ -1,13 +1,15 @@
-from typing import Type
-
 from allennlp.models import load_archive
 from allennlp.predictors import Predictor, SentenceTaggerPredictor
 
 from allennlp_models.coref import CorefPredictor
 from allennlp_models.nli import DecomposableAttentionPredictor
 from allennlp_models.rc.bidaf import ReadingComprehensionPredictor
-from allennlp_models.syntax import SemanticRoleLabelerPredictor, OpenIePredictor, ConstituencyParserPredictor, \
-    BiaffineDependencyParserPredictor
+from allennlp_models.syntax import (
+    SemanticRoleLabelerPredictor,
+    OpenIePredictor,
+    ConstituencyParserPredictor,
+    BiaffineDependencyParserPredictor,
+)
 
 
 def _load_predictor(archive_file: str, predictor_name: str) -> Predictor:
@@ -60,16 +62,6 @@ def decomposable_attention_with_elmo_parikh_2017() -> DecomposableAttentionPredi
     Textual Entailment
 
     Based on `Parikh et al, 2017 <https://www.semanticscholar.org/paper/A-Decomposable-Attention-Model-for-Natural-Languag-Parikh-T%C3%A4ckstr%C3%B6m/07a9478e87a8304fc3267fa16e83e9f3bbd98b27>`_
-
-    .. code-block:: bash
-
-       $ docker run allennlp/allennlp:v0.7.0
-           evaluate
-           https://allennlp.s3.amazonaws.com/models/decomposable-attention-elmo-2020.02.10.tar.gz
-           https://allennlp.s3.amazonaws.com/datasets/snli/snli_1.0_test.jsonl
-
-    Metrics:
-    accuracy: 0.864
     """
     predictor = _load_predictor(
         "https://storage.googleapis.com/allennlp-public-models/decomposable-attention-elmo-2020.04.09.tar.gz",
