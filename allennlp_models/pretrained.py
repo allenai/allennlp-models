@@ -11,6 +11,8 @@ from allennlp_models.syntax import (
     BiaffineDependencyParserPredictor,
 )
 
+# flake8: noqa: E501
+
 
 def _load_predictor(archive_file: str, predictor_name: str) -> Predictor:
     """
