@@ -37,7 +37,7 @@ class TestTransformerSquadReader:
             .fields["answer_span"]
             .span_end
             + 1
-        ] == ["Saint", "Bern", "##ade", "##tte", "So", "##ubi", "##rous"]
+        ] == ["Saint", "Bern", "ade", "tte", "So", "ubi", "rous"]
 
         for instance in instances:
             token_type_ids = [t.type_id for t in instance.fields["question_with_context"].tokens]
@@ -83,5 +83,9 @@ class TestTransformerSquadReader:
         token_text = [t.text for t in instances[1].fields["question_with_context"].tokens]
         token_ids = [t.text_id for t in instances[1].fields["question_with_context"].tokens]
 
-        assert token_text[:3] == ["<s>", "What", "Ġsits"]
-        assert token_ids[:3] == [0, 2264, 6476]
+        assert token_text[:3] == ["<s>", "What", "sits"]
+        assert token_ids[:3] == [
+            0,
+            653,
+            6476,
+        ]  # The "What" token is not preceded by a space, but the "sits" token is.

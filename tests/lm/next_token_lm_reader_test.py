@@ -31,8 +31,8 @@ class TestNextTokenLMReader(AllenNlpTestCase):
         assert [t.text for t in instance["tokens"]] == [
             "[CLS]",
             "Allen",
-            "##NL",
-            "##P",
+            "NL",
+            "P",
             "is",
             "very",
             "[SEP]",

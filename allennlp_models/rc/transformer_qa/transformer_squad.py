@@ -68,7 +68,7 @@ class TransformerSquadReader(DatasetReader):
     ) -> None:
         super().__init__(**kwargs)
         self._tokenizer = PretrainedTransformerTokenizer(
-            transformer_model_name, add_special_tokens=False, calculate_character_offsets=True
+            transformer_model_name, add_special_tokens=False
         )
         self._token_indexers = {"tokens": PretrainedTransformerIndexer(transformer_model_name)}
         self.length_limit = length_limit
