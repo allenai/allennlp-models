@@ -1,4 +1,4 @@
-git+https://github.com/allenai/allennlp.git@cd046c6ed6748dcda268639f169d052294659bf0
+git+https://github.com/dirkgr/allennlp.git@cd046c6ed6748dcda268639f169d052294659bf0
 
 # For RC models
 word2number>=1.1
