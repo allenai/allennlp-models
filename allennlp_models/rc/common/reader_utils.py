@@ -84,16 +84,17 @@ def char_span_to_token_span(
     # If we overshot and the token prior to start_index ends after the first character, back up.
     if (
         start_index > 0
-        and (
-            token_offsets[start_index - 1] is not None
-            and token_offsets[start_index - 1][1] > character_span[0]
-        )
-        or (
-            token_offsets[start_index] is not None
-            and token_offsets[start_index][0] > character_span[0]
-        )
+        and token_offsets[start_index - 1] is not None
+        and token_offsets[start_index - 1][1] > character_span[0]
+    ) or (
+        start_index <= len(token_offsets)
+        and token_offsets[start_index] is not None
+        and token_offsets[start_index][0] > character_span[0]
     ):
         start_index -= 1
+
+    if start_index >= len(token_offsets):
+        raise ValueError("Could not find the start token given the offsets.")
 
     if token_offsets[start_index] is None or token_offsets[start_index][0] != character_span[0]:
         error = True
