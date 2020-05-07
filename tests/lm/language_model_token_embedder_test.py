@@ -5,8 +5,8 @@ from tests import FIXTURES_ROOT
 
 
 class TestLanguageModelTokenEmbedder(ModelTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "lm" / "language_model" / "characters_token_embedder.json",
             FIXTURES_ROOT / "lm" / "conll2003.txt",
@@ -31,8 +31,8 @@ class TestLanguageModelTokenEmbedder(ModelTestCase):
 
 
 class TestLanguageModelTokenEmbedderWithoutBosEos(TestLanguageModelTokenEmbedder):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT
             / "lm"

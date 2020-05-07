@@ -7,8 +7,8 @@ import allennlp_models.rc.dialog_qa
 
 
 class DialogQATest(ModelTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "rc" / "dialog_qa" / "experiment.json",
             FIXTURES_ROOT / "rc" / "dialog_qa" / "quac_sample.json",

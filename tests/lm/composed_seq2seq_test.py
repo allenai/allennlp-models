@@ -6,8 +6,8 @@ from tests import FIXTURES_ROOT
 
 
 class ComposedSeq2SeqTest(ModelTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "seq2seq" / "composed" / "experiment.json",
             FIXTURES_ROOT / "seq2seq" / "seq2seq_copy.tsv",
