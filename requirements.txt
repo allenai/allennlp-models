@@ -1,4 +1,4 @@
-git+https://github.com/epwalsh/allennlp.git@test-case
+git+https://github.com/allenai/allennlp.git@test-case
 
 # For RC models
 word2number>=1.1
