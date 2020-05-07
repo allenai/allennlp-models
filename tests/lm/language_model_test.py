@@ -10,8 +10,8 @@ from tests import FIXTURES_ROOT
 
 
 class TestUnidirectionalLanguageModel(ModelTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
 
         self.expected_embedding_shape = (2, 8, 7)
         self.bidirectional = False
@@ -70,8 +70,8 @@ class TestUnidirectionalLanguageModel(ModelTestCase):
 
 
 class TestUnidirectionalLanguageModelUnsampled(TestUnidirectionalLanguageModel):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "lm" / "language_model" / "experiment_unidirectional_unsampled.jsonnet",
             FIXTURES_ROOT / "lm" / "language_model" / "sentences.txt",
@@ -79,8 +79,8 @@ class TestUnidirectionalLanguageModelUnsampled(TestUnidirectionalLanguageModel):
 
 
 class TestUnidirectionalLanguageModelTransformer(TestUnidirectionalLanguageModel):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
 
         self.expected_embedding_shape = (2, 8, 16)
 
@@ -105,8 +105,8 @@ class TestUnidirectionalLanguageModelTransformer(TestUnidirectionalLanguageModel
 
 
 class TestBidirectionalLanguageModel(TestUnidirectionalLanguageModel):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
 
         self.expected_embedding_shape = (2, 8, 14)
         self.bidirectional = True
@@ -119,8 +119,8 @@ class TestBidirectionalLanguageModel(TestUnidirectionalLanguageModel):
 
 
 class TestBidirectionalLanguageModelUnsampled(TestBidirectionalLanguageModel):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "lm" / "language_model" / "experiment_unsampled.jsonnet",
             FIXTURES_ROOT / "lm" / "language_model" / "sentences.txt",
@@ -128,8 +128,8 @@ class TestBidirectionalLanguageModelUnsampled(TestBidirectionalLanguageModel):
 
 
 class TestBidirectionalLanguageModelTransformer(TestBidirectionalLanguageModel):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
 
         self.expected_embedding_shape = (2, 8, 32)
 

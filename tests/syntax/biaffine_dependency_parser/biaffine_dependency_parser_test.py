@@ -8,8 +8,8 @@ from allennlp_models.syntax import BiaffineDependencyParser
 
 
 class BiaffineDependencyParserTest(ModelTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "syntax" / "biaffine_dependency_parser" / "experiment.json",
             FIXTURES_ROOT / "syntax" / "dependencies.conllu",
