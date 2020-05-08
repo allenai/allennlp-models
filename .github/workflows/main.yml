@@ -62,3 +62,21 @@ jobs:
         codecov || echo "codecov upload failed"
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  pretrained:
+    runs-on: [self-hosted]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set Docker tag
+      run: |
+        echo "::set-env name=DOCKER_TAG::$GITHUB_SHA";
+
+    - name: Build test image
+      run: |
+        make docker-test-image
+
+    - name: Run pretrained tests
+      run: |
+        make docker-test-run ARGS='test-pretrained'
