@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 import json
 import logging
 
@@ -40,13 +40,15 @@ class SnliReader(DatasetReader):
 
     def __init__(
         self,
-        tokenizer: Tokenizer = None,
+        tokenizer: Optional[Tokenizer] = None,
         token_indexers: Dict[str, TokenIndexer] = None,
-        combine_input_fields: bool = None,
+        combine_input_fields: Optional[bool] = None,
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
         self._tokenizer = tokenizer or SpacyTokenizer()
+        if isinstance(self._tokenizer, PretrainedTransformerTokenizer):
+            assert not self._tokenizer._add_special_tokens
         self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
         if combine_input_fields is not None:
             self._combine_input_fields = combine_input_fields
@@ -83,13 +85,15 @@ class SnliReader(DatasetReader):
     ) -> Instance:
 
         fields: Dict[str, Field] = {}
+        premise = self._tokenizer.tokenize(premise)
+        hypothesis = self._tokenizer.tokenize(hypothesis)
 
         if self._combine_input_fields:
-            tokens = self._tokenizer.tokenize_sentence_pair(premise, hypothesis)  # type: ignore
+            tokens = self._tokenizer.add_special_tokens(premise, hypothesis)
             fields["tokens"] = TextField(tokens, self._token_indexers)
         else:
-            premise_tokens = self._tokenizer.tokenize(premise)
-            hypothesis_tokens = self._tokenizer.tokenize(hypothesis)
+            premise_tokens = self._tokenizer.add_special_tokens(premise)
+            hypothesis_tokens = self._tokenizer.add_special_tokens(hypothesis)
             fields["premise"] = TextField(premise_tokens, self._token_indexers)
             fields["hypothesis"] = TextField(hypothesis_tokens, self._token_indexers)
 
