@@ -1,3 +1,5 @@
+import os
+
 import pytest
 import spacy
 
@@ -6,6 +8,10 @@ from allennlp.common.testing import AllenNlpTestCase
 from allennlp_models import pretrained
 
 
+# But default we don't run these tests
+@pytest.mark.skipif(
+    not os.environ.get("ALLENNLP_MODELS_RUN_PRETRAINED_TEST"), reason="requires massive downloads"
+)
 class TestAllenNlpPretrained(AllenNlpTestCase):
     def test_machine_comprehension(self):
         predictor = pretrained.bidirectional_attention_flow_seo_2017()
