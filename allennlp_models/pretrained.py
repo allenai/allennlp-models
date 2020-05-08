@@ -1,5 +1,4 @@
 from allennlp.models import load_archive
-from allennlp.modules import conditional_random_field
 from allennlp.predictors import Predictor, SentenceTaggerPredictor
 
 from allennlp_models.coref import CorefPredictor
