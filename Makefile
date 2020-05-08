@@ -16,15 +16,15 @@ typecheck :
 
 .PHONY : test
 test :
-	pytest --color=yes -rf --durations=40
+	pytest --color=yes -rf --durations=40 -m "not pretrained_model_test"
 
 .PHONY : test-with-cov
 test-with-cov :
-	pytest --color=yes -rf --cov-config=.coveragerc --cov=allennlp_models/ --durations=40
+	pytest --color=yes -rf --cov-config=.coveragerc --cov=allennlp_models/ --durations=40 -m "not pretrained_model_test"
 
 .PHONY : test-pretrained
 test-pretrained :
-	ALLENNLP_MODELS_RUN_PRETRAINED_TEST=true pytest tests/pretrained_test.py
+	pytest -v --color=yes -m "pretrained_model_test"
 
 .PHONY : docker-test-image
 docker-test-image :

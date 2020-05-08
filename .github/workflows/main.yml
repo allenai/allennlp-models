@@ -69,10 +69,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Set Docker tag
+      run: |
+        echo "::set-env name=DOCKER_TAG::$GITHUB_SHA";
+
     - name: Build test image
       run: |
-        make docker-test-image DOCKER_TAG="$GITHUB_SHA"
+        make docker-test-image
 
     - name: Run pretrained tests
       run: |
-        make docker-test-run DOCKER_TAG="$GITHUB_SHA" ARGS='test-pretrained'
+        make docker-test-run ARGS='test-pretrained'

@@ -9,9 +9,7 @@ from allennlp_models import pretrained
 
 
 # But default we don't run these tests
-@pytest.mark.skipif(
-    not os.environ.get("ALLENNLP_MODELS_RUN_PRETRAINED_TEST"), reason="requires massive downloads"
-)
+@pytest.mark.pretrained_model_test
 class TestAllenNlpPretrained(AllenNlpTestCase):
     def test_machine_comprehension(self):
         predictor = pretrained.bidirectional_attention_flow_seo_2017()
