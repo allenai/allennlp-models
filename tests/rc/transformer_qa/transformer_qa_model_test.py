@@ -9,8 +9,8 @@ import allennlp_models.rc.transformer_qa  # noqa F401: Needed to register the re
 
 
 class TransformerQaTest(ModelTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "rc" / "transformer_qa" / "experiment.jsonnet",
             FIXTURES_ROOT / "rc" / "squad.json",

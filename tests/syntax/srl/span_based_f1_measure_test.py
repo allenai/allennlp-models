@@ -13,8 +13,8 @@ from tests import PROJECT_ROOT
 
 
 class SpanBasedF1Test(AllenNlpTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         vocab = Vocabulary()
         vocab.add_token_to_namespace("O", "tags")
         vocab.add_token_to_namespace("B-ARG1", "tags")

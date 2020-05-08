@@ -10,8 +10,8 @@ from tests import FIXTURES_ROOT
 
 
 class TestPennTreeBankConstituencySpanReader(AllenNlpTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.span_width = 5
 
     def test_read_from_file(self):

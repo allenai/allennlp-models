@@ -10,8 +10,8 @@ from tests import FIXTURES_ROOT
 
 
 class TestCopyNetReader(AllenNlpTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         params = Params.from_file(FIXTURES_ROOT / "seq2seq" / "copynet" / "experiment.json")
         self.reader = DatasetReader.from_params(params["dataset_reader"])
         instances = self.reader.read(

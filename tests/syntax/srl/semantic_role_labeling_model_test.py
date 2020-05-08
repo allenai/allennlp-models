@@ -21,8 +21,8 @@ from tests import FIXTURES_ROOT, PROJECT_ROOT
 
 
 class SemanticRoleLabelerTest(ModelTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "syntax" / "srl" / "experiment.json",
             FIXTURES_ROOT / "syntax" / "srl" / "conll_2012",

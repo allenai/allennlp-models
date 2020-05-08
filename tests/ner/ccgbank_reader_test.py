@@ -135,7 +135,10 @@ class TestCcgBankReader(AllenNlpTestCase):
         instances = ensure_list(reader.read(FIXTURES_ROOT / "ner" / "ccgbank.txt"))
         # check that we didn't clobber the labels namespace
         vocab = Vocabulary.from_instances(instances)
-        self.assertSetEqual(
-            set(vocab._token_to_index.keys()),
-            {"tokens", "labels", "modified_pos_tags", "original_pos_tags", "predicate_arg_tags"},
-        )
+        assert set(vocab._token_to_index.keys()) == {
+            "tokens",
+            "labels",
+            "modified_pos_tags",
+            "original_pos_tags",
+            "predicate_arg_tags",
+        }

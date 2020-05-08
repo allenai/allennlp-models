@@ -9,9 +9,9 @@ from tests import FIXTURES_ROOT
 
 
 class SpanConstituencyParserTest(ModelTestCase):
-    def setUp(self):
+    def setup_method(self):
         EvalbBracketingScorer.compile_evalb()
-        super().setUp()
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "syntax" / "constituency_parser" / "constituency_parser.json",
             FIXTURES_ROOT / "syntax" / "example_ptb.trees",

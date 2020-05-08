@@ -1,4 +1,5 @@
 from nltk import Tree
+import pytest
 
 from allennlp.common.testing import AllenNlpTestCase
 from allennlp.models.archival import load_archive
@@ -28,7 +29,7 @@ class TestConstituencyParserPredictor(AllenNlpTestCase):
         assert isinstance(result["trees"], str)
 
         for class_distribution in result["class_probabilities"]:
-            self.assertAlmostEqual(sum(class_distribution), 1.0, places=4)
+            assert sum(class_distribution) == pytest.approx(1.0, rel=1e-3)
 
     def test_batch_prediction(self):
         inputs = [
@@ -49,7 +50,7 @@ class TestConstituencyParserPredictor(AllenNlpTestCase):
         assert isinstance(result["trees"], str)
 
         for class_distribution in result["class_probabilities"]:
-            self.assertAlmostEqual(sum(class_distribution), 1.0, places=4)
+            assert sum(class_distribution) == pytest.approx(1.0, rel=1e-3)
 
         result = results[1]
 
@@ -59,7 +60,7 @@ class TestConstituencyParserPredictor(AllenNlpTestCase):
         assert isinstance(result["trees"], str)
 
         for class_distribution in result["class_probabilities"]:
-            self.assertAlmostEqual(sum(class_distribution), 1.0, places=4)
+            assert sum(class_distribution) == pytest.approx(1.0, rel=1e-3)
 
     def test_build_hierplane_tree(self):
         tree = Tree.fromstring("(S (NP (D the) (N dog)) (VP (V chased) (NP (D the) (N cat))))")
