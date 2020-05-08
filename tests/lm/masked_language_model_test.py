@@ -5,8 +5,8 @@ from tests import FIXTURES_ROOT
 
 
 class TestMaskedLanguageModel(ModelTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "lm" / "masked_language_model" / "experiment.json",
             FIXTURES_ROOT / "lm" / "language_model" / "sentences.txt",

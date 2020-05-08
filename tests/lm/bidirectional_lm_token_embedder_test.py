@@ -3,8 +3,8 @@ from tests.lm.language_model_token_embedder_test import TestLanguageModelTokenEm
 
 
 class TestBidirectionalLanguageModelTokenEmbedder(TestLanguageModelTokenEmbedder):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT
             / "lm"
@@ -15,8 +15,8 @@ class TestBidirectionalLanguageModelTokenEmbedder(TestLanguageModelTokenEmbedder
 
 
 class TestBidirectionalLanguageModelTokenEmbedderWithoutBosEos(TestLanguageModelTokenEmbedder):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT
             / "lm"

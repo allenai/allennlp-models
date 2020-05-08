@@ -6,8 +6,8 @@ from tests import FIXTURES_ROOT
 
 
 class TestBidirectionalLanguageModel(ModelTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
 
         self.expected_embedding_shape = (2, 8, 14)
 
@@ -47,8 +47,8 @@ class TestBidirectionalLanguageModel(ModelTestCase):
 
 
 class TestBidirectionalLanguageModelUnsampled(TestBidirectionalLanguageModel):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "lm" / "language_model" / "experiment_bidirectional_unsampled.jsonnet",
             FIXTURES_ROOT / "lm" / "language_model" / "sentences.txt",

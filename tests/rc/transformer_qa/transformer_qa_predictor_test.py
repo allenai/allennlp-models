@@ -7,8 +7,8 @@ from allennlp_models.rc.transformer_qa import TransformerQAPredictor
 
 
 class TestTransformerQAPredictor(AllenNlpTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.reader = TransformerSquadReader(length_limit=50, stride=10)
         self.vocab = Vocabulary()
         self.model = TransformerQA(self.vocab)

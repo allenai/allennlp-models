@@ -11,8 +11,8 @@ from tests import FIXTURES_ROOT
 
 
 class BidafEnsembleTest(ModelTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "rc" / "bidaf" / "experiment.json", FIXTURES_ROOT / "rc" / "squad.json"
         )
