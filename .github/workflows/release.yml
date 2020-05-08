@@ -126,11 +126,11 @@ jobs:
 
     - name: Build test image
       run: |
-        make docker-test-image
+        make docker-test-image DOCKER_TAG=$DOCKER_TAG
 
     - name: Run pretrained tests
       run: |
-        make docker-test-run ARGS='test-pretrained'
+        make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='test-pretrained'
 
   publish:
     name: PyPI
