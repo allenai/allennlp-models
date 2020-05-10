@@ -13,7 +13,7 @@ from allennlp_models.syntax.srl import SrlBert
 
 
 class BertSrlTest(ModelTestCase):
-    def setUp(self):
+    def setup_method(self):
 
         self.monkeypatch = MonkeyPatch()
         # monkeypatch the PretrainedBertModel to return the tiny test fixture model
@@ -25,7 +25,7 @@ class BertSrlTest(ModelTestCase):
             BertTokenizer, "from_pretrained", lambda _: BertTokenizer(vocab_path)
         )
 
-        super().setUp()
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "syntax" / "srl" / "bert_srl.jsonnet",
             FIXTURES_ROOT / "syntax" / "srl" / "conll_2012",

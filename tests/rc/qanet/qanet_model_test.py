@@ -16,8 +16,8 @@ from tests import FIXTURES_ROOT
 
 
 class QaNetTest(ModelTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "rc" / "qanet" / "experiment.json", FIXTURES_ROOT / "rc" / "squad.json"
         )

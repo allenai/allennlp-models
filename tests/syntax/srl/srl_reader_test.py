@@ -174,8 +174,8 @@ class TestSrlReader:
 
 
 class TestBertSrlReader(AllenNlpTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.reader = SrlReader(bert_model_name="bert-base-uncased")
 
     def test_convert_tags_to_wordpiece_tags(self):

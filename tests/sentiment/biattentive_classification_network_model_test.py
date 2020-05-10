@@ -11,8 +11,8 @@ from tests import FIXTURES_ROOT
 
 
 class BiattentiveClassificationNetworkTest(ModelTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "sentiment" / "biattentive_classification_network" / "experiment.json",
             FIXTURES_ROOT / "sentiment" / "sst.txt",

@@ -10,8 +10,8 @@ from tests import FIXTURES_ROOT
 
 
 class CrfTaggerTest(ModelTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "ner" / "crf_tagger" / "experiment.json",
             FIXTURES_ROOT / "ner" / "conll2003.txt",

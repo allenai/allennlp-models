@@ -6,8 +6,8 @@ from tests import FIXTURES_ROOT
 
 
 class CorefTest(ModelTestCase):
-    def setUp(self):
-        super().setUp()
+    def setup_method(self):
+        super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "coref" / "experiment.json",
             FIXTURES_ROOT / "coref" / "coref.gold_conll",
@@ -31,7 +31,7 @@ class CorefTest(ModelTestCase):
         # fmt: on
         self.ensure_model_can_train_save_and_load(self.param_file, overrides=overrides)
         self.tearDown()
-        self.setUp()
+        self.setup_method()
 
     def test_coref_bert_model_can_train_save_and_load(self):
         self.set_up_model(

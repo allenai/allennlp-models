@@ -16,7 +16,7 @@ class TestSimpleLanguageModelingDatasetReader(AllenNlpTestCase):
 
         instance = dataset.text_to_instance("The only sentence.")
         text = [t.text for t in cast(TextField, instance.fields["source"]).tokens]
-        self.assertEqual(text, ["<S>", "The", "only", "sentence", ".", "</S>"])
+        assert text == ["<S>", "The", "only", "sentence", ".", "</S>"]
 
     def test_read_single_sentence(self):
         prefix = os.path.join(self.FIXTURES, "single_sentence.txt")
@@ -27,11 +27,9 @@ class TestSimpleLanguageModelingDatasetReader(AllenNlpTestCase):
         batch = None
         for batch in dataset.read(prefix):
             break
-        self.assertEqual(
-            sorted(list(expected_batch.fields.keys())), sorted(list(batch.fields.keys()))
-        )
+        assert sorted(list(expected_batch.fields.keys())) == sorted(list(batch.fields.keys()))
         for k in expected_batch.fields.keys():
-            self.assertTrue(str(expected_batch.fields[k]) == str(batch.fields[k]))
+            assert str(expected_batch.fields[k]) == str(batch.fields[k])
 
     def test_read_multiple_sentences(self):
         prefix = os.path.join(self.FIXTURES, "shards/shard0")
@@ -39,7 +37,7 @@ class TestSimpleLanguageModelingDatasetReader(AllenNlpTestCase):
         k = -1
         for k, _ in enumerate(dataset.read(prefix)):
             pass
-        self.assertEqual(k, 99)
+        assert k == 99
 
     def test_max_sequence_length(self):
         prefix = os.path.join(self.FIXTURES, "shards/shard0")
@@ -49,4 +47,4 @@ class TestSimpleLanguageModelingDatasetReader(AllenNlpTestCase):
         k = -1
         for k, _ in enumerate(dataset.read(prefix)):
             pass
-        self.assertEqual(k, 7)
+        assert k == 7
