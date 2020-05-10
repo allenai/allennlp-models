@@ -15,6 +15,7 @@ from transformers import BartModel, BartForConditionalGeneration
 
 import torch
 from torch import nn
+import torch.nn.functional as F
 
 
 @Seq2SeqEncoder.register("bart_encoder")
@@ -136,8 +137,7 @@ class Bart(Model):
             Encoder to used in BART. By default, the original BART encoder is used.
         """
         super().__init__(vocab)
-        self.bart = BartForConditionalGeneration.from_pretrained(model_name)
-
+        self.bart = BartForConditionalGeneration.from_pretrained(model_name, output_past=True)
         self._indexer = indexer or PretrainedTransformerIndexer(model_name, namespace="tokens")
 
         self._start_id = self.bart.config.bos_token_id  # CLS
@@ -199,6 +199,8 @@ class Bart(Model):
         # assert targets is None or self.training  # Don't provide targets for generation
         generating = not self.training
 
+        # assert not generating or self.bart.config.output_past
+
         # If no targets are provided, then shift input to right by 1. Bart already does this interally
         # but it does not use them for loss calculation
         if targets is not None:
@@ -224,23 +226,11 @@ class Bart(Model):
             )
         else:
             # Use decoder start id and start of sentence to start decoder
-            initial_decoder_ids = torch.cat(
-                [
-                    torch.full(
-                        (input_ids.shape[0], 1),
-                        self._decoder_start_id,
-                        dtype=input_ids.dtype,
-                        device=input_ids.device,
-                    ),
-                    torch.full(
-                        (input_ids.shape[0], 1),
-                        self._start_id,
-                        dtype=input_ids.dtype,
-                        device=input_ids.device,
-                    ),
-                ],
-                dim=-1,
-            )
+            initial_decoder_ids = torch.tensor(
+                [[self._decoder_start_id, self._start_id]],
+                dtype=input_ids.dtype,
+                device=input_ids.device,
+            ).repeat(input_ids.shape[0], 1)
 
             inital_state = {
                 "input_ids": input_ids,
@@ -341,7 +331,7 @@ class Bart(Model):
         if len(decoder_cache_dict) != 0:
             decoder_cache = self._dict_to_decoder_cache(decoder_cache_dict)
 
-        decoder_logits = None
+        log_probabilities = None
         for i in range(padding_size, last_predictions.shape[1]):
             encoder_outputs = (
                 (state["encoder_states"],) if state["encoder_states"] is not None else None
@@ -354,14 +344,18 @@ class Bart(Model):
                 decoder_cached_states=decoder_cache,
                 generation_mode=True,
             )
-            if decoder_logits is None:
-                decoder_logits = outputs[0]
-            else:
-                idx = last_predictions[:, i].view(-1, 1, 1)
-                decoder_logits = outputs[0] + decoder_logits.gather(dim=-1, index=idx)
 
-            if self.bart.config.output_past:
-                decoder_cache = outputs[1][1]
+            decoder_log_probabilities = F.log_softmax(outputs[0][:, 0], dim=-1)
+
+            if log_probabilities is None:
+                log_probabilities = decoder_log_probabilities
+            else:
+                idx = last_predictions[:, i].view(-1, 1)
+                log_probabilities = decoder_log_probabilities + log_probabilities.gather(
+                    dim=-1, index=idx
+                )
+
+            decoder_cache = outputs[1][1]
 
             state["encoder_states"] = outputs[2]
 
@@ -369,7 +363,7 @@ class Bart(Model):
             decoder_cache_dict = self._decoder_cache_to_dict(decoder_cache)
             state.update(decoder_cache_dict)
 
-        return decoder_logits[:, 0], state
+        return log_probabilities, state
 
     @overrides
     def make_output_human_readable(self, output_dict: Dict[str, torch.Tensor]) -> Dict[str, Any]:
