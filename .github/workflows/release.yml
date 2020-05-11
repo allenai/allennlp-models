@@ -114,9 +114,27 @@ jobs:
       run: |
         ./scripts/ensure_versions_match.py
 
+  pretrained:
+    runs-on: [self-hosted]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set Docker tag
+      run: |
+        echo "::set-env name=DOCKER_TAG::${GITHUB_REF#refs/tags/}";
+
+    - name: Build test image
+      run: |
+        make docker-test-image DOCKER_TAG=$DOCKER_TAG
+
+    - name: Run pretrained tests
+      run: |
+        make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='test-pretrained'
+
   publish:
     name: PyPI
-    needs: [build, test]
+    needs: [build, test, pretrained]
     runs-on: ubuntu-latest
 
     steps:
