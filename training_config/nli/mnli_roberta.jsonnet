@@ -7,7 +7,8 @@ local cls_is_last_token = false;
     "type": "snli",
     "tokenizer": {
       "type": "pretrained_transformer",
-      "model_name": transformer_model
+      "model_name": transformer_model,
+      "add_special_tokens": False
     },
     "token_indexers": {
       "tokens": {

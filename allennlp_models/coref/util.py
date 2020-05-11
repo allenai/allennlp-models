@@ -130,12 +130,12 @@ def make_coref_instance(
                 if end - start + 1 > max_span_width:
                     continue
                 # We also don't generate spans that contain special tokens
-                if start < wordpiece_modeling_tokenizer.num_added_start_tokens:
+                if start < len(wordpiece_modeling_tokenizer.single_sequence_start_tokens):
                     continue
                 if (
                     end
                     >= len(flat_sentences_tokens)
-                    - wordpiece_modeling_tokenizer.num_added_end_tokens
+                    - len(wordpiece_modeling_tokenizer.single_sequence_end_tokens)
                 ):
                     continue
 
