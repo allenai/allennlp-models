@@ -31,10 +31,10 @@ class BertSrlTest(ModelTestCase):
             FIXTURES_ROOT / "syntax" / "srl" / "conll_2012",
         )
 
-    def tearDown(self):
+    def teardown_method(self):
         self.monkeypatch.undo()
         self.monkeypatch.undo()
-        super().tearDown()
+        super().teardown_method()
 
     def test_bert_srl_model_can_train_save_and_load(self):
         ignore_grads = {"bert_model.pooler.dense.weight", "bert_model.pooler.dense.bias"}
