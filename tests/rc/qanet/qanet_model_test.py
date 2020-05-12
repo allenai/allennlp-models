@@ -10,7 +10,7 @@ from allennlp.data import DatasetReader, Vocabulary
 from allennlp.data import Batch
 from allennlp.data import DataLoader
 from allennlp.models import Model
-from allennlp.training import Trainer
+from allennlp.training import GradientDescentTrainer as Trainer
 
 from tests import FIXTURES_ROOT
 

@@ -30,7 +30,7 @@ class CorefTest(ModelTestCase):
         )
         # fmt: on
         self.ensure_model_can_train_save_and_load(self.param_file, overrides=overrides)
-        self.tearDown()
+        self.teardown_method()
         self.setup_method()
 
     def test_coref_bert_model_can_train_save_and_load(self):
