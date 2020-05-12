@@ -21,6 +21,8 @@ COPY dev-requirements.txt dev-requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir -r dev-requirements.txt
 
+# This is a dummy build arg to ensure that we trigger the pip-install of
+# allennlp from master whenever we change MARKER.
 ARG MARKER
 RUN pip install git+https://github.com/allenai/allennlp.git@master
 
