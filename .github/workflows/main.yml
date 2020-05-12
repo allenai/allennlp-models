@@ -11,7 +11,8 @@ on:
     - cron: '17 10 * * *' # run at 10 AM UTC every day.
 
 jobs:
-  build:
+  checks:
+    name: Checks
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -68,6 +69,7 @@ jobs:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   pretrained:
+    name: Pretrained Models
     runs-on: [self-hosted]
 
     steps:
@@ -86,6 +88,7 @@ jobs:
         make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='test-pretrained'
 
   gpu_checks:
+    name: GPU Checks
     runs-on: [self-hosted, GPU]
 
     steps:
