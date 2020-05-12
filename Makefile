@@ -8,15 +8,22 @@ version :
 .PHONY : lint
 lint :
 	flake8
+
+.PHONY : format
+format :
 	black --check .
 
 .PHONY : typecheck
 typecheck :
-	mypy allennlp_models --ignore-missing-imports --no-strict-optional --no-site-packages
+	mypy allennlp_models tests --ignore-missing-imports --no-strict-optional --no-site-packages
 
 .PHONY : test
 test :
 	pytest --color=yes -rf --durations=40 -m "not pretrained_model_test"
+
+.PHONY : gpu-test
+gpu-test :
+	pytest --color=yes -v -rf -m gpu
 
 .PHONY : test-with-cov
 test-with-cov :
