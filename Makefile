@@ -18,6 +18,10 @@ typecheck :
 test :
 	pytest --color=yes -rf --durations=40 -m "not pretrained_model_test"
 
+.PHONY : gpu-test
+gpu-test :
+	pytest --color=yes -v -rf -m gpu
+
 .PHONY : test-with-cov
 test-with-cov :
 	pytest --color=yes -rf --cov-config=.coveragerc --cov=allennlp_models/ --durations=40 -m "not pretrained_model_test"
