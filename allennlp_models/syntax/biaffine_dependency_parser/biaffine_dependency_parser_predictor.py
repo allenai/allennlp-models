@@ -75,6 +75,7 @@ LINK_TO_POSITION["xcomp"] = "right"
 LINK_TO_POSITION["ccomp"] = "right"
 LINK_TO_POSITION["acomp"] = "right"
 
+
 # exist_ok has to be true until we remove this from the core library
 @Predictor.register("biaffine-dependency-parser", exist_ok=True)
 class BiaffineDependencyParserPredictor(Predictor):

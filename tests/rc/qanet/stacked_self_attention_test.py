@@ -3,7 +3,7 @@ from torch.nn.parallel.data_parallel import DataParallel
 
 import pytest
 
-from allennlp.common.testing import AllenNlpTestCase
+from allennlp.common.testing import AllenNlpTestCase, requires_multi_gpu
 
 from allennlp_models.rc.qanet.stacked_self_attention import StackedSelfAttentionEncoder
 
@@ -37,7 +37,7 @@ class TestStackedSelfAttention(AllenNlpTestCase):
         encoder_output = encoder(inputs, None)
         assert list(encoder_output.size()) == [3, 5, 12]
 
-    @pytest.mark.skipif(torch.cuda.device_count() < 2, reason="Need multiple GPUs.")
+    @requires_multi_gpu
     def test_stacked_self_attention_can_run_foward_on_multiple_gpus(self):
         encoder = StackedSelfAttentionEncoder(
             input_dim=9,

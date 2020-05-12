@@ -85,7 +85,7 @@ class ComposedSeq2Seq(Model):
                 )
             if source_embedder.get_output_dim() != self._decoder.target_embedder.get_output_dim():
                 raise ConfigurationError(
-                    f"Output Dimensions mismatch between" f"source embedder and target embedder."
+                    "Output Dimensions mismatch between source embedder and target embedder."
                 )
             self._source_text_embedder._token_embedders[
                 tied_source_embedder_key
