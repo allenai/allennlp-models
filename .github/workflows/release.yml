@@ -47,6 +47,10 @@ jobs:
       run: |
         pip freeze
 
+    - name: Format
+      run: |
+        make format
+
     - name: Lint
       run: |
         make lint
