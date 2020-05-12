@@ -18,6 +18,8 @@ WORKDIR /stage/allennlp-models
 
 COPY requirements.txt requirements.txt
 COPY dev-requirements.txt dev-requirements.txt
+
+ARG ALLENNLP_COMMIT_SHA
 RUN pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir -r dev-requirements.txt
 
