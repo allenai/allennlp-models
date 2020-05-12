@@ -70,7 +70,9 @@ class TestTransformerSquadReader:
         assert instance_0_text[max_query_length + 3] != instance_1_text[max_query_length + 3]
         assert instance_0_text[-1] == "[SEP]"
         assert instance_0_text[-2] == "##rot"
-        assert instance_1_text[instances[1].fields["context_span"].span_start + stride - 1] == "##rot"
+        assert (
+            instance_1_text[instances[1].fields["context_span"].span_start + stride - 1] == "##rot"
+        )
 
     def test_roberta_bug(self):
         """This reader tokenizes first by spaces, and then re-tokenizes using the wordpiece tokenizer that comes
