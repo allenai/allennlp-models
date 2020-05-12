@@ -84,3 +84,21 @@ jobs:
     - name: Run pretrained tests
       run: |
         make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='test-pretrained'
+
+  gpu_checks:
+    runs-on: [self-hosted, GPU]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set Docker tag
+      run: |
+        echo "::set-env name=DOCKER_TAG::$GITHUB_SHA";
+
+    - name: Build test image
+      run: |
+        make docker-test-image DOCKER_TAG=$DOCKER_TAG
+
+    - name: Run GPU tests
+      run: |
+        make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='gpu-test'
