@@ -8,6 +8,9 @@ version :
 .PHONY : lint
 lint :
 	flake8
+
+.PHONY : format
+format :
 	black --check .
 
 .PHONY : typecheck

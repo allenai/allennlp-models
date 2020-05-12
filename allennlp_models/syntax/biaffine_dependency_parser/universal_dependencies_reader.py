@@ -13,6 +13,7 @@ from allennlp.data.tokenizers import Token, Tokenizer
 
 logger = logging.getLogger(__name__)
 
+
 # exist_ok has to be true until we remove this from the core library
 @DatasetReader.register("universal_dependencies", exist_ok=True)
 class UniversalDependenciesDatasetReader(DatasetReader):
