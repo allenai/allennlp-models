@@ -3,6 +3,7 @@ DOCKER_RUN_CMD = docker run --rm \
 		-v $$HOME/.allennlp:/root/.allennlp \
 		-v $$HOME/.cache/torch:/root/.cache/torch \
 		-v $$HOME/nltk_data:/root/nltk_data
+ALLENNLP_COMMIT_SHA = $(shell git ls-remote https://github.com/allenai/allennlp master | cut -f 1)
 
 .PHONY : version
 version :
@@ -38,7 +39,7 @@ test-pretrained :
 
 .PHONY : docker-test-image
 docker-test-image :
-	docker build --pull -f Dockerfile.test -t allennlp-models/test:$(DOCKER_TAG) .
+	docker build --pull -f Dockerfile.test --build-arg ALLENNLP_COMMIT_SHA=$(ALLENNLP_COMMIT_SHA) -t allennlp-models/test:$(DOCKER_TAG) .
 
 .PHONY : docker-test-run
 docker-test-run :
