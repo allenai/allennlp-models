@@ -15,7 +15,7 @@ format :
 
 .PHONY : typecheck
 typecheck :
-	mypy allennlp_models --ignore-missing-imports --no-strict-optional --no-site-packages
+	mypy allennlp_models tests --ignore-missing-imports --no-strict-optional --no-site-packages
 
 .PHONY : test
 test :

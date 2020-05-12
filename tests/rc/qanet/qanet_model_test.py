@@ -1,16 +1,12 @@
-import torch
-import pytest
 from flaky import flaky
 import numpy
 from numpy.testing import assert_almost_equal
 
 from allennlp.common import Params
-from allennlp.common.testing import ModelTestCase, requires_multi_gpu
+from allennlp.common.testing import ModelTestCase
 from allennlp.data import DatasetReader, Vocabulary
 from allennlp.data import Batch
-from allennlp.data import DataLoader
 from allennlp.models import Model
-from allennlp.training import GradientDescentTrainer as Trainer
 
 from tests import FIXTURES_ROOT
 
@@ -51,17 +47,6 @@ class QaNetTest(ModelTestCase):
     @flaky
     def test_model_can_train_save_and_load(self):
         self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-4)
-
-    @requires_multi_gpu
-    def test_multigpu_qanet(self):
-        params = Params.from_file(self.param_file)
-        vocab = Vocabulary.from_instances(self.instances)
-        model = Model.from_params(vocab=vocab, params=params["model"]).cuda()
-        optimizer = torch.optim.SGD(self.model.parameters(), 0.01, momentum=0.9)
-        self.instances.index_with(model.vocab)
-        loader = DataLoader(self.instances, batch_size=4)
-        trainer = Trainer(model, optimizer, loader, num_epochs=2, cuda_device=[0, 1])
-        trainer.train()
 
     def test_batch_predictions_are_consistent(self):
         # The same issue as the bidaf test case.
