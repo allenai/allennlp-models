@@ -5,7 +5,7 @@ import numpy
 from numpy.testing import assert_almost_equal
 
 from allennlp.common import Params
-from allennlp.common.testing import ModelTestCase
+from allennlp.common.testing import ModelTestCase, requires_multi_gpu
 from allennlp.data import DatasetReader, Vocabulary
 from allennlp.data import Batch
 from allennlp.data import DataLoader
@@ -52,7 +52,7 @@ class QaNetTest(ModelTestCase):
     def test_model_can_train_save_and_load(self):
         self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-4)
 
-    @pytest.mark.skipif(torch.cuda.device_count() < 2, reason="Need multiple GPUs.")
+    @requires_multi_gpu
     def test_multigpu_qanet(self):
         params = Params.from_file(self.param_file)
         vocab = Vocabulary.from_instances(self.instances)
