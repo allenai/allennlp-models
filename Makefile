@@ -38,7 +38,7 @@ test-pretrained :
 
 .PHONY : docker-test-image
 docker-test-image :
-	docker build --pull -f Dockerfile.test -t allennlp-models/test:$(DOCKER_TAG) .
+	docker build --pull -f Dockerfile.test --build-arg MARKER=`date +%s` -t allennlp-models/test:$(DOCKER_TAG) .
 
 .PHONY : docker-test-run
 docker-test-run :

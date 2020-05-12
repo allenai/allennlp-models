@@ -21,6 +21,9 @@ COPY dev-requirements.txt dev-requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir -r dev-requirements.txt
 
+ARG MARKER
+RUN pip install git+https://github.com/allenai/allennlp.git@master
+
 COPY . .
 
 ENTRYPOINT ["make"]
