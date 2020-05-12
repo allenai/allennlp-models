@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: Build Package
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -47,6 +47,10 @@ jobs:
       run: |
         pip freeze
 
+    - name: Format
+      run: |
+        make format
+
     - name: Lint
       run: |
         make lint
@@ -71,7 +75,7 @@ jobs:
         path: dist
 
   test:
-    name: Test
+    name: Test Package
     needs: [build]  # needs the package artifact created from 'build_package' job.
     runs-on: ubuntu-latest
     strategy:
@@ -115,6 +119,7 @@ jobs:
         ./scripts/ensure_versions_match.py
 
   pretrained:
+    name: Pretrained Models
     runs-on: [self-hosted]
 
     steps:
