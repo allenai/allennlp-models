@@ -1,5 +1,8 @@
 DOCKER_TAG = latest
-DOCKER_RUN_CMD = docker run --rm -v $$HOME/.allennlp:/root/.allennlp
+DOCKER_RUN_CMD = docker run --rm \
+				 -v $$HOME/.allennlp:/root/.allennlp \
+				 -v $$HOME/.cache/torch:/root/.cache/torch \
+				 -v $$HOME/nltk_data:/root/nltk_data
 
 .PHONY : version
 version :
