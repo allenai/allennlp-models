@@ -110,7 +110,7 @@ class TestSnliReader:
     def test_combine_input_fields(self):
         reader = SnliReader(
             tokenizer=PretrainedTransformerTokenizer("bert-base-uncased", add_special_tokens=False),
-            combine_input_fields=True
+            combine_input_fields=True,
         )
         instances = reader.read(FIXTURES_ROOT / "nli" / "snli.jsonl")
         instances = ensure_list(instances)

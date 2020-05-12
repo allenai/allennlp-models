@@ -75,15 +75,6 @@ class TransformerSquadReader(DatasetReader):
         self.stride = stride
         self.skip_invalid_examples = skip_invalid_examples
         self.max_query_length = max_query_length
-        self.non_content_type_id = max(
-            self._tokenizer.tokenizer.encode_plus("left", "right", return_token_type_ids=True)[
-                "token_type_ids"
-            ]
-        )
-
-        # workaround for a bug in the transformers library
-        if "distilbert" in transformer_model_name:
-            self.non_content_type_id = 0
 
     @overrides
     def _read(self, file_path: str):
@@ -182,14 +173,17 @@ class TransformerSquadReader(DatasetReader):
         # Tokenize the question
         tokenized_question = self._tokenizer.tokenize(question)
         tokenized_question = tokenized_question[: self.max_query_length]
-        for token in tokenized_question:
-            token.type_id = self.non_content_type_id
-            token.idx = None
 
         # Stride over the context, making instances
         # Sequences are [CLS] question [SEP] [SEP] context [SEP], hence the - 4 for four special tokens.
         # This is technically not correct for anything but RoBERTa, but it does not affect the scores.
-        space_for_context = self.length_limit - len(tokenized_question) - 4
+        space_for_context = (
+            self.length_limit
+            - len(tokenized_question)
+            - len(self._tokenizer.sequence_pair_start_tokens)
+            - len(self._tokenizer.sequence_pair_mid_tokens)
+            - len(self._tokenizer.sequence_pair_end_tokens)
+        )
         stride_start = 0
         while True:
             tokenized_context_window = tokenized_context[stride_start:]
@@ -235,30 +229,16 @@ class TransformerSquadReader(DatasetReader):
         fields = {}
 
         # make the question field
-        cls_token = Token(
-            self._tokenizer.tokenizer.cls_token,
-            text_id=self._tokenizer.tokenizer.cls_token_id,
-            type_id=self.non_content_type_id,
-        )
-
-        sep_token = Token(
-            self._tokenizer.tokenizer.sep_token,
-            text_id=self._tokenizer.tokenizer.sep_token_id,
-            type_id=self.non_content_type_id,
-        )
-
         question_field = TextField(
-            (
-                [cls_token]
-                + tokenized_question
-                + [sep_token, sep_token]
-                + tokenized_context
-                + [sep_token]
-            ),
+            self._tokenizer.add_special_tokens(tokenized_question, tokenized_context),
             self._token_indexers,
         )
         fields["question_with_context"] = question_field
-        start_of_context = 1 + len(tokenized_question) + 2
+        start_of_context = (
+            len(self._tokenizer.sequence_pair_start_tokens)
+            + len(tokenized_question)
+            + len(self._tokenizer.sequence_pair_mid_tokens)
+        )
 
         # make the answer span
         if token_answer_span is not None:

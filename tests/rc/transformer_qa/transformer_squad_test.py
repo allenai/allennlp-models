@@ -17,18 +17,18 @@ class TestTransformerSquadReader:
         token_type_ids = [t.type_id for t in instances[0].fields["question_with_context"].tokens]
 
         assert token_text[:3] == ["[CLS]", "To", "whom"]
-        assert token_type_ids[:3] == [1, 1, 1]
+        assert token_type_ids[:3] == [0, 0, 0]
 
         assert token_text[-3:] == ["Mary", ".", "[SEP]"]
-        assert token_type_ids[-3:] == [0, 0, 1]
+        assert token_type_ids[-3:] == [1, 1, 1]
 
         assert token_text[instances[0].fields["context_span"].span_start] == "Architectural"
-        assert token_type_ids[instances[0].fields["context_span"].span_start] == 0
+        assert token_type_ids[instances[0].fields["context_span"].span_start] == 1
 
         assert token_text[instances[0].fields["context_span"].span_end + 1] == "[SEP]"
         assert token_type_ids[instances[0].fields["context_span"].span_end + 1] == 1
         assert token_text[instances[0].fields["context_span"].span_end] == "."
-        assert token_type_ids[instances[0].fields["context_span"].span_end] == 0
+        assert token_type_ids[instances[0].fields["context_span"].span_end] == 1
 
         assert token_text[
             instances[0]
@@ -43,9 +43,8 @@ class TestTransformerSquadReader:
             token_type_ids = [t.type_id for t in instance.fields["question_with_context"].tokens]
             context_start = instance.fields["context_span"].span_start
             context_end = instance.fields["context_span"].span_end + 1
-            assert all(id != 0 for id in token_type_ids[:context_start])
-            assert all(id == 0 for id in token_type_ids[context_start:context_end])
-            assert all(id != 0 for id in token_type_ids[context_end:])
+            assert all(id == 0 for id in token_type_ids[:context_start])
+            assert all(id == 1 for id in token_type_ids[context_start:context_end])
 
     def test_length_limit_works(self):
         max_query_length = 10
@@ -61,15 +60,17 @@ class TestTransformerSquadReader:
 
         assert len(instances) == 12
         # The sequence is "<s> question </s> </s> context".
-        assert instances[0].fields["context_span"].span_start == 1 + max_query_length + 2
+        assert instances[0].fields["context_span"].span_start == len(
+            reader._tokenizer.sequence_pair_start_tokens
+        ) + max_query_length + len(reader._tokenizer.sequence_pair_mid_tokens)
 
         instance_0_text = [t.text for t in instances[0].fields["question_with_context"].tokens]
         instance_1_text = [t.text for t in instances[1].fields["question_with_context"].tokens]
         assert instance_0_text[: max_query_length + 2] == instance_1_text[: max_query_length + 2]
         assert instance_0_text[max_query_length + 3] != instance_1_text[max_query_length + 3]
         assert instance_0_text[-1] == "[SEP]"
-        assert instance_0_text[-2] == "G"
-        assert instance_1_text[instances[1].fields["context_span"].span_start + stride - 1] == "G"
+        assert instance_0_text[-2] == "##rot"
+        assert instance_1_text[instances[1].fields["context_span"].span_start + stride - 1] == "##rot"
 
     def test_roberta_bug(self):
         """This reader tokenizes first by spaces, and then re-tokenizes using the wordpiece tokenizer that comes
