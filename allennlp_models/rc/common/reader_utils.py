@@ -113,7 +113,7 @@ def char_span_to_token_span(
                 end_index -= 1
 
     if end_index >= len(token_offsets):
-        raise ValueError(f"Character span %r outside the range of the given tokens.")
+        raise ValueError("Character span %r outside the range of the given tokens.")
     if end_index == start_index and token_offsets[end_index][1] > character_span[1]:
         # Looks like there was a token that should have been split, like "1854-1855", where the
         # answer is "1854".  We can't do much in this case, except keep the answer as the whole
