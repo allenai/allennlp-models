@@ -8,8 +8,7 @@ from allennlp.models.model import Model
 from allennlp.modules.seq2seq_encoders.seq2seq_encoder import Seq2SeqEncoder
 from allennlp.nn.beam_search import BeamSearch
 from allennlp.nn.util import sequence_cross_entropy_with_logits
-from allennlp.training.metrics import BLEU
-from allennlp.training.metrics import ROUGE
+from allennlp.training.metrics import ROUGE, BLEU
 
 from transformers import BartModel, BartForConditionalGeneration
 

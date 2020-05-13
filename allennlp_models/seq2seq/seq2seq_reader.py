@@ -95,8 +95,9 @@ class Seq2SeqDatasetReader(DatasetReader):
         self._target_max_exceeded = 0
         with open(cached_path(file_path), "r") as data_file:
             logger.info("Reading instances from lines in file at: %s", file_path)
-            for line_num, row in enumerate(csv.reader(data_file, delimiter=self._delimiter,
-                                                      quoting=csv.QUOTE_NONE)):
+            for line_num, row in enumerate(
+                csv.reader(data_file, delimiter=self._delimiter, quoting=csv.QUOTE_NONE)
+            ):
                 if len(row) != 2:
                     raise ConfigurationError(
                         "Invalid line format: %s (line number %d)" % (row, line_num + 1)

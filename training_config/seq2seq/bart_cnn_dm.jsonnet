@@ -27,7 +27,7 @@
     },
     "data_loader": {
         "batch_sampler": {
-            "type": "bucket",
+            "type": "max_tokens_sampler",
             "max_tokens": 2048,
             "sorting_keys": ["source_tokens"]
         }
