@@ -68,13 +68,14 @@ whether you will leverage a GPU or just run on a CPU.  Docker provides more
 isolation and consistency, and also makes it easy to distribute your
 environment to a compute cluster.
 
-Once you have [installed Docker](https://docs.docker.com/engine/installation/)
-you can build an image with a specific version of `allennlp` and `allennlp-models` with
+Once you have [installed Docker](https://docs.docker.com/engine/installation/) you can either use a [prebuilt image from a release](https://hub.docker.com/r/allennlp/allennlp-models) or build an image locally with any version of `allennlp` and `allennlp-models`.
+
+To build an image locally from a specific release, run
 
    ```bash
    docker build \
        --build-arg ALLENNLP_VERSION=1.0.0rc3 \
-       -t allennlp-models - < Dockerfile.release
+       -t allennlp/models - < Dockerfile.release
    ```
 
 Just replace "1.0.0rc3" with the desired version.
@@ -85,16 +86,16 @@ Alternately, you can build against specific commits of `allennlp` and `allennlp-
    docker build \
        --build-arg ALLENNLP_COMMIT=e3d72fcb1664caf9554ef4e611191c33a7a5cbbd \
        --build-arg ALLENNLP_MODELS_COMMIT=54a5df89da64d8d3869e746bc6dab940552dbfc4 \
-       -t allennlp-models - < Dockerfile.commit
+       -t allennlp/models - < Dockerfile.commit
    ```
 
 Just change the `ALLENNLP_COMMIT` and `ALLENNLP_MODELS_COMMIT` build args to the desired commit SHAs.
 
-Then once your image is built, run the following command to get an environment that will run on either the cpu or gpu.
+Now run the following command to get an environment that will run on either the cpu or gpu.
 
    ```bash
    mkdir -p $HOME/.allennlp/
-   docker run --rm -v $HOME/.allennlp:/root/.allennlp allennlp-models
+   docker run --rm -v $HOME/.allennlp:/root/.allennlp allennlp/models
    ```
 
 If you have GPUs available, add the flag `--gpu N` right before `--rm`, where `N` is the number of GPUs you have available.
