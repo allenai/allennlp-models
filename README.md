@@ -68,7 +68,7 @@ whether you will leverage a GPU or just run on a CPU.  Docker provides more
 isolation and consistency, and also makes it easy to distribute your
 environment to a compute cluster.
 
-Once you have [installed Docker](https://docs.docker.com/engine/installation/) you can either use a [prebuilt image from a release](https://hub.docker.com/r/allennlp/allennlp-models) or build an image locally with any version of `allennlp` and `allennlp-models`.
+Once you have [installed Docker](https://docs.docker.com/engine/installation/) you can either use a [prebuilt image from a release](https://hub.docker.com/r/allennlp/models) or build an image locally with any version of `allennlp` and `allennlp-models`.
 
 To build an image locally from a specific release, run
 
