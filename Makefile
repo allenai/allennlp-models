@@ -1,3 +1,4 @@
+VERSION = $(shell python ./scripts/get_version.py current --minimal)
 DOCKER_TAG = latest
 DOCKER_RUN_CMD = docker run --rm \
 		-v $$HOME/.allennlp:/root/.allennlp \
@@ -7,7 +8,7 @@ ALLENNLP_COMMIT_SHA = $(shell git ls-remote https://github.com/allenai/allennlp 
 
 .PHONY : version
 version :
-	@python -c 'from allennlp_models.version import VERSION; print(f"AllenNLP Models v{VERSION}")'
+	@echo AllenNLP Models $(VERSION)
 
 .PHONY : lint
 lint :
@@ -36,6 +37,14 @@ test-with-cov :
 .PHONY : test-pretrained
 test-pretrained :
 	pytest -v --color=yes -m "pretrained_model_test"
+
+.PHONY :
+docker-image :
+	docker build \
+		--pull \
+		--build-arg ALLENNLP_VERSION=$(VERSION) \
+		-f Dockerfile \
+		-t allennlp/models:v$(VERSION) .
 
 .PHONY : docker-test-image
 docker-test-image :
