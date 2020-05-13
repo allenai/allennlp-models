@@ -1,3 +1,7 @@
+# This Dockerfile is used to build an image from specific commits of allennlp and
+# allennlp-models. It requires two build args: ALLENNLP_COMMIT and ALLENNLP_MODELS_COMMIT,
+# which should be set to the desired commit SHAs for each repo, respectively.
+
 ARG ALLENNLP_COMMIT
 
 FROM allennlp/commit:${ALLENNLP_COMMIT}
