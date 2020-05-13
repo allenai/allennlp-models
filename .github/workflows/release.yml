@@ -118,6 +118,40 @@ jobs:
       run: |
         ./scripts/ensure_versions_match.py
 
+  docker:
+    name: Docker
+    needs: [build]  # needs the package artifact created from 'build_package' job.
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+
+    - name: Download models package
+      uses: actions/download-artifact@v1
+      with:
+        name: models-package
+        path: dist
+
+    - name: Build image
+      run: |
+        make docker-image
+
+    - name: Add latest tag
+      run: |
+        # Tag with latest.
+        docker tag allennlp/models:$(scripts/get_version.py current) allennlp/models:latest
+
+    - name: Upload image
+      run: |
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker push allennlp/models:$(scripts/get_version.py current)
+        docker push allennlp/models:latest
+
   pretrained:
     name: Pretrained Models
     runs-on: [self-hosted]
@@ -139,7 +173,7 @@ jobs:
 
   publish:
     name: PyPI
-    needs: [build, test, pretrained]
+    needs: [build, test, docker, pretrained]
     runs-on: ubuntu-latest
 
     steps:

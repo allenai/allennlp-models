@@ -60,3 +60,42 @@ pip install -r dev-requirements.txt
 The `ALLENNLP_VERSION_OVERRIDE` environment variable ensures that the `allennlp` dependency is unpinned so that your local install of `allennlp` will be sufficient. If, however, you haven't installed `allennlp` yet and don't want to manage a local install, just omit this environment variable and `allennlp` will be installed from the master branch on GitHub.
 
 Both `allennlp` and `allennlp-models` are developed and tested side-by-side, so they should be kept up-to-date with each other. If you look at the GitHub Actions [workflow for `allennlp-models`](https://github.com/allenai/allennlp-models/actions), it's always tested against the master branch of `allennlp`. Similarly, `allennlp` is always tested against the master branch of `allennlp-models`.
+
+### Using Docker
+
+Docker provides a virtual machine with everything set up to run AllenNLP--
+whether you will leverage a GPU or just run on a CPU.  Docker provides more
+isolation and consistency, and also makes it easy to distribute your
+environment to a compute cluster.
+
+Once you have [installed Docker](https://docs.docker.com/engine/installation/) you can either use a [prebuilt image from a release](https://hub.docker.com/r/allennlp/models) or build an image locally with any version of `allennlp` and `allennlp-models`.
+
+To build an image locally from a specific release, run
+
+   ```bash
+   docker build \
+       --build-arg ALLENNLP_VERSION=1.0.0rc3 \
+       -t allennlp/models - < Dockerfile.release
+   ```
+
+Just replace "1.0.0rc3" with the desired version.
+
+Alternately, you can build against specific commits of `allennlp` and `allennlp-models` with
+
+   ```bash
+   docker build \
+       --build-arg ALLENNLP_COMMIT=e3d72fcb1664caf9554ef4e611191c33a7a5cbbd \
+       --build-arg ALLENNLP_MODELS_COMMIT=54a5df89da64d8d3869e746bc6dab940552dbfc4 \
+       -t allennlp/models - < Dockerfile.commit
+   ```
+
+Just change the `ALLENNLP_COMMIT` and `ALLENNLP_MODELS_COMMIT` build args to the desired commit SHAs.
+
+Now run the following command to get an environment that will run on either the cpu or gpu.
+
+   ```bash
+   mkdir -p $HOME/.allennlp/
+   docker run --rm -v $HOME/.allennlp:/root/.allennlp allennlp/models
+   ```
+
+If you have GPUs available, add the flag `--gpu N` right before `--rm`, where `N` is the number of GPUs you have available.
