@@ -43,7 +43,8 @@ local cls_is_last_token = false;
       "hidden_dims": transformer_dim,
       "activations": "tanh"
     },
-    "dropout": 0.1
+    "dropout": 0.1,
+    "namespace": "tags"
   },
   "data_loader": {
     "batch_sampler": {
