@@ -45,12 +45,14 @@ class Seq2SeqDatasetReader(DatasetReader):
     target_token_indexers : `Dict[str, TokenIndexer]`, optional
         Indexers used to define output (target side) token representations. Defaults to
         `source_token_indexers`.
+    delimiter : str, (optional, default="\t")
+        Set delimiter for tsv/csv file.
     source_add_start_token : bool, (optional, default=True)
         Whether or not to add `START_SYMBOL` to the beginning of the source sequence.
     source_add_end_token : bool, (optional, default=True)
         Whether or not to add `END_SYMBOL` to the end of the source sequence.
-    delimiter : str, (optional, default="\t")
-        Set delimiter for tsv/csv file.
+    quoting : int, (optional, default=csv.QUOTE_MINIMAL)
+        Quoting to use for csv reader.
     """
 
     def __init__(
@@ -68,6 +70,7 @@ class Seq2SeqDatasetReader(DatasetReader):
         delimiter: str = "\t",
         source_max_tokens: Optional[int] = None,
         target_max_tokens: Optional[int] = None,
+        quoting: int = csv.QUOTE_MINIMAL,
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
@@ -87,6 +90,7 @@ class Seq2SeqDatasetReader(DatasetReader):
         self._target_max_tokens = target_max_tokens
         self._source_max_exceeded = 0
         self._target_max_exceeded = 0
+        self.quoting = quoting
 
     @overrides
     def _read(self, file_path: str):
@@ -96,7 +100,7 @@ class Seq2SeqDatasetReader(DatasetReader):
         with open(cached_path(file_path), "r") as data_file:
             logger.info("Reading instances from lines in file at: %s", file_path)
             for line_num, row in enumerate(
-                csv.reader(data_file, delimiter=self._delimiter, quoting=csv.QUOTE_NONE)
+                csv.reader(data_file, delimiter=self._delimiter, quoting=self.quoting)
             ):
                 if len(row) != 2:
                     raise ConfigurationError(

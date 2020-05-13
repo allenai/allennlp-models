@@ -19,7 +19,8 @@
         "start_symbol": "<s>",
         "end_symbol": "</s>",
         "source_max_tokens": 1022,
-        "target_max_tokens": 1022
+        "target_max_tokens": 1022,
+        "quoting": 3  # csv.QUOTE_NONE
     },
     "model": {
         "type": "bart",
