@@ -1,0 +1,8 @@
+ARG ALLENNLP_VERSION
+
+FROM allennlp/allennlp:v${ALLENNLP_VERSION}
+
+# Need to specify this ARG again because the FROM stage consumes all args before it.
+ARG ALLENNLP_VERSION
+
+RUN pip install --no-cache-dir allennlp-models==${ALLENNLP_VERSION}
