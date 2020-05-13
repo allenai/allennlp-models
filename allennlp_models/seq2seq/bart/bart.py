@@ -195,11 +195,7 @@ class Bart(Model):
 
         outputs = {}
 
-        # TODO: (not targets) => generating?
-        # assert targets is None or self.training  # Don't provide targets for generation
         generating = not self.training
-
-        # assert not generating or self.bart.config.output_past
 
         # If no targets are provided, then shift input to right by 1. Bart already does this interally
         # but it does not use them for loss calculation

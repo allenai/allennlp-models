@@ -46,6 +46,10 @@
             "total_steps": 20000,
             "warmup_steps": 500
         },
+        "tensorboard_writer": {
+            "summary_interval": 4,
+            "should_log_learning_rate": true
+        },
         "num_gradient_accumulation_steps": 4,
         "cuda_device": 0
     }
