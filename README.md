@@ -80,7 +80,7 @@ To build an image locally from a specific release, run
 
 Just replace "1.0.0rc3" with the desired version.
 
-Alternately, you can build against specific commits of `allennlp` and `allennlp-models` with
+Alternatively, you can build against specific commits of `allennlp` and `allennlp-models` with
 
    ```bash
    docker build \
