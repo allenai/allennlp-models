@@ -338,6 +338,7 @@ class Bart(Model):
                 decoder_input_ids=last_predictions[:, : i + 1],
                 decoder_cached_states=decoder_cache,
                 generation_mode=True,
+                use_cache=True
             )
 
             decoder_log_probabilities = F.log_softmax(outputs[0][:, 0], dim=-1)
