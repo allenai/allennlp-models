@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: Build Package
+    name: Build package
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -21,7 +21,7 @@ jobs:
         python-version: ${{ matrix.python }}
 
     - name: Set AllenNLP version override
-      run:
+      run: |
         VERSION=$(./scripts/get_version.py current --minimal)
         ALLENNLP_VERSION_OVERRIDE="allennlp==$VERSION"
         echo "Setting ALLENNLP_VERSION_OVERRIDE to $ALLENNLP_VERSION_OVERRIDE"
@@ -118,6 +118,40 @@ jobs:
       run: |
         ./scripts/ensure_versions_match.py
 
+  docker:
+    name: Docker
+    needs: [build]  # needs the package artifact created from 'build_package' job.
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+
+    - name: Download models package
+      uses: actions/download-artifact@v1
+      with:
+        name: models-package
+        path: dist
+
+    - name: Build image
+      run: |
+        make docker-image
+
+    - name: Add latest tag
+      run: |
+        # Tag with latest.
+        docker tag allennlp/models:$(scripts/get_version.py current) allennlp/models:latest
+
+    - name: Upload image
+      run: |
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker push allennlp/models:$(scripts/get_version.py current)
+        docker push allennlp/models:latest
+
   pretrained:
     name: Pretrained Models
     runs-on: [self-hosted]
@@ -137,9 +171,28 @@ jobs:
       run: |
         make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='test-pretrained'
 
+  gpu_checks:
+    name: GPU Checks
+    runs-on: [self-hosted, GPU]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set Docker tag
+      run: |
+        echo "::set-env name=DOCKER_TAG::${GITHUB_REF#refs/tags/}";
+
+    - name: Build test image
+      run: |
+        make docker-test-image DOCKER_TAG=$DOCKER_TAG
+
+    - name: Run GPU tests
+      run: |
+        make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='gpu-test'
+
   publish:
     name: PyPI
-    needs: [build, test, pretrained]
+    needs: [build, test, docker, pretrained, gpu_checks]
     runs-on: ubuntu-latest
 
     steps:
