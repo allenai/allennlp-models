@@ -178,11 +178,11 @@ class TransformerQA(Model):
 
             output_dict["best_span_str"] = []
             context_tokens = []
-            for metadata_entry, best_span in zip(metadata, best_spans):
+            for metadata_entry, best_span, cspan in zip(metadata, best_spans, context_span):
                 context_tokens_for_question = metadata_entry["context_tokens"]
                 context_tokens.append(context_tokens_for_question)
 
-                best_span -= 1 + len(metadata_entry["question_tokens"]) + 2
+                best_span -= int(cspan[0])
                 assert np.all(best_span >= 0)
 
                 predicted_start, predicted_end = tuple(best_span)
