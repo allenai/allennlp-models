@@ -1,9 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 from typing import Dict
-
-import requests
 
 
 def parse_args():
@@ -23,11 +21,17 @@ def get_current_version(minimal: bool = False) -> str:
 
 
 def get_latest_version() -> str:
+    # Import this here so this requirements isn't mandatory when we just want to
+    # call `get_current_version`.
+    import requests
+
     resp = requests.get("https://api.github.com/repos/allenai/allennlp-models/tags")
     return resp.json()[0]["name"]
 
 
 def get_stable_version() -> str:
+    import requests
+
     resp = requests.get("https://api.github.com/repos/allenai/allennlp-models/releases/latest")
     return resp.json()["tag_name"]
 
