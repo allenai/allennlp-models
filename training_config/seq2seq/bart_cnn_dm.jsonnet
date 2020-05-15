@@ -52,6 +52,7 @@
             "should_log_learning_rate": true
         },
         "num_gradient_accumulation_steps": 4,
+        "grad_norm": 0.1,
         "cuda_device": 0
     }
 }
