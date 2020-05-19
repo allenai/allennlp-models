@@ -58,15 +58,15 @@ jobs:
         make test-with-cov
 
     - name: Upload coverage to Codecov
-      if: matrix.python == '3.7'
-      run: |
+      if: matrix.python == '3.7' && github.repository == 'allenai/allennlp-models'
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage.xml
         # Ignore codecov failures as the codecov server is not
         # very reliable but we don't want to report a failure
         # in the github UI just because the coverage report failed to
         # be published.
-        codecov || echo "codecov upload failed"
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: false
 
   pretrained:
     name: Pretrained Models
