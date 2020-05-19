@@ -11,6 +11,24 @@ on:
     - cron: '17 10 * * *' # run at 10 AM UTC every day.
 
 jobs:
+  changelog:
+    name: CHANGELOG
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Debugging info
+      run: |
+        git remote -v
+
+    - name: Check that CHANGELOG has been updated
+      run: |
+        # If this step fails, this means you haven't updated the CHANGELOG.md
+        # file with notes on your contribution.
+        git diff --name-only $(git merge-base origin/master HEAD) | grep '^CHANGELOG.md$' && echo "Thanks for helping keep our CHANGELOG up-to-date!"
+
   checks:
     name: Checks
     runs-on: ubuntu-latest
