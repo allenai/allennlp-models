@@ -102,7 +102,7 @@ class CopyNetSeq2Seq(Model):
             self.vocab._padding_token, self._target_namespace
         )
         self._copy_index = self.vocab.get_token_index(copy_token, self._target_namespace)
-        if self._copy_index == self._copy_index:
+        if self._copy_index == self._oov_index:
             raise ConfigurationError(
                 f"Copy token '{copy_token}' missing from target vocab namespace '{self._target_namespace}'. "
                 f"Did you forget to add it with the 'tokens_to_add' parameter of the 'vocab' object?"

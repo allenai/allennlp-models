@@ -20,12 +20,16 @@
       "source_tokens": "test_fixtures/seq2seq/copynet/data/source_vocab.txt",
       "target_tokens": "test_fixtures/seq2seq/copynet/data/target_vocab.txt"
     },
-    "only_include_pretrained_words": true
+    "only_include_pretrained_words": true,
+    "tokens_to_add": {
+        "target_tokens": ["@COPY@"]
+    }
   },
   "train_data_path": "test_fixtures/seq2seq/copynet/data/copyover.tsv",
   "validation_data_path": "test_fixtures/seq2seq/copynet/data/copyover.tsv",
   "model": {
     "type": "copynet_seq2seq",
+    "copy_token": "@COPY@",
     "source_embedder": {
       "token_embedders": {
         "tokens": {
@@ -57,7 +61,7 @@
         "batch_size": 80,
         "padding_noise": 0.0
     }
-},
+  },
   "trainer": {
     "num_epochs": 2,
     "patience": 10,
