@@ -32,7 +32,10 @@ gpu-test :
 
 .PHONY : test-with-cov
 test-with-cov :
-	pytest --color=yes -rf --cov-config=.coveragerc --cov=allennlp_models/ --durations=40 -m "not pretrained_model_test"
+	pytest --color=yes -rf --durations=40 -m "not pretrained_model_test" \
+			--cov-config=.coveragerc \
+			--cov=allennlp_models/ \
+			--cov-report=xml
 
 .PHONY : test-pretrained
 test-pretrained :
