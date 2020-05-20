@@ -3,6 +3,7 @@ import logging
 from typing import Any, Dict, List, Tuple, Optional, Iterable
 
 from allennlp.common.util import sanitize_wordpiece
+from allennlp.data.dataset_readers import OOCDatasetReader
 from allennlp.data.fields import MetadataField, TextField, SpanField
 from overrides import overrides
 
@@ -18,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 @DatasetReader.register("transformer_squad")
-class TransformerSquadReader(DatasetReader):
+class TransformerSquadReader(OOCDatasetReader):
     """
     Reads a JSON-formatted SQuAD file and returns a ``Dataset`` where the ``Instances`` have four
     fields:
