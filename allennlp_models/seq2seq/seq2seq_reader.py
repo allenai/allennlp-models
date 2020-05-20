@@ -107,6 +107,8 @@ class Seq2SeqDatasetReader(DatasetReader):
                         "Invalid line format: %s (line number %d)" % (row, line_num + 1)
                     )
                 source_sequence, target_sequence = row
+                if len(source_sequence) == 0 or len(target_sequence) == 0:
+                    continue
                 yield self.text_to_instance(source_sequence, target_sequence)
         if self._source_max_tokens and self._source_max_exceeded:
             logger.info(
