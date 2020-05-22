@@ -1,0 +1,6 @@
+from allennlp_models.pair_classification.snli_reader import SnliReader
+from allennlp_models.pair_classification.decomposable_attention_model import DecomposableAttention
+from allennlp_models.pair_classification.decomposable_attention_predictor import DecomposableAttentionPredictor
+from allennlp_models.pair_classification.bimpm_model import BiMpm
+from allennlp_models.pair_classification.esim_model import ESIM
+from allennlp_models.pair_classification.quora_paraphrase_reader import QuoraParaphraseDatasetReader

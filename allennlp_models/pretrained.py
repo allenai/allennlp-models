@@ -2,9 +2,9 @@ from allennlp.models import load_archive
 from allennlp.predictors import Predictor, SentenceTaggerPredictor
 
 from allennlp_models.coref import CorefPredictor
-from allennlp_models.nli import DecomposableAttentionPredictor
+from allennlp_models.pair_classification import DecomposableAttentionPredictor
 from allennlp_models.rc.bidaf import ReadingComprehensionPredictor
-from allennlp_models.syntax import (
+from allennlp_models.structured_prediction import (
     SemanticRoleLabelerPredictor,
     OpenIePredictor,
     ConstituencyParserPredictor,

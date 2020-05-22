@@ -1,0 +1,6 @@
+from allennlp_models.tagging.crf_tagger import CrfTagger
+from allennlp_models.tagging.ontonotes_ner_reader import OntonotesNamedEntityRecognition
+from allennlp_models.tagging.conll2000_reader import Conll2000DatasetReader
+from allennlp_models.tagging.ccgbank_reader import CcgBankDatasetReader
+from allennlp_models.tagging.conll2003_reader import Conll2003DatasetReader
+from allennlp_models.tagging.sentence_tagger_predictor import SentenceTaggerPredictor
