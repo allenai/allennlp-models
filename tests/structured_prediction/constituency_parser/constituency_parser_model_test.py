@@ -4,7 +4,7 @@ import torch
 from allennlp.common.testing.model_test_case import ModelTestCase
 from allennlp.training.metrics import EvalbBracketingScorer
 
-from allennlp_models.structured_prediction.constituency_parser.constituency_parser_model import (
+from allennlp_models.structured_prediction.models.constituency_parser_model import (
     SpanInformation,
 )
 from tests import FIXTURES_ROOT

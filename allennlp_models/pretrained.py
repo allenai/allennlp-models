@@ -3,7 +3,7 @@ from allennlp.predictors import Predictor, SentenceTaggerPredictor
 
 from allennlp_models.coref import CorefPredictor
 from allennlp_models.pair_classification import DecomposableAttentionPredictor
-from allennlp_models.rc.bidaf import ReadingComprehensionPredictor
+from allennlp_models.rc import ReadingComprehensionPredictor
 from allennlp_models.structured_prediction import (
     SemanticRoleLabelerPredictor,
     OpenIePredictor,

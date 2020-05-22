@@ -1,14 +1,4 @@
-from allennlp_models.generation.auto_regressive_seq_decoder import AutoRegressiveSeqDecoder
-from allennlp_models.generation.composed_seq2seq_model import ComposedSeq2Seq
-from allennlp_models.generation.copynet import CopyNetSeq2Seq
-from allennlp_models.generation.copynet import CopyNetDatasetReader
-from allennlp_models.generation.decoder_net import DecoderNet
-from allennlp_models.generation.lstm_cell_decoder_net import LstmCellDecoderNet
-from allennlp_models.generation.seq2seq_predictor import Seq2SeqPredictor
-from allennlp_models.generation.seq_decoder import SeqDecoder
-from allennlp_models.generation.simple_seq2seq_model import SimpleSeq2Seq
-from allennlp_models.generation.simple_seq2seq_predictor import SimpleSeq2SeqPredictor
-from allennlp_models.generation.stacked_self_attention_decoder_net import (
-    StackedSelfAttentionDecoderNet,
-)
-from allennlp_models.generation.seq2seq_reader import Seq2SeqDatasetReader
+from allennlp_models.generation.modules import *
+from allennlp_models.generation.predictors import *
+from allennlp_models.generation.models import *
+from allennlp_models.generation.dataset_readers import *

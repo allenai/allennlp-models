@@ -1,6 +1,5 @@
 from allennlp.common.testing import ModelTestCase
 
-from allennlp_models.lm.language_model_heads import LinearLanguageModelHead
 from tests import FIXTURES_ROOT
 
 

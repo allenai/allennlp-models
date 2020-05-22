@@ -1,2 +1,0 @@
-from allennlp_models.generation.copynet.copynet_seq2seq_model import CopyNetSeq2Seq
-from allennlp_models.generation.copynet.copynet_seq2seq_reader import CopyNetDatasetReader

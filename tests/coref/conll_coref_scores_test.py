@@ -2,7 +2,7 @@ import torch
 
 from allennlp.common.testing import AllenNlpTestCase, multi_device
 
-from allennlp_models.coref.conll_coref_scores import ConllCorefScores
+from allennlp_models.coref.metrics.conll_coref_scores import ConllCorefScores
 
 
 class ConllCorefScoresTest(AllenNlpTestCase):

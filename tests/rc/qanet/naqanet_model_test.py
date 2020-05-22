@@ -4,7 +4,7 @@ from allennlp.common.testing import ModelTestCase
 
 from tests import FIXTURES_ROOT
 
-from allennlp_models.rc.qanet import NumericallyAugmentedQaNet
+from allennlp_models.rc import NumericallyAugmentedQaNet
 
 
 class NumericallyAugmentedQaNetTest(ModelTestCase):

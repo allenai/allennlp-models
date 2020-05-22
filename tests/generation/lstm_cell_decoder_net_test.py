@@ -3,7 +3,7 @@ import torch
 from allennlp.common.testing import AllenNlpTestCase
 from allennlp.modules.attention import DotProductAttention
 
-from allennlp_models.generation.lstm_cell_decoder_net import LstmCellDecoderNet
+from allennlp_models.generation.modules.decoder_nets.lstm_cell_decoder_net import LstmCellDecoderNet
 
 
 class TestLstmCellDecoderNet(AllenNlpTestCase):

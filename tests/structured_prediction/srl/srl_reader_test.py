@@ -3,7 +3,7 @@ import pytest
 from allennlp.common.util import ensure_list
 from allennlp.common.testing import AllenNlpTestCase
 
-from allennlp_models.structured_prediction.srl.srl_reader import (
+from allennlp_models.structured_prediction.dataset_readers.srl_reader import (
     SrlReader,
     _convert_tags_to_wordpiece_tags,
 )

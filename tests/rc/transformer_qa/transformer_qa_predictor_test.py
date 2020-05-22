@@ -1,9 +1,9 @@
 from allennlp.common.testing import AllenNlpTestCase
 from allennlp.data import Vocabulary
 
-from allennlp_models.rc.transformer_qa import TransformerSquadReader
-from allennlp_models.rc.transformer_qa import TransformerQA
-from allennlp_models.rc.transformer_qa import TransformerQAPredictor
+from allennlp_models.rc import TransformerSquadReader
+from allennlp_models.rc import TransformerQA
+from allennlp_models.rc import TransformerQAPredictor
 
 
 class TestTransformerQAPredictor(AllenNlpTestCase):

@@ -9,7 +9,7 @@ from allennlp.nn.util import get_lengths_from_binary_sequence_mask
 from allennlp.data.dataset_readers.dataset_utils.span_utils import to_bioul
 
 from tests import FIXTURES_ROOT
-from allennlp_models.structured_prediction.srl import SrlBert
+from allennlp_models.structured_prediction import SrlBert
 
 
 class BertSrlTest(ModelTestCase):

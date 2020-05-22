@@ -1,6 +1,0 @@
-from allennlp_models.structured_prediction.srl.srl_eval_scorer import SrlEvalScorer
-from allennlp_models.structured_prediction.srl.srl_bert_model import SrlBert
-from allennlp_models.structured_prediction.srl.srl_model import SemanticRoleLabeler
-from allennlp_models.structured_prediction.srl.srl_predictor import SemanticRoleLabelerPredictor
-from allennlp_models.structured_prediction.srl.srl_reader import SrlReader
-from allennlp_models.structured_prediction.srl.openie_predictor import OpenIePredictor

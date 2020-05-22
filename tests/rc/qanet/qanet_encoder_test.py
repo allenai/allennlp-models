@@ -3,7 +3,7 @@ import torch
 from allennlp.common.testing import AllenNlpTestCase
 from allennlp.common.params import Params
 
-from allennlp_models.rc.qanet import QaNetEncoder
+from allennlp_models.rc import QaNetEncoder
 
 
 class QaNetEncoderTest(AllenNlpTestCase):

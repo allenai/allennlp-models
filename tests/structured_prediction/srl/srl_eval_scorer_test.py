@@ -2,8 +2,7 @@ from numpy.testing import assert_allclose
 
 from allennlp.common.testing import AllenNlpTestCase
 
-from allennlp_models.structured_prediction.srl.srl_eval_scorer import SrlEvalScorer
-from allennlp_models.structured_prediction.srl.util import convert_bio_tags_to_conll_format
+from allennlp_models.structured_prediction.metrics.srl_eval_scorer import SrlEvalScorer
 
 
 class SrlEvalScorerTest(AllenNlpTestCase):
@@ -85,6 +84,7 @@ class SrlEvalScorerTest(AllenNlpTestCase):
             ],
             ["B-V", "B-AM-DIR", "O", "O", "O"],
         ]
+        from allennlp_models.structured_prediction.models.srl_model import convert_bio_tags_to_conll_format
         batch_conll_predicted_tags = [
             convert_bio_tags_to_conll_format(tags) for tags in batch_bio_predicted_tags
         ]
@@ -150,6 +150,7 @@ class SrlEvalScorerTest(AllenNlpTestCase):
         assert_allclose(metrics["f1-measure-overall"], 1.0)
 
     def test_span_metrics_are_computed_correctly(self):
+        from allennlp_models.structured_prediction.models.srl_model import convert_bio_tags_to_conll_format
         batch_verb_indices = [2]
         batch_sentences = [["The", "cat", "loves", "hats", "."]]
         batch_bio_predicted_tags = [["B-ARG0", "B-ARG1", "B-V", "B-ARG1", "O"]]

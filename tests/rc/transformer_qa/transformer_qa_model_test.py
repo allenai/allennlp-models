@@ -1,11 +1,10 @@
-from flaky import flaky
 import numpy
 from numpy.testing import assert_almost_equal
 from allennlp.common.testing import ModelTestCase
 from allennlp.data import Batch
 from tests import FIXTURES_ROOT
 
-import allennlp_models.rc.transformer_qa  # noqa F401: Needed to register the registrables.
+import allennlp_models.rc
 
 
 class TransformerQaTest(ModelTestCase):

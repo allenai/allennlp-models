@@ -1,0 +1,3 @@
+from allennlp_models.rc.predictors.bidaf_predictor import ReadingComprehensionPredictor
+from allennlp_models.rc.predictors.dialog_qa_predictor import DialogQAPredictor
+from allennlp_models.rc.predictors.transformer_qa_predictor import TransformerQAPredictor

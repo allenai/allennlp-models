@@ -3,7 +3,7 @@ from allennlp.interpret.attackers import Hotflip
 from allennlp.models.archival import load_archive
 from allennlp.predictors import Predictor
 
-from allennlp_models.lm.language_model_heads.linear import LinearLanguageModelHead
+from allennlp_models.lm import LinearLanguageModelHead
 from tests import FIXTURES_ROOT
 
 LinearLanguageModelHead

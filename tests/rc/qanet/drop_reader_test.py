@@ -3,7 +3,7 @@ import pytest
 from allennlp.common import Params
 from allennlp.common.util import ensure_list
 
-from allennlp_models.rc.qanet import DropReader
+from allennlp_models.rc import DropReader
 from tests import FIXTURES_ROOT
 
 

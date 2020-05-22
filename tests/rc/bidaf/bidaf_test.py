@@ -11,7 +11,7 @@ from allennlp.data import DatasetReader, Vocabulary
 from allennlp.data import Batch
 from allennlp.models import Model
 
-from allennlp_models.rc.bidaf import BidirectionalAttentionFlow
+from allennlp_models.rc import BidirectionalAttentionFlow
 from tests import FIXTURES_ROOT
 
 

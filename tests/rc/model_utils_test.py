@@ -2,7 +2,7 @@ from numpy.testing import assert_almost_equal
 import torch
 from allennlp.common.testing import AllenNlpTestCase
 
-from allennlp_models.rc.common.model_utils import get_best_span
+from allennlp_models.rc.models.model_utils import get_best_span
 
 
 class TestRcUtil(AllenNlpTestCase):

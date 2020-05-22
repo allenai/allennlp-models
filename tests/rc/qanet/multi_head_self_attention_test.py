@@ -4,7 +4,7 @@ import torch
 from allennlp.common.testing import AllenNlpTestCase
 from allennlp.common.params import Params
 
-from allennlp_models.rc.qanet.multi_head_self_attention import MultiHeadSelfAttention
+from allennlp_models.rc.modules.seq2seq_encoders.multi_head_self_attention import MultiHeadSelfAttention
 
 
 class MultiHeadSelfAttentionTest(AllenNlpTestCase):

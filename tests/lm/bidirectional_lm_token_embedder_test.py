@@ -1,6 +1,7 @@
 from tests import FIXTURES_ROOT
 from tests.lm.language_model_token_embedder_test import TestLanguageModelTokenEmbedder
 
+import allennlp_models.lm
 
 class TestBidirectionalLanguageModelTokenEmbedder(TestLanguageModelTokenEmbedder):
     def setup_method(self):

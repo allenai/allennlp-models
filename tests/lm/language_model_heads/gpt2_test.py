@@ -3,7 +3,7 @@ import torch
 from allennlp.common import Params
 from allennlp.common.testing.test_case import AllenNlpTestCase
 
-from allennlp_models.lm.language_model_heads import LanguageModelHead, Gpt2LanguageModelHead
+from allennlp_models.lm.modules.language_model_heads import LanguageModelHead, Gpt2LanguageModelHead
 
 
 class TestGpt2LanguageModelHead(AllenNlpTestCase):

@@ -4,7 +4,6 @@ import torch
 
 from allennlp.common.testing import ModelTestCase
 
-from allennlp_models.generation import copynet
 from tests import FIXTURES_ROOT
 
 

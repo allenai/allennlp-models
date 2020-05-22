@@ -3,7 +3,7 @@ import pytest
 from allennlp.common import Params
 from allennlp.common.util import ensure_list
 
-from allennlp_models.rc.common import SquadReader
+from allennlp_models.rc import SquadReader
 from tests import FIXTURES_ROOT
 
 

@@ -1,0 +1,2 @@
+from allennlp_models.generation.predictors.seq2seq_predictor import Seq2SeqPredictor
+from allennlp_models.generation.predictors.simple_seq2seq_predictor import SimpleSeq2SeqPredictor

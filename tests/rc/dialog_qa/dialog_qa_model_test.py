@@ -3,7 +3,7 @@ from allennlp.data import Batch
 
 from tests import FIXTURES_ROOT
 
-import allennlp_models.rc.dialog_qa
+import allennlp_models.rc
 
 
 class DialogQATest(ModelTestCase):

@@ -4,8 +4,7 @@ from flaky import flaky
 from allennlp.common.testing import ModelTestCase
 from allennlp.data import Batch
 
-from allennlp_models.rc.bidaf import BidafEnsemble
-from allennlp_models.rc.bidaf.bidaf_ensemble import ensemble
+from allennlp_models.rc import BidafEnsemble
 
 from tests import FIXTURES_ROOT
 
@@ -38,6 +37,7 @@ class BidafEnsembleTest(ModelTestCase):
             },
         ]
 
+        from allennlp_models.rc.models.bidaf_ensemble import ensemble
         numpy.testing.assert_almost_equal(
             ensemble(subresults).data[0].cpu().numpy(), torch.LongTensor([2, 2]).cpu().numpy()
         )
@@ -70,6 +70,7 @@ class BidafEnsembleTest(ModelTestCase):
             },
         ]
 
+        from allennlp_models.rc.models.bidaf_ensemble import ensemble
         numpy.testing.assert_almost_equal(
             ensemble(subresults).data[0].cpu().numpy(), torch.LongTensor([2, 2]).numpy()
         )

@@ -1,11 +1,9 @@
 import torch
 from torch.nn.parallel.data_parallel import DataParallel
 
-import pytest
-
 from allennlp.common.testing import AllenNlpTestCase, requires_multi_gpu
 
-from allennlp_models.rc.qanet.stacked_self_attention import StackedSelfAttentionEncoder
+from allennlp_models.rc.modules.seq2seq_encoders.stacked_self_attention import StackedSelfAttentionEncoder
 
 
 class TestStackedSelfAttention(AllenNlpTestCase):

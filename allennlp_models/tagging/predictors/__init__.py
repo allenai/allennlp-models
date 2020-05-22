@@ -1,0 +1,1 @@
+from allennlp_models.tagging.predictors.sentence_tagger_predictor import SentenceTaggerPredictor
