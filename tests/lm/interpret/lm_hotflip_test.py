@@ -6,8 +6,6 @@ from allennlp.predictors import Predictor
 from allennlp_models.lm import LinearLanguageModelHead
 from tests import FIXTURES_ROOT
 
-LinearLanguageModelHead
-
 
 class TestHotflip(AllenNlpTestCase):
     def test_targeted_attack_from_json(self):
