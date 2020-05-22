@@ -2,7 +2,8 @@ import pytest
 
 from allennlp.data.dataset_readers.conll2003 import Conll2003DatasetReader
 from allennlp.common.util import ensure_list
-from allennlp.common.testing import AllenNlpTestCase
+
+from tests import FIXTURES_ROOT
 
 
 class TestConll2003Reader:
@@ -11,7 +12,7 @@ class TestConll2003Reader:
     def test_read_from_file(self, lazy, coding_scheme):
         conll_reader = Conll2003DatasetReader(lazy=lazy, coding_scheme=coding_scheme)
         instances = conll_reader.read(
-            str(AllenNlpTestCase.FIXTURES_ROOT / "data" / "conll2003.txt")
+            str(FIXTURES_ROOT / "tagging" / "conll2003.txt")
         )
         instances = ensure_list(instances)
 
