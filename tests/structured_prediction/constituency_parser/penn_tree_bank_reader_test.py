@@ -17,7 +17,9 @@ class TestPennTreeBankConstituencySpanReader(AllenNlpTestCase):
     def test_read_from_file(self):
 
         ptb_reader = PennTreeBankConstituencySpanDatasetReader()
-        instances = ptb_reader.read(str(FIXTURES_ROOT / "structured_prediction" / "example_ptb.trees"))
+        instances = ptb_reader.read(
+            str(FIXTURES_ROOT / "structured_prediction" / "example_ptb.trees")
+        )
 
         assert len(instances) == 2
 

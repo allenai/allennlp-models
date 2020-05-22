@@ -14,7 +14,10 @@ class BiattentiveClassificationNetworkTest(ModelTestCase):
     def setup_method(self):
         super().setup_method()
         self.set_up_model(
-            FIXTURES_ROOT / "classification" / "biattentive_classification_network" / "experiment.json",
+            FIXTURES_ROOT
+            / "classification"
+            / "biattentive_classification_network"
+            / "experiment.json",
             FIXTURES_ROOT / "classification" / "sst.txt",
         )
 

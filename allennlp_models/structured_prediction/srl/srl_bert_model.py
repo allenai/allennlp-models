@@ -12,7 +12,10 @@ from allennlp.nn import InitializerApplicator, util
 from allennlp.nn.util import get_text_field_mask, sequence_cross_entropy_with_logits
 from allennlp.nn.util import get_lengths_from_binary_sequence_mask, viterbi_decode
 
-from allennlp_models.structured_prediction.srl.srl_eval_scorer import DEFAULT_SRL_EVAL_PATH, SrlEvalScorer
+from allennlp_models.structured_prediction.srl.srl_eval_scorer import (
+    DEFAULT_SRL_EVAL_PATH,
+    SrlEvalScorer,
+)
 from allennlp_models.structured_prediction.srl.util import convert_bio_tags_to_conll_format
 
 

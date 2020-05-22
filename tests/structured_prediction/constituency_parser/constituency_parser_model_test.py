@@ -4,7 +4,9 @@ import torch
 from allennlp.common.testing.model_test_case import ModelTestCase
 from allennlp.training.metrics import EvalbBracketingScorer
 
-from allennlp_models.structured_prediction.constituency_parser.constituency_parser_model import SpanInformation
+from allennlp_models.structured_prediction.constituency_parser.constituency_parser_model import (
+    SpanInformation,
+)
 from tests import FIXTURES_ROOT
 
 
@@ -13,7 +15,10 @@ class SpanConstituencyParserTest(ModelTestCase):
         EvalbBracketingScorer.compile_evalb()
         super().setup_method()
         self.set_up_model(
-            FIXTURES_ROOT / "structured_prediction" / "constituency_parser" / "constituency_parser.json",
+            FIXTURES_ROOT
+            / "structured_prediction"
+            / "constituency_parser"
+            / "constituency_parser.json",
             FIXTURES_ROOT / "structured_prediction" / "example_ptb.trees",
         )
 

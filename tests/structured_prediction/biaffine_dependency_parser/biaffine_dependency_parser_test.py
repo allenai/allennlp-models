@@ -11,7 +11,10 @@ class BiaffineDependencyParserTest(ModelTestCase):
     def setup_method(self):
         super().setup_method()
         self.set_up_model(
-            FIXTURES_ROOT / "structured_prediction" / "biaffine_dependency_parser" / "experiment.json",
+            FIXTURES_ROOT
+            / "structured_prediction"
+            / "biaffine_dependency_parser"
+            / "experiment.json",
             FIXTURES_ROOT / "structured_prediction" / "dependencies.conllu",
         )
 

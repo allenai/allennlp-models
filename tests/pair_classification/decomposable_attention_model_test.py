@@ -39,7 +39,10 @@ class TestDecomposableAttention(ModelTestCase):
         )
         model = Model.load(
             params,
-            serialization_dir=FIXTURES_ROOT / "pair_classification" / "decomposable_attention" / "serialization",
+            serialization_dir=FIXTURES_ROOT
+            / "pair_classification"
+            / "decomposable_attention"
+            / "serialization",
         )
 
         assert isinstance(model, DecomposableAttention)
