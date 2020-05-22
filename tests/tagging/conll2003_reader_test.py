@@ -11,9 +11,7 @@ class TestConll2003Reader:
     @pytest.mark.parametrize("coding_scheme", ("IOB1", "BIOUL"))
     def test_read_from_file(self, lazy, coding_scheme):
         conll_reader = Conll2003DatasetReader(lazy=lazy, coding_scheme=coding_scheme)
-        instances = conll_reader.read(
-            str(FIXTURES_ROOT / "tagging" / "conll2003.txt")
-        )
+        instances = conll_reader.read(str(FIXTURES_ROOT / "tagging" / "conll2003.txt"))
         instances = ensure_list(instances)
 
         if coding_scheme == "IOB1":
