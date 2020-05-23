@@ -56,7 +56,10 @@ class SemanticRoleLabelerTest(ModelTestCase):
 
     def test_bio_tags_correctly_convert_to_conll_format(self):
         bio_tags = ["B-ARG-1", "I-ARG-1", "O", "B-V", "B-ARGM-ADJ", "O"]
-        from allennlp_models.structured_prediction.models.srl_model import convert_bio_tags_to_conll_format
+        from allennlp_models.structured_prediction.models.srl_model import (
+            convert_bio_tags_to_conll_format,
+        )
+
         conll_tags = convert_bio_tags_to_conll_format(bio_tags)
         assert conll_tags == ["(ARG-1*", "*)", "*", "(V*)", "(ARGM-ADJ*)", "*"]
 
@@ -72,7 +75,10 @@ class SemanticRoleLabelerTest(ModelTestCase):
             # Use the same bio tags as prediction vs gold to make it obvious by looking
             # at the perl script output if something is wrong. Write them twice to
             # ensure that the perl script deals with multiple sentences.
-            from allennlp_models.structured_prediction.models.srl_model import write_bio_formatted_tags_to_file
+            from allennlp_models.structured_prediction.models.srl_model import (
+                write_bio_formatted_tags_to_file,
+            )
+
             write_bio_formatted_tags_to_file(
                 gold_file, prediction_file, 4, sentence, bio_tags, bio_tags
             )
@@ -82,7 +88,13 @@ class SemanticRoleLabelerTest(ModelTestCase):
 
         perl_script_command = [
             "perl",
-            str(PROJECT_ROOT / "allennlp_models" / "structured_prediction" / "metrics" / "srl-eval.pl"),
+            str(
+                PROJECT_ROOT
+                / "allennlp_models"
+                / "structured_prediction"
+                / "metrics"
+                / "srl-eval.pl"
+            ),
             prediction_file_path,
             gold_file_path,
         ]

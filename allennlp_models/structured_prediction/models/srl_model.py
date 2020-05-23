@@ -14,16 +14,19 @@ from allennlp.models.model import Model
 from allennlp.nn import InitializerApplicator
 from allennlp.nn.util import get_text_field_mask, sequence_cross_entropy_with_logits
 from allennlp.nn.util import get_lengths_from_binary_sequence_mask, viterbi_decode
-from allennlp_models.structured_prediction.metrics.srl_eval_scorer import SrlEvalScorer, DEFAULT_SRL_EVAL_PATH
+from allennlp_models.structured_prediction.metrics.srl_eval_scorer import (
+    SrlEvalScorer,
+    DEFAULT_SRL_EVAL_PATH,
+)
 
 
 def write_bio_formatted_tags_to_file(
-        prediction_file: TextIO,
-        gold_file: TextIO,
-        verb_index: Optional[int],
-        sentence: List[str],
-        prediction: List[str],
-        gold_labels: List[str],
+    prediction_file: TextIO,
+    gold_file: TextIO,
+    verb_index: Optional[int],
+    sentence: List[str],
+    prediction: List[str],
+    gold_labels: List[str],
 ):
     """
     Prints predicate argument predictions and gold labels for a single verbal
@@ -65,12 +68,12 @@ def write_bio_formatted_tags_to_file(
 
 
 def write_conll_formatted_tags_to_file(
-        prediction_file: TextIO,
-        gold_file: TextIO,
-        verb_index: Optional[int],
-        sentence: List[str],
-        conll_formatted_predictions: List[str],
-        conll_formatted_gold_labels: List[str],
+    prediction_file: TextIO,
+    gold_file: TextIO,
+    verb_index: Optional[int],
+    sentence: List[str],
+    conll_formatted_predictions: List[str],
+    conll_formatted_gold_labels: List[str],
 ):
     """
     Prints predicate argument predictions and gold labels for a single verbal
@@ -104,7 +107,7 @@ def write_conll_formatted_tags_to_file(
         verb_only_sentence[verb_index] = sentence[verb_index]
 
     for word, predicted, gold in zip(
-            verb_only_sentence, conll_formatted_predictions, conll_formatted_gold_labels
+        verb_only_sentence, conll_formatted_predictions, conll_formatted_gold_labels
     ):
         prediction_file.write(word.ljust(15))
         prediction_file.write(predicted.rjust(15) + "\n")

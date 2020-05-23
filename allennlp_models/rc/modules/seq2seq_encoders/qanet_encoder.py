@@ -10,7 +10,9 @@ from allennlp.nn.activations import Activation
 from allennlp.nn.util import add_positional_features
 from allennlp.common.checks import check_dimensions_match
 
-from allennlp_models.rc.modules.seq2seq_encoders.multi_head_self_attention import MultiHeadSelfAttention
+from allennlp_models.rc.modules.seq2seq_encoders.multi_head_self_attention import (
+    MultiHeadSelfAttention,
+)
 
 
 # exist_ok has to be true until we remove this from the core library

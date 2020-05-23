@@ -6,6 +6,7 @@ from tests import FIXTURES_ROOT
 
 import allennlp_models.lm
 
+
 class TestBidirectionalLanguageModel(ModelTestCase):
     def setup_method(self):
         super().setup_method()

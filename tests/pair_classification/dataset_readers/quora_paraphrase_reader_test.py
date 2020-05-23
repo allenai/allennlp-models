@@ -2,7 +2,9 @@ import pytest
 
 from allennlp.common.util import ensure_list
 
-from allennlp_models.pair_classification.dataset_readers.quora_paraphrase_reader import QuoraParaphraseDatasetReader
+from allennlp_models.pair_classification.dataset_readers.quora_paraphrase_reader import (
+    QuoraParaphraseDatasetReader,
+)
 from tests import FIXTURES_ROOT
 
 

@@ -86,14 +86,23 @@ class SpanBasedF1Test(AllenNlpTestCase):
         ) as prediction_file:
             # Use the same bio tags as prediction vs gold to make it obvious by looking
             # at the perl script output if something is wrong.
-            from allennlp_models.structured_prediction.models.srl_model import write_bio_formatted_tags_to_file
+            from allennlp_models.structured_prediction.models.srl_model import (
+                write_bio_formatted_tags_to_file,
+            )
+
             write_bio_formatted_tags_to_file(
                 gold_file, prediction_file, 4, sentence, bio_tags, bio_tags
             )
         # Run the official perl script and collect stdout.
         perl_script_command = [
             "perl",
-            str(PROJECT_ROOT / "allennlp_models" / "structured_prediction" / "metrics" / "srl-eval.pl"),
+            str(
+                PROJECT_ROOT
+                / "allennlp_models"
+                / "structured_prediction"
+                / "metrics"
+                / "srl-eval.pl"
+            ),
             prediction_file_path,
             gold_file_path,
         ]

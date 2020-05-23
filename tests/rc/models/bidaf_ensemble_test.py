@@ -38,6 +38,7 @@ class BidafEnsembleTest(ModelTestCase):
         ]
 
         from allennlp_models.rc.models.bidaf_ensemble import ensemble
+
         numpy.testing.assert_almost_equal(
             ensemble(subresults).data[0].cpu().numpy(), torch.LongTensor([2, 2]).cpu().numpy()
         )
@@ -71,6 +72,7 @@ class BidafEnsembleTest(ModelTestCase):
         ]
 
         from allennlp_models.rc.models.bidaf_ensemble import ensemble
+
         numpy.testing.assert_almost_equal(
             ensemble(subresults).data[0].cpu().numpy(), torch.LongTensor([2, 2]).numpy()
         )
