@@ -3,9 +3,7 @@
 from allennlp_models.rc.evaluations.squad import normalize_answer as _normalize_answer_squad
 from allennlp_models.rc.evaluations.orb_utils import get_metric_squad, get_metric_drop
 from allennlp_models.rc.evaluations.squad2 import get_metric_score as get_metric_squad2
-from allennlp_models.rc.evaluations.narrativeqa import (
-    get_metric_score as get_metric_narrativeqa,
-)
+from allennlp_models.rc.evaluations.narrativeqa import get_metric_score as get_metric_narrativeqa
 from tests import FIXTURES_ROOT
 import os
 

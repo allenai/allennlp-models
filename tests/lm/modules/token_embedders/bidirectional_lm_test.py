@@ -1,7 +1,5 @@
 from tests import FIXTURES_ROOT
-from tests.lm.modules.token_embedders.language_model_test import (
-    TestLanguageModelTokenEmbedder,
-)
+from tests.lm.modules.token_embedders.language_model_test import TestLanguageModelTokenEmbedder
 
 
 class TestBidirectionalLanguageModelTokenEmbedder(TestLanguageModelTokenEmbedder):

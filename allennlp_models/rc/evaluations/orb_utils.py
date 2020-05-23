@@ -1,9 +1,7 @@
 from typing import List, Tuple
 from allennlp_models.rc.evaluations.squad import exact_match_score, f1_score
 from allennlp_models.rc.evaluations.drop import get_metrics as drop_metrics
-from allennlp_models.rc.evaluations.narrativeqa import (
-    get_metric_score as get_metric_narrativeqa,
-)
+from allennlp_models.rc.evaluations.narrativeqa import get_metric_score as get_metric_narrativeqa
 from allennlp_models.rc.evaluations.squad2 import get_metric_score as get_metric_squad2
 
 
