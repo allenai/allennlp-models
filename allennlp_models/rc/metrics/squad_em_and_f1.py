@@ -3,7 +3,7 @@ from typing import Tuple
 from allennlp.training.metrics.metric import Metric
 from overrides import overrides
 
-from allennlp_models.rc.evaluations import squad_eval
+from allennlp_models.rc.evaluations import squad
 
 
 @Metric.register("squad")
@@ -27,11 +27,11 @@ class SquadEmAndF1(Metric):
         value : ``float``
             The value to average.
         """
-        exact_match = squad_eval.metric_max_over_ground_truths(
-            squad_eval.exact_match_score, best_span_string, answer_strings
+        exact_match = squad.metric_max_over_ground_truths(
+            squad.exact_match_score, best_span_string, answer_strings
         )
-        f1_score = squad_eval.metric_max_over_ground_truths(
-            squad_eval.f1_score, best_span_string, answer_strings
+        f1_score = squad.metric_max_over_ground_truths(
+            squad.f1_score, best_span_string, answer_strings
         )
         self._total_em += exact_match
         self._total_f1 += f1_score

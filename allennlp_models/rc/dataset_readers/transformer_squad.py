@@ -12,7 +12,7 @@ from allennlp.data.instance import Instance
 from allennlp.data.token_indexers import PretrainedTransformerIndexer
 from allennlp.data.tokenizers import Token, PretrainedTransformerTokenizer
 
-from allennlp_models.rc.dataset_readers.reader_utils import char_span_to_token_span
+from allennlp_models.rc.dataset_readers.utils import char_span_to_token_span
 
 logger = logging.getLogger(__name__)
 

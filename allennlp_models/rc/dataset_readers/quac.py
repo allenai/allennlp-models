@@ -10,7 +10,7 @@ from allennlp.data.instance import Instance
 from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenIndexer
 from allennlp.data.tokenizers import Token, Tokenizer, SpacyTokenizer
 
-from allennlp_models.rc.dataset_readers import reader_utils
+from allennlp_models.rc.dataset_readers import utils
 
 logger = logging.getLogger(__name__)
 
@@ -115,7 +115,7 @@ class QuACReader(DatasetReader):
         for start_list, end_list in zip(start_span_list, end_span_list):
             token_spans: List[Tuple[int, int]] = []
             for char_span_start, char_span_end in zip(start_list, end_list):
-                (span_start, span_end), error = reader_utils.char_span_to_token_span(
+                (span_start, span_end), error = utils.char_span_to_token_span(
                     passage_offsets, (char_span_start, char_span_end)
                 )
                 if error:
@@ -130,10 +130,10 @@ class QuACReader(DatasetReader):
         question_list_tokens = [self._tokenizer.tokenize(q) for q in question_text_list]
         # Map answer texts to "CANNOTANSWER" if more than half of them marked as so.
         additional_metadata["answer_texts_list"] = [
-            reader_utils.handle_cannot(ans_list)
+            utils.handle_cannot(ans_list)
             for ans_list in additional_metadata["answer_texts_list"]
         ]
-        return reader_utils.make_reading_comprehension_instance_quac(
+        return utils.make_reading_comprehension_instance_quac(
             question_list_tokens,
             passage_tokens,
             self._token_indexers,

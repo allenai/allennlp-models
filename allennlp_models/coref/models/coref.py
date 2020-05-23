@@ -15,7 +15,7 @@ from allennlp.modules.span_extractors import SelfAttentiveSpanExtractor, Endpoin
 from allennlp.nn import util, InitializerApplicator
 
 from allennlp_models.coref.metrics.conll_coref_scores import ConllCorefScores
-from allennlp_models.coref.metrics.mention_recall_metric import MentionRecall
+from allennlp_models.coref.metrics.mention_recall import MentionRecall
 
 logger = logging.getLogger(__name__)
 

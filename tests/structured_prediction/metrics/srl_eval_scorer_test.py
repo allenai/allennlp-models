@@ -84,7 +84,7 @@ class SrlEvalScorerTest(AllenNlpTestCase):
             ],
             ["B-V", "B-AM-DIR", "O", "O", "O"],
         ]
-        from allennlp_models.structured_prediction.models.srl_model import (
+        from allennlp_models.structured_prediction.models.srl import (
             convert_bio_tags_to_conll_format,
         )
 
@@ -153,7 +153,7 @@ class SrlEvalScorerTest(AllenNlpTestCase):
         assert_allclose(metrics["f1-measure-overall"], 1.0)
 
     def test_span_metrics_are_computed_correctly(self):
-        from allennlp_models.structured_prediction.models.srl_model import (
+        from allennlp_models.structured_prediction.models.srl import (
             convert_bio_tags_to_conll_format,
         )
 

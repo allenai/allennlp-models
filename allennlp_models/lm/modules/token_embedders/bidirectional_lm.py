@@ -1,7 +1,7 @@
 from typing import Tuple
 
 from allennlp.modules.token_embedders.token_embedder import TokenEmbedder
-from allennlp_models.lm.modules.token_embedders.language_model_token_embedder import (
+from allennlp_models.lm.modules.token_embedders.language_model import (
     LanguageModelTokenEmbedder,
 )
 

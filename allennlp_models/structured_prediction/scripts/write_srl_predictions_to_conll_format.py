@@ -9,7 +9,7 @@ from typing import List
 import torch
 from allennlp.data.samplers import SequentialSampler
 
-from allennlp_models.structured_prediction.models.srl_model import write_to_conll_eval_file
+from allennlp_models.structured_prediction.models.srl import write_to_conll_eval_file
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(os.path.join(__file__, os.pardir))))
 

@@ -56,7 +56,7 @@ class SemanticRoleLabelerTest(ModelTestCase):
 
     def test_bio_tags_correctly_convert_to_conll_format(self):
         bio_tags = ["B-ARG-1", "I-ARG-1", "O", "B-V", "B-ARGM-ADJ", "O"]
-        from allennlp_models.structured_prediction.models.srl_model import (
+        from allennlp_models.structured_prediction.models.srl import (
             convert_bio_tags_to_conll_format,
         )
 
@@ -75,7 +75,7 @@ class SemanticRoleLabelerTest(ModelTestCase):
             # Use the same bio tags as prediction vs gold to make it obvious by looking
             # at the perl script output if something is wrong. Write them twice to
             # ensure that the perl script deals with multiple sentences.
-            from allennlp_models.structured_prediction.models.srl_model import (
+            from allennlp_models.structured_prediction.models.srl import (
                 write_bio_formatted_tags_to_file,
             )
 

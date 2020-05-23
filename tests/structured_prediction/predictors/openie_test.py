@@ -3,7 +3,7 @@ from allennlp.models.archival import load_archive
 from allennlp.predictors import Predictor
 from allennlp.data.tokenizers.spacy_tokenizer import SpacyTokenizer
 
-from allennlp_models.structured_prediction.predictors.openie_predictor import (
+from allennlp_models.structured_prediction.predictors.openie import (
     sanitize_label,
     consolidate_predictions,
     get_predicate_text,

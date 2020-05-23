@@ -1,10 +1,10 @@
 from typing import List, Tuple
-from allennlp_models.rc.evaluations.squad_eval import exact_match_score, f1_score
-from allennlp_models.rc.evaluations.drop_eval import get_metrics as drop_metrics
-from allennlp_models.rc.evaluations.narrativeqa_eval import (
+from allennlp_models.rc.evaluations.squad import exact_match_score, f1_score
+from allennlp_models.rc.evaluations.drop import get_metrics as drop_metrics
+from allennlp_models.rc.evaluations.narrativeqa import (
     get_metric_score as get_metric_narrativeqa,
 )
-from allennlp_models.rc.evaluations.squad2_eval import get_metric_score as get_metric_squad2
+from allennlp_models.rc.evaluations.squad2 import get_metric_score as get_metric_squad2
 
 
 def get_metric_squad(prediction, ground_truths):

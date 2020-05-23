@@ -92,7 +92,7 @@ class SrlEvalScorer(Metric):
                 batch_conll_formatted_predicted_tags,
                 batch_conll_formatted_gold_tags,
             ):
-                from allennlp_models.structured_prediction.models.srl_model import (
+                from allennlp_models.structured_prediction.models.srl import (
                     write_conll_formatted_tags_to_file,
                 )
 

@@ -149,7 +149,7 @@ class SrlBert(Model):
                 # TODO (nfliu): This is kind of a hack, consider splitting out part
                 # of make_output_human_readable() to a separate function.
                 batch_bio_predicted_tags = self.make_output_human_readable(output_dict).pop("tags")
-                from allennlp_models.structured_prediction.models.srl_model import (
+                from allennlp_models.structured_prediction.models.srl import (
                     convert_bio_tags_to_conll_format,
                 )
 

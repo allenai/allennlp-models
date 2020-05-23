@@ -10,7 +10,7 @@ from allennlp.data.instance import Instance
 from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenIndexer
 from allennlp.data.tokenizers import Token, Tokenizer, SpacyTokenizer
 
-from allennlp_models.rc.dataset_readers import reader_utils
+from allennlp_models.rc.dataset_readers import utils
 
 logger = logging.getLogger(__name__)
 
@@ -130,7 +130,7 @@ class SquadReader(DatasetReader):
         for char_span_start, char_span_end in char_spans:
             if char_span_end > passage_offsets[-1][1]:
                 continue
-            (span_start, span_end), error = reader_utils.char_span_to_token_span(
+            (span_start, span_end), error = utils.char_span_to_token_span(
                 passage_offsets, (char_span_start, char_span_end)
             )
             if error:
@@ -148,7 +148,7 @@ class SquadReader(DatasetReader):
                 return None
             else:
                 token_spans.append((len(passage_tokens) - 1, len(passage_tokens) - 1))
-        return reader_utils.make_reading_comprehension_instance(
+        return utils.make_reading_comprehension_instance(
             question_tokens,
             passage_tokens,
             self._token_indexers,

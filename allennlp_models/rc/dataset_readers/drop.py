@@ -24,7 +24,7 @@ from allennlp.data.instance import Instance
 from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenIndexer
 from allennlp.data.tokenizers import Token, Tokenizer, SpacyTokenizer
 
-from allennlp_models.rc.dataset_readers.reader_utils import (
+from allennlp_models.rc.dataset_readers.utils import (
     IGNORED_TOKENS,
     STRIPPED_CHARACTERS,
     make_reading_comprehension_instance,

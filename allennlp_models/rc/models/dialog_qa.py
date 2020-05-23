@@ -15,7 +15,7 @@ from allennlp.modules.matrix_attention.linear_matrix_attention import LinearMatr
 from allennlp.nn import InitializerApplicator, util
 from allennlp.training.metrics import Average, BooleanAccuracy, CategoricalAccuracy
 
-from allennlp_models.rc.evaluations import squad_eval
+from allennlp_models.rc.evaluations import squad
 
 logger = logging.getLogger(__name__)
 
@@ -460,14 +460,14 @@ class DialogQA(Model):
                             idxes.pop(answer_index)
                             refs = [answer_texts[z] for z in idxes]
                             t_f1.append(
-                                squad_eval.metric_max_over_ground_truths(
-                                    squad_eval.f1_score, best_span_string, refs
+                                squad.metric_max_over_ground_truths(
+                                    squad.f1_score, best_span_string, refs
                                 )
                             )
                         f1_score = 1.0 * sum(t_f1) / len(t_f1)
                     else:
-                        f1_score = squad_eval.metric_max_over_ground_truths(
-                            squad_eval.f1_score, best_span_string, answer_texts
+                        f1_score = squad.metric_max_over_ground_truths(
+                            squad.f1_score, best_span_string, answer_texts
                         )
                 self._official_f1(100 * f1_score)
             output_dict["qid"].append(per_dialog_query_id_list)

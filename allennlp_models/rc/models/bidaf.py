@@ -14,7 +14,7 @@ from allennlp.nn import util, InitializerApplicator, RegularizerApplicator
 from allennlp.training.metrics import BooleanAccuracy, CategoricalAccuracy
 
 from allennlp_models.rc.metrics import SquadEmAndF1
-from allennlp_models.rc.models.model_utils import get_best_span
+from allennlp_models.rc.models.utils import get_best_span
 
 logger = logging.getLogger(__name__)
 

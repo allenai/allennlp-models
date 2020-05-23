@@ -8,7 +8,7 @@ from typing import Dict, Tuple, List, Any, Optional
 import argparse
 import numpy as np
 
-from allennlp_models.rc.evaluations import drop_eval
+from allennlp_models.rc.evaluations import drop
 
 
 def _get_answers_from_data(annotations: Dict[str, Any]) -> Dict[str, List[str]]:
@@ -52,7 +52,7 @@ def evaluate_json(
         if query_id in predicted_answers:
             predicted = predicted_answers[query_id]
             gold_answer = tuple(candidate_answers)
-            em_score, f1_score = drop_eval.get_metrics(predicted, gold_answer)
+            em_score, f1_score = drop.get_metrics(predicted, gold_answer)
             if gold_answer[0].strip() != "":
                 max_em_score = max(max_em_score, em_score)
                 max_f1_score = max(max_f1_score, f1_score)

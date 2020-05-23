@@ -12,7 +12,7 @@ from allennlp.data.instance import Instance
 from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenIndexer
 from allennlp.data.tokenizers import Token, Tokenizer, SpacyTokenizer
 
-from allennlp_models.rc.dataset_readers import reader_utils
+from allennlp_models.rc.dataset_readers import utils
 
 logger = logging.getLogger(__name__)
 
@@ -106,13 +106,13 @@ class TriviaQaReader(DatasetReader):
 
             answer_json = question_json["Answer"]
             human_answers = [
-                reader_utils.normalize_text(answer)
+                utils.normalize_text(answer)
                 for answer in answer_json.get("HumanAnswers", [])
             ]
             answer_texts = answer_json["NormalizedAliases"] + human_answers
             for paragraph in self.pick_paragraphs(evidence_files, question_text, answer_texts):
                 paragraph_tokens = self._tokenizer.tokenize(paragraph)
-                token_spans = reader_utils.find_valid_answer_spans(paragraph_tokens, answer_texts)
+                token_spans = utils.find_valid_answer_spans(paragraph_tokens, answer_texts)
                 if not token_spans:
                     # For now, we'll just ignore instances that we can't find answer spans for.
                     # Maybe we can do something smarter here later, but this will do for now.
@@ -163,7 +163,7 @@ class TriviaQaReader(DatasetReader):
             question_tokens = self._tokenizer.tokenize(question_text)
         if not passage_tokens:
             passage_tokens = self._tokenizer.tokenize(passage_text)
-        return reader_utils.make_reading_comprehension_instance(
+        return utils.make_reading_comprehension_instance(
             question_tokens,
             passage_tokens,
             self._token_indexers,

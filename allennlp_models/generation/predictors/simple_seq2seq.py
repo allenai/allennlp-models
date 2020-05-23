@@ -3,7 +3,7 @@ import warnings
 from allennlp.data import DatasetReader
 from allennlp.models import Model
 from allennlp.predictors.predictor import Predictor
-from allennlp_models.generation.predictors.seq2seq_predictor import Seq2SeqPredictor
+from allennlp_models.generation.predictors.seq2seq import Seq2SeqPredictor
 
 
 @Predictor.register("simple_seq2seq")

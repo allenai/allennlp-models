@@ -15,7 +15,7 @@ from allennlp.nn import util
 from allennlp.training.metrics import BooleanAccuracy, CategoricalAccuracy
 from torch.nn.functional import cross_entropy
 
-from allennlp_models.rc.models.model_utils import get_best_span
+from allennlp_models.rc.models.utils import get_best_span
 from allennlp_models.rc.metrics import SquadEmAndF1
 
 logger = logging.getLogger(__name__)

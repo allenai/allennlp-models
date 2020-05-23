@@ -9,8 +9,8 @@ from allennlp.models.model import Model, remove_pretrained_embedding_params
 from allennlp.common import Params
 from allennlp.data import Vocabulary
 
-from allennlp_models.rc.models.bidaf_model import BidirectionalAttentionFlow
-from allennlp_models.rc.models.model_utils import get_best_span
+from allennlp_models.rc.models.bidaf import BidirectionalAttentionFlow
+from allennlp_models.rc.models.utils import get_best_span
 from allennlp_models.rc.metrics import SquadEmAndF1
 
 

@@ -5,7 +5,7 @@ from allennlp.common.testing import AllenNlpTestCase
 from allennlp.models.archival import load_archive
 from allennlp.predictors import Predictor
 
-from allennlp_models.structured_prediction.predictors.constituency_parser_predictor import (
+from allennlp_models.structured_prediction.predictors.constituency_parser import (
     LINK_TO_LABEL,
     NODE_TYPE_TO_STYLE,
 )

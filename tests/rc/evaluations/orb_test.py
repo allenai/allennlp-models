@@ -1,9 +1,9 @@
 # pylint: disable=no-self-use,invalid-name
 
-from allennlp_models.rc.evaluations.squad_eval import normalize_answer as _normalize_answer_squad
+from allennlp_models.rc.evaluations.squad import normalize_answer as _normalize_answer_squad
 from allennlp_models.rc.evaluations.orb_utils import get_metric_squad, get_metric_drop
-from allennlp_models.rc.evaluations.squad2_eval import get_metric_score as get_metric_squad2
-from allennlp_models.rc.evaluations.narrativeqa_eval import (
+from allennlp_models.rc.evaluations.squad2 import get_metric_score as get_metric_squad2
+from allennlp_models.rc.evaluations.narrativeqa import (
     get_metric_score as get_metric_narrativeqa,
 )
 from tests import FIXTURES_ROOT
@@ -169,7 +169,7 @@ class TestIntegration:
         gold_file = FIXTURES_ROOT / "rc" / "orb_sample_input.jsonl"
         predictions_file = FIXTURES_ROOT / "rc" / "orb_sample_predictions.json"
         result = os.system(
-            f"python -m allennlp_models.rc.evaluations.orb_eval --dataset_file {gold_file} "
+            f"python -m allennlp_models.rc.evaluations.orb --dataset_file {gold_file} "
             f"--prediction_file {predictions_file} --metrics_output_file /tmp/output.json"
         )
         assert result == 0

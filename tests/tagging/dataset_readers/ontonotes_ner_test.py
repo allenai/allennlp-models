@@ -2,7 +2,7 @@ import pytest
 
 from allennlp.common.util import ensure_list
 
-from allennlp_models.tagging.dataset_readers.ontonotes_ner_reader import (
+from allennlp_models.tagging.dataset_readers.ontonotes_ner import (
     OntonotesNamedEntityRecognition,
 )
 from tests import FIXTURES_ROOT

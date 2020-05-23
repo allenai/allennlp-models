@@ -13,7 +13,7 @@ from allennlp.modules.matrix_attention.matrix_attention import MatrixAttention
 from allennlp.nn import util, InitializerApplicator, RegularizerApplicator
 from allennlp.nn.util import masked_softmax
 
-from allennlp_models.rc.models.model_utils import get_best_span
+from allennlp_models.rc.models.utils import get_best_span
 from allennlp_models.rc.metrics.drop_em_and_f1 import DropEmAndF1
 
 logger = logging.getLogger(__name__)
