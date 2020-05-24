@@ -11,6 +11,24 @@ on:
     - cron: '17 10 * * *' # run at 10 AM UTC every day.
 
 jobs:
+  changelog:
+    name: CHANGELOG
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Debugging info
+      run: |
+        git remote -v
+
+    - name: Check that CHANGELOG has been updated
+      run: |
+        # If this step fails, this means you haven't updated the CHANGELOG.md
+        # file with notes on your contribution.
+        git diff --name-only $(git merge-base origin/master HEAD) | grep '^CHANGELOG.md$' && echo "Thanks for helping keep our CHANGELOG up-to-date!"
+
   checks:
     name: Checks
     runs-on: ubuntu-latest
@@ -58,15 +76,15 @@ jobs:
         make test-with-cov
 
     - name: Upload coverage to Codecov
-      if: matrix.python == '3.7'
-      run: |
+      if: matrix.python == '3.7' && github.repository == 'allenai/allennlp-models'
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage.xml
         # Ignore codecov failures as the codecov server is not
         # very reliable but we don't want to report a failure
         # in the github UI just because the coverage report failed to
         # be published.
-        codecov || echo "codecov upload failed"
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: false
 
   pretrained:
     name: Pretrained Models

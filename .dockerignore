@@ -1,7 +1,8 @@
 .dockerignore
 **.pyc
 **/__pycache__
+**/.mypy_cache
+.pytest_cache
 .gitignore
 .git
 build
-dist

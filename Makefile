@@ -1,3 +1,4 @@
+VERSION = $(shell python ./scripts/get_version.py current --minimal)
 DOCKER_TAG = latest
 DOCKER_RUN_CMD = docker run --rm \
 		-v $$HOME/.allennlp:/root/.allennlp \
@@ -7,7 +8,15 @@ ALLENNLP_COMMIT_SHA = $(shell git ls-remote https://github.com/allenai/allennlp 
 
 .PHONY : version
 version :
-	@python -c 'from allennlp_models.version import VERSION; print(f"AllenNLP Models v{VERSION}")'
+	@echo AllenNLP Models $(VERSION)
+
+.PHONY : clean
+clean :
+	rm -rf .pytest_cache/
+	rm -rf allennlp_models.egg-info/
+	rm -rf dist/
+	rm -rf build/
+	find . | grep -E '(\.mypy_cache|__pycache__|\.pyc|\.pyo$$)' | xargs rm -rf
 
 .PHONY : lint
 lint :
@@ -31,11 +40,22 @@ gpu-test :
 
 .PHONY : test-with-cov
 test-with-cov :
-	pytest --color=yes -rf --cov-config=.coveragerc --cov=allennlp_models/ --durations=40 -m "not pretrained_model_test"
+	pytest --color=yes -rf --durations=40 -m "not pretrained_model_test" \
+			--cov-config=.coveragerc \
+			--cov=allennlp_models/ \
+			--cov-report=xml
 
 .PHONY : test-pretrained
 test-pretrained :
 	pytest -v --color=yes -m "pretrained_model_test"
+
+.PHONY :
+docker-image :
+	docker build \
+		--pull \
+		--build-arg ALLENNLP_VERSION=$(VERSION) \
+		-f Dockerfile \
+		-t allennlp/models:v$(VERSION) .
 
 .PHONY : docker-test-image
 docker-test-image :

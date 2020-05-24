@@ -1,0 +1,17 @@
+# This Dockerfile is used to build an image from specific commits of allennlp and
+# allennlp-models. It requires two build args: ALLENNLP_COMMIT and ALLENNLP_MODELS_COMMIT,
+# which should be set to the desired commit SHAs for each repo, respectively.
+
+ARG ALLENNLP_COMMIT
+
+FROM allennlp/commit:${ALLENNLP_COMMIT}
+
+ARG ALLENNLP_MODELS_COMMIT
+
+# Ensure allennlp isn't re-installed when we install allennlp-models.
+ENV ALLENNLP_VERSION_OVERRIDE allennlp
+
+# To be compatible with older versions of allennlp-models.
+ENV IGNORE_ALLENNLP_IN_SETUP true
+
+RUN pip install --no-cache-dir git+https://github.com/allenai/allennlp-models.git@${ALLENNLP_MODELS_COMMIT}
