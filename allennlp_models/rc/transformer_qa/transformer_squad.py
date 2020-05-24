@@ -3,7 +3,7 @@ import logging
 from typing import Any, Dict, List, Tuple, Optional, Iterable
 
 from allennlp.common.util import sanitize_wordpiece
-from allennlp.data.dataset_readers import OOCDatasetReader
+from allennlp.data.dataset_readers.ooc_reader import OOCDatasetReader
 from allennlp.data.fields import MetadataField, TextField, SpanField
 from overrides import overrides
 
