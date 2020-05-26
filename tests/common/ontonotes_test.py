@@ -5,7 +5,7 @@ from allennlp.common.testing import AllenNlpTestCase
 from allennlp_models.common.ontonotes import Ontonotes
 from tests import FIXTURES_ROOT
 
-CONLL_PATH = FIXTURES_ROOT / "syntax" / "srl" / "conll_2012"
+CONLL_PATH = FIXTURES_ROOT / "structured_prediction" / "srl" / "conll_2012"
 
 
 class TestOntonotes(AllenNlpTestCase):
