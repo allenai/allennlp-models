@@ -1,5 +1,8 @@
 git+https://github.com/allenai/allennlp.git@master
 
+# For structured prediction.
+conllu==2.3.2
+
 # For RC models
 word2number>=1.1
 py-rouge==1.1
