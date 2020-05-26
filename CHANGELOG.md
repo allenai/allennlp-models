@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-* Moved the models into categories based on their format
+### Changed
+
+- Moved the models into categories based on their format
+
+### Fixed
+
+- Made `transformer_qa` predictor accept JSON input with the keys "question" and "passage" to be consistent with the `reading-comprehension` predictor.
 
 ## [v1.0.0rc4](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0rc4) - 2019-05-14
 
