@@ -8,7 +8,7 @@ from typing import Dict, Tuple, List, Any, Optional
 import argparse
 import numpy as np
 
-from allennlp_models.rc.evaluations import drop
+from allennlp_models.rc.tools import drop
 
 
 def _get_answers_from_data(annotations: Dict[str, Any]) -> Dict[str, List[str]]:

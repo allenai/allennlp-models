@@ -89,11 +89,7 @@ class SemanticRoleLabelerTest(ModelTestCase):
         perl_script_command = [
             "perl",
             str(
-                PROJECT_ROOT
-                / "allennlp_models"
-                / "structured_prediction"
-                / "metrics"
-                / "srl-eval.pl"
+                PROJECT_ROOT / "allennlp_models" / "structured_prediction" / "tools" / "srl-eval.pl"
             ),
             prediction_file_path,
             gold_file_path,

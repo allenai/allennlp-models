@@ -3,7 +3,7 @@ from typing import Tuple
 from allennlp.training.metrics.metric import Metric
 from overrides import overrides
 
-from allennlp_models.rc.evaluations import squad
+from allennlp_models.rc.tools import squad
 
 
 @Metric.register("squad")

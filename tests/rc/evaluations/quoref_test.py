@@ -2,7 +2,7 @@ import os
 
 from allennlp.common.testing import AllenNlpTestCase
 
-from allennlp_models.rc.evaluations import quoref
+from allennlp_models.rc.tools import quoref
 from tests import FIXTURES_ROOT
 
 
@@ -29,7 +29,7 @@ class TestQuorefEval(AllenNlpTestCase):
         predictions_file = FIXTURES_ROOT / "rc" / "quoref_sample_predictions.json"
         gold_file = FIXTURES_ROOT / "rc" / "quoref_sample.json"
         result = os.system(
-            f"python -m allennlp_models.rc.evaluations.quoref --gold_path {gold_file} "
+            f"python -m allennlp_models.rc.tools.quoref --gold_path {gold_file} "
             f"--prediction_path {predictions_file} --output_path /tmp/output.json"
         )
         assert result == 0

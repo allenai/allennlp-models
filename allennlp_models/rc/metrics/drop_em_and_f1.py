@@ -3,11 +3,11 @@ from typing import Tuple, List, Union
 from allennlp.training.metrics.metric import Metric
 from overrides import overrides
 
-from allennlp_models.rc.evaluations.drop import (
+from allennlp_models.rc.tools.drop import (
     get_metrics as drop_em_and_f1,
     answer_json_to_strings,
 )
-from allennlp_models.rc.evaluations.squad import metric_max_over_ground_truths
+from allennlp_models.rc.tools.squad import metric_max_over_ground_truths
 
 
 @Metric.register("drop")

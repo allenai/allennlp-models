@@ -1,7 +1,7 @@
 import io
 from contextlib import redirect_stdout
 
-from allennlp_models.rc.evaluations.drop import _normalize_answer, get_metrics, evaluate_json
+from allennlp_models.rc.tools.drop import _normalize_answer, get_metrics, evaluate_json
 
 
 class TestDropEvalNormalize:

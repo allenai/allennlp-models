@@ -7,8 +7,9 @@ from allennlp.common.checks import check_for_gpu
 from allennlp.data import Instance
 from allennlp.predictors import Predictor
 
-from allennlp_models.rc.common import SquadEmAndF1
 from tqdm import tqdm
+
+from allennlp_models.rc.metrics import SquadEmAndF1
 
 logger = logging.getLogger(__name__)
 

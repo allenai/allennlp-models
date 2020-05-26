@@ -13,7 +13,7 @@ from __future__ import print_function
 
 import argparse
 import json
-from allennlp_models.rc.evaluations.orb_utils import evaluate_dataset
+from allennlp_models.rc.tools.orb_utils import evaluate_dataset
 
 
 def read_predictions(json_file):

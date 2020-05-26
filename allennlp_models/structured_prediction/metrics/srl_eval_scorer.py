@@ -14,7 +14,7 @@ from allennlp.training.metrics.metric import Metric
 logger = logging.getLogger(__name__)
 
 DEFAULT_SRL_EVAL_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(os.path.realpath(__file__)), "srl-eval.pl")
+    os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "tools", "srl-eval.pl")
 )
 
 
