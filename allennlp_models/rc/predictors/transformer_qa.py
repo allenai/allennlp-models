@@ -57,7 +57,7 @@ class TransformerQAPredictor(Predictor):
                 qid=str(self._next_qid),
                 question=json_dict["question"],
                 answers=[],
-                context=json_dict["context"],
+                context=json_dict.get("passage", json_dict["context"]),
                 first_answer_offset=None,
             )
         )
