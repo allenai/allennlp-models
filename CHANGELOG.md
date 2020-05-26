@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+* Moved the models into categories based on their format
+
 ## [v1.0.0rc4](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0rc4) - 2019-05-14
 
 We first introduced this `CHANGELOG` after release `v1.0.0rc4`, so please refer to the GitHub release
