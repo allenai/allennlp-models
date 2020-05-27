@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Nothing yet
+- Replaced `deepcopy` of `Instance`s with new `Instance.duplicate()` method.
 
 ### Added
 
