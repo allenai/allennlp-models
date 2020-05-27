@@ -30,7 +30,7 @@
         "batch_sampler": {
             "type": "max_tokens_sampler",
             "max_tokens": 2048,
-            "sorting_keys": ["source_tokens"]
+            "sorting_keys": ["source_tokens", "target_tokens"]
         }
     },
     "trainer": {
@@ -51,7 +51,7 @@
             "summary_interval": 4,
             "should_log_learning_rate": true
         },
-        "num_gradient_accumulation_steps": 4,
+        "num_gradient_accumulation_steps": 32,
         "grad_norm": 0.1,
         "cuda_device": 0
     }

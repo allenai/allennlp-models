@@ -149,7 +149,7 @@ class Bart(Model):
             self._end_id, max_steps=max_decoding_steps, beam_size=beam_size or 1
         )
 
-        self._rogue = ROUGE(exclude_indices={self._start_id, self._pad_id, self._end_id})
+        self._rouge = ROUGE(exclude_indices={self._start_id, self._pad_id, self._end_id})
         self._bleu = BLEU(exclude_indices={self._start_id, self._pad_id, self._end_id})
 
         # Replace bart encoder with given encoder. We need to extract the two embedding layers so that
@@ -194,8 +194,6 @@ class Bart(Model):
 
         outputs = {}
 
-        generating = not self.training
-
         # If no targets are provided, then shift input to right by 1. Bart already does this interally
         # but it does not use them for loss calculation
         if targets is not None:
@@ -208,16 +206,19 @@ class Bart(Model):
             decoder_logits = self.bart(
                 input_ids=input_ids,
                 attention_mask=input_mask,
-                decoder_input_ids=target_ids,
-                decoder_attention_mask=target_mask,
-                generation_mode=generating,
+                decoder_input_ids=target_ids[:, :-1].contiguous(),
+                decoder_attention_mask=target_mask[:, :-1].contiguous(),
             )[0]
 
             outputs["decoder_logits"] = decoder_logits
 
             # The BART paper mentions label smoothing of 0.1 for sequence generation tasks
             outputs["loss"] = sequence_cross_entropy_with_logits(
-                decoder_logits, target_ids, target_mask, label_smoothing=0.1
+                decoder_logits,
+                target_ids[:, 1:].contiguous(),
+                target_mask[:, 1:].contiguous(),
+                label_smoothing=0.1,
+                average="token",
             )
         else:
             # Use decoder start id and start of sentence to start decoder
@@ -242,7 +243,7 @@ class Bart(Model):
             )
             predictions = predictions.gather(dim=1, index=max_pred_indices).squeeze(dim=1)
 
-            self._rogue(predictions, target_ids)
+            self._rouge(predictions, target_ids)
             self._bleu(predictions, target_ids)
 
             outputs["predictions"] = predictions
