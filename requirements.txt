@@ -1,6 +1,4 @@
-# git+https://github.com/allenai/allennlp.git@master
-# TODO: remove
-git+https://github.com/epwalsh/allennlp.git@text-field-deep-copy
+git+https://github.com/allenai/allennlp.git@master
 
 # For structured prediction.
 conllu==2.3.2
