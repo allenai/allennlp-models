@@ -16,6 +16,9 @@ pytest-cov
 coverage
 codecov
 
+# For running tests that aren't 100% reliable
+flaky
+
 #### PACKAGE-UPLOAD PACKAGES ####
 
 # Pypi uploads
