@@ -67,15 +67,6 @@ with open("requirements.txt") as requirements_file:
     install_requirements.extend(allennlp_requirements)
     install_requirements = [fix_url_dependencies(req) for req in install_requirements]
 
-# make pytest-runner a conditional requirement,
-# per: https://github.com/pytest-dev/pytest-runner#considerations
-needs_pytest = {"pytest", "test", "ptr"}.intersection(sys.argv)
-pytest_runner = ["pytest-runner"] if needs_pytest else []
-
-setup_requirements = [
-    # add other setup requirements as necessary
-] + pytest_runner
-
 setup(
     name="allennlp_models",
     version=VERSION["VERSION"],
@@ -96,8 +87,6 @@ setup(
     license="Apache",
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"],),
     install_requires=install_requirements,
-    setup_requires=setup_requirements,
-    tests_require=["pytest", "flaky", "responses>=0.7"],
     include_package_data=True,
     python_requires=">=3.6.1",
     zip_safe=False,
