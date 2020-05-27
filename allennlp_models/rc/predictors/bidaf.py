@@ -1,4 +1,3 @@
-from copy import deepcopy
 from typing import Dict, List
 
 from overrides import overrides
@@ -57,7 +56,7 @@ class ReadingComprehensionPredictor(Predictor):
     def predictions_to_labeled_instances(
         self, instance: Instance, outputs: Dict[str, numpy.ndarray]
     ) -> List[Instance]:
-        new_instance = deepcopy(instance)
+        new_instance = instance.duplicate()
         # For BiDAF
         if "best_span" in outputs:
             span_start_label = outputs["best_span"][0]
