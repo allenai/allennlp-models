@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-import sys
 import os
 
 # PEP0440 compatible formatted version, see:
