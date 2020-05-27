@@ -1,4 +1,3 @@
-from copy import deepcopy
 from typing import Dict
 
 from overrides import overrides
@@ -19,7 +18,7 @@ class NextTokenLMPredictor(Predictor):
     def predictions_to_labeled_instances(
         self, instance: Instance, outputs: Dict[str, numpy.ndarray]
     ):
-        new_instance = deepcopy(instance)
+        new_instance = instance.duplicate()
         token_field: TextField = instance["tokens"]  # type: ignore
         mask_targets = [Token(target_top_k[0]) for target_top_k in outputs["words"]]
 
