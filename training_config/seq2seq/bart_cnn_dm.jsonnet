@@ -2,7 +2,7 @@
     "train_data_path": "",
     "validation_data_path": "",
     "dataset_reader": {
-        "type": "allennlp_models.seq2seq.Seq2SeqDatasetReader",
+        "type": "allennlp_models.generation.dataset_readers.Seq2SeqDatasetReader",
         "source_tokenizer": {
             "type": "pretrained_transformer",
             "model_name": "bart-large",

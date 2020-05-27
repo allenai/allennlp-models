@@ -10,6 +10,14 @@ ALLENNLP_COMMIT_SHA = $(shell git ls-remote https://github.com/allenai/allennlp 
 version :
 	@echo AllenNLP Models $(VERSION)
 
+.PHONY : clean
+clean :
+	rm -rf .pytest_cache/
+	rm -rf allennlp_models.egg-info/
+	rm -rf dist/
+	rm -rf build/
+	find . | grep -E '(\.mypy_cache|__pycache__|\.pyc|\.pyo$$)' | xargs rm -rf
+
 .PHONY : lint
 lint :
 	flake8
@@ -32,7 +40,10 @@ gpu-test :
 
 .PHONY : test-with-cov
 test-with-cov :
-	pytest --color=yes -rf --cov-config=.coveragerc --cov=allennlp_models/ --durations=40 -m "not pretrained_model_test"
+	pytest --color=yes -rf --durations=40 -m "not pretrained_model_test" \
+			--cov-config=.coveragerc \
+			--cov=allennlp_models/ \
+			--cov-report=xml
 
 .PHONY : test-pretrained
 test-pretrained :

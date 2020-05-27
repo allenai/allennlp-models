@@ -80,7 +80,7 @@ To build an image locally from a specific release, run
 
 Just replace "1.0.0rc3" with the desired version.
 
-Alternately, you can build against specific commits of `allennlp` and `allennlp-models` with
+Alternatively, you can build against specific commits of `allennlp` and `allennlp-models` with
 
    ```bash
    docker build \
@@ -98,4 +98,4 @@ Now run the following command to get an environment that will run on either the 
    docker run --rm -v $HOME/.allennlp:/root/.allennlp allennlp/models
    ```
 
-If you have GPUs available, add the flag `--gpu N` right before `--rm`, where `N` is the number of GPUs you have available.
+If you have GPUs available, you can install the [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) runtime and then add the flag `--gpus all` right before `--rm`.

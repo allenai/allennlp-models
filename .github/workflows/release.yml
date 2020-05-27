@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: Build Package
+    name: Build package
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -21,7 +21,7 @@ jobs:
         python-version: ${{ matrix.python }}
 
     - name: Set AllenNLP version override
-      run:
+      run: |
         VERSION=$(./scripts/get_version.py current --minimal)
         ALLENNLP_VERSION_OVERRIDE="allennlp==$VERSION"
         echo "Setting ALLENNLP_VERSION_OVERRIDE to $ALLENNLP_VERSION_OVERRIDE"
@@ -171,9 +171,28 @@ jobs:
       run: |
         make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='test-pretrained'
 
+  gpu_checks:
+    name: GPU Checks
+    runs-on: [self-hosted, GPU]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set Docker tag
+      run: |
+        echo "::set-env name=DOCKER_TAG::${GITHUB_REF#refs/tags/}";
+
+    - name: Build test image
+      run: |
+        make docker-test-image DOCKER_TAG=$DOCKER_TAG
+
+    - name: Run GPU tests
+      run: |
+        make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='gpu-test'
+
   publish:
     name: PyPI
-    needs: [build, test, docker, pretrained]
+    needs: [build, test, docker, pretrained, gpu_checks]
     runs-on: ubuntu-latest
 
     steps:
