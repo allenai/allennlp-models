@@ -1,5 +1,4 @@
 from typing import List, Dict
-from copy import deepcopy
 
 import numpy
 from overrides import overrides
@@ -51,7 +50,7 @@ class DecomposableAttentionPredictor(Predictor):
     def predictions_to_labeled_instances(
         self, instance: Instance, outputs: Dict[str, numpy.ndarray]
     ) -> List[Instance]:
-        new_instance = deepcopy(instance)
+        new_instance = instance.duplicate()
         label = numpy.argmax(outputs["label_logits"])
         # Skip indexing, we have integer representations of the strings "entailment", etc.
         new_instance.add_field("label", LabelField(int(label), skip_indexing=True))
