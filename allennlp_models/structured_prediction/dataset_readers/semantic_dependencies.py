@@ -90,8 +90,9 @@ class SemanticDependenciesDatasetReader(DatasetReader):
     def __init__(
         self,
         token_indexers: Dict[str, TokenIndexer] = None,
-        skip_when_no_arcs = True,
-        **kwargs) -> None:
+        skip_when_no_arcs: bool = True,
+        **kwargs,
+    ) -> None:
         super().__init__(**kwargs)
         self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
         self._skip_when_no_arcs = skip_when_no_arcs
