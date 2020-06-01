@@ -275,8 +275,17 @@ class BidirectionalAttentionFlow(Model):
         span_end_input = self._dropout(torch.cat([final_merged_passage, encoded_span_end], dim=-1))
         span_end_logits = self._span_end_predictor(span_end_input).squeeze(-1)
         span_end_probs = util.masked_softmax(span_end_logits, passage_mask)
-        span_start_logits = util.replace_masked_values(span_start_logits, passage_mask, -65_000)
-        span_end_logits = util.replace_masked_values(span_end_logits, passage_mask, -65_000)
+
+        # Replace the masked values with a very negative constant.
+        # We have to be careful here because if we're training with half/mixed precision floats,
+        # -1e7 would result in an overflow. Hence we fall back to the min FP16 value.
+        very_negative_constant = max(torch.finfo().min, -1e7)
+        span_start_logits = util.replace_masked_values(
+            span_start_logits, passage_mask, very_negative_constant
+        )
+        span_end_logits = util.replace_masked_values(
+            span_end_logits, passage_mask, very_negative_constant
+        )
         best_span = get_best_span(span_start_logits, span_end_logits)
 
         output_dict = {
