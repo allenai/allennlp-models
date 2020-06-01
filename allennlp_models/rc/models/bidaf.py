@@ -275,8 +275,8 @@ class BidirectionalAttentionFlow(Model):
         span_end_input = self._dropout(torch.cat([final_merged_passage, encoded_span_end], dim=-1))
         span_end_logits = self._span_end_predictor(span_end_input).squeeze(-1)
         span_end_probs = util.masked_softmax(span_end_logits, passage_mask)
-        span_start_logits = util.replace_masked_values(span_start_logits, passage_mask, -1e7)
-        span_end_logits = util.replace_masked_values(span_end_logits, passage_mask, -1e7)
+        span_start_logits = util.replace_masked_values(span_start_logits, passage_mask, -65_000)
+        span_end_logits = util.replace_masked_values(span_end_logits, passage_mask, -65_000)
         best_span = get_best_span(span_start_logits, span_end_logits)
 
         output_dict = {
