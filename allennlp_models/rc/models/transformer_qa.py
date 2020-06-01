@@ -121,10 +121,16 @@ class TransformerQA(Model):
         for i, (start, end) in enumerate(context_span):
             possible_answer_mask[i, start : end + 1] = True
 
+        # Replace the masked values with a very negative constant.
+        # We have to be careful here because if we're training with half/mixed precision floats,
+        # -1e7 would result in an overflow. Hence we fall back to the min FP16 value.
+        very_negative_constant = max(torch.finfo().min, -1e32)
         span_start_logits = util.replace_masked_values(
-            span_start_logits, possible_answer_mask, -1e32
+            span_start_logits, possible_answer_mask, very_negative_constant
         )
-        span_end_logits = util.replace_masked_values(span_end_logits, possible_answer_mask, -1e32)
+        span_end_logits = util.replace_masked_values(
+            span_end_logits, possible_answer_mask, very_negative_constant
+        )
         span_start_probs = torch.nn.functional.softmax(span_start_logits, dim=-1)
         span_end_probs = torch.nn.functional.softmax(span_end_logits, dim=-1)
         best_spans = get_best_span(span_start_logits, span_end_logits)
