@@ -13,7 +13,10 @@ from allennlp.modules.matrix_attention.matrix_attention import MatrixAttention
 from allennlp.nn import util, InitializerApplicator, RegularizerApplicator
 from allennlp.nn.util import masked_softmax
 
-from allennlp_models.rc.models.utils import get_best_span
+from allennlp_models.rc.models.utils import (
+    get_best_span,
+    replace_masked_values_with_big_negative_number,
+)
 from allennlp_models.rc.metrics.drop_em_and_f1 import DropEmAndF1
 
 logger = logging.getLogger(__name__)
@@ -283,11 +286,11 @@ class NumericallyAugmentedQaNet(Model):
             )
 
             # Info about the best passage span prediction
-            passage_span_start_logits = util.replace_masked_values(
-                passage_span_start_logits, passage_mask, -1e7
+            passage_span_start_logits = replace_masked_values_with_big_negative_number(
+                passage_span_start_logits, passage_mask
             )
-            passage_span_end_logits = util.replace_masked_values(
-                passage_span_end_logits, passage_mask, -1e7
+            passage_span_end_logits = replace_masked_values_with_big_negative_number(
+                passage_span_end_logits, passage_mask
             )
             # Shape: (batch_size, 2)
             best_passage_span = get_best_span(passage_span_start_logits, passage_span_end_logits)
@@ -329,11 +332,11 @@ class NumericallyAugmentedQaNet(Model):
             )
 
             # Info about the best question span prediction
-            question_span_start_logits = util.replace_masked_values(
-                question_span_start_logits, question_mask, -1e7
+            question_span_start_logits = replace_masked_values_with_big_negative_number(
+                question_span_start_logits, question_mask
             )
-            question_span_end_logits = util.replace_masked_values(
-                question_span_end_logits, question_mask, -1e7
+            question_span_end_logits = replace_masked_values_with_big_negative_number(
+                question_span_end_logits, question_mask
             )
             # Shape: (batch_size, 2)
             best_question_span = get_best_span(question_span_start_logits, question_span_end_logits)
@@ -442,8 +445,8 @@ class NumericallyAugmentedQaNet(Model):
                         + log_likelihood_for_passage_span_ends
                     )
                     # For those padded spans, we set their log probabilities to be very small negative value
-                    log_likelihood_for_passage_spans = util.replace_masked_values(
-                        log_likelihood_for_passage_spans, gold_passage_span_mask, -1e7
+                    log_likelihood_for_passage_spans = replace_masked_values_with_big_negative_number(
+                        log_likelihood_for_passage_spans, gold_passage_span_mask,
                     )
                     # Shape: (batch_size, )
                     log_marginal_likelihood_for_passage_span = util.logsumexp(
@@ -477,8 +480,8 @@ class NumericallyAugmentedQaNet(Model):
                         + log_likelihood_for_question_span_ends
                     )
                     # For those padded spans, we set their log probabilities to be very small negative value
-                    log_likelihood_for_question_spans = util.replace_masked_values(
-                        log_likelihood_for_question_spans, gold_question_span_mask, -1e7
+                    log_likelihood_for_question_spans = replace_masked_values_with_big_negative_number(
+                        log_likelihood_for_question_spans, gold_question_span_mask,
                     )
                     # Shape: (batch_size, )
 
@@ -505,8 +508,8 @@ class NumericallyAugmentedQaNet(Model):
                     # Shape: (batch_size, # of combinations)
                     log_likelihood_for_add_subs = log_likelihood_for_number_signs.sum(1)
                     # For those padded combinations, we set their log probabilities to be very small negative value
-                    log_likelihood_for_add_subs = util.replace_masked_values(
-                        log_likelihood_for_add_subs, gold_add_sub_mask, -1e7
+                    log_likelihood_for_add_subs = replace_masked_values_with_big_negative_number(
+                        log_likelihood_for_add_subs, gold_add_sub_mask
                     )
                     # Shape: (batch_size, )
                     log_marginal_likelihood_for_add_sub = util.logsumexp(
@@ -527,8 +530,8 @@ class NumericallyAugmentedQaNet(Model):
                         count_number_log_probs, 1, clamped_gold_counts
                     )
                     # For those padded spans, we set their log probabilities to be very small negative value
-                    log_likelihood_for_counts = util.replace_masked_values(
-                        log_likelihood_for_counts, gold_count_mask, -1e7
+                    log_likelihood_for_counts = replace_masked_values_with_big_negative_number(
+                        log_likelihood_for_counts, gold_count_mask
                     )
                     # Shape: (batch_size, )
                     log_marginal_likelihood_for_count = util.logsumexp(log_likelihood_for_counts)
