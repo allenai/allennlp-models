@@ -4,9 +4,14 @@ import numpy
 from numpy.testing import assert_almost_equal
 import torch
 
+try:
+    from apex import amp
+except ImportError:
+    amp = None
+
 from allennlp.common import Params
 from allennlp.common.checks import ConfigurationError
-from allennlp.common.testing import ModelTestCase
+from allennlp.common.testing import ModelTestCase, requires_gpu
 from allennlp.data import DatasetReader, Vocabulary
 from allennlp.data import Batch
 from allennlp.models import Model
@@ -132,3 +137,19 @@ class BidirectionalAttentionFlowTest(ModelTestCase):
         params["model"]["span_end_encoder"]["input_size"] = 50
         with pytest.raises(ConfigurationError):
             Model.from_params(vocab=self.vocab, params=params.pop("model"))
+
+
+class BidirectionalAttentionFlowMixedPrecisionTest(ModelTestCase):
+    def setup_method(self):
+        super().setup_method()
+        self.set_up_model(
+            FIXTURES_ROOT / "rc" / "bidaf" / "experiment.json", FIXTURES_ROOT / "rc" / "squad.json"
+        )
+
+    @flaky(max_runs=5)
+    @requires_gpu
+    @pytest.mark.skipif(amp is None, reason="Apex is not installed.")
+    def test_model_can_train_save_and_load_with_mixed_precision(self):
+        self.ensure_model_can_train_save_and_load(
+            self.param_file, tolerance=1e-4, overrides="{'trainer.opt_level':'O1','cuda_device':0}",
+        )
