@@ -16,6 +16,7 @@ from allennlp.nn import InitializerApplicator, util
 from allennlp.training.metrics import Average, BooleanAccuracy, CategoricalAccuracy
 
 from allennlp_models.rc.tools import squad
+from allennlp_models.rc.models.utils import replace_masked_values_with_big_negative_number
 
 logger = logging.getLogger(__name__)
 
@@ -291,11 +292,8 @@ class DialogQA(Model):
 
         # We replace masked values with something really negative here, so they don't affect the
         # max below.
-        # We have to be careful here because if we're training with half/mixed precision floats,
-        # -1e7 would result in an overflow. Hence we fall back to the min FP16 value.
-        very_negative_constant = max(torch.finfo(passage_question_similarity.dtype).min, -1e7)
-        masked_similarity = util.replace_masked_values(
-            passage_question_similarity, question_mask.unsqueeze(1), very_negative_constant
+        masked_similarity = replace_masked_values_with_big_negative_number(
+            passage_question_similarity, question_mask.unsqueeze(1)
         )
 
         question_passage_similarity = masked_similarity.max(dim=-1)[0].squeeze(-1)
@@ -360,13 +358,12 @@ class DialogQA(Model):
         span_yesno_logits = self._span_yesno_predictor(end_rep).squeeze(-1)
         span_followup_logits = self._span_followup_predictor(end_rep).squeeze(-1)
 
-        very_negative_constant = max(torch.finfo(span_start_logits.dtype).min, -1e7)
-        span_start_logits = util.replace_masked_values(
-            span_start_logits, repeated_passage_mask, very_negative_constant
+        span_start_logits = replace_masked_values_with_big_negative_number(
+            span_start_logits, repeated_passage_mask
         )
         # batch_size * maxqa_len_pair, max_document_len
-        span_end_logits = util.replace_masked_values(
-            span_end_logits, repeated_passage_mask, very_negative_constant
+        span_end_logits = replace_masked_values_with_big_negative_number(
+            span_end_logits, repeated_passage_mask
         )
 
         best_span = self._get_best_span_yesno_followup(

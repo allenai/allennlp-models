@@ -11,11 +11,13 @@ from torch import nn
 
 from allennlp.data import Vocabulary
 from allennlp.models.model import Model
-from allennlp.nn import util
 from allennlp.training.metrics import BooleanAccuracy, CategoricalAccuracy
 from torch.nn.functional import cross_entropy
 
-from allennlp_models.rc.models.utils import get_best_span
+from allennlp_models.rc.models.utils import (
+    get_best_span,
+    replace_masked_values_with_big_negative_number,
+)
 from allennlp_models.rc.metrics import SquadEmAndF1
 
 logger = logging.getLogger(__name__)
@@ -122,14 +124,11 @@ class TransformerQA(Model):
             possible_answer_mask[i, start : end + 1] = True
 
         # Replace the masked values with a very negative constant.
-        # We have to be careful here because if we're training with half/mixed precision floats,
-        # -1e7 would result in an overflow. Hence we fall back to the min FP16 value.
-        very_negative_constant = max(torch.finfo(span_start_logits.dtype).min, -1e32)
-        span_start_logits = util.replace_masked_values(
-            span_start_logits, possible_answer_mask, very_negative_constant
+        span_start_logits = replace_masked_values_with_big_negative_number(
+            span_start_logits, possible_answer_mask, -1e32
         )
-        span_end_logits = util.replace_masked_values(
-            span_end_logits, possible_answer_mask, very_negative_constant
+        span_end_logits = replace_masked_values_with_big_negative_number(
+            span_end_logits, possible_answer_mask, -1e32
         )
         span_start_probs = torch.nn.functional.softmax(span_start_logits, dim=-1)
         span_end_probs = torch.nn.functional.softmax(span_end_logits, dim=-1)
@@ -158,14 +157,15 @@ class TransformerQA(Model):
             )
 
             start_loss = cross_entropy(span_start_logits, span_start, ignore_index=-1)
-            if torch.any(start_loss > 1e9):
+            big_constant = min(torch.finfo(start_loss.dtype).max, 1e9)
+            if torch.any(start_loss > big_constant):
                 logger.critical("Start loss too high (%r)", start_loss)
                 logger.critical("span_start_logits: %r", span_start_logits)
                 logger.critical("span_start: %r", span_start)
                 assert False
 
             end_loss = cross_entropy(span_end_logits, span_end, ignore_index=-1)
-            if torch.any(end_loss > 1e9):
+            if torch.any(end_loss > big_constant):
                 logger.critical("End loss too high (%r)", end_loss)
                 logger.critical("span_end_logits: %r", span_end_logits)
                 logger.critical("span_end: %r", span_end)

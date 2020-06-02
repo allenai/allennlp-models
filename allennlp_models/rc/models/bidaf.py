@@ -14,7 +14,10 @@ from allennlp.nn import util, InitializerApplicator, RegularizerApplicator
 from allennlp.training.metrics import BooleanAccuracy, CategoricalAccuracy
 
 from allennlp_models.rc.metrics import SquadEmAndF1
-from allennlp_models.rc.models.utils import get_best_span
+from allennlp_models.rc.models.utils import (
+    get_best_span,
+    replace_masked_values_with_big_negative_number,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -213,8 +216,8 @@ class BidirectionalAttentionFlow(Model):
 
         # We replace masked values with something really negative here, so they don't affect the
         # max below.
-        masked_similarity = util.replace_masked_values(
-            passage_question_similarity, question_mask.unsqueeze(1), -1e7
+        masked_similarity = replace_masked_values_with_big_negative_number(
+            passage_question_similarity, question_mask.unsqueeze(1)
         )
         # Shape: (batch_size, passage_length)
         question_passage_similarity = masked_similarity.max(dim=-1)[0].squeeze(-1)
@@ -277,14 +280,11 @@ class BidirectionalAttentionFlow(Model):
         span_end_probs = util.masked_softmax(span_end_logits, passage_mask)
 
         # Replace the masked values with a very negative constant.
-        # We have to be careful here because if we're training with half/mixed precision floats,
-        # -1e7 would result in an overflow. Hence we fall back to the min FP16 value.
-        very_negative_constant = max(torch.finfo(span_start_logits.dtype).min, -1e7)
-        span_start_logits = util.replace_masked_values(
-            span_start_logits, passage_mask, very_negative_constant
+        span_start_logits = replace_masked_values_with_big_negative_number(
+            span_start_logits, passage_mask
         )
-        span_end_logits = util.replace_masked_values(
-            span_end_logits, passage_mask, very_negative_constant
+        span_end_logits = replace_masked_values_with_big_negative_number(
+            span_end_logits, passage_mask
         )
         best_span = get_best_span(span_start_logits, span_end_logits)
 

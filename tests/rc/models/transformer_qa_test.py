@@ -65,5 +65,5 @@ class TrasnformerQaMixedPrecisionTest(AllenNlpTestCase):
         train_model_from_file(
             FIXTURES_ROOT / "rc" / "transformer_qa" / "experiment.jsonnet",
             self.TEST_DIR,
-            overrides="{'trainer.opt_level':'O1','trainer.cuda_device':0}",
+            overrides="{'trainer.opt_level':'O2','trainer.cuda_device':0}",
         )
