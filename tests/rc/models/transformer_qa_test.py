@@ -60,7 +60,7 @@ class TransformerQaTest(ModelTestCase):
 
 @requires_gpu
 @pytest.mark.skipif(amp is None, reason="Apex is not installed.")
-class TrasnformerQaMixedPrecisionTest(AllenNlpTestCase):
+class TransformerQaMixedPrecisionTest(AllenNlpTestCase):
     def test_model_can_train_save_and_load_with_mixed_precision(self):
         train_model_from_file(
             FIXTURES_ROOT / "rc" / "transformer_qa" / "experiment.jsonnet",
