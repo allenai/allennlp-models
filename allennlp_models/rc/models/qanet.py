@@ -215,11 +215,19 @@ class QaNet(Model):
         # Shape: (batch_size, passage_length)
         span_start_logits = self._span_start_predictor(span_start_input).squeeze(-1)
 
+        # We have to be careful here because if we're training with half/mixed precision floats,
+        # -1e32 would result in an overflow. Hence we fall back to the min FP16 value.
+        very_negative_constant = max(torch.finfo(span_start_logits.dtype).min, -1e32)
+
         # Shape: (batch_size, passage_length, modeling_dim * 2)
         span_end_input = torch.cat([modeled_passage_list[-3], modeled_passage_list[-1]], dim=-1)
         span_end_logits = self._span_end_predictor(span_end_input).squeeze(-1)
-        span_start_logits = util.replace_masked_values(span_start_logits, passage_mask, -1e32)
-        span_end_logits = util.replace_masked_values(span_end_logits, passage_mask, -1e32)
+        span_start_logits = util.replace_masked_values(
+            span_start_logits, passage_mask, very_negative_constant
+        )
+        span_end_logits = util.replace_masked_values(
+            span_end_logits, passage_mask, very_negative_constant
+        )
 
         # Shape: (batch_size, passage_length)
         span_start_probs = torch.nn.functional.softmax(span_start_logits, dim=-1)
