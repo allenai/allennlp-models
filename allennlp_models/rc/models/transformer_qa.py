@@ -124,7 +124,7 @@ class TransformerQA(Model):
         # Replace the masked values with a very negative constant.
         # We have to be careful here because if we're training with half/mixed precision floats,
         # -1e7 would result in an overflow. Hence we fall back to the min FP16 value.
-        very_negative_constant = max(torch.finfo().min, -1e32)
+        very_negative_constant = max(torch.finfo(span_start_logits.dtype).min, -1e32)
         span_start_logits = util.replace_masked_values(
             span_start_logits, possible_answer_mask, very_negative_constant
         )
