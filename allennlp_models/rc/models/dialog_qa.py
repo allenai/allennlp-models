@@ -518,9 +518,7 @@ class DialogQA(Model):
         if span_start_logits.dim() != 2 or span_end_logits.dim() != 2:
             raise ValueError("Input shapes must be (batch_size, passage_length)")
         batch_size, passage_length = span_start_logits.size()
-
-        very_negative_constant = max(torch.finfo(span_start_logits.dtype).min, -1e20)
-        max_span_log_prob = [very_negative_constant] * batch_size
+        max_span_log_prob = [util.min_value_of_dtype(span_start_logits.dtype)] * batch_size
         span_start_argmax = [0] * batch_size
 
         best_word_span = span_start_logits.new_zeros((batch_size, 4), dtype=torch.long)

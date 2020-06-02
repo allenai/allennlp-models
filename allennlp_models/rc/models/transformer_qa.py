@@ -125,10 +125,10 @@ class TransformerQA(Model):
 
         # Replace the masked values with a very negative constant.
         span_start_logits = replace_masked_values_with_big_negative_number(
-            span_start_logits, possible_answer_mask, -1e32
+            span_start_logits, possible_answer_mask
         )
         span_end_logits = replace_masked_values_with_big_negative_number(
-            span_end_logits, possible_answer_mask, -1e32
+            span_end_logits, possible_answer_mask
         )
         span_start_probs = torch.nn.functional.softmax(span_start_logits, dim=-1)
         span_end_probs = torch.nn.functional.softmax(span_end_logits, dim=-1)

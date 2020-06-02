@@ -222,10 +222,10 @@ class QaNet(Model):
         span_end_input = torch.cat([modeled_passage_list[-3], modeled_passage_list[-1]], dim=-1)
         span_end_logits = self._span_end_predictor(span_end_input).squeeze(-1)
         span_start_logits = replace_masked_values_with_big_negative_number(
-            span_start_logits, passage_mask, -1e32
+            span_start_logits, passage_mask
         )
         span_end_logits = replace_masked_values_with_big_negative_number(
-            span_end_logits, passage_mask, -1e32
+            span_end_logits, passage_mask
         )
 
         # Shape: (batch_size, passage_length)

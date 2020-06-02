@@ -1,6 +1,6 @@
 import torch
 
-from allennlp.nn.util import replace_masked_values
+from allennlp.nn.util import replace_masked_values, min_value_of_dtype
 
 
 def get_best_span(span_start_logits: torch.Tensor, span_end_logits: torch.Tensor) -> torch.Tensor:
@@ -34,14 +34,9 @@ def get_best_span(span_start_logits: torch.Tensor, span_end_logits: torch.Tensor
     return torch.stack([span_start_indices, span_end_indices], dim=-1)
 
 
-def replace_masked_values_with_big_negative_number(
-    x: torch.Tensor, mask: torch.Tensor, default: float = -1e7
-):
+def replace_masked_values_with_big_negative_number(x: torch.Tensor, mask: torch.Tensor):
     """
-    Replace the maskedd values in a tensor something really negative so that they won't
+    Replace the masked values in a tensor something really negative so that they won't
     affect a max operation.
     """
-    # We have to be careful here because if we're training with half/mixed precision floats,
-    # -1e7 would result in an overflow. Hence we fall back to the min FP16 value.
-    big_negative_num = max(torch.finfo(x.dtype).min, default)
-    return replace_masked_values(x, mask, big_negative_num)
+    return replace_masked_values(x, mask, min_value_of_dtype(x.dtype))
