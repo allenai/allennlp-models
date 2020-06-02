@@ -9,9 +9,10 @@ try:
 except ImportError:
     amp = None
 
+from allennlp.commands.train import train_model_from_file
 from allennlp.common import Params
 from allennlp.common.checks import ConfigurationError
-from allennlp.common.testing import ModelTestCase, requires_gpu
+from allennlp.common.testing import AllenNlpTestCase, ModelTestCase, requires_gpu
 from allennlp.data import DatasetReader, Vocabulary
 from allennlp.data import Batch
 from allennlp.models import Model
@@ -139,17 +140,13 @@ class BidirectionalAttentionFlowTest(ModelTestCase):
             Model.from_params(vocab=self.vocab, params=params.pop("model"))
 
 
-class BidirectionalAttentionFlowMixedPrecisionTest(ModelTestCase):
-    def setup_method(self):
-        super().setup_method()
-        self.set_up_model(
-            FIXTURES_ROOT / "rc" / "bidaf" / "experiment.json", FIXTURES_ROOT / "rc" / "squad.json"
-        )
-
+@requires_gpu
+@pytest.mark.skipif(amp is None, reason="Apex is not installed.")
+class BidirectionalAttentionFlowMixedPrecisionTest(AllenNlpTestCase):
     @flaky(max_runs=5)
-    @requires_gpu
-    @pytest.mark.skipif(amp is None, reason="Apex is not installed.")
     def test_model_can_train_save_and_load_with_mixed_precision(self):
-        self.ensure_model_can_train_save_and_load(
-            self.param_file, tolerance=1e-4, overrides="{'trainer.opt_level':'O1','cuda_device':0}",
+        train_model_from_file(
+            FIXTURES_ROOT / "rc" / "bidaf" / "experiment.json",
+            self.TEST_DIR,
+            overrides="{'trainer.opt_level':'O1','trainer.cuda_device':0}",
         )
