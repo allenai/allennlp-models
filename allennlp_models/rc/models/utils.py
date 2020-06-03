@@ -1,5 +1,7 @@
 import torch
 
+from allennlp.nn.util import replace_masked_values, min_value_of_dtype
+
 
 def get_best_span(span_start_logits: torch.Tensor, span_end_logits: torch.Tensor) -> torch.Tensor:
     """
@@ -30,3 +32,11 @@ def get_best_span(span_start_logits: torch.Tensor, span_end_logits: torch.Tensor
     span_start_indices = best_spans // passage_length
     span_end_indices = best_spans % passage_length
     return torch.stack([span_start_indices, span_end_indices], dim=-1)
+
+
+def replace_masked_values_with_big_negative_number(x: torch.Tensor, mask: torch.Tensor):
+    """
+    Replace the masked values in a tensor something really negative so that they won't
+    affect a max operation.
+    """
+    return replace_masked_values(x, mask, min_value_of_dtype(x.dtype))

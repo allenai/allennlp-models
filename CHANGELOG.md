@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Replaced `deepcopy` of `Instance`s with new `Instance.duplicate()` method.
+- A bug where pretrained sentence taggers would fail to be initialized because some of the models
+  were not imported.
+- A bug in some RC models that would cause mixed precision training to crash when using NVIDIA apex.
 
 ### Added
 
