@@ -111,7 +111,7 @@ class UniversalDependenciesDatasetReader(DatasetReader):
                 [x[0] for x in dependencies], text_field, label_namespace="head_tags"
             )
             fields["head_indices"] = SequenceLabelField(
-                [x[1] for x in dependencies], text_field, label_namespace="head_indeices"
+                [x[1] for x in dependencies], text_field, label_namespace="head_index_tags"
             )
 
         fields["metadata"] = MetadataField({"words": words, "pos": upos_tags})
