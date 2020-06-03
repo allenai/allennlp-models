@@ -2,7 +2,7 @@
     "dataset_reader":{
         "type":"semantic_dependencies"
     },
-    "dataset_reader":{
+    "validation_dataset_reader":{
         "type":"semantic_dependencies",
         "skip_when_no_arcs": false
     },
