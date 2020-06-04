@@ -8,7 +8,7 @@ local cls_is_last_token = false;
     "tokenizer": {
       "type": "pretrained_transformer",
       "model_name": transformer_model,
-      "add_special_tokens": False
+      "add_special_tokens": false
     },
     "token_indexers": {
       "tokens": {
