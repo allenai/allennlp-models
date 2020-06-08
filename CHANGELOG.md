@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added option to SemanticDependenciesDatasetReader to not skip instances that have no arcs, for validation data
-- Added a default predictor to TransformerQA
+- Added a default predictor to TransformerQA and NAQANet
 
 ## [v1.0.0rc5](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0rc5) - 2020-05-14
 
