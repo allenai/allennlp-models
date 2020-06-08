@@ -162,6 +162,7 @@ class BidafEnsemble(Model):
 
         return model
 
+    default_predictor = "reading_comprehension"
 
 def ensemble(subresults: List[Dict[str, torch.Tensor]]) -> torch.Tensor:
     """

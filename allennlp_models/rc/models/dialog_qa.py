@@ -547,3 +547,5 @@ class DialogQA(Model):
             best_word_span[b_i, 2] = int(yesno_pred)
             best_word_span[b_i, 3] = int(followup_pred)
         return best_word_span
+
+    default_predictor = "dialog_qa"

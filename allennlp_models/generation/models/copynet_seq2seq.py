@@ -917,3 +917,5 @@ class CopyNetSeq2Seq(Model):
             if self._token_based_metric is not None:
                 all_metrics.update(self._token_based_metric.get_metric(reset=reset))  # type: ignore
         return all_metrics
+
+    default_predictor = "seq2seq"

@@ -179,3 +179,5 @@ class MaskedLanguageModel(Model):
         output_dict["tokens"] = tokens
 
         return output_dict
+
+    default_predictor = "masked_language_model"
