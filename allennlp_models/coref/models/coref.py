@@ -872,4 +872,4 @@ class CoreferenceResolver(Model):
         coreference_scores = torch.cat([dummy_scores, antecedent_scores], -1)
         return coreference_scores
 
-    default_predictor = "coreference-resolution"
+    default_predictor = "coreference_resolution"

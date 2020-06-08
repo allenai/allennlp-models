@@ -287,3 +287,5 @@ class QaNet(Model):
             "em": exact_match,
             "f1": f1_score,
         }
+
+    default_predictor = "reading_comprehension"

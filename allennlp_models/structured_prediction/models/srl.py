@@ -438,7 +438,7 @@ class SemanticRoleLabeler(Model):
 
         return start_transitions
 
-    default_predictor = "semantic-role-labeling"
+    default_predictor = "semantic_role_labeling"
 
 
 def write_to_conll_eval_file(

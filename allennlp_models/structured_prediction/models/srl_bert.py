@@ -284,4 +284,4 @@ class SrlBert(Model):
 
         return start_transitions
 
-    default_predictor = "semantic-role-labeling"
+    default_predictor = "semantic_role_labeling"

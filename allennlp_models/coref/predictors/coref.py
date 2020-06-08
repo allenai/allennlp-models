@@ -12,12 +12,12 @@ from allennlp.models import Model
 from allennlp.predictors.predictor import Predictor
 
 
-@Predictor.register("coreference-resolution")
+@Predictor.register("coreference_resolution")
 class CorefPredictor(Predictor):
     """
     Predictor for the [`CoreferenceResolver`](../models/coreference_resolution/coref.md) model.
 
-    Registered as a `Predictor` with name "coreference-resolution".
+    Registered as a `Predictor` with name "coreference_resolution".
     """
 
     def __init__(

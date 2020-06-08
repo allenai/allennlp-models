@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A bug where pretrained sentence taggers would fail to be initialized because some of the models
   were not imported.
 - A bug in some RC models that would cause mixed precision training to crash when using NVIDIA apex.
+- Predictor names were inconsistently switching between dashes and underscores. Now they all use underscores.
 
 ### Added
 
@@ -31,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Made `transformer_qa` predictor accept JSON input with the keys "question" and "passage" to be consistent with the `reading-comprehension` predictor.
+- Made `transformer_qa` predictor accept JSON input with the keys "question" and "passage" to be consistent with the `reading_comprehension` predictor.
 
 ### Added
 

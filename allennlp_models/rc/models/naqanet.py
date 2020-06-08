@@ -643,4 +643,4 @@ class NumericallyAugmentedQaNet(Model):
         exact_match, f1_score = self._drop_metrics.get_metric(reset)
         return {"em": exact_match, "f1": f1_score}
 
-    default_predictor = "reading-comprehension"
+    default_predictor = "reading_comprehension"

@@ -11,7 +11,7 @@ from allennlp.models import Model
 from allennlp.predictors.predictor import Predictor
 
 
-@Predictor.register("semantic-role-labeling")
+@Predictor.register("semantic_role_labeling")
 class SemanticRoleLabelerPredictor(Predictor):
     """
     Predictor for the [`SemanticRoleLabeler`](../models/semantic_role_labeler.md) model.
