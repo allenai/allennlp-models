@@ -642,3 +642,5 @@ class NumericallyAugmentedQaNet(Model):
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         exact_match, f1_score = self._drop_metrics.get_metric(reset)
         return {"em": exact_match, "f1": f1_score}
+
+    default_predictor = "reading-comprehension"
