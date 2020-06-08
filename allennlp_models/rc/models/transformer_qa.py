@@ -240,3 +240,5 @@ class TransformerQA(Model):
             "per_instance_em": exact_match,
             "per_instance_f1": f1_score,
         }
+
+    default_predictor = "transformer_qa"
