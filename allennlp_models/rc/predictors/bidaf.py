@@ -16,7 +16,7 @@ from allennlp.data.fields import (
 )
 
 
-@Predictor.register("reading-comprehension")
+@Predictor.register("reading_comprehension")
 class ReadingComprehensionPredictor(Predictor):
     """
     Predictor for the :class:`~allennlp_rc.models.bidaf.BidirectionalAttentionFlow` model, and any

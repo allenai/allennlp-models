@@ -77,7 +77,7 @@ LINK_TO_POSITION["acomp"] = "right"
 
 
 # exist_ok has to be true until we remove this from the core library
-@Predictor.register("biaffine-dependency-parser", exist_ok=True)
+@Predictor.register("biaffine_dependency_parser", exist_ok=True)
 class BiaffineDependencyParserPredictor(Predictor):
     """
     Predictor for the [`BiaffineDependencyParser`](../models/biaffine_dependency_parser.md) model.

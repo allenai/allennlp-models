@@ -501,3 +501,5 @@ class SimpleSeq2Seq(Model):
         if self._bleu and not self.training:
             all_metrics.update(self._bleu.get_metric(reset=reset))
         return all_metrics
+
+    default_predictor = "seq2seq"

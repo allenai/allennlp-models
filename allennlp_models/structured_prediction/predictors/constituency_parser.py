@@ -57,7 +57,7 @@ NODE_TYPE_TO_STYLE["RRC"] = ["color5"]
 NODE_TYPE_TO_STYLE["UCP"] = ["color5"]
 
 
-@Predictor.register("constituency-parser")
+@Predictor.register("constituency_parser")
 class ConstituencyParserPredictor(Predictor):
     """
     Predictor for the [`SpanConstituencyParser`](../models/constituency_parser.md) model.

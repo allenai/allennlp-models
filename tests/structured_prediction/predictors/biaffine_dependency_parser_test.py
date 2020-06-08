@@ -17,7 +17,7 @@ class TestBiaffineDependencyParser(AllenNlpTestCase):
             / "serialization"
             / "model.tar.gz"
         )
-        predictor = Predictor.from_archive(archive, "biaffine-dependency-parser")
+        predictor = Predictor.from_archive(archive, "biaffine_dependency_parser")
 
         result = predictor.predict_json(inputs)
 
@@ -107,7 +107,7 @@ class TestBiaffineDependencyParser(AllenNlpTestCase):
             / "serialization"
             / "model.tar.gz"
         )
-        predictor = Predictor.from_archive(archive, "biaffine-dependency-parser")
+        predictor = Predictor.from_archive(archive, "biaffine_dependency_parser")
 
         results = predictor.predict_batch_json(inputs)
         assert len(results) == 3
@@ -131,7 +131,7 @@ class TestBiaffineDependencyParser(AllenNlpTestCase):
             / "serialization"
             / "model.tar.gz"
         )
-        predictor = Predictor.from_archive(archive, "biaffine-dependency-parser")
+        predictor = Predictor.from_archive(archive, "biaffine_dependency_parser")
 
         inputs = {"sentence": "Dogs eat cats."}
         instance_with_ud_pos = predictor._json_to_instance(inputs)

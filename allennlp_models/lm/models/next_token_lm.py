@@ -144,3 +144,5 @@ class NextTokenLM(Model):
         output_dict["tokens"] = tokens
 
         return output_dict
+
+    default_predictor = "next_token_lm"

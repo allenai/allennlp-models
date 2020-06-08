@@ -178,7 +178,7 @@ def sanitize_label(label: str) -> str:
         return label
 
 
-@Predictor.register("open-information-extraction")
+@Predictor.register("open_information_extraction")
 class OpenIePredictor(Predictor):
     """
     Predictor for the [`SemanticRolelabeler`](../models/semantic_role_labeler.md) model

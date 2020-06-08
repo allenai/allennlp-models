@@ -17,7 +17,7 @@ class TestBidafPredictor(AllenNlpTestCase):
         }
 
         archive = load_archive(FIXTURES_ROOT / "bidaf" / "serialization" / "model.tar.gz")
-        predictor = Predictor.from_archive(archive, "reading-comprehension")
+        predictor = Predictor.from_archive(archive, "reading_comprehension")
 
         result = predictor.predict_json(inputs)
 
@@ -51,7 +51,7 @@ class TestBidafPredictor(AllenNlpTestCase):
         ]
 
         archive = load_archive(FIXTURES_ROOT / "bidaf" / "serialization" / "model.tar.gz")
-        predictor = Predictor.from_archive(archive, "reading-comprehension")
+        predictor = Predictor.from_archive(archive, "reading_comprehension")
 
         results = predictor.predict_batch_json(inputs)
         assert len(results) == 2
@@ -77,7 +77,7 @@ class TestBidafPredictor(AllenNlpTestCase):
 
     def test_model_internals(self):
         archive = load_archive(FIXTURES_ROOT / "bidaf" / "serialization" / "model.tar.gz")
-        predictor = Predictor.from_archive(archive, "reading-comprehension")
+        predictor = Predictor.from_archive(archive, "reading_comprehension")
 
         inputs = {
             "question": "What kind of test succeeded on its first attempt?",
@@ -108,7 +108,7 @@ class TestBidafPredictor(AllenNlpTestCase):
         }
 
         archive = load_archive(FIXTURES_ROOT / "bidaf" / "serialization" / "model.tar.gz")
-        predictor = Predictor.from_archive(archive, "reading-comprehension")
+        predictor = Predictor.from_archive(archive, "reading_comprehension")
 
         instance = predictor._json_to_instance(inputs)
         outputs = predictor._model.forward_on_instance(instance)
@@ -126,7 +126,7 @@ class TestBidafPredictor(AllenNlpTestCase):
         }
 
         archive = load_archive(FIXTURES_ROOT / "naqanet" / "serialization" / "model.tar.gz")
-        predictor = Predictor.from_archive(archive, "reading-comprehension")
+        predictor = Predictor.from_archive(archive, "reading_comprehension")
         predictor._dataset_reader.skip_when_all_empty = False
 
         instance = predictor._json_to_instance(inputs)

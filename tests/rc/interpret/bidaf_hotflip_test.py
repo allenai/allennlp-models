@@ -15,7 +15,7 @@ class TestHotflip:
         }
 
         archive = load_archive(FIXTURES_ROOT / "rc" / "bidaf" / "serialization" / "model.tar.gz")
-        predictor = Predictor.from_archive(archive, "reading-comprehension")
+        predictor = Predictor.from_archive(archive, "reading_comprehension")
 
         hotflipper = Hotflip(predictor)
         hotflipper.initialize()
