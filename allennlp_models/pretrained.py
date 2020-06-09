@@ -1,7 +1,7 @@
 from typing import Optional
 
 from allennlp.models import load_archive
-from allennlp.predictors import Predictor
+from allennlp.predictors import Predictor, TextClassifierPredictor
 
 from allennlp_models.coref import CorefPredictor
 from allennlp_models.pair_classification import DecomposableAttentionPredictor
@@ -137,3 +137,7 @@ def esim_nli_with_elmo_chen_2017() -> DecomposableAttentionPredictor:
         "https://storage.googleapis.com/allennlp-public-models/decomposable-attention-elmo-2020.04.09.tar.gz"
     )
     return predictor
+
+
+def roberta_sst() -> TextClassifierPredictor:
+    return _load_predictor("https://storage.googleapis.com/allennlp-public-models/sst-roberta-large-2020.06.08.tar.gz")
