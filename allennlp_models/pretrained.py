@@ -139,6 +139,12 @@ def esim_nli_with_elmo_chen_2017() -> DecomposableAttentionPredictor:
     return predictor
 
 
+def glove_sst() -> TextClassifierPredictor:
+    return _load_predictor(
+        "https://storage.googleapis.com/allennlp-public-models/basic_stanford_sentiment_treebank-2020.06.09.tar.gz"
+    )
+
+
 def roberta_sst() -> TextClassifierPredictor:
     return _load_predictor(
         "https://storage.googleapis.com/allennlp-public-models/sst-roberta-large-2020.06.08.tar.gz"
