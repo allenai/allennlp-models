@@ -151,13 +151,15 @@ def roberta_sst() -> TextClassifierPredictor:
     )
 
 
-def roberta_mnli() -> TextClassifierPredictor:
+def roberta_mnli() -> DecomposableAttentionPredictor:
     return _load_predictor(
-        "https://storage.googleapis.com/allennlp-public-models/mnli_roberta-2020.06.09.tar.gz"
+        "https://storage.googleapis.com/allennlp-public-models/mnli_roberta-2020.06.09.tar.gz",
+        "textual-entailment",
     )
 
 
-def roberta_snli() -> TextClassifierPredictor:
+def roberta_snli() -> DecomposableAttentionPredictor:
     return _load_predictor(
-        "https://storage.googleapis.com/allennlp-public-models/snli_roberta-2020.06.09.tar.gz"
+        "https://storage.googleapis.com/allennlp-public-models/snli_roberta-2020.06.09.tar.gz",
+        "textual-entailment",
     )
