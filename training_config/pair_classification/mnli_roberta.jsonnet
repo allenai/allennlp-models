@@ -3,7 +3,7 @@ local transformer_dim = 1024;
 local cls_is_last_token = false;
 
 {
-  "dataset_reader":{
+  "dataset_reader": {
     "type": "snli",
     "tokenizer": {
       "type": "pretrained_transformer",
