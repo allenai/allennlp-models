@@ -149,3 +149,15 @@ def roberta_sst() -> TextClassifierPredictor:
     return _load_predictor(
         "https://storage.googleapis.com/allennlp-public-models/sst-roberta-large-2020.06.08.tar.gz"
     )
+
+
+def roberta_mnli() -> TextClassifierPredictor:
+    return _load_predictor(
+        "https://storage.googleapis.com/allennlp-public-models/mnli_roberta-2020.06.09.tar.gz"
+    )
+
+
+def roberta_snli() -> TextClassifierPredictor:
+    return _load_predictor(
+        "https://storage.googleapis.com/allennlp-public-models/snli_roberta-2020.06.09.tar.gz"
+    )
