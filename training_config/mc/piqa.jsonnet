@@ -16,10 +16,8 @@ local batch_size = 8;
       "transformer_model_name": transformer_model,
   },
   "data_loader": {
-    "batch_sampler": {
-      "type": "random",
-      "batch_size": batch_size
-    }
+    "sampler": "random",
+    "batch_size": batch_size
   },
   "trainer": {
     "optimizer": {
@@ -31,7 +29,6 @@ local batch_size = 8;
     },
     "learning_rate_scheduler": {
       "type": "slanted_triangular",
-      "num_epochs": epochs,
       "cut_frac": 0.1,
     },
     "grad_clipping": 1.0,
