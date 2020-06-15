@@ -36,11 +36,7 @@ class TransformerMC(Model):
             {"tokens": PretrainedTransformerEmbedder(transformer_model_name)}
         )
 
-        from allennlp.modules.seq2vec_encoders import BertPooler
-
-        self._pooler = BertPooler(transformer_model_name)
-
-        self._linear_layer = torch.nn.Linear(self._pooler.get_output_dim(), 1)
+        self._linear_layer = torch.nn.Linear(self._text_field_embedder.get_output_dim(), 1)
 
         self._loss = torch.nn.CrossEntropyLoss()
 
@@ -69,10 +65,18 @@ class TransformerMC(Model):
             The index of the highest scoring alternative for every instance in the batch
         """
         embedded_alternatives = self._text_field_embedder(alternatives, num_wrapping_dims=1)
-        pooled_alternatives = self._pooler(embedded_alternatives, num_wrapping_dims=1)
-        logit_alternatives = self._linear_layer(pooled_alternatives)
+        flattened_embedded_alternatives = embedded_alternatives.view(
+            embedded_alternatives.size(0) * embedded_alternatives.size(1),
+            embedded_alternatives.size(2),
+            embedded_alternatives.size(3)
+        )
+        flattened_pooled_alternatives = flattened_embedded_alternatives[:, 0]
+        flattened_logit_alternatives = self._linear_layer(flattened_pooled_alternatives)
+        logit_alternatives = flattened_logit_alternatives.view(
+            embedded_alternatives.size(0),
+            embedded_alternatives.size(1)
+        )
 
-        logit_alternatives = logit_alternatives.squeeze(2)
         correct_alternative = correct_alternative.squeeze(1)
 
         loss = self._loss(logit_alternatives, correct_alternative)
