@@ -24,12 +24,12 @@ local batch_size = 8;
       "type": "huggingface_adamw",
       "weight_decay": 0.0,
       "parameter_groups": [[["bias", "LayerNorm\\.weight", "layer_norm\\.weight"], {"weight_decay": 0}]],
-      "lr": 2e-5,
+      "lr": 1e-5,
       "eps": 1e-8
     },
     "learning_rate_scheduler": {
       "type": "slanted_triangular",
-      "cut_frac": 0.1,
+      "cut_frac": 0.00,
     },
     "grad_clipping": 1.0,
     "num_epochs": epochs,
