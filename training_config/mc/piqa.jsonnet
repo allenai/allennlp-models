@@ -7,7 +7,7 @@ local batch_size = 8;
   "dataset_reader": {
       "type": "piqa",
       "transformer_model_name": transformer_model,
-      "max_instances": 200  // debug setting
+      //"max_instances": 200  // debug setting
   },
   "train_data_path": "https://yonatanbisk.com/piqa/data/train.jsonl",
   "validation_data_path": "https://yonatanbisk.com/piqa/data/valid.jsonl",
