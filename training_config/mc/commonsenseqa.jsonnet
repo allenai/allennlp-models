@@ -1,4 +1,4 @@
-local transformer_model = 'roberta-large';
+local transformer_model = 'bert-large-cased';
 
 local epochs = 3;
 local batch_size = 8;
@@ -25,14 +25,14 @@ local batch_size = 8;
       "type": "huggingface_adamw",
       "weight_decay": 0.0,
       "parameter_groups": [[["bias", "LayerNorm\\.weight", "layer_norm\\.weight"], {"weight_decay": 0}]],
-      "lr": 1e-5,
+      "lr": 5e-5,
       "eps": 1e-8
     },
     "learning_rate_scheduler": {
       "type": "slanted_triangular",
       "cut_frac": 0.00,
     },
-    "grad_clipping": 1.0,
+    "grad_norm": 1.0,
     "num_epochs": epochs,
     "cuda_device": -1
   },
