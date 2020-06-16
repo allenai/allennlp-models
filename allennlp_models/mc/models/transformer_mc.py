@@ -1,5 +1,5 @@
 import logging
-from typing import Dict
+from typing import Dict, List, Optional
 
 import torch
 from allennlp.data import Vocabulary, TextFieldTensors
@@ -50,7 +50,7 @@ class TransformerMC(Model):
         self._accuracy = CategoricalAccuracy()
 
     def forward(  # type: ignore
-        self, alternatives: TextFieldTensors, correct_alternative: torch.IntTensor,
+        self, alternatives: TextFieldTensors, correct_alternative: torch.IntTensor, id: Optional[List[str]] = None
     ) -> Dict[str, torch.Tensor]:
 
         """

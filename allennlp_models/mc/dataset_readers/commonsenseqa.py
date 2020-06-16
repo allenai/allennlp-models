@@ -92,9 +92,11 @@ class CommonsenseQaReader(DatasetReader):
 
         from allennlp.data.fields import IndexField
 
+        from allennlp.data.fields import MetadataField
         return Instance(
             {
                 "alternatives": sequences,
                 "correct_alternative": IndexField(correct_alternative, sequences),
+                "id": MetadataField(id)
             }
         )
