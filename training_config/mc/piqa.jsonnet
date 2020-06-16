@@ -1,4 +1,4 @@
-local transformer_model = 'roberta-large';
+local transformer_model = 'bert-base-uncased';
 
 local epochs = 3;
 local batch_size = 8;
