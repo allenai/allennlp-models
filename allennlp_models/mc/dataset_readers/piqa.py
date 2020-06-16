@@ -68,7 +68,8 @@ class PiqaReader(DatasetReader):
             sol1 = json["sol1"]
             sol2 = json["sol2"]
             label = int(label)
-            yield self.text_to_instance([goal + " " + sol1, goal + " " + sol2], label)
+            texts = [goal + " " + sol1, goal + " " + sol2]
+            yield self.text_to_instance(texts, label)
 
     @overrides
     def text_to_instance(
