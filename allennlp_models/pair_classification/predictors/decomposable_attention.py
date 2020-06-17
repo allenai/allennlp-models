@@ -1,5 +1,4 @@
 from typing import List, Dict
-from copy import deepcopy
 
 import numpy
 from overrides import overrides
@@ -10,12 +9,12 @@ from allennlp.predictors.predictor import Predictor
 from allennlp.data.fields import LabelField
 
 
-@Predictor.register("textual-entailment")
+@Predictor.register("textual_entailment")
 class DecomposableAttentionPredictor(Predictor):
     """
     Predictor for the [`DecomposableAttention`](../models/decomposable_attention.md) model.
 
-    Registered as a `Predictor` with name "textual-entailment".
+    Registered as a `Predictor` with name "textual_entailment".
     """
 
     def predict(self, premise: str, hypothesis: str) -> JsonDict:
@@ -51,7 +50,7 @@ class DecomposableAttentionPredictor(Predictor):
     def predictions_to_labeled_instances(
         self, instance: Instance, outputs: Dict[str, numpy.ndarray]
     ) -> List[Instance]:
-        new_instance = deepcopy(instance)
+        new_instance = instance.duplicate()
         label = numpy.argmax(outputs["label_logits"])
         # Skip indexing, we have integer representations of the strings "entailment", etc.
         new_instance.add_field("label", LabelField(int(label), skip_indexing=True))

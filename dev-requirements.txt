@@ -4,7 +4,7 @@
 flake8
 
 # Static type checking
-mypy==0.770
+mypy==0.780
 
 # Automatic code formatting
 black
@@ -18,6 +18,9 @@ codecov
 
 # For running tests that aren't 100% reliable
 flaky
+
+# Required for automatic mixed precision (AMP) training
+git+https://github.com/NVIDIA/apex.git@master
 
 #### PACKAGE-UPLOAD PACKAGES ####
 

@@ -15,7 +15,7 @@ class TestInterpret(AllenNlpTestCase):
             "contains coreferent parts."
         }
         archive = load_archive(FIXTURES_ROOT / "coref" / "serialization" / "model.tar.gz")
-        predictor = Predictor.from_archive(archive, "coreference-resolution")
+        predictor = Predictor.from_archive(archive, "coreference_resolution")
         interpreter = SimpleGradient(predictor)
         interpretation = interpreter.saliency_interpret_from_json(inputs)
         assert interpretation is not None

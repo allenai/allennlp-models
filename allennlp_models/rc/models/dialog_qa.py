@@ -16,6 +16,7 @@ from allennlp.nn import InitializerApplicator, util
 from allennlp.training.metrics import Average, BooleanAccuracy, CategoricalAccuracy
 
 from allennlp_models.rc.tools import squad
+from allennlp_models.rc.models.utils import replace_masked_values_with_big_negative_number
 
 logger = logging.getLogger(__name__)
 
@@ -291,8 +292,8 @@ class DialogQA(Model):
 
         # We replace masked values with something really negative here, so they don't affect the
         # max below.
-        masked_similarity = util.replace_masked_values(
-            passage_question_similarity, question_mask.unsqueeze(1), -1e7
+        masked_similarity = replace_masked_values_with_big_negative_number(
+            passage_question_similarity, question_mask.unsqueeze(1)
         )
 
         question_passage_similarity = masked_similarity.max(dim=-1)[0].squeeze(-1)
@@ -357,11 +358,13 @@ class DialogQA(Model):
         span_yesno_logits = self._span_yesno_predictor(end_rep).squeeze(-1)
         span_followup_logits = self._span_followup_predictor(end_rep).squeeze(-1)
 
-        span_start_logits = util.replace_masked_values(
-            span_start_logits, repeated_passage_mask, -1e7
+        span_start_logits = replace_masked_values_with_big_negative_number(
+            span_start_logits, repeated_passage_mask
         )
         # batch_size * maxqa_len_pair, max_document_len
-        span_end_logits = util.replace_masked_values(span_end_logits, repeated_passage_mask, -1e7)
+        span_end_logits = replace_masked_values_with_big_negative_number(
+            span_end_logits, repeated_passage_mask
+        )
 
         best_span = self._get_best_span_yesno_followup(
             span_start_logits,
@@ -515,7 +518,7 @@ class DialogQA(Model):
         if span_start_logits.dim() != 2 or span_end_logits.dim() != 2:
             raise ValueError("Input shapes must be (batch_size, passage_length)")
         batch_size, passage_length = span_start_logits.size()
-        max_span_log_prob = [-1e20] * batch_size
+        max_span_log_prob = [util.min_value_of_dtype(span_start_logits.dtype)] * batch_size
         span_start_argmax = [0] * batch_size
 
         best_word_span = span_start_logits.new_zeros((batch_size, 4), dtype=torch.long)
@@ -544,3 +547,5 @@ class DialogQA(Model):
             best_word_span[b_i, 2] = int(yesno_pred)
             best_word_span[b_i, 3] = int(followup_pred)
         return best_word_span
+
+    default_predictor = "dialog_qa"

@@ -3,12 +3,12 @@ local transformer_dim = 1024;
 local cls_is_last_token = false;
 
 {
-  "dataset_reader":{
+  "dataset_reader": {
     "type": "snli",
     "tokenizer": {
       "type": "pretrained_transformer",
       "model_name": transformer_model,
-      "add_special_tokens": False
+      "add_special_tokens": false
     },
     "token_indexers": {
       "tokens": {

@@ -2,6 +2,10 @@
     "dataset_reader":{
         "type":"semantic_dependencies"
     },
+    "validation_dataset_reader":{
+        "type":"semantic_dependencies",
+        "skip_when_no_arcs": false
+    },
     "train_data_path": "/home/markn/data/semantic_dependency_parsing/semeval2015_data/dm/data/english/english_dm_augmented_train.sdp",
     "validation_data_path": "/home/markn/data/semantic_dependency_parsing/semeval2015_data/dm/data/english/english_dm_augmented_dev.sdp",
     "test_data_path": "/home/markn/data/semantic_dependency_parsing/semeval2015_data/dm/data/english/english_id_dm_augmented_test.sdp",
@@ -35,15 +39,18 @@
       "tag_representation_dim": 100,
       "dropout": 0.3,
       "input_dropout": 0.3,
-      "initializer": [
-        [".*feedforward.*weight", {"type": "xavier_uniform"}],
-        [".*feedforward.*bias", {"type": "zero"}],
-        [".*tag_bilinear.*weight", {"type": "xavier_uniform"}],
-        [".*tag_bilinear.*bias", {"type": "zero"}],
-        [".*weight_ih.*", {"type": "xavier_uniform"}],
-        [".*weight_hh.*", {"type": "orthogonal"}],
-        [".*bias_ih.*", {"type": "zero"}],
-        [".*bias_hh.*", {"type": "lstm_hidden_bias"}]]
+      "initializer": {
+        "regexes": [
+          [".*feedforward.*weight", {"type": "xavier_uniform"}],
+          [".*feedforward.*bias", {"type": "zero"}],
+          [".*tag_bilinear.*weight", {"type": "xavier_uniform"}],
+          [".*tag_bilinear.*bias", {"type": "zero"}],
+          [".*weight_ih.*", {"type": "xavier_uniform"}],
+          [".*weight_hh.*", {"type": "orthogonal"}],
+          [".*bias_ih.*", {"type": "zero"}],
+          [".*bias_hh.*", {"type": "lstm_hidden_bias"}]
+        ]
+      }
     },
 
     "data_loader": {

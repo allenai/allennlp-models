@@ -23,7 +23,7 @@ class TestConstituencyParserPredictor(AllenNlpTestCase):
             / "serialization"
             / "model.tar.gz"
         )
-        predictor = Predictor.from_archive(archive, "constituency-parser")
+        predictor = Predictor.from_archive(archive, "constituency_parser")
 
         result = predictor.predict_json(inputs)
 
@@ -48,7 +48,7 @@ class TestConstituencyParserPredictor(AllenNlpTestCase):
             / "serialization"
             / "model.tar.gz"
         )
-        predictor = Predictor.from_archive(archive, "constituency-parser")
+        predictor = Predictor.from_archive(archive, "constituency_parser")
         results = predictor.predict_batch_json(inputs)
 
         result = results[0]
@@ -79,7 +79,7 @@ class TestConstituencyParserPredictor(AllenNlpTestCase):
             / "serialization"
             / "model.tar.gz"
         )
-        predictor = Predictor.from_archive(archive, "constituency-parser")
+        predictor = Predictor.from_archive(archive, "constituency_parser")
 
         hierplane_tree = predictor._build_hierplane_tree(tree, 0, is_root=True)
 

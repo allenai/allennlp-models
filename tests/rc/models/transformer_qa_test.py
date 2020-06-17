@@ -1,8 +1,15 @@
 import numpy
 from numpy.testing import assert_almost_equal
-from allennlp.common.testing import ModelTestCase
+from allennlp.commands.train import train_model_from_file
+from allennlp.common.testing import ModelTestCase, AllenNlpTestCase, requires_gpu
 from allennlp.data import Batch
 from tests import FIXTURES_ROOT
+import pytest
+
+try:
+    from apex import amp
+except ImportError:
+    amp = None
 
 import allennlp_models.rc
 
@@ -49,3 +56,14 @@ class TransformerQaTest(ModelTestCase):
         assert span_start <= span_end
         assert span_end < self.instances[0].fields["question_with_context"].sequence_length()
         assert isinstance(output_dict["best_span_str"][0], str)
+
+
+@requires_gpu
+@pytest.mark.skipif(amp is None, reason="Apex is not installed.")
+class TransformerQaMixedPrecisionTest(AllenNlpTestCase):
+    def test_model_can_train_save_and_load_with_mixed_precision(self):
+        train_model_from_file(
+            FIXTURES_ROOT / "rc" / "transformer_qa" / "experiment.jsonnet",
+            self.TEST_DIR,
+            overrides="{'trainer.opt_level':'O2','trainer.cuda_device':0}",
+        )

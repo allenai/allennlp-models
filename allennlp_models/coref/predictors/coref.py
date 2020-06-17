@@ -1,4 +1,3 @@
-from copy import deepcopy
 from typing import List, Dict
 
 from overrides import overrides
@@ -13,12 +12,12 @@ from allennlp.models import Model
 from allennlp.predictors.predictor import Predictor
 
 
-@Predictor.register("coreference-resolution")
+@Predictor.register("coreference_resolution")
 class CorefPredictor(Predictor):
     """
     Predictor for the [`CoreferenceResolver`](../models/coreference_resolution/coref.md) model.
 
-    Registered as a `Predictor` with name "coreference-resolution".
+    Registered as a `Predictor` with name "coreference_resolution".
     """
 
     def __init__(
@@ -96,7 +95,7 @@ class CorefPredictor(Predictor):
         span_field: ListField = instance["spans"]  # type: ignore
         instances = []
         for cluster in predicted_clusters:
-            new_instance = deepcopy(instance)
+            new_instance = instance.duplicate()
             span_labels = [
                 0 if (span.span_start, span.span_end) in cluster else -1  # type: ignore
                 for span in span_field
@@ -108,7 +107,7 @@ class CorefPredictor(Predictor):
             instances.append(new_instance)
         if not instances:
             # No predicted clusters; we just give an empty coref prediction.
-            new_instance = deepcopy(instance)
+            new_instance = instance.duplicate()
             span_labels = [-1] * len(span_field)  # type: ignore
             new_instance.add_field(
                 "span_labels", SequenceLabelField(span_labels, span_field), self._model.vocab

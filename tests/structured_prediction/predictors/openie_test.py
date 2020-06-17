@@ -23,7 +23,7 @@ class TestOpenIePredictor(AllenNlpTestCase):
         archive = load_archive(
             FIXTURES_ROOT / "structured_prediction" / "srl" / "serialization" / "model.tar.gz"
         )
-        predictor = Predictor.from_archive(archive, "open-information-extraction")
+        predictor = Predictor.from_archive(archive, "open_information_extraction")
 
         result = predictor.predict_json(inputs)
 
@@ -68,7 +68,7 @@ class TestOpenIePredictor(AllenNlpTestCase):
         archive = load_archive(
             FIXTURES_ROOT / "structured_prediction" / "srl" / "serialization" / "model.tar.gz"
         )
-        predictor = Predictor.from_archive(archive, "open-information-extraction")
+        predictor = Predictor.from_archive(archive, "open_information_extraction")
 
         result = predictor.predict_json(input1)
         assert result == {"words": ["Blah", "no", "verb", "sentence", "."], "verbs": []}

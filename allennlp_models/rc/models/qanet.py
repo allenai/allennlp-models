@@ -12,7 +12,10 @@ from allennlp.nn import util, InitializerApplicator, RegularizerApplicator
 from allennlp.training.metrics import BooleanAccuracy, CategoricalAccuracy
 from allennlp.nn.util import masked_softmax
 
-from allennlp_models.rc.models.utils import get_best_span
+from allennlp_models.rc.models.utils import (
+    get_best_span,
+    replace_masked_values_with_big_negative_number,
+)
 from allennlp_models.rc.metrics import SquadEmAndF1
 
 
@@ -218,8 +221,12 @@ class QaNet(Model):
         # Shape: (batch_size, passage_length, modeling_dim * 2)
         span_end_input = torch.cat([modeled_passage_list[-3], modeled_passage_list[-1]], dim=-1)
         span_end_logits = self._span_end_predictor(span_end_input).squeeze(-1)
-        span_start_logits = util.replace_masked_values(span_start_logits, passage_mask, -1e32)
-        span_end_logits = util.replace_masked_values(span_end_logits, passage_mask, -1e32)
+        span_start_logits = replace_masked_values_with_big_negative_number(
+            span_start_logits, passage_mask
+        )
+        span_end_logits = replace_masked_values_with_big_negative_number(
+            span_end_logits, passage_mask
+        )
 
         # Shape: (batch_size, passage_length)
         span_start_probs = torch.nn.functional.softmax(span_start_logits, dim=-1)
@@ -280,3 +287,5 @@ class QaNet(Model):
             "em": exact_match,
             "f1": f1_score,
         }
+
+    default_predictor = "reading_comprehension"

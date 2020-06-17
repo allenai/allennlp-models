@@ -158,3 +158,5 @@ class ComposedSeq2Seq(Model):
     @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return self._decoder.get_metrics(reset)
+
+    default_predictor = "seq2seq"

@@ -14,7 +14,7 @@ class TestSrlPredictor(AllenNlpTestCase):
         archive = load_archive(
             FIXTURES_ROOT / "structured_prediction" / "srl" / "serialization" / "model.tar.gz"
         )
-        predictor = Predictor.from_archive(archive, "semantic-role-labeling")
+        predictor = Predictor.from_archive(archive, "semantic_role_labeling")
 
         result_json = predictor.predict_json(inputs)
         self.assert_predict_result(result_json)
@@ -82,7 +82,7 @@ class TestSrlPredictor(AllenNlpTestCase):
         archive = load_archive(
             FIXTURES_ROOT / "structured_prediction" / "srl" / "serialization" / "model.tar.gz"
         )
-        predictor = Predictor.from_archive(archive, "semantic-role-labeling")
+        predictor = Predictor.from_archive(archive, "semantic_role_labeling")
         result = predictor.predict_batch_json([inputs, inputs])
         assert result[0] == result[1]
 
@@ -92,7 +92,7 @@ class TestSrlPredictor(AllenNlpTestCase):
         archive = load_archive(
             FIXTURES_ROOT / "structured_prediction" / "srl" / "serialization" / "model.tar.gz"
         )
-        predictor = Predictor.from_archive(archive, "semantic-role-labeling")
+        predictor = Predictor.from_archive(archive, "semantic_role_labeling")
         result = predictor.predict_json(input1)
         assert result == {"words": ["Blah", "no", "verb", "sentence", "."], "verbs": []}
 

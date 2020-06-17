@@ -52,12 +52,18 @@ class TransformerQAPredictor(Predictor):
         )
 
     def _json_to_instances(self, json_dict: JsonDict) -> List[Instance]:
+        # We allow the passage / context to be specified with either key.
+        # But we do it this way so that a 'KeyError: context' exception will be raised
+        # when neither key is specified, since the 'context' key is the default and
+        # the 'passage' key was only added to be compatable with the input for other
+        # RC models.
+        context = json_dict["passage"] if "passage" in json_dict else json_dict["context"]
         result = list(
             self._dataset_reader.make_instances(
                 qid=str(self._next_qid),
                 question=json_dict["question"],
                 answers=[],
-                context=json_dict.get("passage", json_dict["context"]),
+                context=context,
                 first_answer_offset=None,
             )
         )
