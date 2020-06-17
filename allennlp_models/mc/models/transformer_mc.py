@@ -14,8 +14,8 @@ class TransformerMC(Model):
     This class implements a multiple choice model patterned after the proposed model in
     https://arxiv.org/abs/1810.04805 (Devlin et al).
 
-    It calculates a score for each sequence on top of the CLS token, and then chooses the alternative with the highest
-    score.
+    It calculates a score for each sequence on top of the CLS token, and then chooses the alternative
+    with the highest score.
 
     Parameters
     ----------
@@ -37,6 +37,7 @@ class TransformerMC(Model):
         )
 
         from allennlp.modules.seq2vec_encoders import BertPooler
+
         self._pooler = BertPooler(transformer_model_name, dropout=0.1)
 
         self._linear_layer = torch.nn.Linear(self._text_field_embedder.get_output_dim(), 1)
@@ -53,7 +54,7 @@ class TransformerMC(Model):
         self,
         alternatives: TextFieldTensors,
         correct_alternative: Optional[torch.IntTensor] = None,
-        qid: Optional[List[str]] = None
+        qid: Optional[List[str]] = None,
     ) -> Dict[str, torch.Tensor]:
 
         """
@@ -80,23 +81,19 @@ class TransformerMC(Model):
         flattened_embedded_alternatives = embedded_alternatives.view(
             embedded_alternatives.size(0) * embedded_alternatives.size(1),
             embedded_alternatives.size(2),
-            embedded_alternatives.size(3)
+            embedded_alternatives.size(3),
         )
         flattened_pooled_alternatives = self._pooler(flattened_embedded_alternatives)
         flattened_logit_alternatives = self._linear_layer(flattened_pooled_alternatives)
         logit_alternatives = flattened_logit_alternatives.view(
-            embedded_alternatives.size(0),
-            embedded_alternatives.size(1)
+            embedded_alternatives.size(0), embedded_alternatives.size(1)
         )
 
-        result = {
-            "logits": logit_alternatives,
-            "best_alternative": logit_alternatives.argmax(1)
-        }
+        result = {"logits": logit_alternatives, "best_alternative": logit_alternatives.argmax(1)}
 
         if correct_alternative is not None:
             correct_alternative = correct_alternative.squeeze(1)
-            result['loss'] = self._loss(logit_alternatives, correct_alternative)
+            result["loss"] = self._loss(logit_alternatives, correct_alternative)
             self._accuracy(logit_alternatives, correct_alternative)
 
         return result

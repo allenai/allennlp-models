@@ -25,10 +25,7 @@ class FakeReader(DatasetReader):
     """
 
     def __init__(
-        self,
-        transformer_model_name: str = "roberta-large",
-        length_limit: int = 512,
-        **kwargs
+        self, transformer_model_name: str = "roberta-large", length_limit: int = 512, **kwargs
     ) -> None:
         super().__init__(**kwargs)
 
@@ -36,11 +33,13 @@ class FakeReader(DatasetReader):
             raise ValueError("FakeReader requires max_instances to be set.")
 
         from allennlp.data.tokenizers import PretrainedTransformerTokenizer
+
         self._tokenizer = PretrainedTransformerTokenizer(
             transformer_model_name, add_special_tokens=False
         )
 
         from allennlp.data.token_indexers import PretrainedTransformerIndexer
+
         self._token_indexers = {"tokens": PretrainedTransformerIndexer(transformer_model_name)}
         self.length_limit = length_limit
 
@@ -50,9 +49,7 @@ class FakeReader(DatasetReader):
 
         for i in range(self.max_instances):
             label = i % 2
-            texts = [
-                f"This is the false choice {i}."
-            ] * 2
+            texts = [f"This is the false choice {i}."] * 2
             texts[label] = f"This is the true choice {i}."
             yield self.text_to_instance(texts, label)
 
