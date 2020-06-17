@@ -1,4 +1,4 @@
-git+https://github.com/allenai/allennlp.git@bart
+git+https://github.com/allenai/allennlp.git@master
 
 # For structured prediction.
 conllu==3.0
