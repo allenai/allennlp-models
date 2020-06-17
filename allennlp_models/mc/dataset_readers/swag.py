@@ -41,20 +41,20 @@ class SwagReader(DatasetReader):
     @overrides
     def _read(self, file_path: str):
         from allennlp.common.file_utils import cached_path
+
         file_path = cached_path(file_path)
         logger.info("Reading file at %s", file_path)
 
         with open(file_path, "r", encoding="utf-8") as f:
             import csv
+
             for line_number, line in enumerate(csv.reader(f)):
                 if line_number == 0:
                     continue
 
                 yield self.text_to_instance(
-                    id=line[1],
-                    start=line[3],
-                    alternatives=line[7:11],
-                    label=int(line[11]))
+                    id=line[1], start=line[3], alternatives=line[7:11], label=int(line[11])
+                )
 
     @overrides
     def text_to_instance(
@@ -70,7 +70,9 @@ class SwagReader(DatasetReader):
         sequences = []
         for alternative in alternatives:
             alternative = self._tokenizer.tokenize(alternative)
-            length_for_start = self.length_limit - len(alternative) - self._tokenizer.num_special_tokens_for_pair()
+            length_for_start = (
+                self.length_limit - len(alternative) - self._tokenizer.num_special_tokens_for_pair()
+            )
             sequences.append(
                 self._tokenizer.add_special_tokens(start[:length_for_start], alternative)
             )
@@ -78,9 +80,7 @@ class SwagReader(DatasetReader):
         # make fields
         from allennlp.data.fields import TextField
 
-        sequences = [
-            TextField(sequence, self._token_indexers) for sequence in sequences
-        ]
+        sequences = [TextField(sequence, self._token_indexers) for sequence in sequences]
         if label < 0 or label >= len(sequences):
             raise ValueError("Alternative %d does not exist", label)
         from allennlp.data.fields import ListField
@@ -90,10 +90,11 @@ class SwagReader(DatasetReader):
         from allennlp.data.fields import IndexField
 
         from allennlp.data.fields import MetadataField
+
         return Instance(
             {
                 "alternatives": sequences,
                 "correct_alternative": IndexField(label, sequences),
-                "id": MetadataField(id)
+                "id": MetadataField(id),
             }
         )
