@@ -50,7 +50,10 @@ class TransformerMC(Model):
         self._accuracy = CategoricalAccuracy()
 
     def forward(  # type: ignore
-        self, alternatives: TextFieldTensors, correct_alternative: torch.IntTensor, id: Optional[List[str]] = None
+        self,
+        alternatives: TextFieldTensors,
+        correct_alternative: Optional[torch.IntTensor] = None,
+        qid: Optional[List[str]] = None
     ) -> Dict[str, torch.Tensor]:
 
         """
@@ -58,14 +61,18 @@ class TransformerMC(Model):
         ----------
         alternatives : ``Dict[str, torch.LongTensor]``
             From a ``ListField[TextField]``. Contains a list of alternatives to evaluate for every instance.
-        correct_alternative : ``torch.IntTensor``
+        correct_alternative : ``Optional[torch.IntTensor]``
             From an ``IndexField``. Contains the index of the correct answer for every instance.
+        qid : `Optional[List[str]]`
+            A list of question IDs for the questions being processed now.
 
         Returns
         -------
         An output dictionary consisting of:
         loss : ``torch.FloatTensor``, optional
-            A scalar loss to be optimised.
+            A scalar loss to be optimised. This is only returned when `correct_alternative` is not `None`.
+        logits : ``torch.FloatTensor``
+            The logits for every possible answer choice
         best_alternative : ``List[int]``
             The index of the highest scoring alternative for every instance in the batch
         """
@@ -82,12 +89,17 @@ class TransformerMC(Model):
             embedded_alternatives.size(1)
         )
 
-        correct_alternative = correct_alternative.squeeze(1)
+        result = {
+            "logits": logit_alternatives,
+            "best_alternative": logit_alternatives.argmax(1)
+        }
 
-        loss = self._loss(logit_alternatives, correct_alternative)
-        self._accuracy(logit_alternatives, correct_alternative)
+        if correct_alternative is not None:
+            correct_alternative = correct_alternative.squeeze(1)
+            result['loss'] = self._loss(logit_alternatives, correct_alternative)
+            self._accuracy(logit_alternatives, correct_alternative)
 
-        return {"loss": loss}
+        return result
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return {
