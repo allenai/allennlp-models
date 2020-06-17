@@ -39,9 +39,9 @@ class TransformerMC(Model):
         from allennlp.modules.seq2vec_encoders import BertPooler
         self._pooler = BertPooler(transformer_model_name, dropout=0.1)
 
-        self._second_linear_layer = torch.nn.Linear(self._text_field_embedder.get_output_dim(), 1)
-        self._second_linear_layer.weight.data.normal_(mean=0.0, std=0.02)
-        self._second_linear_layer.bias.data.zero_()
+        self._linear_layer = torch.nn.Linear(self._text_field_embedder.get_output_dim(), 1)
+        self._linear_layer.weight.data.normal_(mean=0.0, std=0.02)
+        self._linear_layer.bias.data.zero_()
 
         self._loss = torch.nn.CrossEntropyLoss()
 
@@ -76,7 +76,7 @@ class TransformerMC(Model):
             embedded_alternatives.size(3)
         )
         flattened_pooled_alternatives = self._pooler(flattened_embedded_alternatives)
-        flattened_logit_alternatives = self._second_linear_layer(flattened_pooled_alternatives)
+        flattened_logit_alternatives = self._linear_layer(flattened_pooled_alternatives)
         logit_alternatives = flattened_logit_alternatives.view(
             embedded_alternatives.size(0),
             embedded_alternatives.size(1)
