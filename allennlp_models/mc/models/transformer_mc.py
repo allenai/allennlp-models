@@ -26,7 +26,7 @@ class TransformerMC(Model):
     """
 
     def __init__(
-        self, vocab: Vocabulary, transformer_model_name: str = "roberta_large", **kwargs
+        self, vocab: Vocabulary, transformer_model_name: str = "roberta-large", **kwargs
     ) -> None:
         super().__init__(vocab, **kwargs)
         from allennlp.modules.text_field_embedders import BasicTextFieldEmbedder
