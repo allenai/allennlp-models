@@ -393,6 +393,6 @@ class Bart(Model):
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         metrics: Dict[str, float] = {}
         if not self.training:
-            metrics.update(self._rogue.get_metric(reset=reset))
+            metrics.update(self._rouge.get_metric(reset=reset))
             metrics.update(self._bleu.get_metric(reset=reset))
         return metrics

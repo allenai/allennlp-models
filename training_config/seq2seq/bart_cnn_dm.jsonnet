@@ -1,58 +1,56 @@
+local model_name = "facebook/bart-large";
+
 {
-    "train_data_path": "",
-    "validation_data_path": "",
+    "train_data_path": "/home/tobiasr/Documents/AllenNLP/data/train.csv",
+    // "validation_data_path": "",
     "dataset_reader": {
-        "type": "allennlp_models.generation.dataset_readers.Seq2SeqDatasetReader",
+        "type": "seq2seq",
         "source_tokenizer": {
             "type": "pretrained_transformer",
-            "model_name": "bart-large",
+            "model_name": model_name,
             "add_special_tokens": false
         },
         "source_token_indexers": {
             "tokens": {
                 "type": "pretrained_transformer",
-                "model_name": "bart-large",
+                "model_name": model_name,
                 "namespace": "tokens"
             }
         },
 
         "start_symbol": "<s>",
         "end_symbol": "</s>",
+        "max_instances": 32,
         "source_max_tokens": 1022,
-        "target_max_tokens": 1022,
-        "quoting": 3  # csv.QUOTE_NONE
+        "target_max_tokens": 54,
+        "quoting": 3  // csv.QUOTE_NONE
     },
     "model": {
         "type": "bart",
-        "model_name": "bart-large"
+        "model_name": model_name
     },
     "data_loader": {
-        "batch_sampler": {
-            "type": "max_tokens_sampler",
-            "max_tokens": 2048,
-            "sorting_keys": ["source_tokens", "target_tokens"]
-        }
+        "batch_size": 4,
+        "shuffle": true
     },
     "trainer": {
-        "num_epochs": 32,
+        "num_epochs": 3,
         "optimizer": {
-            "type": "adam",
+            "type": "huggingface_adamw",
             "lr": 3e-5,
-            "weight_decay": 0.01,
             "betas": [0.9, 0.999],
             "eps": 1e-8,
+            "correct_bias": true
         },
         "learning_rate_scheduler": {
             "type": "polynomial_decay",
-            "total_steps": 20000,
-            "warmup_steps": 500
+            "total_steps": 215334
         },
         "tensorboard_writer": {
             "summary_interval": 4,
             "should_log_learning_rate": true
         },
-        "num_gradient_accumulation_steps": 32,
-        "grad_norm": 0.1,
+        "grad_norm": 1.0,
         "cuda_device": 0
     }
 }
