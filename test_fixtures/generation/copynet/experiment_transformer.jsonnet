@@ -52,12 +52,16 @@ local hidden_size = 768;
     "data_loader": {
         "batch_sampler": {
             "type": "bucket",
-            "batch_size" : 8,
+            "batch_size" : 2,
         }
     },
     "trainer": {
         "optimizer": {
-            "type": "adam",
+            "type": "huggingface_adamw",
+            "weight_decay": 0.0,
+            "parameter_groups": [[["bias", "LayerNorm\\.weight", "layer_norm\\.weight"], {"weight_decay": 0}]],
+            "lr": 5e-5,
+            "eps": 1e-8
         },
         "num_epochs": 2,
         "cuda_device": -1,

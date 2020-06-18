@@ -128,8 +128,19 @@ class CopyNetDatasetReader(DatasetReader):
             "tokens": SingleIdTokenIndexer(namespace=self._target_namespace)
         }
         if (
+            isinstance(self._source_tokenizer, PretrainedTransformerTokenizer)
+            and self._source_tokenizer._add_special_tokens
+            and self._add_start_and_end_tokens
+        ):
+            warnings.warn(
+                "Your source_tokenizer is a PretrainedTransformerTokenizer, but your dataset reader "
+                "has 'add_start_and_end_tokens' set to True. "
+                "This may result in errors or duplicate special tokens in your source sequences. ",
+                UserWarning,
+            )
+        if (
             isinstance(self._target_tokenizer, PretrainedTransformerTokenizer)
-            and self._target_tokenizer.add_special_tokens
+            and self._target_tokenizer._add_special_tokens
         ):
             warnings.warn(
                 "'add_special_tokens' is True for target_tokenizer, which is a PretrainedTransformerTokenizer. "
