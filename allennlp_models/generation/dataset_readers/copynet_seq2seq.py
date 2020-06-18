@@ -72,6 +72,15 @@ class CopyNetDatasetReader(DatasetReader):
     source_token_indexers : `Dict[str, TokenIndexer]`, optional
         Indexers used to define input (source side) token representations. Defaults to
         `{"tokens": SingleIdTokenIndexer()}`.
+    add_start_and_end_tokens : `bool`, optional (default = `True`)
+        The `CopyNet` model assumes that the source sequence starts with a special
+        "START" token and ends with a special "END" token.
+        If this parameter is `True`, the default `allennlp.common.util.START_SYMBOL`
+        and `allennlp.common.util.END_SYMBOL` will be added to the start and end
+        of the tokenized source, respectively.
+        However, if your source tokenizer already adds its own special start and end
+        tokens, you should set this to `False`. This is usually the case with
+        `PretrainedTransformerTokenizer`.
 
     Notes
     -----
@@ -101,6 +110,7 @@ class CopyNetDatasetReader(DatasetReader):
         source_tokenizer: Tokenizer = None,
         target_tokenizer: Tokenizer = None,
         source_token_indexers: Dict[str, TokenIndexer] = None,
+        add_start_and_end_tokens: bool = True,
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
@@ -108,6 +118,7 @@ class CopyNetDatasetReader(DatasetReader):
         self._source_tokenizer = source_tokenizer or SpacyTokenizer()
         self._target_tokenizer = target_tokenizer or self._source_tokenizer
         self._source_token_indexers = source_token_indexers or {"tokens": SingleIdTokenIndexer()}
+        self._add_start_and_end_tokens = add_start_and_end_tokens
         if "tokens" not in self._source_token_indexers or not isinstance(
             self._source_token_indexers["tokens"], SingleIdTokenIndexer
         ):
@@ -164,8 +175,9 @@ class CopyNetDatasetReader(DatasetReader):
         """
 
         tokenized_source = self._source_tokenizer.tokenize(source_string)
-        tokenized_source.insert(0, Token(START_SYMBOL))
-        tokenized_source.append(Token(END_SYMBOL))
+        if self._add_start_and_end_tokens:
+            tokenized_source.insert(0, Token(START_SYMBOL))
+            tokenized_source.append(Token(END_SYMBOL))
         source_field = TextField(tokenized_source, self._source_token_indexers)
 
         # For each token in the source sentence, we keep track of the matching token

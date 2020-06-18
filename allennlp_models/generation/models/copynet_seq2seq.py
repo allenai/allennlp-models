@@ -56,8 +56,6 @@ class CopyNetSeq2Seq(Model):
     copy_token : `str`, optional (default = '@COPY@')
         The token used to indicate that a target token was copied from the source.
         If this token is not already in your target vocabulary, it will be added.
-    source_namespace : `str`, optional (default = 'source_tokens')
-        The namespace for the source vocabulary.
     target_namespace : `str`, optional (default = 'target_tokens')
         The namespace for the target vocabulary.
     tensor_based_metric : `Metric`, optional (default = BLEU)
@@ -83,17 +81,13 @@ class CopyNetSeq2Seq(Model):
         max_decoding_steps: int,
         target_embedding_dim: int = 30,
         copy_token: str = "@COPY@",
-        source_namespace: str = "source_tokens",
         target_namespace: str = "target_tokens",
         tensor_based_metric: Metric = None,
         token_based_metric: Metric = None,
         initializer: InitializerApplicator = InitializerApplicator(),
     ) -> None:
         super().__init__(vocab)
-        self._source_namespace = source_namespace
         self._target_namespace = target_namespace
-        self._src_start_index = self.vocab.get_token_index(START_SYMBOL, self._source_namespace)
-        self._src_end_index = self.vocab.get_token_index(END_SYMBOL, self._source_namespace)
         self._start_index = self.vocab.get_token_index(START_SYMBOL, self._target_namespace)
         self._end_index = self.vocab.get_token_index(END_SYMBOL, self._target_namespace)
         self._oov_index = self.vocab.get_token_index(self.vocab._oov_token, self._target_namespace)
