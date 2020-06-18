@@ -53,13 +53,13 @@ class SwagReader(DatasetReader):
                     continue
 
                 yield self.text_to_instance(
-                    id=line[1], start=line[3], alternatives=line[7:11], label=int(line[11])
+                    qid=line[1], start=line[3], alternatives=line[7:11], label=int(line[11])
                 )
 
     @overrides
     def text_to_instance(
         self,  # type: ignore
-        id: str,
+        qid: str,
         start: str,
         alternatives: List[str],
         label: int,
@@ -95,6 +95,6 @@ class SwagReader(DatasetReader):
             {
                 "alternatives": sequences,
                 "correct_alternative": IndexField(label, sequences),
-                "id": MetadataField(id),
+                "qid": MetadataField(qid),
             }
         )

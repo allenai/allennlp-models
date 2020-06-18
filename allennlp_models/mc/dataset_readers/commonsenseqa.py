@@ -59,7 +59,7 @@ class CommonsenseQaReader(DatasetReader):
     @overrides
     def text_to_instance(
         self,  # type: ignore
-        id: str,
+        qid: str,
         question: str,
         alternatives: List[str],
         correct_alternative: int,
@@ -94,6 +94,6 @@ class CommonsenseQaReader(DatasetReader):
             {
                 "alternatives": sequences,
                 "correct_alternative": IndexField(correct_alternative, sequences),
-                "id": MetadataField(id),
+                "qid": MetadataField(qid),
             }
         )
