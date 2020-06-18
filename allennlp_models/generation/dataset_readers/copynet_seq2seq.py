@@ -1,16 +1,21 @@
 import logging
 from typing import List, Dict
+import warnings
 
 import numpy as np
 from overrides import overrides
 
-from allennlp.common.checks import ConfigurationError
 from allennlp.common.file_utils import cached_path
 from allennlp.common.util import START_SYMBOL, END_SYMBOL
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.fields import TextField, ArrayField, MetadataField, NamespaceSwappingField
 from allennlp.data.instance import Instance
-from allennlp.data.tokenizers import Token, Tokenizer, SpacyTokenizer
+from allennlp.data.tokenizers import (
+    Token,
+    Tokenizer,
+    SpacyTokenizer,
+    PretrainedTransformerTokenizer,
+)
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
 
 
@@ -119,16 +124,21 @@ class CopyNetDatasetReader(DatasetReader):
         self._target_tokenizer = target_tokenizer or self._source_tokenizer
         self._source_token_indexers = source_token_indexers or {"tokens": SingleIdTokenIndexer()}
         self._add_start_and_end_tokens = add_start_and_end_tokens
-        if "tokens" not in self._source_token_indexers or not isinstance(
-            self._source_token_indexers["tokens"], SingleIdTokenIndexer
-        ):
-            raise ConfigurationError(
-                "CopyNetDatasetReader expects 'source_token_indexers' to contain "
-                "a 'single_id' token indexer called 'tokens'."
-            )
         self._target_token_indexers: Dict[str, TokenIndexer] = {
             "tokens": SingleIdTokenIndexer(namespace=self._target_namespace)
         }
+        if (
+            isinstance(self._target_tokenizer, PretrainedTransformerTokenizer)
+            and self._target_tokenizer.add_special_tokens
+        ):
+            warnings.warn(
+                "'add_special_tokens' is True for target_tokenizer, which is a PretrainedTransformerTokenizer. "
+                "This means special tokens, such as '[CLS]' and '[SEP]', will probably end up in "
+                "your model's predicted target sequences. "
+                "If this is not what you intended, make sure to specify 'add_special_tokens: False' for "
+                "your target_tokenizer.",
+                UserWarning,
+            )
 
     @overrides
     def _read(self, file_path):
