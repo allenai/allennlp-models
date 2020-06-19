@@ -32,8 +32,11 @@ class CopyNetDatasetReader(DatasetReader):
     An instance produced by `CopyNetDatasetReader` will containing at least the following fields:
 
     - `source_tokens`: a `TextField` containing the tokenized source sentence,
-       including the `START_SYMBOL` and `END_SYMBOL`.
+       including a special `START_SYMBOL` and `END_SYMBOL`.
        This will result in a tensor of shape `(batch_size, source_length)`.
+       The CopyNet model assumes that the special start and end tokens will
+       always be there, and trims them off when computing copy scores so that
+       those symbols don't end being generated in the predicted target sequences.
 
     - `source_token_ids`: an `ArrayField` of size `(batch_size, trimmed_source_length)`
       that contains an ID for each token in the source sentence. Tokens that
@@ -174,7 +177,7 @@ class CopyNetDatasetReader(DatasetReader):
         ids: Dict[str, int] = {}
         out: List[int] = []
         for token in tokens:
-            out.append(ids.setdefault(token.text.lower(), len(ids)))
+            out.append(ids.setdefault(token.text, len(ids)))
         return out
 
     @overrides
