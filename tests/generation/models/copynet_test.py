@@ -307,3 +307,15 @@ class CopyNetTest(ModelTestCase):
         assert len(predicted_tokens) == 2
         assert predicted_tokens[0] == ["tokens", "hello", "world"]
         assert predicted_tokens[1] == ["tokens", "tokens", "tokens"]
+
+
+class CopyNetTransformerTest(ModelTestCase):
+    def setup_method(self):
+        super().setup_method()
+        self.set_up_model(
+            FIXTURES_ROOT / "generation" / "copynet" / "experiment_transformer.jsonnet",
+            FIXTURES_ROOT / "generation" / "copynet" / "data" / "copyover.tsv",
+        )
+
+    def test_model_can_train_save_load_predict(self):
+        self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-2)
