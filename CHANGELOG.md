@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `CopyNetSeq2Seq` model now works with pretrained transformers.
 
+### Added
+
+- Added a new dataset reader for the SQuAD 2.0 dataset.
+- Added a new metric for the EM and F1 on the SQuAD 2.0 dataset.
+- Added the BiDAF-no-answer model for SQuAD 2.0 from ["Zero-Shot Relation Extraction via Reading Comprehension" (Levy et al., CoNLL 2017"](https://www.semanticscholar.org/paper/Zero-Shot-Relation-Extraction-via-Reading-Levy-Seo/fa025e5d117929361bcf798437957762eb5bb6d4).
+
 ## [v1.0.0](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0) - 2020-06-16
 
 No additional note-worthy changes since rc6.
