@@ -20,8 +20,8 @@
       }
     }
   },
-  "train_data_path": "https://rajpurkar.github.io/SQuAD-explorer/dataset/train-v2.0.json",
-  "validation_data_path": "https://rajpurkar.github.io/SQuAD-explorer/dataset/dev-v2.0.json",
+  "train_data_path": "https://allennlp.s3.amazonaws.com/datasets/squad/squad-train-v2.0.json",
+  "validation_data_path": "https://allennlp.s3.amazonaws.com/datasets/squad/squad-dev-v2.0.json",
   "model": {
     "type": "bidaf_no_answer",
     "text_field_embedder": {
