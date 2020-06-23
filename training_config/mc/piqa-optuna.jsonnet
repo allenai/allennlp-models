@@ -1,12 +1,11 @@
 local transformer_model = 'roberta-base';
 
 local epochs = std.extVar('epochs');
-local batch_size = std.extVar('batch_size');
 local weight_decay = std.extVar('weight_decay');
 local lr = std.extVar('lr');
 local cut_frac = std.extVar('cut_frac');
 local grad_norm = std.extVar('grad_norm');
-local correct_bias = std.extVar('correct_bias');
+local gradient_accumulation_steps = std.extVar('gradient_accumulation_steps');
 
 {
   "dataset_reader": {
@@ -22,16 +21,17 @@ local correct_bias = std.extVar('correct_bias');
   },
   "data_loader": {
     "sampler": "random",
-    "batch_size": batch_size
+    "batch_size": 4
   },
   "trainer": {
+    "num_gradient_accumulation_steps": gradient_accumulation_steps,
     "optimizer": {
+      "correct_bias": true,
       "type": "huggingface_adamw",
       "weight_decay": weight_decay,
       "parameter_groups": [[["bias", "LayerNorm\\.weight", "layer_norm\\.weight"], {"weight_decay": 0}]],
       "lr": lr,
-      "eps": 1e-8,
-      "correct_bias": true
+      "eps": 1e-8
     },
     "learning_rate_scheduler": {
       "type": "slanted_triangular",
