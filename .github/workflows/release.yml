@@ -3,6 +3,11 @@ name: PyPI Release
 on:
   release:
     types: [published]
+  schedule:
+  # Nightly releases.
+  # These must run after the AllenNLP nightly releases, since the corresponding AllenNLP
+  # release will be a dependency.
+  - cron: '48 12 * * 1,2,3,4,5'  # early morning (12:48 UTC / 5:48 AM PDT) Monday - Friday
 
 jobs:
   build:
@@ -20,6 +25,31 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
 
+    - name: Check and set nightly version
+      if: github.event_name == 'schedule'
+      run: |
+        # The get_version.py script requires the 'requests' package.
+        pip install requests
+        LATEST=$(scripts/get_version.py latest)
+        CURRENT=$(scripts/get_version.py current)
+        # Verify that current version is ahead of the last release.
+        if [ "$CURRENT" == "$LATEST" ]; then
+            echo "Current version needs to be ahead of latest release in order to build nightly release";
+            exit 1;
+        fi
+        echo ::set-env name=ALLENNLP_MODELS_VERSION_SUFFIX::.dev$(date -u +%Y%m%d)
+
+    - name: Check version and release tag match
+      if: github.event_name == 'release'
+      run: |
+        # Remove 'refs/tags/' to get the actual tag from the release.
+        TAG=${GITHUB_REF#refs/tags/};
+        VERSION=$(scripts/get_version.py current)
+        if [ "$TAG" != "$VERSION" ]; then
+            echo "Bad tag or version. Tag $TAG does not match $VERSION";
+            exit 1;
+        fi
+
     - name: Set AllenNLP version override
       run: |
         VERSION=$(./scripts/get_version.py current --minimal)
@@ -32,16 +62,6 @@ jobs:
         pip install --upgrade pip setuptools wheel
         pip install -e .
         pip install -r dev-requirements.txt
-
-    - name: Check version and release tag match
-      run: |
-        # Remove 'refs/tags/' to get the actual tag from the release.
-        TAG=${GITHUB_REF#refs/tags/};
-        VERSION=$(scripts/get_version.py current)
-        if [ "$TAG" != "$VERSION" ]; then
-            echo "Bad tag or version. Tag $TAG does not match $VERSION";
-            exit 1;
-        fi
 
     - name: Show pip freeze
       run: |
@@ -121,6 +141,8 @@ jobs:
   docker:
     name: Docker
     needs: [build]  # needs the package artifact created from 'build_package' job.
+    # Don't run for nightly releases.
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
 
     steps:
