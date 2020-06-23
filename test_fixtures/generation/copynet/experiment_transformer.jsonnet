@@ -1,6 +1,6 @@
 local target_namespace = "target_tokens";
-local transformer_model = "bert-base-cased";
-local hidden_size = 768;
+local transformer_model = "test_fixtures/bert-xsmall-dummy";
+local hidden_size = 20;
 
 {
     "dataset_reader": {
