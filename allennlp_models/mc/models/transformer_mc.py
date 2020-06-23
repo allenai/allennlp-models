@@ -20,25 +20,36 @@ class TransformerMC(Model):
     Parameters
     ----------
     vocab : ``Vocabulary``
-    transformer_model_name : ``str``, optional (default=``roberta-large``)
-        This model chooses the embedder according to this setting. You probably want to make sure this is set to
-        the same thing as the reader.
+    transformer_model : ``str``, optional (default=``"roberta-large"``)
+        This model chooses the embedder according to this setting. You probably want to make sure this matches the
+        setting in the reader.
     """
 
     def __init__(
-        self, vocab: Vocabulary, transformer_model_name: str = "roberta-large", **kwargs
+        self,
+        vocab: Vocabulary,
+        transformer_model: str = "roberta-large",
+        override_weights_file: Optional[str] = None,
+        override_weights_strip_prefix: Optional[str] = None,
+        **kwargs
     ) -> None:
         super().__init__(vocab, **kwargs)
         from allennlp.modules.text_field_embedders import BasicTextFieldEmbedder
         from allennlp.modules.token_embedders import PretrainedTransformerEmbedder
-
-        self._text_field_embedder = BasicTextFieldEmbedder(
-            {"tokens": PretrainedTransformerEmbedder(transformer_model_name)}
-        )
-
         from allennlp.modules.seq2vec_encoders import BertPooler
 
-        self._pooler = BertPooler(transformer_model_name, dropout=0.1)
+        self._text_field_embedder = PretrainedTransformerEmbedder(
+            transformer_model,
+            override_weights_file=override_weights_file,
+            override_weights_strip_prefix=override_weights_strip_prefix,
+        )
+        self._text_field_embedder = BasicTextFieldEmbedder({"tokens": self._text_field_embedder})
+        self._pooler = BertPooler(
+            transformer_model,
+            override_weights_file=override_weights_file,
+            override_weights_strip_prefix=override_weights_strip_prefix,
+            dropout=0.1,
+        )
 
         self._linear_layer = torch.nn.Linear(self._text_field_embedder.get_output_dim(), 1)
         self._linear_layer.weight.data.normal_(mean=0.0, std=0.02)

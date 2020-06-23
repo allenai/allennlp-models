@@ -14,7 +14,7 @@ local batch_size = 8;
   //"test_data_path": "/net/nfs.corp/allennlp/dirkg/data/swag/test.csv"
   "model": {
       "type": "transformer_mc",
-      "transformer_model_name": transformer_model,
+      "transformer_model": transformer_model,
   },
   "data_loader": {
     "sampler": "random",

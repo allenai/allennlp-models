@@ -1,5 +1,6 @@
 import optuna
 
+
 def objective(trial: optuna.Trial) -> float:
     trial.suggest_int('epochs', 1, 5)
     trial.suggest_int('gradient_accumulation_steps', 1, 16)
@@ -13,12 +14,12 @@ def objective(trial: optuna.Trial) -> float:
         config_file="training_config/mc/piqa-optuna.jsonnet",
         serialization_dir=f"models/piqa-optuna/{trial.number}",
         metrics="best_validation_acc",
-        include_package="allennlp_models"
+        include_package="allennlp_models",
     )
     return executor.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     study = optuna.create_study(
         storage=None,
         sampler=optuna.samplers.TPESampler(seed=24),
@@ -34,4 +35,6 @@ if __name__ == '__main__':
         timeout=timeout,  # threshold for executing time (sec)
     )
 
-    optuna.integration.allennlp.dump_best_config("training_config/mc/piqa-optuna.jsonnet", "best_piqa-optuna.json", study)
+    optuna.integration.allennlp.dump_best_config(
+        "training_config/mc/piqa-optuna.jsonnet", "best_piqa-optuna.json", study
+    )
