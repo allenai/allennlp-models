@@ -183,7 +183,11 @@ jobs:
 
     - name: Set Docker tag
       run: |
-        echo "::set-env name=DOCKER_TAG::${GITHUB_REF#refs/tags/}";
+        if [[ $GITHUB_EVENT_NAME == 'release' ]]; then
+            echo "::set-env name=DOCKER_TAG::${GITHUB_REF#refs/tags/}";
+        else
+            echo "::set-env name=DOCKER_TAG::$GITHUB_SHA";
+        fi
 
     - name: Build test image
       run: |
@@ -202,7 +206,11 @@ jobs:
 
     - name: Set Docker tag
       run: |
-        echo "::set-env name=DOCKER_TAG::${GITHUB_REF#refs/tags/}";
+        if [[ $GITHUB_EVENT_NAME == 'release' ]]; then
+            echo "::set-env name=DOCKER_TAG::${GITHUB_REF#refs/tags/}";
+        else
+            echo "::set-env name=DOCKER_TAG::$GITHUB_SHA";
+        fi
 
     - name: Build test image
       run: |
