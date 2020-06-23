@@ -1,10 +1,10 @@
 import logging
 from typing import List, Dict
+import warnings
 
 import numpy as np
 from overrides import overrides
 
-from allennlp.common.checks import ConfigurationError
 from allennlp.common.file_utils import cached_path
 from allennlp.common.util import START_SYMBOL, END_SYMBOL
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
@@ -14,6 +14,7 @@ from allennlp.data.tokenizers import (
     Token,
     Tokenizer,
     SpacyTokenizer,
+    PretrainedTransformerTokenizer,
 )
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
 
@@ -104,6 +105,18 @@ class CopyNetDatasetReader(DatasetReader):
         self._target_token_indexers: Dict[str, TokenIndexer] = {
             "tokens": SingleIdTokenIndexer(namespace=self._target_namespace)
         }
+        if (
+            isinstance(self._target_tokenizer, PretrainedTransformerTokenizer)
+            and self._target_tokenizer._add_special_tokens
+        ):
+            warnings.warn(
+                "'add_special_tokens' is True for target_tokenizer, which is a PretrainedTransformerTokenizer. "
+                "This means special tokens, such as '[CLS]' and '[SEP]', will probably end up in "
+                "your model's predicted target sequences. "
+                "If this is not what you intended, make sure to specify 'add_special_tokens: False' for "
+                "your target_tokenizer.",
+                UserWarning,
+            )
 
     @overrides
     def _read(self, file_path):
@@ -152,9 +165,7 @@ class CopyNetDatasetReader(DatasetReader):
         tokenized_source = self._source_tokenizer.tokenize(source_string)
         if not tokenized_source:
             # If the tokenized source is empty, it will cause issues downstream.
-            raise ConfigurationError(
-                f"source tokenizer produced no tokens from source '{source_string}'"
-            )
+            raise ValueError(f"source tokenizer produced no tokens from source '{source_string}'")
         source_field = TextField(tokenized_source, self._source_token_indexers)
 
         # For each token in the source sentence, we keep track of the matching token
