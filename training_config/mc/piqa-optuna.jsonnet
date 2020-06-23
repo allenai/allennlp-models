@@ -18,7 +18,7 @@ local correct_bias = std.extVar('correct_bias');
   "validation_data_path": "https://yonatanbisk.com/piqa/data/valid.jsonl",
   "model": {
       "type": "transformer_mc",
-      "transformer_model_name": transformer_model,
+      "transformer_model": transformer_model,
   },
   "data_loader": {
     "sampler": "random",

@@ -13,7 +13,9 @@ local batch_size = 8;
   "validation_data_path": "https://yonatanbisk.com/piqa/data/valid.jsonl",
   "model": {
       "type": "transformer_mc",
-      "transformer_model": transformer_model
+      "transformer_model": transformer_model,
+      "override_weights_file": "./mattp_weights.pth",
+      "override_weights_strip_prefix": "roberta."
   },
   "data_loader": {
     "sampler": "random",
@@ -34,7 +36,7 @@ local batch_size = 8;
     },
     "grad_norm": 1.0,
     "num_epochs": epochs,
-    "cuda_device": 0
+    "cuda_device": -1
   },
   "random_seed": 42,
   "numpy_seed": 42,
