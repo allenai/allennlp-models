@@ -315,7 +315,10 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
         ]
         assert result["tags"] == ["B-PER", "L-PER", "O", "O", "O", "O", "U-LOC", "O"]
 
-    @pytest.mark.skipif(spacy.__version__ < "2.1", reason="this model changed from 2.0 to 2.1")
+    @pytest.mark.skipif(
+        not ("2.1" <= spacy.__version__ < "2.3"),
+        reason="this model changed before and after 2.1 and 2.2",
+    )
     def test_constituency_parsing(self):
         predictor = pretrained.span_based_constituency_parsing_with_elmo_joshi_2018()
 
