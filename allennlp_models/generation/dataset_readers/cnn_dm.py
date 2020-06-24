@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 import logging
 import os
 import glob
@@ -21,16 +21,11 @@ logger = logging.getLogger(__name__)
 @DatasetReader.register("cnn_dm")
 class CNNDailyMailDatasetReader(DatasetReader):
     """
-    Read a tsv file containing paired sequences, and create a dataset suitable for a
-    `ComposedSeq2Seq` model, or any model with a matching API.
-
-    Expected format for each input line: <source_sequence_string>\t<target_sequence_string>
+    Reads the CNN/DailyMail dataset for text summarization.
 
     The output of `read` is a list of `Instance` s with the fields:
         source_tokens : `TextField` and
         target_tokens : `TextField`
-
-    `START_SYMBOL` and `END_SYMBOL` tokens are added to the source and target sequences.
 
     # Parameters
 
@@ -46,10 +41,10 @@ class CNNDailyMailDatasetReader(DatasetReader):
     target_token_indexers : `Dict[str, TokenIndexer]`, optional
         Indexers used to define output (target side) token representations. Defaults to
         `source_token_indexers`.
-    source_add_start_token : bool, (optional, default=True)
-        Whether or not to add `START_SYMBOL` to the beginning of the source sequence.
-    source_add_end_token : bool, (optional, default=True)
-        Whether or not to add `END_SYMBOL` to the end of the source sequence.
+    source_max_tokens : int, optional
+        Maximum number of tokens in source sequence.
+    target_max_tokens : int, (optional
+        Maximum number of tokens in target sequence.
     """
 
     def __init__(
@@ -84,7 +79,7 @@ class CNNDailyMailDatasetReader(DatasetReader):
 
         # CNN stories always start with "(CNN)"
         if line.startswith("(CNN)"):
-            line = line[len("(CNN)"):]
+            line = line[len("(CNN)") :]
 
         # Highlight are essentially bullet points and don't have proper sentence endings
         if line[-1] not in sentence_endings:
@@ -94,8 +89,8 @@ class CNNDailyMailDatasetReader(DatasetReader):
 
     @staticmethod
     def _read_story(story_path: str):
-        article = []
-        summary = []
+        article: List[str] = []
+        summary: List[str] = []
         highlight = False
 
         with open(story_path, "r") as f:
@@ -122,8 +117,14 @@ class CNNDailyMailDatasetReader(DatasetReader):
         cnn_stories_path = os.path.join(data_dir, "../cnn_stories/cnn/stories/")
         dm_stories_path = os.path.join(data_dir, "../dailymail_stories/dailymail/stories/")
 
-        cnn_stories = {get_file_name_without_extension(s) for s in glob.glob(os.path.join(cnn_stories_path, "*.story"))}
-        dm_stories = {get_file_name_without_extension(s) for s in glob.glob(os.path.join(dm_stories_path, "*.story"))}
+        cnn_stories = {
+            get_file_name_without_extension(s)
+            for s in glob.glob(os.path.join(cnn_stories_path, "*.story"))
+        }
+        dm_stories = {
+            get_file_name_without_extension(s)
+            for s in glob.glob(os.path.join(dm_stories_path, "*.story"))
+        }
 
         with open(file_path, "r") as url_file:
             for url in url_file:
@@ -136,7 +137,9 @@ class CNNDailyMailDatasetReader(DatasetReader):
                 elif url_hash in dm_stories:
                     story_base_path = dm_stories_path
                 else:
-                    raise ConfigurationError("Story with url '%s' and hash '%s' not found" % (url, url_hash))
+                    raise ConfigurationError(
+                        "Story with url '%s' and hash '%s' not found" % (url, url_hash)
+                    )
 
                 story_path = os.path.join(story_base_path, url_hash) + ".story"
                 article, summary = self._read_story(story_path)
@@ -157,7 +160,10 @@ class CNNDailyMailDatasetReader(DatasetReader):
         source_field = TextField(tokenized_source, self._source_token_indexers)
         if target_sequence is not None:
             tokenized_target = self._target_tokenizer.tokenize(target_sequence)
-            if self._target_max_tokens is not None and len(tokenized_target) > self._target_max_tokens:
+            if (
+                self._target_max_tokens is not None
+                and len(tokenized_target) > self._target_max_tokens
+            ):
                 tokenized_target = tokenized_target[: self._target_max_tokens]
             target_field = TextField(tokenized_target, self._target_token_indexers)
             return Instance({"source_tokens": source_field, "target_tokens": target_field})

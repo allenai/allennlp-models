@@ -1,14 +1,13 @@
 local model_name = "facebook/bart-large";
 
 {
-    "train_data_path": "/home/tobiasr/Documents/AllenNLP/data/train.csv",
-    // "validation_data_path": "",
+    "train_data_path": ",
+    "validation_data_path": "",
     "dataset_reader": {
-        "type": "seq2seq",
+        "type": "cnn_dm",
         "source_tokenizer": {
             "type": "pretrained_transformer",
-            "model_name": model_name,
-            "add_special_tokens": false
+            "model_name": model_name
         },
         "source_token_indexers": {
             "tokens": {
@@ -17,13 +16,8 @@ local model_name = "facebook/bart-large";
                 "namespace": "tokens"
             }
         },
-
-        "start_symbol": "<s>",
-        "end_symbol": "</s>",
-        "max_instances": 32,
         "source_max_tokens": 1022,
-        "target_max_tokens": 54,
-        "quoting": 3  // csv.QUOTE_NONE
+        "target_max_tokens": 54
     },
     "model": {
         "type": "bart",
