@@ -1,0 +1,165 @@
+from typing import Dict, Optional
+import logging
+import os
+import glob
+import hashlib
+import ftfy
+
+from overrides import overrides
+
+from allennlp.common.checks import ConfigurationError
+from allennlp.common.file_utils import get_file_name_without_extension
+from allennlp.data.dataset_readers.dataset_reader import DatasetReader
+from allennlp.data.fields import TextField
+from allennlp.data.instance import Instance
+from allennlp.data.tokenizers import Tokenizer, SpacyTokenizer
+from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
+
+logger = logging.getLogger(__name__)
+
+
+@DatasetReader.register("cnn_dm")
+class CNNDailyMailDatasetReader(DatasetReader):
+    """
+    Read a tsv file containing paired sequences, and create a dataset suitable for a
+    `ComposedSeq2Seq` model, or any model with a matching API.
+
+    Expected format for each input line: <source_sequence_string>\t<target_sequence_string>
+
+    The output of `read` is a list of `Instance` s with the fields:
+        source_tokens : `TextField` and
+        target_tokens : `TextField`
+
+    `START_SYMBOL` and `END_SYMBOL` tokens are added to the source and target sequences.
+
+    # Parameters
+
+    source_tokenizer : `Tokenizer`, optional
+        Tokenizer to use to split the input sequences into words or other kinds of tokens. Defaults
+        to `SpacyTokenizer()`.
+    target_tokenizer : `Tokenizer`, optional
+        Tokenizer to use to split the output sequences (during training) into words or other kinds
+        of tokens. Defaults to `source_tokenizer`.
+    source_token_indexers : `Dict[str, TokenIndexer]`, optional
+        Indexers used to define input (source side) token representations. Defaults to
+        `{"tokens": SingleIdTokenIndexer()}`.
+    target_token_indexers : `Dict[str, TokenIndexer]`, optional
+        Indexers used to define output (target side) token representations. Defaults to
+        `source_token_indexers`.
+    source_add_start_token : bool, (optional, default=True)
+        Whether or not to add `START_SYMBOL` to the beginning of the source sequence.
+    source_add_end_token : bool, (optional, default=True)
+        Whether or not to add `END_SYMBOL` to the end of the source sequence.
+    """
+
+    def __init__(
+        self,
+        source_tokenizer: Tokenizer = None,
+        target_tokenizer: Tokenizer = None,
+        source_token_indexers: Dict[str, TokenIndexer] = None,
+        target_token_indexers: Dict[str, TokenIndexer] = None,
+        source_max_tokens: Optional[int] = None,
+        target_max_tokens: Optional[int] = None,
+        **kwargs,
+    ) -> None:
+        super().__init__(**kwargs)
+        self._source_tokenizer = source_tokenizer or SpacyTokenizer()
+        self._target_tokenizer = target_tokenizer or self._source_tokenizer
+        self._source_token_indexers = source_token_indexers or {"tokens": SingleIdTokenIndexer()}
+        self._target_token_indexers = target_token_indexers or self._source_token_indexers
+        self._source_max_tokens = source_max_tokens
+        self._target_max_tokens = target_max_tokens
+
+    @staticmethod
+    def _hashhex(url):
+        h = hashlib.sha1()
+        h.update(url)
+        return h.hexdigest()
+
+    @staticmethod
+    def _sanitize_story_line(line):
+        line = ftfy.fix_encoding(line)
+
+        sentence_endings = [".", "!", "?", "...", "'", "`", '"', ")", "\u2019", "\u201d"]
+
+        # CNN stories always start with "(CNN)"
+        if line.startswith("(CNN)"):
+            line = line[len("(CNN)"):]
+
+        # Highlight are essentially bullet points and don't have proper sentence endings
+        if line[-1] not in sentence_endings:
+            line += "."
+
+        return line
+
+    @staticmethod
+    def _read_story(story_path: str):
+        article = []
+        summary = []
+        highlight = False
+
+        with open(story_path, "r") as f:
+            for line in f:
+                line = line.strip()
+                if line == "":
+                    continue
+
+                if line == "@highlight":
+                    highlight = True
+                    continue
+                line = CNNDailyMailDatasetReader._sanitize_story_line(line)
+                (summary if highlight else article).append(line)
+
+        return " ".join(article), " ".join(summary)
+
+    @overrides
+    def _read(self, file_path: str):
+        # Reset exceeded counts
+        self._source_max_exceeded = 0
+        self._target_max_exceeded = 0
+
+        data_dir = os.path.dirname(file_path)
+        cnn_stories_path = os.path.join(data_dir, "../cnn_stories/cnn/stories/")
+        dm_stories_path = os.path.join(data_dir, "../dailymail_stories/dailymail/stories/")
+
+        cnn_stories = {get_file_name_without_extension(s) for s in glob.glob(os.path.join(cnn_stories_path, "*.story"))}
+        dm_stories = {get_file_name_without_extension(s) for s in glob.glob(os.path.join(dm_stories_path, "*.story"))}
+
+        with open(file_path, "r") as url_file:
+            for url in url_file:
+                url = url.strip()
+
+                url_hash = self._hashhex(url.encode("utf-8"))
+
+                if url_hash in cnn_stories:
+                    story_base_path = cnn_stories_path
+                elif url_hash in dm_stories:
+                    story_base_path = dm_stories_path
+                else:
+                    raise ConfigurationError("Story with url '%s' and hash '%s' not found" % (url, url_hash))
+
+                story_path = os.path.join(story_base_path, url_hash) + ".story"
+                article, summary = self._read_story(story_path)
+
+                if len(article) == 0 or len(summary) == 0 or len(article) < len(summary):
+                    continue
+
+                yield self.text_to_instance(article, summary)
+
+    @overrides
+    def text_to_instance(
+        self, source_sequence: str, target_sequence: str = None
+    ) -> Instance:  # type: ignore
+        tokenized_source = self._source_tokenizer.tokenize(source_sequence)
+        if self._source_max_tokens is not None and len(tokenized_source) > self._source_max_tokens:
+            tokenized_source = tokenized_source[: self._source_max_tokens]
+
+        source_field = TextField(tokenized_source, self._source_token_indexers)
+        if target_sequence is not None:
+            tokenized_target = self._target_tokenizer.tokenize(target_sequence)
+            if self._target_max_tokens is not None and len(tokenized_target) > self._target_max_tokens:
+                tokenized_target = tokenized_target[: self._target_max_tokens]
+            target_field = TextField(tokenized_target, self._target_token_indexers)
+            return Instance({"source_tokens": source_field, "target_tokens": target_field})
+        else:
+            return Instance({"source_tokens": source_field})
