@@ -3,6 +3,7 @@ local data_dir = std.extVar("CONLL_DATA_PATH");
 // local data_dir = "/Users/dirkg/Documents/data/conll-formatted-ontonotes-5.0/data";
 
 local transformer_model = "roberta-base";
+local transformer_hidden_dim = 768;
 local epochs = 3;
 local batch_size = 8;
 local max_length = 512;
@@ -31,6 +32,7 @@ local max_length = 512;
         "type": "crf_tagger",
         "encoder": {
             "type": "pass_through",
+            "input_dim": transformer_hidden_dim,
         },
         "include_start_end_transitions": false,
         "label_encoding": "BIOUL",
