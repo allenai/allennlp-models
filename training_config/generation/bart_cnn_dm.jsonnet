@@ -1,7 +1,7 @@
 local model_name = "facebook/bart-large";
 
 {
-    "train_data_path": ",
+    "train_data_path": "",
     "validation_data_path": "",
     "dataset_reader": {
         "type": "cnn_dm",
