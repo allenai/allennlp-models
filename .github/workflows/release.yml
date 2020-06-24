@@ -12,6 +12,8 @@ on:
 jobs:
   build:
     name: Build package
+    # Don't run for forks.
+    if: github.repository == 'allenai/allennlp-models'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -96,6 +98,8 @@ jobs:
 
   test:
     name: Test Package
+    # Don't run for forks.
+    if: github.repository == 'allenai/allennlp-models'
     needs: [build]  # needs the package artifact created from 'build_package' job.
     runs-on: ubuntu-latest
     strategy:
@@ -140,9 +144,9 @@ jobs:
 
   docker:
     name: Docker
+    # Don't run for forks.
+    if: github.repository == 'allenai/allennlp-models'
     needs: [build]  # needs the package artifact created from 'build_package' job.
-    # Don't run for nightly releases.
-    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
 
     steps:
@@ -169,6 +173,8 @@ jobs:
         docker tag allennlp/models:$(scripts/get_version.py current) allennlp/models:latest
 
     - name: Upload image
+      # Don't run for nightly releases.
+      if: github.event_name != 'schedule'
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker push allennlp/models:$(scripts/get_version.py current)
@@ -176,6 +182,8 @@ jobs:
 
   pretrained:
     name: Pretrained Models
+    # Don't run for forks.
+    if: github.repository == 'allenai/allennlp-models'
     runs-on: [self-hosted]
 
     steps:
@@ -199,6 +207,8 @@ jobs:
 
   gpu_checks:
     name: GPU Checks
+    # Don't run for forks.
+    if: github.repository == 'allenai/allennlp-models'
     runs-on: [self-hosted, GPU]
 
     steps:
@@ -222,6 +232,8 @@ jobs:
 
   publish:
     name: PyPI
+    # Don't run for forks.
+    if: github.repository == 'allenai/allennlp-models'
     needs: [build, test, docker, pretrained, gpu_checks]
     runs-on: ubuntu-latest
 
