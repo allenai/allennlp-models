@@ -93,12 +93,22 @@ def named_entity_recognition_with_elmo_peters_2018() -> SentenceTaggerPredictor:
     return predictor
 
 
-def fine_grained_named_entity_recognition_with_elmo_peters_2018() -> SentenceTaggerPredictor:
+def fine_grained_named_entity_recognition() -> SentenceTaggerPredictor:
     """
     Fine Grained Named Entity Recognition
     """
     predictor = _load_predictor(
-        "https://storage.googleapis.com/allennlp-public-models/fine-grained-ner-model-elmo-2018.12.21.tar.gz"
+        "https://storage.googleapis.com/allennlp-public-models/fine-grained-ner.2020-06-24.tar.gz"
+    )
+    return predictor
+
+
+def fine_grained_named_entity_recognition_transformer() -> SentenceTaggerPredictor:
+    """
+    Fine Grained Named Entity Recognition with the transformer
+    """
+    predictor = _load_predictor(
+        "https://storage.googleapis.com/allennlp-public-models/fgner_transformer.2020-06-24.tar.gz"
     )
     return predictor
 
