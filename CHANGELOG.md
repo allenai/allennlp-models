@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   to the tokenized source. If you want these in the tokenized source, it's up to
   the source tokenizer.
 
+### Added
+
+- Added two models for fine-grained NER
+
 ## [v1.0.0](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0) - 2020-06-16
 
 No additional note-worthy changes since rc6.
