@@ -21,7 +21,6 @@ local hidden_size = 20;
                 "model_name": transformer_model,
             },
         },
-        "add_start_and_end_tokens": false,
     },
     "train_data_path": "test_fixtures/generation/copynet/data/copyover.tsv",
     "validation_data_path": "test_fixtures/generation/copynet/data/copyover.tsv",

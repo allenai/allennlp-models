@@ -93,7 +93,6 @@ class CopyNetDatasetReader(DatasetReader):
         source_tokenizer: Tokenizer = None,
         target_tokenizer: Tokenizer = None,
         source_token_indexers: Dict[str, TokenIndexer] = None,
-        add_start_and_end_tokens: bool = True,
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
@@ -101,7 +100,6 @@ class CopyNetDatasetReader(DatasetReader):
         self._source_tokenizer = source_tokenizer or SpacyTokenizer()
         self._target_tokenizer = target_tokenizer or self._source_tokenizer
         self._source_token_indexers = source_token_indexers or {"tokens": SingleIdTokenIndexer()}
-        self._add_start_and_end_tokens = add_start_and_end_tokens
         self._target_token_indexers: Dict[str, TokenIndexer] = {
             "tokens": SingleIdTokenIndexer(namespace=self._target_namespace)
         }
