@@ -371,3 +371,17 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
         )
         assert "verbs" in result
         assert "words" in result
+
+    @pytest.mark.parametrize(
+        "get_model_fn",
+        [
+            pretrained.fine_grained_named_entity_recognition,
+            pretrained.fine_grained_named_entity_recognition_transformer,
+        ],
+    )
+    def test_fine_grained_ner(self, get_model_fn):
+        predictor = get_model_fn()
+        text = """Dwayne Haskins passed for 251 yards and three touchdowns, and Urban Meyer finished his coaching career at Ohio State with a 28-23 victory after the Buckeyes held off Washington’s thrilling fourth-quarter comeback in the 105th Rose Bowl on Tuesday. Parris Campbell, Johnnie Dixon and Rashod Berry caught TD passes in the first half for the fifth-ranked Buckeyes (13-1), who took a 25-point lead into the fourth. But Myles Gaskin threw a touchdown pass and rushed for two more scores for the No. 9 Huskies (10-4), scoring from 2 yards out with 42 seconds left. The Buckeyes intercepted Jake Browning’s pass on the 2-point conversion attempt and then recovered the Huskies’ onside kick to wrap up the final game of Meyer’s seven-year tenure. “I’m a very blessed man,” Meyer said. “I’m blessed because of my family, [but] this team, this year, I love this group as much as any I’ve ever had.”"""
+        result = predictor.predict_json({"sentence": text})
+        # Just assert that we predicted something better than all-O.
+        assert len(frozenset(result["tags"])) > 1
