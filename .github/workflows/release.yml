@@ -169,6 +169,9 @@ jobs:
         echo ::set-env name=ALLENNLP_MODELS_VERSION_SUFFIX::.dev$(date -u +%Y%m%d)
 
     - name: Build image
+      # Currently we don't publish Docker images for AllenNLP core nightly builds,
+      # so we can't build a corresponding models image.
+      if: github.event_name != 'schedule'
       run: |
         make docker-image
 
