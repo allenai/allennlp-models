@@ -3,10 +3,17 @@ name: PyPI Release
 on:
   release:
     types: [published]
+  schedule:
+  # Nightly releases.
+  # These must run after the AllenNLP nightly releases, since the corresponding AllenNLP
+  # release will be a dependency.
+  - cron: '48 12 * * 1,2,3,4,5'  # early morning (12:48 UTC / 5:48 AM PDT) Monday - Friday
 
 jobs:
   build:
     name: Build package
+    # Don't run for forks.
+    if: github.repository == 'allenai/allennlp-models'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -20,6 +27,31 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
 
+    - name: Check and set nightly version
+      if: github.event_name == 'schedule'
+      run: |
+        # The get_version.py script requires the 'requests' package.
+        pip install requests
+        LATEST=$(scripts/get_version.py latest)
+        CURRENT=$(scripts/get_version.py current)
+        # Verify that current version is ahead of the last release.
+        if [ "$CURRENT" == "$LATEST" ]; then
+            echo "Current version needs to be ahead of latest release in order to build nightly release";
+            exit 1;
+        fi
+        echo ::set-env name=ALLENNLP_MODELS_VERSION_SUFFIX::.dev$(date -u +%Y%m%d)
+
+    - name: Check version and release tag match
+      if: github.event_name == 'release'
+      run: |
+        # Remove 'refs/tags/' to get the actual tag from the release.
+        TAG=${GITHUB_REF#refs/tags/};
+        VERSION=$(scripts/get_version.py current)
+        if [ "$TAG" != "$VERSION" ]; then
+            echo "Bad tag or version. Tag $TAG does not match $VERSION";
+            exit 1;
+        fi
+
     - name: Set AllenNLP version override
       run: |
         VERSION=$(./scripts/get_version.py current --minimal)
@@ -32,16 +64,6 @@ jobs:
         pip install --upgrade pip setuptools wheel
         pip install -e .
         pip install -r dev-requirements.txt
-
-    - name: Check version and release tag match
-      run: |
-        # Remove 'refs/tags/' to get the actual tag from the release.
-        TAG=${GITHUB_REF#refs/tags/};
-        VERSION=$(scripts/get_version.py current)
-        if [ "$TAG" != "$VERSION" ]; then
-            echo "Bad tag or version. Tag $TAG does not match $VERSION";
-            exit 1;
-        fi
 
     - name: Show pip freeze
       run: |
@@ -76,6 +98,8 @@ jobs:
 
   test:
     name: Test Package
+    # Don't run for forks.
+    if: github.repository == 'allenai/allennlp-models'
     needs: [build]  # needs the package artifact created from 'build_package' job.
     runs-on: ubuntu-latest
     strategy:
@@ -120,6 +144,8 @@ jobs:
 
   docker:
     name: Docker
+    # Don't run for forks.
+    if: github.repository == 'allenai/allennlp-models'
     needs: [build]  # needs the package artifact created from 'build_package' job.
     runs-on: ubuntu-latest
 
@@ -137,16 +163,27 @@ jobs:
         name: models-package
         path: dist
 
+    - name: Set nightly version suffix
+      if: github.event_name == 'schedule'
+      run: |
+        echo ::set-env name=ALLENNLP_MODELS_VERSION_SUFFIX::.dev$(date -u +%Y%m%d)
+
     - name: Build image
+      # Currently we don't publish Docker images for AllenNLP core nightly builds,
+      # so we can't build a corresponding models image.
+      if: github.event_name != 'schedule'
       run: |
         make docker-image
 
     - name: Add latest tag
+      if: github.event_name != 'schedule'
       run: |
         # Tag with latest.
         docker tag allennlp/models:$(scripts/get_version.py current) allennlp/models:latest
 
     - name: Upload image
+      # Don't run for nightly releases.
+      if: github.event_name != 'schedule'
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker push allennlp/models:$(scripts/get_version.py current)
@@ -154,6 +191,8 @@ jobs:
 
   pretrained:
     name: Pretrained Models
+    # Don't run for forks.
+    if: github.repository == 'allenai/allennlp-models'
     runs-on: [self-hosted]
 
     steps:
@@ -161,7 +200,11 @@ jobs:
 
     - name: Set Docker tag
       run: |
-        echo "::set-env name=DOCKER_TAG::${GITHUB_REF#refs/tags/}";
+        if [[ $GITHUB_EVENT_NAME == 'release' ]]; then
+            echo "::set-env name=DOCKER_TAG::${GITHUB_REF#refs/tags/}";
+        else
+            echo "::set-env name=DOCKER_TAG::$GITHUB_SHA";
+        fi
 
     - name: Build test image
       run: |
@@ -173,6 +216,8 @@ jobs:
 
   gpu_checks:
     name: GPU Checks
+    # Don't run for forks.
+    if: github.repository == 'allenai/allennlp-models'
     runs-on: [self-hosted, GPU]
 
     steps:
@@ -180,7 +225,11 @@ jobs:
 
     - name: Set Docker tag
       run: |
-        echo "::set-env name=DOCKER_TAG::${GITHUB_REF#refs/tags/}";
+        if [[ $GITHUB_EVENT_NAME == 'release' ]]; then
+            echo "::set-env name=DOCKER_TAG::${GITHUB_REF#refs/tags/}";
+        else
+            echo "::set-env name=DOCKER_TAG::$GITHUB_SHA";
+        fi
 
     - name: Build test image
       run: |
@@ -192,6 +241,8 @@ jobs:
 
   publish:
     name: PyPI
+    # Don't run for forks.
+    if: github.repository == 'allenai/allennlp-models'
     needs: [build, test, docker, pretrained, gpu_checks]
     runs-on: ubuntu-latest
 

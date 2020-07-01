@@ -4,6 +4,7 @@ import torch
 
 from allennlp.common.testing import ModelTestCase
 
+from allennlp_models.generation import CopyNetDatasetReader, CopyNetSeq2Seq  # noqa: F401
 from tests import FIXTURES_ROOT
 
 
@@ -30,7 +31,7 @@ class CopyNetTest(ModelTestCase):
         source_tokens = inputs["source_tokens"]["tokens"]
         target_tokens = inputs["target_tokens"]["tokens"]
 
-        assert list(source_tokens["tokens"].size()) == [11]
+        assert list(source_tokens["tokens"].size()) == [9]
         assert list(target_tokens["tokens"].size()) == [10]
 
         assert target_tokens["tokens"][0] == self.model._start_index
@@ -131,11 +132,11 @@ class CopyNetTest(ModelTestCase):
         last_predictions = torch.tensor(
             [5, 6, target_vocab_size + 1]  # only generated.  # copied AND generated.
         )  # only copied.
-        # shape: (group_size, trimmed_source_length)
+        # shape: (group_size, source_sequence_length)
         source_to_target = torch.tensor(
             [[6, oov_index, oov_index], [6, oov_index, 6], [5, oov_index, oov_index]]
         )
-        # shape: (group_size, trimmed_source_length)
+        # shape: (group_size, source_sequence_length)
         source_token_ids = torch.tensor(
             [
                 [0, 1, 2],
@@ -143,7 +144,7 @@ class CopyNetTest(ModelTestCase):
                 [0, 1, 1],
             ]  # no duplicates.  # first and last source tokens match.
         )  # middle and last source tokens match.
-        # shape: (group_size, trimmed_source_length)
+        # shape: (group_size, source_sequence_length)
         copy_probs = torch.tensor([[0.1, 0.1, 0.1], [0.1, 0.1, 0.1], [0.1, 0.1, 0.1]])
 
         state = {
@@ -162,7 +163,7 @@ class CopyNetTest(ModelTestCase):
         input_choices_check = np.array([5, 6, copy_index])
         np.testing.assert_equal(input_choices.numpy(), input_choices_check)
 
-        # shape: (group_size, trimmed_source_length)
+        # shape: (group_size, source_sequence_length)
         selective_weights_check = np.array([[0.0, 0.0, 0.0], [0.5, 0.0, 0.5], [0.0, 0.5, 0.5]])
         np.testing.assert_equal(selective_weights.numpy(), selective_weights_check)
 
@@ -173,13 +174,13 @@ class CopyNetTest(ModelTestCase):
         oov_index = self.model._oov_index
         assert oov_index not in [5, 6]
 
-        # shape: (group_size, trimmed_source_length)
+        # shape: (group_size, source_sequence_length)
         source_to_target = torch.tensor([[6, oov_index, oov_index], [oov_index, 5, 5]])
-        # shape: (group_size, trimmed_source_length)
+        # shape: (group_size, source_sequence_length)
         source_token_ids = torch.tensor([[0, 1, 1], [0, 1, 1]])
         # shape: (group_size, target_vocab_size)
         generation_probs = torch.tensor([[0.1] * target_vocab_size, [0.1] * target_vocab_size])
-        # shape: (group_size, trimmed_source_length)
+        # shape: (group_size, source_sequence_length)
         copy_probs = torch.tensor([[0.1, 0.1, 0.1], [0.1, 0.1, 0.1]])
 
         state = {"source_to_target": source_to_target, "source_token_ids": source_token_ids}
@@ -253,7 +254,7 @@ class CopyNetTest(ModelTestCase):
                 [tok_index, oov_index, tok_index, end_index],
             ]
         )
-        # shape: (batch_size, trimmed_source_length)
+        # shape: (batch_size, source_sequence_length)
         source_token_ids = torch.tensor([[0, 1, 2, 3], [0, 1, 0, 2]])
         # shape: (batch_size, target_sequence_length)
         target_token_ids = torch.tensor([[4, 5, 6, 7], [1, 0, 3, 4]])
@@ -307,3 +308,15 @@ class CopyNetTest(ModelTestCase):
         assert len(predicted_tokens) == 2
         assert predicted_tokens[0] == ["tokens", "hello", "world"]
         assert predicted_tokens[1] == ["tokens", "tokens", "tokens"]
+
+
+class CopyNetTransformerTest(ModelTestCase):
+    def setup_method(self):
+        super().setup_method()
+        self.set_up_model(
+            FIXTURES_ROOT / "generation" / "copynet" / "experiment_transformer.jsonnet",
+            FIXTURES_ROOT / "generation" / "copynet" / "data" / "copyover.tsv",
+        )
+
+    def test_model_can_train_save_load_predict(self):
+        self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-2)

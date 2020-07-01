@@ -1,16 +1,21 @@
 import logging
 from typing import List, Dict
+import warnings
 
 import numpy as np
 from overrides import overrides
 
-from allennlp.common.checks import ConfigurationError
 from allennlp.common.file_utils import cached_path
 from allennlp.common.util import START_SYMBOL, END_SYMBOL
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.fields import TextField, ArrayField, MetadataField, NamespaceSwappingField
 from allennlp.data.instance import Instance
-from allennlp.data.tokenizers import Token, Tokenizer, SpacyTokenizer
+from allennlp.data.tokenizers import (
+    Token,
+    Tokenizer,
+    SpacyTokenizer,
+    PretrainedTransformerTokenizer,
+)
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
 
 
@@ -26,11 +31,10 @@ class CopyNetDatasetReader(DatasetReader):
     The expected format for each input line is: <source_sequence_string><tab><target_sequence_string>.
     An instance produced by `CopyNetDatasetReader` will containing at least the following fields:
 
-    - `source_tokens`: a `TextField` containing the tokenized source sentence,
-       including the `START_SYMBOL` and `END_SYMBOL`.
+    - `source_tokens`: a `TextField` containing the tokenized source sentence.
        This will result in a tensor of shape `(batch_size, source_length)`.
 
-    - `source_token_ids`: an `ArrayField` of size `(batch_size, trimmed_source_length)`
+    - `source_token_ids`: an `ArrayField` of size `(batch_size, source_length)`
       that contains an ID for each token in the source sentence. Tokens that
       match at the lowercase level will share the same ID. If `target_tokens`
       is passed as well, these IDs will also correspond to the `target_token_ids`
@@ -42,7 +46,7 @@ class CopyNetDatasetReader(DatasetReader):
     - `source_to_target`: a `NamespaceSwappingField` that keeps track of the index
       of the target token that matches each token in the source sentence.
       When there is no matching target token, the OOV index is used.
-      This will result in a tensor of shape `(batch_size, trimmed_source_length)`.
+      This will result in a tensor of shape `(batch_size, source_length)`.
 
     - `metadata`: a `MetadataField` which contains the source tokens and
       potentially target tokens as lists of strings.
@@ -73,19 +77,7 @@ class CopyNetDatasetReader(DatasetReader):
         Indexers used to define input (source side) token representations. Defaults to
         `{"tokens": SingleIdTokenIndexer()}`.
 
-    Notes
-    -----
-    By `source_length` we are referring to the number of tokens in the source
-    sentence including the `START_SYMBOL` and `END_SYMBOL`, while
-    `trimmed_source_length` refers to the number of tokens in the source sentence
-    *excluding* the `START_SYMBOL` and `END_SYMBOL`, i.e.
-    `trimmed_source_length = source_length - 2`.
-
-    On the other hand, `target_length` is the number of tokens in the target sentence
-    *including* the `START_SYMBOL` and `END_SYMBOL`.
-
-    In the context where there is a `batch_size` dimension, the above refer
-    to the maximum of their individual values across the batch.
+    # Notes
 
     In regards to the fields in an `Instance` produced by this dataset reader,
     `source_token_ids` and `target_token_ids` are primarily used during training
@@ -108,16 +100,21 @@ class CopyNetDatasetReader(DatasetReader):
         self._source_tokenizer = source_tokenizer or SpacyTokenizer()
         self._target_tokenizer = target_tokenizer or self._source_tokenizer
         self._source_token_indexers = source_token_indexers or {"tokens": SingleIdTokenIndexer()}
-        if "tokens" not in self._source_token_indexers or not isinstance(
-            self._source_token_indexers["tokens"], SingleIdTokenIndexer
-        ):
-            raise ConfigurationError(
-                "CopyNetDatasetReader expects 'source_token_indexers' to contain "
-                "a 'single_id' token indexer called 'tokens'."
-            )
         self._target_token_indexers: Dict[str, TokenIndexer] = {
             "tokens": SingleIdTokenIndexer(namespace=self._target_namespace)
         }
+        if (
+            isinstance(self._target_tokenizer, PretrainedTransformerTokenizer)
+            and self._target_tokenizer._add_special_tokens
+        ):
+            warnings.warn(
+                "'add_special_tokens' is True for target_tokenizer, which is a PretrainedTransformerTokenizer. "
+                "This means special tokens, such as '[CLS]' and '[SEP]', will probably end up in "
+                "your model's predicted target sequences. "
+                "If this is not what you intended, make sure to specify 'add_special_tokens: False' for "
+                "your target_tokenizer.",
+                UserWarning,
+            )
 
     @overrides
     def _read(self, file_path):
@@ -142,7 +139,7 @@ class CopyNetDatasetReader(DatasetReader):
         ids: Dict[str, int] = {}
         out: List[int] = []
         for token in tokens:
-            out.append(ids.setdefault(token.text.lower(), len(ids)))
+            out.append(ids.setdefault(token.text, len(ids)))
         return out
 
     @overrides
@@ -164,17 +161,16 @@ class CopyNetDatasetReader(DatasetReader):
         """
 
         tokenized_source = self._source_tokenizer.tokenize(source_string)
-        tokenized_source.insert(0, Token(START_SYMBOL))
-        tokenized_source.append(Token(END_SYMBOL))
+        if not tokenized_source:
+            # If the tokenized source is empty, it will cause issues downstream.
+            raise ValueError(f"source tokenizer produced no tokens from source '{source_string}'")
         source_field = TextField(tokenized_source, self._source_token_indexers)
 
         # For each token in the source sentence, we keep track of the matching token
         # in the target sentence (which will be the OOV symbol if there is no match).
-        source_to_target_field = NamespaceSwappingField(
-            tokenized_source[1:-1], self._target_namespace
-        )
+        source_to_target_field = NamespaceSwappingField(tokenized_source, self._target_namespace)
 
-        meta_fields = {"source_tokens": [x.text for x in tokenized_source[1:-1]]}
+        meta_fields = {"source_tokens": [x.text for x in tokenized_source]}
         fields_dict = {"source_tokens": source_field, "source_to_target": source_to_target_field}
 
         if target_string is not None:
@@ -185,15 +181,13 @@ class CopyNetDatasetReader(DatasetReader):
 
             fields_dict["target_tokens"] = target_field
             meta_fields["target_tokens"] = [y.text for y in tokenized_target[1:-1]]
-            source_and_target_token_ids = self._tokens_to_ids(
-                tokenized_source[1:-1] + tokenized_target
-            )
-            source_token_ids = source_and_target_token_ids[: len(tokenized_source) - 2]
+            source_and_target_token_ids = self._tokens_to_ids(tokenized_source + tokenized_target)
+            source_token_ids = source_and_target_token_ids[: len(tokenized_source)]
             fields_dict["source_token_ids"] = ArrayField(np.array(source_token_ids))
-            target_token_ids = source_and_target_token_ids[len(tokenized_source) - 2 :]
+            target_token_ids = source_and_target_token_ids[len(tokenized_source) :]
             fields_dict["target_token_ids"] = ArrayField(np.array(target_token_ids))
         else:
-            source_token_ids = self._tokens_to_ids(tokenized_source[1:-1])
+            source_token_ids = self._tokens_to_ids(tokenized_source)
             fields_dict["source_token_ids"] = ArrayField(np.array(source_token_ids))
 
         fields_dict["metadata"] = MetadataField(meta_fields)

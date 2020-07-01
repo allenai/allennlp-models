@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- `CopyNetSeq2Seq` model now works with pretrained transformers.
+- A bug with `NextTokenLM` that caused simple gradient interpreters to fail.
+
+### Changed
+
+- `CopyNetDatasetReader` no longer automatically adds `START_TOKEN` and `END_TOKEN`
+  to the tokenized source. If you want these in the tokenized source, it's up to
+  the source tokenizer.
+
+### Added
+
+- Added two models for fine-grained NER
+
+## [v1.0.0](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0) - 2020-06-16
+
+No additional note-worthy changes since rc6.
+
 ## [v1.0.0rc6](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0rc6) - 2020-06-11
 
 ### Changed
