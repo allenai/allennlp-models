@@ -1,7 +1,7 @@
 local transformer_model = "roberta-large";
 
 local epochs = 20;
-local batch_size = 32;
+local batch_size = 64;
 
 local gpu_batch_size = 4;
 local gradient_accumulation_steps = batch_size / gpu_batch_size;
@@ -39,12 +39,11 @@ local gradient_accumulation_steps = batch_size / gpu_batch_size;
     "num_epochs": epochs,
     "num_gradient_accumulation_steps": gradient_accumulation_steps,
     "patience": 3,
-    "validation_metric": "-acc",
+    "validation_metric": "+acc",
     "tensorboard_writer": {
         "summary_interval": 10,
         "should_log_learning_rate": true
     },
-    "cuda_device": -1
   },
   "random_seed": 42,
   "numpy_seed": 42,
