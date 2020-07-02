@@ -100,14 +100,16 @@
       "activations": ["relu", "linear"],
       "dropout": [0.1, 0.0]
     },
-    "initializer": [
-      [".*linear_layers.*weight", {"type": "xavier_normal"}],
-      [".*linear_layers.*bias", {"type": "constant", "val": 0}],
-      [".*weight_ih.*", {"type": "xavier_normal"}],
-      [".*weight_hh.*", {"type": "orthogonal"}],
-      [".*bias.*", {"type": "constant", "val": 0}],
-      [".*matcher.*match_weights.*", {"type": "kaiming_normal"}]
-    ]
+    "initializer": {
+      "regexes": [
+        [".*linear_layers.*weight", {"type": "xavier_normal"}],
+        [".*linear_layers.*bias", {"type": "constant", "val": 0}],
+        [".*weight_ih.*", {"type": "xavier_normal"}],
+        [".*weight_hh.*", {"type": "orthogonal"}],
+        [".*bias.*", {"type": "constant", "val": 0}],
+        [".*matcher.*match_weights.*", {"type": "kaiming_normal"}]
+      ]
+    }
   },
   "data_loader": {
     "batch_sampler": {

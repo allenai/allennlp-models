@@ -111,15 +111,17 @@
             "attention_dropout_prob": 0
         },
         "dropout_prob": 0.1,
-        "regularizer": [
-            [
-                ".*",
-                {
-                    "type": "l2",
-                    "alpha": 1e-07
-                }
+        "regularizer": {
+            "regexes": [
+                [
+                    ".*",
+                    {
+                        "type": "l2",
+                        "alpha": 1e-07
+                    }
+                ]
             ]
-        ]
+        }
     },
     "data_loader": {
         "batch_sampler": {

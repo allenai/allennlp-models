@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `CopyNetSeq2Seq` model now works with pretrained transformers.
+- A bug with `NextTokenLM` that caused simple gradient interpreters to fail.
+- A bug in `training_config` of `qanet` and `bimpm` that used the old version of `regularizer` and `initializer`.
 
 ### Changed
 
