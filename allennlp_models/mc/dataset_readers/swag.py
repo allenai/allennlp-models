@@ -73,6 +73,10 @@ class SwagReader(DatasetReader):
             length_for_start = (
                 self.length_limit - len(alternative) - self._tokenizer.num_special_tokens_for_pair()
             )
+            if length_for_start < 0:
+                # If the alternative is too long by itself, we take the beginning and add no tokens from the start.
+                alternative = alternative[:length_for_start]
+                length_for_start = 0
             sequences.append(
                 self._tokenizer.add_special_tokens(start[:length_for_start], alternative)
             )
