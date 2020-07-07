@@ -19,7 +19,7 @@ class TestCommonsenseQaReader:
         token_text = [t.text for t in alternative.tokens]
         token_type_ids = [t.type_id for t in alternative.tokens]
 
-        assert token_text[:3] == ["[CLS]", 'a', 'revolving']
+        assert token_text[:3] == ["[CLS]", "a", "revolving"]
         assert token_type_ids[:3] == [0, 0, 0]
 
         assert token_text[-3:] == ["[SEP]", "bank", "[SEP]"]
@@ -30,7 +30,9 @@ class TestCommonsenseQaReader:
     def test_length_limit_works(self):
         length_limit = 20
 
-        reader = CommonsenseQaReader(transformer_model_name="bert-base-uncased", length_limit=length_limit)
+        reader = CommonsenseQaReader(
+            transformer_model_name="bert-base-uncased", length_limit=length_limit
+        )
         instances = ensure_list(reader.read(FIXTURES_ROOT / "mc" / "commonsenseqa.jsonl"))
 
         assert len(instances) == 10

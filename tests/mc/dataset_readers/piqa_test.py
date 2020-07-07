@@ -19,11 +19,11 @@ class TestCommonsenseQaReader:
         token_text = [t.text for t in alternative.tokens]
         token_type_ids = [t.type_id for t in alternative.tokens]
 
-        assert token_text[:3] == ["[CLS]", 'how', 'do']
+        assert token_text[:3] == ["[CLS]", "how", "do"]
         assert token_type_ids[:3] == [0, 0, 0]
 
         assert token_text[-3:] == ["dish", ".", "[SEP]"]
-        assert token_type_ids[-3:] == [0, 0, 0]     # PIQA doesn't use segment IDs
+        assert token_type_ids[-3:] == [0, 0, 0]  # PIQA doesn't use segment IDs
 
         assert instance.fields["correct_alternative"] == 0
 
