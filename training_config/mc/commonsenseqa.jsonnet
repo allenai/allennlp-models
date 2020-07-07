@@ -17,7 +17,7 @@ local gradient_accumulation_steps = batch_size / gpu_batch_size;
   //"test_data_path": "https://s3.amazonaws.com/commensenseqa/test_rand_split_no_answers.jsonl"
   "model": {
       "type": "transformer_mc",
-      "transformer_model_name": transformer_model,
+      "transformer_model": transformer_model,
   },
   "data_loader": {
     "sampler": "random",
