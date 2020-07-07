@@ -2,12 +2,12 @@ import optuna
 
 
 def objective(trial: optuna.Trial) -> float:
-    trial.suggest_int('epochs', 1, 5)
-    trial.suggest_int('gradient_accumulation_steps', 1, 16)
-    trial.suggest_float('weight_decay', 0, 0.1)
-    trial.suggest_float('lr', 1e-5/3, 5e-5, log=True)
-    trial.suggest_float('cut_frac', 0, 0.1)
-    trial.suggest_float('grad_norm', 0, 2.0)
+    trial.suggest_int("epochs", 1, 5)
+    trial.suggest_int("gradient_accumulation_steps", 1, 16)
+    trial.suggest_float("weight_decay", 0, 0.1)
+    trial.suggest_float("lr", 1e-5 / 3, 5e-5, log=True)
+    trial.suggest_float("cut_frac", 0, 0.1)
+    trial.suggest_float("grad_norm", 0, 2.0)
 
     executor = optuna.integration.allennlp.AllenNLPExecutor(
         trial=trial,  # trial object
