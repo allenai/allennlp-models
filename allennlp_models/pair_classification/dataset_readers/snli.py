@@ -1,3 +1,4 @@
+import itertools
 from typing import Dict, Optional
 import json
 import logging
@@ -45,6 +46,7 @@ class SnliReader(DatasetReader):
         combine_input_fields: Optional[bool] = None,
         **kwargs,
     ) -> None:
+        kwargs["manual_distributed_sharding"] = True
         super().__init__(**kwargs)
         self._tokenizer = tokenizer or SpacyTokenizer()
         if isinstance(self._tokenizer, PretrainedTransformerTokenizer):
@@ -60,9 +62,22 @@ class SnliReader(DatasetReader):
         # if `file_path` is a URL, redirect to the cache
         file_path = cached_path(file_path)
 
-        with open(file_path, "r") as snli_file:
+        import torch.distributed as dist
+        from allennlp.common.util import is_distributed
+
+        if is_distributed():
+            start_index = dist.get_rank()
+            step_size = dist.get_world_size()
+            logger.info(
+                "Reading SNLI instances %% %d from jsonl dataset at: %s", step_size, file_path
+            )
+        else:
+            start_index = 0
+            step_size = 1
             logger.info("Reading SNLI instances from jsonl dataset at: %s", file_path)
-            for line in snli_file:
+
+        with open(file_path, "r") as snli_file:
+            for line in itertools.islice(snli_file, start_index, None, step_size):
                 example = json.loads(line)
 
                 label = example["gold_label"]
