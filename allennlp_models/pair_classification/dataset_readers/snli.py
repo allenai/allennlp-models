@@ -79,7 +79,7 @@ class SnliReader(DatasetReader):
         with open(file_path, "r") as snli_file:
             example_iter = (json.loads(line) for line in snli_file)
             filtered_example_iter = (
-                example for example in example_iter if example["gold_label"] == "-"
+                example for example in example_iter if example["gold_label"] != "-"
             )
             for example in itertools.islice(filtered_example_iter, start_index, None, step_size):
                 label = example["gold_label"]
