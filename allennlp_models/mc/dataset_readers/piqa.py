@@ -1,7 +1,6 @@
 import logging
-from typing import List
 
-from allennlp.data import DatasetReader, Instance
+from allennlp.data import DatasetReader
 from overrides import overrides
 
 from allennlp_models.mc.dataset_readers.transformer_mc import TransformerMCReader
@@ -45,8 +44,4 @@ class PiqaReader(TransformerMCReader):
             sol1 = json["sol1"]
             sol2 = json["sol2"]
             label = int(label)
-            yield self.text_to_instance(
-                str(qid),
-                goal,
-                [sol1, sol2],
-                label)
+            yield self.text_to_instance(str(qid), goal, [sol1, sol2], label)

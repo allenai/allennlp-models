@@ -29,8 +29,5 @@ class CommonsenseQaReader(TransformerMCReader):
                 i for i, (label, _) in enumerate(choices) if label == json["answerKey"]
             ][0]
             yield self.text_to_instance(
-                json["id"],
-                json["question"]["stem"],
-                [c[1] for c in choices],
-                correct_choice
+                json["id"], json["question"]["stem"], [c[1] for c in choices], correct_choice
             )

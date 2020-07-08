@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Optional
 
 from allennlp.data import DatasetReader, Instance
 from overrides import overrides
@@ -44,7 +44,7 @@ class TransformerMCReader(DatasetReader):
         qid: str,
         start: str,
         alternatives: List[str],
-        label: int,
+        label: Optional[int],
     ) -> Instance:
         # tokenize
         start = self._tokenizer.tokenize(start)
@@ -67,20 +67,22 @@ class TransformerMCReader(DatasetReader):
         from allennlp.data.fields import TextField
 
         sequences = [TextField(sequence, self._token_indexers) for sequence in sequences]
-        if label < 0 or label >= len(sequences):
-            raise ValueError("Alternative %d does not exist", label)
         from allennlp.data.fields import ListField
 
         sequences = ListField(sequences)
 
-        from allennlp.data.fields import IndexField
-
         from allennlp.data.fields import MetadataField
 
-        return Instance(
-            {
-                "alternatives": sequences,
-                "correct_alternative": IndexField(label, sequences),
-                "qid": MetadataField(qid),
-            }
-        )
+        fields = {
+            "alternatives": sequences,
+            "qid": MetadataField(qid),
+        }
+
+        if label is not None:
+            if label < 0 or label >= len(sequences):
+                raise ValueError("Alternative %d does not exist", label)
+            from allennlp.data.fields import IndexField
+
+            fields["correct_alternative"] = IndexField(label, sequences)
+
+        return Instance(fields)
