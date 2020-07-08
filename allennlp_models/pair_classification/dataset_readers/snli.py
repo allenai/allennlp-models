@@ -77,18 +77,14 @@ class SnliReader(DatasetReader):
             logger.info("Reading SNLI instances from jsonl dataset at: %s", file_path)
 
         with open(file_path, "r") as snli_file:
-            for line in itertools.islice(snli_file, start_index, None, step_size):
-                example = json.loads(line)
-
+            example_iter = (json.loads(line) for line in snli_file)
+            filtered_example_iter = (
+                example for example in example_iter if example["gold_label"] == "-"
+            )
+            for example in itertools.islice(filtered_example_iter, start_index, None, step_size):
                 label = example["gold_label"]
-                if label == "-":
-                    # These were cases where the annotators disagreed; we'll just skip them.  It's
-                    # like 800 out of 500k examples in the training data.
-                    continue
-
                 premise = example["sentence1"]
                 hypothesis = example["sentence2"]
-
                 yield self.text_to_instance(premise, hypothesis, label)
 
     @overrides
