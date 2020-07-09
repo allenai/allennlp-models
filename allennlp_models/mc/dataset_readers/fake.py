@@ -13,15 +13,15 @@ class FakeReader(DatasetReader):
     Creates fake multiple-choice input. If your model doesn't get 99% on this data, it is broken.
 
     Instances have two fields:
-     * ``alternatives``, a ListField of TextField
-     * ``correct_alternative``, IndexField with the correct answer among ``alternatives``
+     * `alternatives`, a ListField of TextField
+     * `correct_alternative`, IndexField with the correct answer among `alternatives`
 
     Parameters
     ----------
-    transformer_model_name : ``str``, optional (default=``roberta-large``)
+    transformer_model_name : `str`, optional (default=`roberta-large`)
         This reader chooses tokenizer and token indexer according to this setting.
-    length_limit : ``int``, optional (default=512)
-        We will make sure that the length of context+question never exceeds this many word pieces.
+    length_limit : `int`, optional (default=512)
+        We will make sure that the length of the alternatives never exceeds this many word pieces.
     """
 
     def __init__(

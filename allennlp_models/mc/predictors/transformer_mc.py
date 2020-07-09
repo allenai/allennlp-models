@@ -10,7 +10,7 @@ from allennlp.predictors.predictor import Predictor
 @Predictor.register("transformer_mc")
 class TransformerMCPredictor(Predictor):
     """
-    Predictor for the :class:`~allennlp_rc.models.TransformerMC` model.
+    Predictor for the :class:`~allennlp_models.mc.models.TransformerMC` model.
     """
 
     def predict(self, prefix: str, alternatives: List[str]) -> JsonDict:
