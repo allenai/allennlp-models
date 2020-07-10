@@ -1,4 +1,3 @@
-import numpy
 from flaky import flaky
 from allennlp.commands.train import train_model_from_file
 from allennlp.common.testing import ModelTestCase, AllenNlpTestCase, requires_gpu
@@ -11,7 +10,7 @@ try:
 except ImportError:
     amp = None
 
-import allennlp_models.mc
+import allennlp_models.mc.models
 
 
 class TransformerMcTest(ModelTestCase):
