@@ -88,6 +88,8 @@ jobs:
 
   pretrained:
     name: Pretrained Models
+    # Don't run for forks.
+    if: github.repository == 'allenai/allennlp-models'
     runs-on: [self-hosted]
 
     steps:
@@ -107,6 +109,8 @@ jobs:
 
   gpu_checks:
     name: GPU Checks
+    # Don't run for forks.
+    if: github.repository == 'allenai/allennlp-models'
     runs-on: [self-hosted, GPU]
 
     steps:

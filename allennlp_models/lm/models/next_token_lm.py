@@ -131,7 +131,6 @@ class NextTokenLM(Model):
             )
             output_dict["words"] = top_words
         tokens = []
-        print(output_dict["token_ids"])
         for instance_tokens in output_dict["token_ids"]:
             tokens.append(
                 [
