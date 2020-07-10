@@ -86,9 +86,9 @@ class TestTransformerSquadReader:
         token_text = [t.text for t in instances[1].fields["question_with_context"].tokens]
         token_ids = [t.text_id for t in instances[1].fields["question_with_context"].tokens]
 
-        assert token_text[:3] == ["<s>", "ĠWhat", "Ġsits"]
+        assert token_text[:3] == ["<s>", "What", "Ġsits"]
         assert token_ids[:3] == [
             0,
-            653,
+            2264,
             6476,
-        ]  # The "What" token is not preceded by a space, but the "sits" token is.
+        ]
