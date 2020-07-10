@@ -4,6 +4,7 @@ from allennlp.models import load_archive
 from allennlp.predictors import Predictor, TextClassifierPredictor
 
 from allennlp_models.coref import CorefPredictor
+from allennlp_models.mc.predictors import TransformerMCPredictor
 from allennlp_models.pair_classification import DecomposableAttentionPredictor
 from allennlp_models.rc import ReadingComprehensionPredictor
 from allennlp_models.structured_prediction import (
@@ -172,4 +173,22 @@ def roberta_snli() -> DecomposableAttentionPredictor:
     return _load_predictor(
         "https://storage.googleapis.com/allennlp-public-models/snli_roberta-2020.06.09.tar.gz",
         "textual-entailment",
+    )
+
+
+def roberta_piqa() -> TransformerMCPredictor:
+    return _load_predictor(
+        "https://storage.googleapis.com/allennlp-public-models/piqa.2020-07-08.tar.gz"
+    )
+
+
+def roberta_commonsenseqa() -> TransformerMCPredictor:
+    return _load_predictor(
+        "https://storage.googleapis.com/allennlp-public-models/commonsenseqa.2020-07-08.tar.gz"
+    )
+
+
+def roberta_swag() -> TransformerMCPredictor:
+    return _load_predictor(
+        "https://storage.googleapis.com/allennlp-public-models/swag.2020-07-08.tar.gz"
     )
