@@ -77,7 +77,7 @@ test-pretrained :
 
 .PHONY : build-all-api-docs
 build-all-api-docs : scripts/py2md.py
-	@$(MD_DOCS_CMD) $(subst /,.,$(subst .py,,$(MD_DOCS_SRC))) -o $(MD_DOCS)
+	@PYTHONPATH=./ $(MD_DOCS_CMD) $(subst /,.,$(subst .py,,$(MD_DOCS_SRC))) -o $(MD_DOCS)
 
 .PHONY : build-docs
 build-docs : build-all-api-docs $(MD_DOCS_CONF) $(MD_DOCS) $(MD_DOCS_EXTRAS)
@@ -105,7 +105,7 @@ scripts/py2md.py :
 	wget https://raw.githubusercontent.com/allenai/allennlp/master/scripts/py2md.py -O $@
 
 $(MD_DOCS_CONF) : $(MD_DOCS_CONF_SRC) $(MD_DOCS)
-	python scripts/build_docs_config.py $@ $(MD_DOCS_CONF_SRC) $(MD_DOCS_ROOT) $(MD_DOCS_API_ROOT)
+	@PYTHONPATH=./ python scripts/build_docs_config.py $@ $(MD_DOCS_CONF_SRC) $(MD_DOCS_ROOT) $(MD_DOCS_API_ROOT)
 
 $(MD_DOCS_API_ROOT)%.md : $(SRC)/%.py scripts/py2md.py
 	mkdir -p $(shell dirname $@)
