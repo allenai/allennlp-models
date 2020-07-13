@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added 
+
+- Added support to multi-layer decoder in seq2seq model.
+
 ### Fixed
 
 - `CopyNetSeq2Seq` model now works with pretrained transformers.
