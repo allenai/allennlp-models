@@ -170,7 +170,7 @@ jobs:
 
     - name: Configure Git
       # Only run this on master commits to main repo.
-      if: github.repository == 'allenai/allennlp-models' && github.event_name == 'push'
+      # if: github.repository == 'allenai/allennlp-models' && github.event_name == 'push'
       run: |
         git config --global user.email "ai2service@allenai.org"
         git config --global user.name "ai2service"
@@ -178,7 +178,7 @@ jobs:
 
     - name: Set target folders
       # Only run this on master commits to main repo.
-      if: github.repository == 'allenai/allennlp-models' && github.event_name == 'push'
+      # if: github.repository == 'allenai/allennlp-models' && github.event_name == 'push'
       run: |
         if [[ $GITHUB_EVENT_NAME == 'release' ]]; then
             echo "::set-env name=DOCS_FOLDER::models/${GITHUB_REF#refs/tags/}";
@@ -188,7 +188,7 @@ jobs:
 
     - name: Stage docs
       # Only run this on master commits to main repo.
-      if: github.repository == 'allenai/allennlp-models' && github.event_name == 'push'
+      # if: github.repository == 'allenai/allennlp-models' && github.event_name == 'push'
       run: |
         echo "Staging docs to $DOCS_FOLDER"
 
@@ -202,7 +202,7 @@ jobs:
 
     - name: Update shortcuts
       # Only run this on master commits to main repo.
-      if: github.repository == 'allenai/allennlp-models' && github.event_name == 'push'
+      # if: github.repository == 'allenai/allennlp-models' && github.event_name == 'push'
       run: |
         # Fail immediately if any step fails.
         set -e
@@ -242,7 +242,7 @@ jobs:
 
     - name: Deploy docs
       # Only run this on master commits to main repo.
-      if: github.repository == 'allenai/allennlp-models' && github.event_name == 'push'
+      # if: github.repository == 'allenai/allennlp-models' && github.event_name == 'push'
       run: |
         # And push them up to GitHub
         cd ~/allennlp-docs/
