@@ -1,4 +1,4 @@
-from typing import Dict, List, Tuple, Iterable
+from typing import Dict, List, Tuple, Iterable, Any
 
 import numpy
 from overrides import overrides
@@ -252,9 +252,7 @@ class SimpleSeq2Seq(Model):
         return output_dict
 
     @overrides
-    def make_output_human_readable(
-        self, output_dict: Dict[str, torch.Tensor]
-    ) -> Dict[str, torch.Tensor]:
+    def make_output_human_readable(self, output_dict: Dict[str, Any]) -> Dict[str, Any]:
         """
         Finalize predictions.
         This method overrides `Model.make_output_human_readable`, which gets called after `Model.forward`, at test
