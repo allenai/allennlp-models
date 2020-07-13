@@ -23,7 +23,7 @@
 <br/>
 
 <div align="center">
-❗️ To file an issue, please open a ticket on https://github.com/allenai/allennlp and tag it with "Models". ❗️
+❗️ To file an issue, please open a ticket on [https://github.com/allenai/allennlp](https://github.com/allenai/allennlp/issues/new/choose) and tag it with "Models". ❗️
 </div>
 
 ## Installing

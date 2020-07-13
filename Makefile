@@ -10,7 +10,7 @@ MD_DOCS_CMD = python scripts/py2md.py
 MD_DOCS_CONF = mkdocs.yml
 MD_DOCS_CONF_SRC = mkdocs-skeleton.yml
 MD_DOCS_TGT = site/
-MD_DOCS_EXTRAS = $(addprefix $(MD_DOCS_ROOT),README.md CHANGELOG.md LICENSE.md)
+MD_DOCS_EXTRAS = $(addprefix $(MD_DOCS_ROOT),README.md CHANGELOG.md)
 
 DOCKER_TAG = latest
 DOCKER_RUN_CMD = docker run --rm \
@@ -94,9 +94,6 @@ $(MD_DOCS_ROOT)README.md : README.md
 	cp $< $@
 	# Alter the relative path of the README image for the docs.
 	$(SED) -i '1s/docs/./' $@
-
-$(MD_DOCS_ROOT)LICENSE.md : LICENSE
-	cp $< $@
 
 $(MD_DOCS_ROOT)%.md : %.md
 	cp $< $@
