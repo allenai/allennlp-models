@@ -1,8 +1,9 @@
 local model_name = "facebook/bart-large";
+local data_base_url = "https://storage.googleapis.com/allennlp-public-data/cnndm-combined-data-2020.07.13.tar.gz";
 
 {
-    "train_data_path": "",
-    "validation_data_path": "",
+    "train_data_path": data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_train.txt",
+    "validation_data_path": data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_val.txt",
     "dataset_reader": {
         "type": "cnn_dm",
         "source_tokenizer": {
@@ -17,7 +18,8 @@ local model_name = "facebook/bart-large";
             }
         },
         "source_max_tokens": 1022,
-        "target_max_tokens": 54
+        "target_max_tokens": 54,
+        // "max_instances": 1000 // DEBUG setting
     },
     "model": {
         "type": "bart",
@@ -38,13 +40,11 @@ local model_name = "facebook/bart-large";
         },
         "learning_rate_scheduler": {
             "type": "polynomial_decay",
-            "total_steps": 215334
         },
         "tensorboard_writer": {
             "summary_interval": 4,
             "should_log_learning_rate": true
         },
         "grad_norm": 1.0,
-        "cuda_device": 0
     }
 }
