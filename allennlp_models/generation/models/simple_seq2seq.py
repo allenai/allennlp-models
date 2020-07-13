@@ -292,18 +292,23 @@ class SimpleSeq2Seq(Model):
             state["encoder_outputs"], state["source_mask"], self._encoder.is_bidirectional(),
         )
         # Initialize the decoder hidden state with the final output of the encoder.
-        # shape: (num_layers, batch_size, decoder_output_dim)
-        state["decoder_hidden"] = final_encoder_output.unsqueeze(0).repeat(
-            self._target_decoder_layers, 1, 1
-        )
+        # shape: (batch_size, decoder_output_dim)
+        state["decoder_hidden"] = final_encoder_output
         # shape: (batch_size, decoder_output_dim)
         state["decoder_context"] = state["encoder_outputs"].new_zeros(
             batch_size, self._decoder_output_dim
         )
-        # shape: (num_layers, batch_size, decoder_output_dim)
-        state["decoder_context"] = (
-            state["decoder_context"].unsqueeze(0).repeat(self._target_decoder_layers, 1, 1)
-        )
+        if self._target_decoder_layers > 1:
+            # shape: (num_layers, batch_size, decoder_output_dim)
+            state["decoder_hidden"] = (
+                state["decoder_hidden"].unsqueeze(0).repeat(self._target_decoder_layers, 1, 1)
+            )
+
+            # shape: (num_layers, batch_size, decoder_output_dim)
+            state["decoder_context"] = (
+                state["decoder_context"].unsqueeze(0).repeat(self._target_decoder_layers, 1, 1)
+            )
+
         return state
 
     def _forward_loop(
