@@ -129,9 +129,10 @@ class SrlEvalScorer(Metric):
         # Returns
 
         A Dict per label containing following the span based metrics:
-        precision : float
-        recall : float
-        f1-measure : float
+
+        - precision : `float`
+        - recall : `float`
+        - f1-measure : `float`
 
         Additionally, an `overall` key is included, which provides the precision,
         recall and f1-measure for all spans.

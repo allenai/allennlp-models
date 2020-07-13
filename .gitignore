@@ -42,3 +42,8 @@ __pycache__
 .coverage
 .pytest_cache/
 
+# doc stuff
+mkdocs.yml
+docs/models
+docs/*.md
+site/

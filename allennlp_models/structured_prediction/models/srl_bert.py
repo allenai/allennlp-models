@@ -30,9 +30,9 @@ class SrlBert(Model):
         A string describing the BERT model to load or an already constructed BertModel.
     initializer : `InitializerApplicator`, optional (default=`InitializerApplicator()`)
         Used to initialize the model parameters.
-    label_smoothing : `float`, optional (default = 0.0)
+    label_smoothing : `float`, optional (default = `0.0`)
         Whether or not to use label smoothing on the labels when computing cross entropy loss.
-    ignore_span_metric : `bool`, optional (default = False)
+    ignore_span_metric : `bool`, optional (default = `False`)
         Whether to calculate span loss, which is irrelevant when predicting BIO for Open Information Extraction.
     srl_eval_path : `str`, optional (default=`DEFAULT_SRL_EVAL_PATH`)
         The path to the srl-eval.pl script. By default, will use the srl-eval.pl included with allennlp,
@@ -82,18 +82,18 @@ class SrlBert(Model):
         """
         # Parameters
 
-        tokens : TextFieldTensors, required
+        tokens : `TextFieldTensors`, required
             The output of `TextField.as_array()`, which should typically be passed directly to a
             `TextFieldEmbedder`. For this model, this must be a `SingleIdTokenIndexer` which
             indexes wordpieces from the BERT vocabulary.
-        verb_indicator: torch.LongTensor, required.
+        verb_indicator: `torch.LongTensor`, required.
             An integer `SequenceFeatureField` representation of the position of the verb
             in the sentence. This should have shape (batch_size, num_tokens) and importantly, can be
             all zeros, in the case that the sentence has no verbal predicate.
-        tags : torch.LongTensor, optional (default = None)
+        tags : `torch.LongTensor`, optional (default = `None`)
             A torch tensor representing the sequence of integer gold class labels
             of shape `(batch_size, num_tokens)`
-        metadata : `List[Dict[str, Any]]`, optional, (default = None)
+        metadata : `List[Dict[str, Any]]`, optional, (default = `None`)
             metadata containg the original words in the sentence, the verb to compute the
             frame for, and start offsets for converting wordpieces back to a sequence of words,
             under 'words', 'verb' and 'offsets' keys, respectively.
@@ -101,13 +101,13 @@ class SrlBert(Model):
         # Returns
 
         An output dictionary consisting of:
-        logits : torch.FloatTensor
+        logits : `torch.FloatTensor`
             A tensor of shape `(batch_size, num_tokens, tag_vocab_size)` representing
             unnormalised log probabilities of the tag classes.
-        class_probabilities : torch.FloatTensor
+        class_probabilities : `torch.FloatTensor`
             A tensor of shape `(batch_size, num_tokens, tag_vocab_size)` representing
             a distribution of the tag classes per word.
-        loss : torch.FloatTensor, optional
+        loss : `torch.FloatTensor`, optional
             A scalar loss to be optimised.
         """
         mask = get_text_field_mask(tokens)
@@ -247,8 +247,8 @@ class SrlBert(Model):
 
         # Returns
 
-        transition_matrix : torch.Tensor
-            A (num_labels, num_labels) matrix of pairwise potentials.
+        transition_matrix : `torch.Tensor`
+            A `(num_labels, num_labels)` matrix of pairwise potentials.
         """
         all_labels = self.vocab.get_index_to_token_vocabulary("labels")
         num_labels = len(all_labels)
@@ -269,7 +269,7 @@ class SrlBert(Model):
 
         # Returns
 
-        start_transitions : torch.Tensor
+        start_transitions : `torch.Tensor`
             The pairwise potentials between a START token and
             the first token of the sequence.
         """

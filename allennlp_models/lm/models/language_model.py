@@ -43,16 +43,16 @@ class LanguageModel(Model):
     contextualizer : `Seq2SeqEncoder`
         Used to "contextualize" the embeddings. As described above,
         this encoder must not cheat by peeking ahead.
-    dropout : `float`, optional (default: None)
+    dropout : `float`, optional (default = `None`)
         If specified, dropout is applied to the contextualized embeddings before computation of
         the softmax. The contextualized embeddings themselves are returned without dropout.
-    num_samples : `int`, optional (default: None)
+    num_samples : `int`, optional (default = `None`)
         If provided, the model will use `SampledSoftmaxLoss`
         with the specified number of samples. Otherwise, it will use
         the full `_SoftmaxLoss` defined above.
-    sparse_embeddings : `bool`, optional (default: False)
+    sparse_embeddings : `bool`, optional (default = `False`)
         Passed on to `SampledSoftmaxLoss` if True.
-    bidirectional : `bool`, optional (default: False)
+    bidirectional : `bool`, optional (default = `False`)
         Train a bidirectional language model, where the contextualizer
         is used to predict the next and previous token for each input token.
         This must match the bidirectionality of the contextualizer.

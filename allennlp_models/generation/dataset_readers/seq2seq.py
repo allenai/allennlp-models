@@ -44,11 +44,11 @@ class Seq2SeqDatasetReader(DatasetReader):
     target_token_indexers : `Dict[str, TokenIndexer]`, optional
         Indexers used to define output (target side) token representations. Defaults to
         `source_token_indexers`.
-    source_add_start_token : bool, (optional, default=True)
+    source_add_start_token : `bool`, (optional, default=`True`)
         Whether or not to add `START_SYMBOL` to the beginning of the source sequence.
-    source_add_end_token : bool, (optional, default=True)
+    source_add_end_token : `bool`, (optional, default=`True`)
         Whether or not to add `END_SYMBOL` to the end of the source sequence.
-    delimiter : str, (optional, default="\t")
+    delimiter : `str`, (optional, default=`"\t"`)
         Set delimiter for tsv/csv file.
     """
 
