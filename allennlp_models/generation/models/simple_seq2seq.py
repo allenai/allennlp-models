@@ -45,7 +45,7 @@ class SimpleSeq2Seq(Model):
         value as the source embedder's.
     target_pretrain_file : `str` (default = None)
         Path to target pretrain embedding files
-    target_target_decoder_layers : `int`, optional (default = 1)
+    target_decoder_layers : `int`, optional (default = 1)
         Nums of layer for decoder
     attention : `Attention`, optional (default = None)
         If you want to use attention to get a dynamic summary of the encoder outputs at each step
@@ -437,10 +437,14 @@ class SimpleSeq2Seq(Model):
 
         if self._attention:
             # shape: (batch_size, encoder_output_dim)
-            attended_input = self._prepare_attended_input(
-                decoder_hidden[0], encoder_outputs, source_mask
-            )
-
+            if self._target_decoder_layers > 1:
+                attended_input = self._prepare_attended_input(
+                    decoder_hidden[0], encoder_outputs, source_mask
+                )
+            else:
+                attended_input = self._prepare_attended_input(
+                    decoder_hidden, encoder_outputs, source_mask
+                )
             # shape: (batch_size, decoder_output_dim + target_embedding_dim)
             decoder_input = torch.cat((attended_input, embedded_input), -1)
         else:
@@ -451,18 +455,26 @@ class SimpleSeq2Seq(Model):
             # shape: (1, batch_size, target_embedding_dim)
             decoder_input = decoder_input.unsqueeze(0)
 
-        # shape (decoder_hidden): (num_layers, batch_size, decoder_output_dim)
-        # shape (decoder_context): (num_layers, batch_size, decoder_output_dim)
-        _, (decoder_hidden, decoder_context) = self._decoder_cell(
-            decoder_input, (decoder_hidden, decoder_context)
-        )
+            # shape (decoder_hidden): (num_layers, batch_size, decoder_output_dim)
+            # shape (decoder_context): (num_layers, batch_size, decoder_output_dim)
+            _, (decoder_hidden, decoder_context) = self._decoder_cell(
+                decoder_input, (decoder_hidden, decoder_context)
+            )
+        else:
+            # shape (decoder_hidden): (batch_size, decoder_output_dim)
+            # shape (decoder_context): (batch_size, decoder_output_dim)
+            decoder_hidden, decoder_context = self._decoder_cell(
+                decoder_input, (decoder_hidden, decoder_context)
+            )
 
         state["decoder_hidden"] = decoder_hidden
         state["decoder_context"] = decoder_context
 
         # shape: (batch_size, num_classes)
-        output_projections = self._output_projection_layer(decoder_hidden[-1])
-
+        if self._target_decoder_layers > 1:
+            output_projections = self._output_projection_layer(decoder_hidden[-1])
+        else:
+            output_projections = self._output_projection_layer(decoder_hidden)
         return output_projections, state
 
     def _prepare_attended_input(
