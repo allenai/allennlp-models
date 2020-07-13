@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn.modules.linear import Linear
-from torch.nn.modules.rnn import LSTMCell,LSTM
+from torch.nn.modules.rnn import LSTMCell, LSTM
 
 from allennlp.common.util import START_SYMBOL, END_SYMBOL
 from allennlp.data import TextFieldTensors, Vocabulary
@@ -91,7 +91,9 @@ class SimpleSeq2Seq(Model):
 
         # We need the start symbol to provide as the input at the first timestep of decoding, and
         # end symbol as a way to indicate the end of the decoded sequence.
-        self._start_index = self.vocab.get_token_index(START_SYMBOL, self._target_namespace)
+        self._start_index = self.vocab.get_token_index(
+            START_SYMBOL, self._target_namespace
+        )
         self._end_index = self.vocab.get_token_index(END_SYMBOL, self._target_namespace)
 
         if use_bleu:
@@ -99,7 +101,8 @@ class SimpleSeq2Seq(Model):
                 self.vocab._padding_token, self._target_namespace
             )
             self._bleu = BLEU(
-                bleu_ngram_weights, exclude_indices={pad_index, self._end_index, self._start_index}
+                bleu_ngram_weights,
+                exclude_indices={pad_index, self._end_index, self._start_index},
             )
         else:
             self._bleu = None
@@ -129,8 +132,12 @@ class SimpleSeq2Seq(Model):
                 num_embeddings=num_classes, embedding_dim=target_embedding_dim
             )
         else:
-            self._target_embedder = Embedding(embedding_dim=target_embedding_dim, pretrained_file=target_pretrain_file,
-                                              vocab_namespace=self._target_namespace, vocab=self.vocab)
+            self._target_embedder = Embedding(
+                embedding_dim=target_embedding_dim,
+                pretrained_file=target_pretrain_file,
+                vocab_namespace=self._target_namespace,
+                vocab=self.vocab,
+            )
 
         # Decoder output dim needs to be the same as the encoder output dim since we initialize the
         # hidden state of the decoder with the final hidden state of the encoder.
@@ -150,9 +157,15 @@ class SimpleSeq2Seq(Model):
         # for the decoder at each time step.
         # TODO (pradeep): Do not hardcode decoder cell type.
         if self._target_decoder_layers > 1:
-            self._decoder_cell = LSTM(self._decoder_input_dim, self._decoder_output_dim, self._target_decoder_layers)
+            self._decoder_cell = LSTM(
+                self._decoder_input_dim,
+                self._decoder_output_dim,
+                self._target_decoder_layers,
+            )
         else:
-            self._decoder_cell = LSTMCell(self._decoder_input_dim, self._decoder_output_dim)
+            self._decoder_cell = LSTMCell(
+                self._decoder_input_dim, self._decoder_output_dim
+            )
 
         # We project the hidden state from the decoder into the output vocabulary space
         # in order to get log probabilities of each target token, at each time step.
@@ -187,7 +200,9 @@ class SimpleSeq2Seq(Model):
             for each source sentence in the batch.
         """
         # shape: (batch_size, num_classes)
-        output_projections, state = self._prepare_output_projections(last_predictions, state)
+        output_projections, state = self._prepare_output_projections(
+            last_predictions, state
+        )
 
         # shape: (batch_size, num_classes)
         class_log_probabilities = F.log_softmax(output_projections, dim=-1)
@@ -273,7 +288,9 @@ class SimpleSeq2Seq(Model):
         output_dict["predicted_tokens"] = all_predicted_tokens
         return output_dict
 
-    def _encode(self, source_tokens: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+    def _encode(
+        self, source_tokens: Dict[str, torch.Tensor]
+    ) -> Dict[str, torch.Tensor]:
         # shape: (batch_size, max_input_sequence_length, encoder_input_dim)
         embedded_input = self._source_embedder(source_tokens)
         # shape: (batch_size, max_input_sequence_length)
@@ -282,19 +299,31 @@ class SimpleSeq2Seq(Model):
         encoder_outputs = self._encoder(embedded_input, source_mask)
         return {"source_mask": source_mask, "encoder_outputs": encoder_outputs}
 
-    def _init_decoder_state(self, state: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+    def _init_decoder_state(
+        self, state: Dict[str, torch.Tensor]
+    ) -> Dict[str, torch.Tensor]:
         batch_size = state["source_mask"].size(0)
         # shape: (batch_size, encoder_output_dim)
         final_encoder_output = util.get_final_encoder_states(
-            state["encoder_outputs"], state["source_mask"], self._encoder.is_bidirectional()
+            state["encoder_outputs"],
+            state["source_mask"],
+            self._encoder.is_bidirectional(),
         )
         # Initialize the decoder hidden state with the final output of the encoder.
         # shape: (num_layers, batch_size, decoder_output_dim)
-        state["decoder_hidden"] = final_encoder_output.unsqueeze(0).repeat(self._target_decoder_layers, 1, 1)
+        state["decoder_hidden"] = final_encoder_output.unsqueeze(0).repeat(
+            self._target_decoder_layers, 1, 1
+        )
         # shape: (batch_size, decoder_output_dim)
-        state["decoder_context"] = state["encoder_outputs"].new_zeros(batch_size, self._decoder_output_dim)
+        state["decoder_context"] = state["encoder_outputs"].new_zeros(
+            batch_size, self._decoder_output_dim
+        )
         # shape: (num_layers, batch_size, decoder_output_dim)
-        state["decoder_context"] = state["decoder_context"].unsqueeze(0).repeat(self._target_decoder_layers, 1, 1)
+        state["decoder_context"] = (
+            state["decoder_context"]
+            .unsqueeze(0)
+            .repeat(self._target_decoder_layers, 1, 1)
+        )
         return state
 
     def _forward_loop(
@@ -346,7 +375,9 @@ class SimpleSeq2Seq(Model):
                 input_choices = targets[:, timestep]
 
             # shape: (batch_size, num_classes)
-            output_projections, state = self._prepare_output_projections(input_choices, state)
+            output_projections, state = self._prepare_output_projections(
+                input_choices, state
+            )
 
             # list of tensors, shape: (batch_size, 1, num_classes)
             step_logits.append(output_projections.unsqueeze(1))
@@ -378,7 +409,9 @@ class SimpleSeq2Seq(Model):
 
         return output_dict
 
-    def _forward_beam_search(self, state: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+    def _forward_beam_search(
+        self, state: Dict[str, torch.Tensor]
+    ) -> Dict[str, torch.Tensor]:
         """Make forward pass during prediction using a beam search."""
         batch_size = state["source_mask"].size()[0]
         start_predictions = state["source_mask"].new_full(
@@ -436,11 +469,12 @@ class SimpleSeq2Seq(Model):
         if self._target_decoder_layers > 1:
             # shape: (1, batch_size, target_embedding_dim)
             decoder_input = decoder_input.unsqueeze(0)
-        
-        
+
         # shape (decoder_hidden): (num_layers, batch_size, decoder_output_dim)
         # shape (decoder_context): (num_layers, batch_size, decoder_output_dim)
-        _, (decoder_hidden, decoder_context) = self._decoder_cell(decoder_input, (decoder_hidden, decoder_context))
+        _, (decoder_hidden, decoder_context) = self._decoder_cell(
+            decoder_input, (decoder_hidden, decoder_context)
+        )
 
         state["decoder_hidden"] = decoder_hidden
         state["decoder_context"] = decoder_context
@@ -458,7 +492,9 @@ class SimpleSeq2Seq(Model):
     ) -> torch.Tensor:
         """Apply attention over encoder outputs and decoder state."""
         # shape: (batch_size, max_input_sequence_length)
-        input_weights = self._attention(decoder_hidden_state, encoder_outputs, encoder_outputs_mask)
+        input_weights = self._attention(
+            decoder_hidden_state, encoder_outputs, encoder_outputs_mask
+        )
 
         # shape: (batch_size, encoder_output_dim)
         attended_input = util.weighted_sum(encoder_outputs, input_weights)
@@ -467,7 +503,9 @@ class SimpleSeq2Seq(Model):
 
     @staticmethod
     def _get_loss(
-        logits: torch.LongTensor, targets: torch.LongTensor, target_mask: torch.BoolTensor
+        logits: torch.LongTensor,
+        targets: torch.LongTensor,
+        target_mask: torch.BoolTensor,
     ) -> torch.Tensor:
         """
         Compute loss.
@@ -497,7 +535,9 @@ class SimpleSeq2Seq(Model):
         # shape: (batch_size, num_decoding_steps)
         relevant_mask = target_mask[:, 1:].contiguous()
 
-        return util.sequence_cross_entropy_with_logits(logits, relevant_targets, relevant_mask)
+        return util.sequence_cross_entropy_with_logits(
+            logits, relevant_targets, relevant_mask
+        )
 
     @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
