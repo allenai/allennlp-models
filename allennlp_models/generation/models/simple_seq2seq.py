@@ -257,11 +257,12 @@ class SimpleSeq2Seq(Model):
         all_predicted_tokens = []
         for top_k_predictions in predicted_indices:
             # Beam search gives us the top k results for each source sentence in the batch
-            # but we just want the single best.
-            # if len(indices.shape) > 1:
-            #     indices = indices[0]
+            # we want top-k results.
+            if len(top_k_predictions.shape) == 1:
+                top_k_predictions = [top_k_predictions]
+
             batch_predicted_tokens = []
-            for indices in top_k_predictions.tolist():
+            for indices in top_k_predictions:
                 indices = list(indices)
                 # Collect indices till the first end_symbol
                 if self._end_index in indices:
