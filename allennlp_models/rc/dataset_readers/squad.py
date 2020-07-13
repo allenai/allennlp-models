@@ -35,19 +35,19 @@ class SquadReader(DatasetReader):
     computed loss will not be accurate as a result. But this will not affect the answer evaluation,
     because we keep all the original gold answer texts.
 
-    Parameters
-    ----------
-    tokenizer : ``Tokenizer``, optional (default=``SpacyTokenizer()``)
+    # Parameters
+
+    tokenizer : `Tokenizer`, optional (default=`SpacyTokenizer()`)
         We use this ``Tokenizer`` for both the question and the passage.  See :class:`Tokenizer`.
-        Default is ```SpacyTokenizer()``.
-    token_indexers : ``Dict[str, TokenIndexer]``, optional
+        Default is `SpacyTokenizer()`.
+    token_indexers : `Dict[str, TokenIndexer]`, optional
         We similarly use this for both the question and the passage.  See :class:`TokenIndexer`.
-        Default is ``{"tokens": SingleIdTokenIndexer()}``.
-    passage_length_limit : ``int``, optional (default=None)
+        Default is `{"tokens": SingleIdTokenIndexer()}`.
+    passage_length_limit : `int`, optional (default=`None`)
         if specified, we will cut the passage if the length of passage exceeds this limit.
-    question_length_limit : ``int``, optional (default=None)
+    question_length_limit : `int`, optional (default=`None`)
         if specified, we will cut the question if the length of passage exceeds this limit.
-    skip_invalid_examples: ``bool``, optional (default=False)
+    skip_invalid_examples: `bool`, optional (default=`False`)
         if this is true, we will skip those invalid examples
     """
 

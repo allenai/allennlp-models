@@ -36,10 +36,11 @@ class TransformerQA(Model):
     be more than one instance per question, these metrics are not the official numbers on the SQuAD task. To get
     official numbers, run the script in scripts/transformer_qa_eval.py.
 
-    Parameters
-    ----------
-    vocab : ``Vocabulary``
-    transformer_model_name : ``str``, optional (default=``bert-base-cased``)
+    # Parameters
+
+    vocab : `Vocabulary`
+
+    transformer_model_name : `str`, optional (default=`'bert-base-cased'`)
         This model chooses the embedder according to this setting. You probably want to make sure this is set to
         the same thing as the reader.
     """
@@ -67,46 +68,47 @@ class TransformerQA(Model):
     ) -> Dict[str, torch.Tensor]:
 
         """
-        Parameters
-        ----------
-        question_with_context : Dict[str, torch.LongTensor]
+        # Parameters
+
+        question_with_context : `Dict[str, torch.LongTensor]`
             From a ``TextField``. The model assumes that this text field contains the context followed by the
             question. It further assumes that the tokens have type ids set such that any token that can be part of
             the answer (i.e., tokens from the context) has type id 0, and any other token (including [CLS] and
             [SEP]) has type id 1.
-        context_span : ``torch.IntTensor``
+        context_span : `torch.IntTensor`
             From a ``SpanField``. This marks the span of word pieces in ``question`` from which answers can come.
-        answer_span : ``torch.IntTensor``, optional
+        answer_span : `torch.IntTensor`, optional
             From a ``SpanField``. This is the thing we are trying to predict - the span of text that marks the
             answer. If given, we compute a loss that gets included in the output directory.
-        metadata : ``List[Dict[str, Any]]``, optional
+        metadata : `List[Dict[str, Any]]`, optional
             If present, this should contain the question id, and the original texts of context, question, tokenized
             version of both, and a list of possible answers. The length of the ``metadata`` list should be the
             batch size, and each dictionary should have the keys ``id``, ``question``, ``context``,
             ``question_tokens``, ``context_tokens``, and ``answers``.
 
-        Returns
-        -------
+        # Returns
+
         An output dictionary consisting of:
-        span_start_logits : torch.FloatTensor
+
+        span_start_logits : `torch.FloatTensor`
             A tensor of shape ``(batch_size, passage_length)`` representing unnormalized log
             probabilities of the span start position.
-        span_start_probs : torch.FloatTensor
-            The result of ``softmax(span_start_logits)``.
-        span_end_logits : torch.FloatTensor
+        span_start_probs : `torch.FloatTensor`
+            The result of `softmax(span_start_logits)`.
+        span_end_logits : `torch.FloatTensor`
             A tensor of shape ``(batch_size, passage_length)`` representing unnormalized log
             probabilities of the span end position (inclusive).
-        span_end_probs : torch.FloatTensor
+        span_end_probs : `torch.FloatTensor`
             The result of ``softmax(span_end_logits)``.
-        best_span : torch.IntTensor
+        best_span : `torch.IntTensor`
             The result of a constrained inference over ``span_start_logits`` and
             ``span_end_logits`` to find the most probable span.  Shape is ``(batch_size, 2)``
             and each offset is a token index.
-        best_span_scores : torch.FloatTensor
+        best_span_scores : `torch.FloatTensor`
             The score for each of the best spans.
-        loss : torch.FloatTensor, optional
+        loss : `torch.FloatTensor`, optional
             A scalar loss to be optimised.
-        best_span_str : List[str]
+        best_span_str : `List[str]`
             If sufficient metadata was provided for the instances in the batch, we also return the
             string from the original passage that the model thinks is the best answer to the
             question.
