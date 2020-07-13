@@ -123,14 +123,8 @@ class CNNDailyMailDatasetReader(DatasetReader):
         cnn_stories_path = os.path.join(data_dir, "cnn_stories")
         dm_stories_path = os.path.join(data_dir, "dm_stories")
 
-        cnn_stories = {
-            Path(s).stem
-            for s in glob.glob(os.path.join(cnn_stories_path, "*.story"))
-        }
-        dm_stories = {
-            Path(s).stem
-            for s in glob.glob(os.path.join(dm_stories_path, "*.story"))
-        }
+        cnn_stories = {Path(s).stem for s in glob.glob(os.path.join(cnn_stories_path, "*.story"))}
+        dm_stories = {Path(s).stem for s in glob.glob(os.path.join(dm_stories_path, "*.story"))}
 
         with open(url_file_path, "r") as url_file:
             for url in url_file:
