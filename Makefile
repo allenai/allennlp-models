@@ -80,11 +80,11 @@ build-all-api-docs :
 	@$(MD_DOCS_CMD) $(subst /,.,$(subst .py,,$(MD_DOCS_SRC))) -o $(MD_DOCS)
 
 .PHONY : build-docs
-build-docs : build-all-api-docs $(MD_DOCS_CONF) $(MD_DOCS) $(MD_DOCS_EXTRAS)
+build-docs : build-all-api-docs $(MD_DOCS_CONF) $(MD_DOCS) $(MD_DOCS_EXTRAS) scripts/py2md.py
 	mkdocs build
 
 .PHONY : serve-docs
-serve-docs : build-all-api-docs $(MD_DOCS_CONF) $(MD_DOCS) $(MD_DOCS_EXTRAS)
+serve-docs : build-all-api-docs $(MD_DOCS_CONF) $(MD_DOCS) $(MD_DOCS_EXTRAS) scripts/py2md.py
 	mkdocs serve --dirtyreload
 
 .PHONY : update-docs
