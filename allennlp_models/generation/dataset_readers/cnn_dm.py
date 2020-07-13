@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Dict, Optional, List
 import logging
 import os
@@ -8,7 +9,7 @@ import ftfy
 from overrides import overrides
 
 from allennlp.common.checks import ConfigurationError
-from allennlp.common.file_utils import get_file_name_without_extension
+from allennlp.common.file_utils import cached_path
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.fields import TextField
 from allennlp.data.instance import Instance
@@ -107,26 +108,31 @@ class CNNDailyMailDatasetReader(DatasetReader):
 
         return " ".join(article), " ".join(summary)
 
+    @staticmethod
+    def _strip_extension(filename: str) -> str:
+        return os.path.splitext(filename)[0]
+
     @overrides
     def _read(self, file_path: str):
         # Reset exceeded counts
         self._source_max_exceeded = 0
         self._target_max_exceeded = 0
 
-        data_dir = os.path.dirname(file_path)
-        cnn_stories_path = os.path.join(data_dir, "../cnn_stories/cnn/stories/")
-        dm_stories_path = os.path.join(data_dir, "../dailymail_stories/dailymail/stories/")
+        url_file_path = cached_path(file_path, extract_archive=True)
+        data_dir = os.path.join(os.path.dirname(url_file_path), "..")
+        cnn_stories_path = os.path.join(data_dir, "cnn_stories")
+        dm_stories_path = os.path.join(data_dir, "dm_stories")
 
         cnn_stories = {
-            get_file_name_without_extension(s)
+            Path(s).stem
             for s in glob.glob(os.path.join(cnn_stories_path, "*.story"))
         }
         dm_stories = {
-            get_file_name_without_extension(s)
+            Path(s).stem
             for s in glob.glob(os.path.join(dm_stories_path, "*.story"))
         }
 
-        with open(file_path, "r") as url_file:
+        with open(url_file_path, "r") as url_file:
             for url in url_file:
                 url = url.strip()
 
