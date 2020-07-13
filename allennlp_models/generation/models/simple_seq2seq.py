@@ -261,7 +261,7 @@ class SimpleSeq2Seq(Model):
             # if len(indices.shape) > 1:
             #     indices = indices[0]
             batch_predicted_tokens = []
-            for indices in top_k_predictions:
+            for indices in top_k_predictions.tolist():
                 indices = list(indices)
                 # Collect indices till the first end_symbol
                 if self._end_index in indices:
