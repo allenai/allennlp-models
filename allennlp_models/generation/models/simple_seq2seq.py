@@ -3,7 +3,6 @@ from typing import Dict, List, Tuple, Iterable, Any
 import numpy
 from overrides import overrides
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn.modules.linear import Linear
 from torch.nn.modules.rnn import LSTMCell, LSTM
