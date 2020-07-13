@@ -76,15 +76,15 @@ test-pretrained :
 	pytest -v --color=yes -m "pretrained_model_test"
 
 .PHONY : build-all-api-docs
-build-all-api-docs :
+build-all-api-docs : scripts/py2md.py
 	@$(MD_DOCS_CMD) $(subst /,.,$(subst .py,,$(MD_DOCS_SRC))) -o $(MD_DOCS)
 
 .PHONY : build-docs
-build-docs : build-all-api-docs $(MD_DOCS_CONF) $(MD_DOCS) $(MD_DOCS_EXTRAS) scripts/py2md.py
+build-docs : build-all-api-docs $(MD_DOCS_CONF) $(MD_DOCS) $(MD_DOCS_EXTRAS)
 	mkdocs build
 
 .PHONY : serve-docs
-serve-docs : build-all-api-docs $(MD_DOCS_CONF) $(MD_DOCS) $(MD_DOCS_EXTRAS) scripts/py2md.py
+serve-docs : build-all-api-docs $(MD_DOCS_CONF) $(MD_DOCS) $(MD_DOCS_EXTRAS)
 	mkdocs serve --dirtyreload
 
 .PHONY : update-docs
