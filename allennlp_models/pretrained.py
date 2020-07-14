@@ -29,7 +29,7 @@ def _load_predictor(archive_file: str, predictor_name: Optional[str] = None) -> 
 
 def bert_srl_shi_2019() -> SemanticRoleLabelerPredictor:
     predictor = _load_predictor(
-        "https://storage.googleapis.com/allennlp-public-models/bert-base-srl-2020.03.24.tar.gz"
+        "https://storage.googleapis.com/allennlp-public-models/bert-base-srl-2020.07.14.tar.gz"
     )
     return predictor
 
