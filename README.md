@@ -23,7 +23,7 @@
 <br/>
 
 <div align="center">
-❗️ To file an issue, please open a ticket on https://github.com/allenai/allennlp and tag it with "Models". ❗️
+❗️ To file an issue, please open a ticket on <a href="https://github.com/allenai/allennlp/issues/new/choose">allenai/allennlp</a> and tag it with "Models". ❗️
 </div>
 
 ## Installing
@@ -32,7 +32,7 @@
 
 `allennlp-models` is available on PyPI. To install with `pip`, just run
 
-```
+```bash
 pip install --pre allennlp-models
 ```
 
@@ -50,7 +50,7 @@ pip freeze | grep allennlp
 If you intend to install the models package from source, then you probably also want to [install `allennlp` from source](https://github.com/allenai/allennlp#installing-from-source).
 Once you have `allennlp` installed, run the following within the same Python environment:
 
-```
+```bash
 git clone https://github.com/allenai/allennlp-models.git
 cd allennlp-models
 ALLENNLP_VERSION_OVERRIDE='allennlp' pip install -e .
@@ -72,30 +72,30 @@ Once you have [installed Docker](https://docs.docker.com/engine/installation/) y
 
 To build an image locally from a specific release, run
 
-   ```bash
-   docker build \
-       --build-arg ALLENNLP_VERSION=1.0.0rc3 \
-       -t allennlp/models - < Dockerfile.release
-   ```
+```bash
+docker build \
+    --build-arg ALLENNLP_VERSION=1.0.0rc3 \
+    -t allennlp/models - < Dockerfile.release
+```
 
 Just replace "1.0.0rc3" with the desired version.
 
 Alternatively, you can build against specific commits of `allennlp` and `allennlp-models` with
 
-   ```bash
-   docker build \
-       --build-arg ALLENNLP_COMMIT=e3d72fcb1664caf9554ef4e611191c33a7a5cbbd \
-       --build-arg ALLENNLP_MODELS_COMMIT=54a5df89da64d8d3869e746bc6dab940552dbfc4 \
-       -t allennlp/models - < Dockerfile.commit
-   ```
+```bash
+docker build \
+    --build-arg ALLENNLP_COMMIT=e3d72fcb1664caf9554ef4e611191c33a7a5cbbd \
+    --build-arg ALLENNLP_MODELS_COMMIT=54a5df89da64d8d3869e746bc6dab940552dbfc4 \
+    -t allennlp/models - < Dockerfile.commit
+```
 
 Just change the `ALLENNLP_COMMIT` and `ALLENNLP_MODELS_COMMIT` build args to the desired commit SHAs.
 
 Now run the following command to get an environment that will run on either the cpu or gpu.
 
-   ```bash
-   mkdir -p $HOME/.allennlp/
-   docker run --rm -v $HOME/.allennlp:/root/.allennlp allennlp/models
-   ```
+```bash
+mkdir -p $HOME/.allennlp/
+docker run --rm -v $HOME/.allennlp:/root/.allennlp allennlp/models
+```
 
 If you have GPUs available, you can install the [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) runtime and then add the flag `--gpus all` right before `--rm`.

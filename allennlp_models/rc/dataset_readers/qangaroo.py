@@ -22,14 +22,15 @@ class QangarooReader(DatasetReader):
     ``ListField[TextField]``, ``answer``, a ``TextField``, and ``answer_index``, a ``IndexField``.
     We also add a ``MetadataField`` that stores the instance's ID and annotations if they are present.
 
-    Parameters
-    ----------
-    tokenizer : ``Tokenizer``, optional (default=``SpacyTokenizer()``)
-        We use this ``Tokenizer`` for both the question and the passage.  See :class:`Tokenizer`.
+    # Parameters
+
+    tokenizer : `Tokenizer`, optional (default=`SpacyTokenizer()`)
+        We use this `Tokenizer` for both the question and the passage.  See :class:`Tokenizer`.
         Default is ```SpacyTokenizer()``.
-    token_indexers : ``Dict[str, TokenIndexer]``, optional
+
+    token_indexers : `Dict[str, TokenIndexer]`, optional
         We similarly use this for both the question and the passage.  See :class:`TokenIndexer`.
-        Default is ``{"tokens": SingleIdTokenIndexer()}``.
+        Default is `{"tokens": SingleIdTokenIndexer()}`.
     """
 
     def __init__(

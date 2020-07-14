@@ -72,9 +72,11 @@ class ConstituencyParserPredictor(Predictor):
     def predict(self, sentence: str) -> JsonDict:
         """
         Predict a constituency parse for the given sentence.
+
         # Parameters
 
-        sentence The sentence to parse.
+        sentence : `str`
+            The sentence to parse.
 
         # Returns
 
@@ -121,9 +123,9 @@ class ConstituencyParserPredictor(Predictor):
 
         tree : `Tree`, required.
             The tree to convert into Hierplane JSON.
-        index : int, required.
+        index : `int`, required.
             The character index into the tree, used for creating spans.
-        is_root : bool
+        is_root : `bool`
             An indicator which allows us to add the outer Hierplane JSON which
             is required for rendering.
 

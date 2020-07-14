@@ -107,13 +107,13 @@ class ComposedSeq2Seq(Model):
         source_tokens : `TextFieldTensors`
            The output of `TextField.as_array()` applied on the source `TextField`. This will be
            passed through a `TextFieldEmbedder` and then through an encoder.
-        target_tokens : `TextFieldTensors`, optional (default = None)
+        target_tokens : `TextFieldTensors`, optional (default = `None`)
            Output of `Textfield.as_array()` applied on target `TextField`. We assume that the
            target tokens are also represented as a `TextField`.
 
         # Returns
 
-        Dict[str, torch.Tensor]
+        `Dict[str, torch.Tensor]`
             The output tensors from the decoder.
         """
         state = self._encode(source_tokens)

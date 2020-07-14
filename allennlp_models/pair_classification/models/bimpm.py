@@ -53,7 +53,7 @@ class BiMpm(Model):
         Aggregator of all BiMPM matching vectors
     classifier_feedforward : `FeedForward`
         Fully connected layers for classification.
-    dropout : `float`, optional (default=0.1)
+    dropout : `float`, optional (default=`0.1`)
         Dropout percentage to use.
     initializer : `InitializerApplicator`, optional (default=`InitializerApplicator()`)
         If provided, will be used to initialize the model parameters.
@@ -129,22 +129,23 @@ class BiMpm(Model):
 
         # Parameters
 
-        premise : TextFieldTensors
+        premise : `TextFieldTensors`
             The premise from a `TextField`
-        hypothesis : TextFieldTensors
+        hypothesis : `TextFieldTensors`
             The hypothesis from a `TextField`
-        label : torch.LongTensor, optional (default = None)
+        label : `torch.LongTensor`, optional (default = `None`)
             The label for the pair of the premise and the hypothesis
-        metadata : `List[Dict[str, Any]]`, optional, (default = None)
+        metadata : `List[Dict[str, Any]]`, optional, (default = `None`)
             Additional information about the pair
+
         # Returns
 
         An output dictionary consisting of:
 
-        logits : torch.FloatTensor
+        logits : `torch.FloatTensor`
             A tensor of shape `(batch_size, num_labels)` representing unnormalised log
             probabilities of the entailment label.
-        loss : torch.FloatTensor, optional
+        loss : `torch.FloatTensor`, optional
             A scalar loss to be optimised.
         """
 

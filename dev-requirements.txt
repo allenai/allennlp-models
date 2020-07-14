@@ -22,6 +22,20 @@ flaky
 # Required for automatic mixed precision (AMP) training
 git+https://github.com/NVIDIA/apex.git@master
 
+#### DOC-RELATED PACKAGES ####
+
+# YAML manipulation
+ruamel.yaml
+
+# Generating markdown files from Python modules.
+git+https://github.com/NiklasRosenstein/pydoc-markdown.git@f0bf8af1db4f11581c19d206d4ed1ab34b4854c1
+nr.databind.core<0.0.17
+nr.interface<0.0.4
+
+mkdocs==1.1.2
+mkdocs-material==5.4.0
+markdown-include==0.5.1
+
 #### PACKAGE-UPLOAD PACKAGES ####
 
 # Pypi uploads

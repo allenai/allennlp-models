@@ -49,14 +49,14 @@ class CoreferenceResolver(Model):
         The embedding size for all the embedded features, such as distances or span widths.
     max_span_width : `int`
         The maximum width of candidate spans.
-    spans_per_word: float, required.
+    spans_per_word: `float`, required.
         A multiplier between zero and one which controls what percentage of candidate mention
         spans we retain with respect to the number of words in the document.
-    max_antecedents: int, required.
+    max_antecedents: `int`, required.
         For each mention which survives the pruning stage, we consider this many antecedents.
-    coarse_to_fine: bool, optional (default = False)
+    coarse_to_fine: `bool`, optional (default = `False`)
         Whether or not to apply the coarse-to-fine filtering.
-    inference_order: int, optional (default = 1)
+    inference_order: `int`, optional (default = `1`)
         The number of inference orders. When greater than 1, the span representations are
         updated and coreference scores re-computed.
     lexical_dropout : `int`
@@ -152,10 +152,10 @@ class CoreferenceResolver(Model):
             A tensor of shape (batch_size, num_spans, 2), representing the inclusive start and end
             indices of candidate spans for mentions. Comes from a `ListField[SpanField]` of
             indices into the text of the document.
-        span_labels : `torch.IntTensor`, optional (default = None).
+        span_labels : `torch.IntTensor`, optional (default = `None`).
             A tensor of shape (batch_size, num_spans), representing the cluster ids
             of each span, or -1 for those which do not appear in any clusters.
-        metadata : `List[Dict[str, Any]]`, optional (default = None).
+        metadata : `List[Dict[str, Any]]`, optional (default = `None`).
             A metadata dictionary for each instance in the batch. We use the "original_text" and "clusters" keys
             from this dictionary, which respectively have the original text and the annotated gold coreference
             clusters for that instance.
@@ -163,6 +163,7 @@ class CoreferenceResolver(Model):
         # Returns
 
         An output dictionary consisting of:
+
         top_spans : `torch.IntTensor`
             A tensor of shape `(batch_size, num_spans_to_keep, 2)` representing
             the start and end word indices of the top spans that survived the pruning stage.
@@ -547,33 +548,33 @@ class CoreferenceResolver(Model):
 
         # Parameters
 
-        top_span_embeddings: torch.FloatTensor, required.
+        top_span_embeddings: `torch.FloatTensor`, required.
             The embeddings of the top spans.
             (batch_size, num_spans_to_keep, embedding_size).
-        top_span_mention_scores: torch.FloatTensor, required.
+        top_span_mention_scores: `torch.FloatTensor`, required.
             The mention scores of the top spans.
             (batch_size, num_spans_to_keep).
-        max_antecedents: int, required.
+        max_antecedents: `int`, required.
             The maximum number of antecedents to keep for each span.
 
         # Returns
 
-        top_partial_coreference_scores: torch.FloatTensor
+        top_partial_coreference_scores: `torch.FloatTensor`
             The partial antecedent scores for each span-antecedent pair. Computed by summing
             the span mentions scores of the span and the antecedent. This score is partial because
             compared to the full coreference scores, it lacks the interaction term
             w * FFNN([g_i, g_j, g_i * g_j, features]).
             (batch_size, num_spans_to_keep, max_antecedents)
-        top_antecedent_mask: torch.BoolTensor
+        top_antecedent_mask: `torch.BoolTensor`
             The mask representing whether each antecedent span is valid. Required since
             different spans have different numbers of valid antecedents. For example, the first
             span in the document should have no valid antecedents.
             (batch_size, num_spans_to_keep, max_antecedents)
-        top_antecedent_offsets: torch.LongTensor
+        top_antecedent_offsets: `torch.LongTensor`
             The distance between the span and each of its antecedents in terms of the number
             of considered spans (i.e not the word distance between the spans).
             (batch_size, num_spans_to_keep, max_antecedents)
-        top_antecedent_indices: torch.LongTensor
+        top_antecedent_indices: `torch.LongTensor`
             The indices of every antecedent to consider with respect to the top k spans.
             (batch_size, num_spans_to_keep, max_antecedents)
         """
@@ -635,39 +636,39 @@ class CoreferenceResolver(Model):
 
         # Parameters
 
-        top_span_embeddings: torch.FloatTensor, required.
+        top_span_embeddings: `torch.FloatTensor`, required.
             The embeddings of the top spans.
             (batch_size, num_spans_to_keep, embedding_size).
-        top_span_mention_scores: torch.FloatTensor, required.
+        top_span_mention_scores: `torch.FloatTensor`, required.
             The mention scores of the top spans.
             (batch_size, num_spans_to_keep).
-        top_span_mask: torch.BoolTensor, required.
+        top_span_mask: `torch.BoolTensor`, required.
             The mask for the top spans.
             (batch_size, num_spans_to_keep).
-        max_antecedents: int, required.
+        max_antecedents: `int`, required.
             The maximum number of antecedents to keep for each span.
 
         # Returns
 
-        top_partial_coreference_scores: torch.FloatTensor
+        top_partial_coreference_scores: `torch.FloatTensor`
             The partial antecedent scores for each span-antecedent pair. Computed by summing
             the span mentions scores of the span and the antecedent as well as a bilinear
             interaction term. This score is partial because compared to the full coreference scores,
             it lacks the interaction term
-            w * FFNN([g_i, g_j, g_i * g_j, features]).
-            (batch_size, num_spans_to_keep, max_antecedents)
-        top_antecedent_mask: torch.BoolTensor
+            `w * FFNN([g_i, g_j, g_i * g_j, features])`.
+            `(batch_size, num_spans_to_keep, max_antecedents)`
+        top_antecedent_mask: `torch.BoolTensor`
             The mask representing whether each antecedent span is valid. Required since
             different spans have different numbers of valid antecedents. For example, the first
             span in the document should have no valid antecedents.
-            (batch_size, num_spans_to_keep, max_antecedents)
-        top_antecedent_offsets: torch.LongTensor
+            `(batch_size, num_spans_to_keep, max_antecedents)`
+        top_antecedent_offsets: `torch.LongTensor`
             The distance between the span and each of its antecedents in terms of the number
             of considered spans (i.e not the word distance between the spans).
-            (batch_size, num_spans_to_keep, max_antecedents)
-        top_antecedent_indices: torch.LongTensor
+            `(batch_size, num_spans_to_keep, max_antecedents)`
+        top_antecedent_indices: `torch.LongTensor`
             The indices of every antecedent to consider with respect to the top k spans.
-            (batch_size, num_spans_to_keep, max_antecedents)
+            `(batch_size, num_spans_to_keep, max_antecedents)`
         """
         batch_size, num_spans_to_keep = top_span_embeddings.size()[:2]
         device = util.get_device_of(top_span_embeddings)
