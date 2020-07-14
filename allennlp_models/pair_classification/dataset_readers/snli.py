@@ -46,8 +46,7 @@ class SnliReader(DatasetReader):
         combine_input_fields: Optional[bool] = None,
         **kwargs,
     ) -> None:
-        kwargs["manual_distributed_sharding"] = True
-        super().__init__(**kwargs)
+        super().__init__(manual_distributed_sharding=True, **kwargs)
         self._tokenizer = tokenizer or SpacyTokenizer()
         if isinstance(self._tokenizer, PretrainedTransformerTokenizer):
             assert not self._tokenizer._add_special_tokens
