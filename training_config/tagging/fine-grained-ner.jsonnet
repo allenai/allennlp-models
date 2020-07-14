@@ -143,7 +143,6 @@ local data_dir = std.extVar("CONLL_DATA_PATH");
         "verbose_metrics": true
     },
     "trainer": {
-        "cuda_device": -1,
         "grad_norm": 5,
         "num_epochs": 30,
         "optimizer": {
