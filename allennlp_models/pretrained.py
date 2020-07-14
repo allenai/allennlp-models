@@ -29,7 +29,7 @@ def _load_predictor(archive_file: str, predictor_name: Optional[str] = None) -> 
 
 def bert_srl_shi_2019() -> SemanticRoleLabelerPredictor:
     predictor = _load_predictor(
-        "https://storage.googleapis.com/allennlp-public-models/bert-base-srl-2020.03.24.tar.gz"
+        "https://storage.googleapis.com/allennlp-public-models/bert-base-srl-2020.07.14.tar.gz"
     )
     return predictor
 
@@ -109,7 +109,7 @@ def fine_grained_named_entity_recognition_transformer() -> SentenceTaggerPredict
     Fine Grained Named Entity Recognition with the transformer
     """
     predictor = _load_predictor(
-        "https://storage.googleapis.com/allennlp-public-models/fgner_transformer.2020-06-24.tar.gz"
+        "https://storage.googleapis.com/allennlp-public-models/fgner_transformer.2020-07-14.tar.gz"
     )
     return predictor
 
