@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added two models for fine-grained NER
 - Added a category for multiple choice models, including a few reference implementations
+- Implemented manual distributed sharding for SNLI dataset reader.
 
 ## [v1.0.0](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0) - 2020-06-16
 

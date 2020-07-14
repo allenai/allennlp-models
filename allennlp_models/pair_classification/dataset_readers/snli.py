@@ -1,3 +1,4 @@
+import itertools
 from typing import Dict, Optional
 import json
 import logging
@@ -45,7 +46,7 @@ class SnliReader(DatasetReader):
         combine_input_fields: Optional[bool] = None,
         **kwargs,
     ) -> None:
-        super().__init__(**kwargs)
+        super().__init__(manual_distributed_sharding=True, **kwargs)
         self._tokenizer = tokenizer or SpacyTokenizer()
         if isinstance(self._tokenizer, PretrainedTransformerTokenizer):
             assert not self._tokenizer._add_special_tokens
@@ -60,20 +61,29 @@ class SnliReader(DatasetReader):
         # if `file_path` is a URL, redirect to the cache
         file_path = cached_path(file_path)
 
-        with open(file_path, "r") as snli_file:
+        import torch.distributed as dist
+        from allennlp.common.util import is_distributed
+
+        if is_distributed():
+            start_index = dist.get_rank()
+            step_size = dist.get_world_size()
+            logger.info(
+                "Reading SNLI instances %% %d from jsonl dataset at: %s", step_size, file_path
+            )
+        else:
+            start_index = 0
+            step_size = 1
             logger.info("Reading SNLI instances from jsonl dataset at: %s", file_path)
-            for line in snli_file:
-                example = json.loads(line)
 
+        with open(file_path, "r") as snli_file:
+            example_iter = (json.loads(line) for line in snli_file)
+            filtered_example_iter = (
+                example for example in example_iter if example["gold_label"] != "-"
+            )
+            for example in itertools.islice(filtered_example_iter, start_index, None, step_size):
                 label = example["gold_label"]
-                if label == "-":
-                    # These were cases where the annotators disagreed; we'll just skip them.  It's
-                    # like 800 out of 500k examples in the training data.
-                    continue
-
                 premise = example["sentence1"]
                 hypothesis = example["sentence2"]
-
                 yield self.text_to_instance(premise, hypothesis, label)
 
     @overrides
