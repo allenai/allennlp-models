@@ -170,31 +170,31 @@ class SimpleSeq2Seq(Model):
         Take a decoding step. This is called by the beam search class.
         # Parameters
         last_predictions : `torch.Tensor`
-            A tensor of shape `(batch_size,)`, which gives the indices of the predictions
+            A tensor of shape `(group_size,)`, which gives the indices of the predictions
             during the last time step.
         state : `Dict[str, torch.Tensor]`
             A dictionary of tensors that contain the current state information
             needed to predict the next step, which includes the encoder outputs,
             the source mask, and the decoder hidden state and context. Each of these
-            tensors has shape `(batch_size, *)`, where `*` can be any other number
+            tensors has shape `(group_size, *)`, where `*` can be any other number
             of dimensions.
         # Returns
         Tuple[torch.Tensor, Dict[str, torch.Tensor]]
             A tuple of `(log_probabilities, updated_state)`, where `log_probabilities`
-            is a tensor of shape `(batch_size, num_classes)` containing the predicted
+            is a tensor of shape `(group_size, num_classes)` containing the predicted
             log probability of each class for the next step, for each item in the group,
             while `updated_state` is a dictionary of tensors containing the encoder outputs,
             source mask, and updated decoder hidden state and context.
         Notes
         -----
-            We treat the inputs as a batch, even though `batch_size` is not necessarily
+            We treat the inputs as a batch, even though `group_size` is not necessarily
             equal to `batch_size`, since the group may contain multiple states
             for each source sentence in the batch.
         """
-        # shape: (batch_size, num_classes)
+        # shape: (group_size, num_classes)
         output_projections, state = self._prepare_output_projections(last_predictions, state)
 
-        # shape: (batch_size, num_classes)
+        # shape: (group_size, num_classes)
         class_log_probabilities = F.log_softmax(output_projections, dim=-1)
 
         return class_log_probabilities, state
@@ -421,23 +421,23 @@ class SimpleSeq2Seq(Model):
         each target token for the next step.
         Inputs are the same as for `take_step()`.
         """
-        # shape: (batch_size, max_input_sequence_length, encoder_output_dim)
+        # shape: (group_size, max_input_sequence_length, encoder_output_dim)
         encoder_outputs = state["encoder_outputs"]
 
-        # shape: (batch_size, max_input_sequence_length)
+        # shape: (group_size, max_input_sequence_length)
         source_mask = state["source_mask"]
 
-        # shape: (num_layers, batch_size, decoder_output_dim)
+        # shape: (num_layers, group_size, decoder_output_dim)
         decoder_hidden = state["decoder_hidden"]
 
-        # shape: (num_layers, batch_size, decoder_output_dim)
+        # shape: (num_layers, group_size, decoder_output_dim)
         decoder_context = state["decoder_context"]
 
-        # shape: (batch_size, target_embedding_dim)
+        # shape: (group_size, target_embedding_dim)
         embedded_input = self._target_embedder(last_predictions)
 
         if self._attention:
-            # shape: (batch_size, encoder_output_dim)
+            # shape: (group_size, encoder_output_dim)
             if self._target_decoder_layers > 1:
                 attended_input = self._prepare_attended_input(
                     decoder_hidden[0], encoder_outputs, source_mask
@@ -446,10 +446,10 @@ class SimpleSeq2Seq(Model):
                 attended_input = self._prepare_attended_input(
                     decoder_hidden, encoder_outputs, source_mask
                 )
-            # shape: (batch_size, decoder_output_dim + target_embedding_dim)
+            # shape: (group_size, decoder_output_dim + target_embedding_dim)
             decoder_input = torch.cat((attended_input, embedded_input), -1)
         else:
-            # shape: (batch_size, target_embedding_dim)
+            # shape: (group_size, target_embedding_dim)
             decoder_input = embedded_input
 
         if self._target_decoder_layers > 1:
@@ -471,7 +471,7 @@ class SimpleSeq2Seq(Model):
         state["decoder_hidden"] = decoder_hidden
         state["decoder_context"] = decoder_context
 
-        # shape: (batch_size, num_classes)
+        # shape: (group_size, num_classes)
         if self._target_decoder_layers > 1:
             output_projections = self._output_projection_layer(decoder_hidden[-1])
         else:
