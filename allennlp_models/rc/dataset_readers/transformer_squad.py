@@ -1,3 +1,4 @@
+from itertools import islice
 import json
 import logging
 from typing import Any, Dict, List, Tuple, Optional, Iterable
@@ -5,6 +6,7 @@ from typing import Any, Dict, List, Tuple, Optional, Iterable
 from allennlp.common.util import sanitize_wordpiece
 from allennlp.data.fields import MetadataField, TextField, SpanField
 from overrides import overrides
+from torch.utils.data import get_worker_info
 
 from allennlp.common.file_utils import cached_path, open_compressed
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
@@ -66,7 +68,7 @@ class TransformerSquadReader(DatasetReader):
         max_query_length: int = 64,
         **kwargs
     ) -> None:
-        super().__init__(**kwargs)
+        super().__init__(manual_multi_process_sharding=True, **kwargs)
         self._tokenizer = PretrainedTransformerTokenizer(
             transformer_model_name, add_special_tokens=False
         )
@@ -81,6 +83,16 @@ class TransformerSquadReader(DatasetReader):
         # if `file_path` is a URL, redirect to the cache
         file_path = cached_path(file_path)
 
+        start_index = 0
+        step_size = 1
+        worker_info = get_worker_info()
+        if worker_info:
+            # Scale `start_index` by `num_workers`, then shift by worker `id`.
+            start_index *= worker_info.num_workers
+            start_index += worker_info.id
+            # Scale `step_size` by `num_workers`.
+            step_size *= worker_info.num_workers
+
         logger.info("Reading file at %s", file_path)
         with open_compressed(file_path) as dataset_file:
             dataset_json = json.load(dataset_file)
@@ -91,7 +103,7 @@ class TransformerSquadReader(DatasetReader):
         for article in dataset:
             for paragraph_json in article["paragraphs"]:
                 context = paragraph_json["context"]
-                for question_answer in paragraph_json["qas"]:
+                for question_answer in islice(paragraph_json["qas"], start_index, None, step_size):
                     answers = [answer_json["text"] for answer_json in question_answer["answers"]]
 
                     # Just like huggingface, we only use the first answer for training.
