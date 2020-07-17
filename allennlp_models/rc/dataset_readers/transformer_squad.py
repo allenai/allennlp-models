@@ -6,7 +6,6 @@ from typing import Any, Dict, List, Tuple, Optional, Iterable
 from allennlp.common.util import sanitize_wordpiece
 from allennlp.data.fields import MetadataField, TextField, SpanField
 from overrides import overrides
-from torch.utils.data import get_worker_info
 
 from allennlp.common.file_utils import cached_path, open_compressed
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
@@ -85,8 +84,8 @@ class TransformerSquadReader(DatasetReader):
 
         start_index = 0
         step_size = 1
-        worker_info = get_worker_info()
-        if worker_info:
+        worker_info = self.worker_info
+        if worker_info is not None:
             # Scale `start_index` by `num_workers`, then shift by worker `id`.
             start_index *= worker_info.num_workers
             start_index += worker_info.id
