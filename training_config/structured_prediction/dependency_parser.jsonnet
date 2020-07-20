@@ -58,7 +58,6 @@
       "num_epochs": 50,
       "grad_norm": 5.0,
       "patience": 50,
-      "cuda_device": 0,
       "validation_metric": "+LAS",
       "optimizer": {
         "type": "dense_sparse_adam",
