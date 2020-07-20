@@ -36,15 +36,15 @@ class PrecoReader(DatasetReader):
     token_indexers : `Dict[str, TokenIndexer]`, optional
         This is used to index the words in the document.  See :class:`TokenIndexer`.
         Default is `{"tokens": SingleIdTokenIndexer()}`.
-    wordpiece_modeling_tokenizer: `PretrainedTransformerTokenizer`, optional (default = None)
+    wordpiece_modeling_tokenizer: `PretrainedTransformerTokenizer`, optional (default = `None`)
         If not None, this dataset reader does subword tokenization using the supplied tokenizer
         and distribute the labels to the resulting wordpieces. All the modeling will be based on
         wordpieces. If this is set to `False` (default), the user is expected to use
         `PretrainedTransformerMismatchedIndexer` and `PretrainedTransformerMismatchedEmbedder`,
         and the modeling will be on the word-level.
-    max_sentences: int, optional (default = None)
+    max_sentences: `int`, optional (default = `None`)
         The maximum number of sentences in each document to keep. By default keeps all sentences.
-    remove_singleton_clusters : `bool`, optional (default = False)
+    remove_singleton_clusters : `bool`, optional (default = `False`)
         Some datasets contain clusters that are singletons (i.e. no coreferents). This option allows
         the removal of them.
     """

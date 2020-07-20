@@ -239,11 +239,133 @@ jobs:
       run: |
         make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='gpu-test'
 
+  # Builds the API documentation and pushes it to the appropriate folder in the
+  # allennlp-docs repo.
+  docs:
+    name: Docs
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Setup SSH Client 🔑
+      # Only run this on main repo (not forks).
+      if: github.repository == 'allenai/allennlp-models'
+      uses: webfactory/ssh-agent@v0.2.0
+      with:
+        ssh-private-key: ${{ secrets.DOCS_DEPLOY_KEY }}
+
+    - name: Setup Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+
+    - uses: actions/cache@v1
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+
+    - name: Install requirements
+      run: |
+        pip install --upgrade pip setuptools wheel
+        pip install --upgrade --upgrade-strategy eager -r requirements.txt
+        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
+
+    - name: Debug info
+      run: |
+        pip freeze
+
+    - name: Build docs
+      run: |
+        make build-docs
+
+    - name: Configure Git
+      # Only run this on releases.
+      if: github.repository == 'allenai/allennlp-models' && github.event_name == 'release'
+      run: |
+        git config --global user.email "ai2service@allenai.org"
+        git config --global user.name "ai2service"
+        git config --global push.default simple
+
+    - name: Set target folders
+      # Only run this on releases.
+      if: github.repository == 'allenai/allennlp-models' && github.event_name == 'release'
+      run: |
+        if [[ $GITHUB_EVENT_NAME == 'release' ]]; then
+            echo "::set-env name=DOCS_FOLDER::models/${GITHUB_REF#refs/tags/}";
+        else
+            echo "::set-env name=DOCS_FOLDER::models/master";
+        fi
+
+    - name: Stage docs
+      # Only run this on releases.
+      if: github.repository == 'allenai/allennlp-models' && github.event_name == 'release'
+      run: |
+        echo "Staging docs to $DOCS_FOLDER"
+
+        # Checkout allennlp-docs to /allennlp-docs
+        git clone git@github.com:allenai/allennlp-docs.git ~/allennlp-docs
+        
+        # Copy the generated docs to the checked out docs repo
+        rm -rf ~/allennlp-docs/$DOCS_FOLDER/
+        mkdir -p ~/allennlp-docs/$DOCS_FOLDER
+        cp -r site/* ~/allennlp-docs/$DOCS_FOLDER
+
+    - name: Update shortcuts
+      # Only run this on releases.
+      if: github.repository == 'allenai/allennlp-models' && github.event_name == 'release'
+      run: |
+        # Fail immediately if any step fails.
+        set -e
+
+        LATEST=models/$(./scripts/get_version.py latest)
+        STABLE=models/$(./scripts/get_version.py stable)
+
+        cd ~/allennlp-docs/
+
+        echo "Updating models/latest/index.html to point to $LATEST"
+        mkdir -p models/latest
+        cat >models/latest/index.html << EOL
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta http-equiv="Refresh" content="0; url=/${LATEST}/" />
+          </head>
+          <body>
+            <p>Please follow <a href="/${LATEST}/">this link</a>.</p>
+          </body>
+        </html>
+        EOL
+
+        echo "Updating models/stable/index.html to point to $STABLE"
+        mkdir -p models/stable
+        cat >models/stable/index.html << EOL
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta http-equiv="Refresh" content="0; url=/${STABLE}/" />
+          </head>
+          <body>
+            <p>Please follow <a href="/${STABLE}/">this link</a>.</p>
+          </body>
+        </html>
+        EOL
+
+    - name: Deploy docs
+      # Only run this on releases.
+      if: github.repository == 'allenai/allennlp-models' && github.event_name == 'release'
+      run: |
+        # And push them up to GitHub
+        cd ~/allennlp-docs/
+        git add -A
+        git commit -m "automated update of the models docs"
+        git push
+
   publish:
     name: PyPI
     # Don't run for forks.
     if: github.repository == 'allenai/allennlp-models'
-    needs: [build, test, docker, pretrained, gpu_checks]
+    needs: [build, test, docker, docs, pretrained, gpu_checks]
     runs-on: ubuntu-latest
 
     steps:

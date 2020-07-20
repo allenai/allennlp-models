@@ -7,11 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added BART model
+
+
+## [v1.1.0rc1](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc1) - 2020-07-14
+
 ### Fixed
 
+- Updated the BERT SRL model to be compatible with the new huggingface tokenizers.
 - `CopyNetSeq2Seq` model now works with pretrained transformers.
 - A bug with `NextTokenLM` that caused simple gradient interpreters to fail.
 - A bug in `training_config` of `qanet` and `bimpm` that used the old version of `regularizer` and `initializer`.
+- The fine-grained NER transformer model did not survive an upgrade of the transformers library, but it is now fixed.
+- Fixed many minor formatting issues in docstrings. Docs are now published at [https://docs.allennlp.org/models/](https://docs.allennlp.org/models/).
 
 ### Changed
 
@@ -23,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added two models for fine-grained NER
 - Added a category for multiple choice models, including a few reference implementations
-- Added BART model
+- Implemented manual distributed sharding for SNLI dataset reader.
 
 
 ## [v1.0.0](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0) - 2020-06-16

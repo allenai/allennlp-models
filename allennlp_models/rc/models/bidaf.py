@@ -35,38 +35,38 @@ class BidirectionalAttentionFlow(Model):
     part that is at all non-standard), pass this through another few layers of bi-LSTMs/GRUs, and
     do a softmax over span start and span end.
 
-    Parameters
-    ----------
-    vocab : ``Vocabulary``
-    text_field_embedder : ``TextFieldEmbedder``
+    # Parameters
+
+    vocab : `Vocabulary`
+    text_field_embedder : `TextFieldEmbedder`
         Used to embed the ``question`` and ``passage`` ``TextFields`` we get as input to the model.
-    num_highway_layers : ``int``
+    num_highway_layers : `int`
         The number of highway layers to use in between embedding the input and passing it through
         the phrase layer.
-    phrase_layer : ``Seq2SeqEncoder``
+    phrase_layer : `Seq2SeqEncoder`
         The encoder (with its own internal stacking) that we will use in between embedding tokens
         and doing the bidirectional attention.
-    matrix_attention : ``MatrixAttention``
+    matrix_attention : `MatrixAttention`
         The attention function that we will use when comparing encoded passage and question
         representations.
-    modeling_layer : ``Seq2SeqEncoder``
+    modeling_layer : `Seq2SeqEncoder`
         The encoder (with its own internal stacking) that we will use in between the bidirectional
         attention and predicting span start and end.
-    span_end_encoder : ``Seq2SeqEncoder``
+    span_end_encoder : `Seq2SeqEncoder`
         The encoder that we will use to incorporate span start predictions into the passage state
         before predicting span end.
-    dropout : ``float``, optional (default=0.2)
+    dropout : `float`, optional (default=`0.2`)
         If greater than 0, we will apply dropout with this probability after all encoders (pytorch
         LSTMs do not apply dropout to their last layer).
-    mask_lstms : ``bool``, optional (default=True)
+    mask_lstms : `bool`, optional (default=`True`)
         If ``False``, we will skip passing the mask to the LSTM layers.  This gives a ~2x speedup,
         with only a slight performance decrease, if any.  We haven't experimented much with this
         yet, but have confirmed that we still get very similar performance with much faster
         training times.  We still use the mask for all softmaxes, but avoid the shuffling that's
         required when using masking with pytorch LSTMs.
-    initializer : ``InitializerApplicator``, optional (default=``InitializerApplicator()``)
+    initializer : `InitializerApplicator`, optional (default=`InitializerApplicator()`)
         Used to initialize the model parameters.
-    regularizer : ``RegularizerApplicator``, optional (default=``None``)
+    regularizer : `RegularizerApplicator`, optional (default=`None`)
         If provided, will be used to calculate the regularization penalty during training.
     """
 
@@ -147,24 +147,24 @@ class BidirectionalAttentionFlow(Model):
     ) -> Dict[str, torch.Tensor]:
 
         """
-        Parameters
-        ----------
-        question : Dict[str, torch.LongTensor]
+        # Parameters
+
+        question : `Dict[str, torch.LongTensor]`
             From a ``TextField``.
-        passage : Dict[str, torch.LongTensor]
+        passage : `Dict[str, torch.LongTensor]`
             From a ``TextField``.  The model assumes that this passage contains the answer to the
             question, and predicts the beginning and ending positions of the answer within the
             passage.
-        span_start : ``torch.IntTensor``, optional
+        span_start : `torch.IntTensor`, optional
             From an ``IndexField``.  This is one of the things we are trying to predict - the
             beginning position of the answer with the passage.  This is an `inclusive` token index.
             If this is given, we will compute a loss that gets included in the output dictionary.
-        span_end : ``torch.IntTensor``, optional
+        span_end : `torch.IntTensor`, optional
             From an ``IndexField``.  This is one of the things we are trying to predict - the
             ending position of the answer with the passage.  This is an `inclusive` token index.
             If this is given, we will compute a loss that gets included in the output dictionary.
-        metadata : ``List[Dict[str, Any]]``, optional
-            metadata : ``List[Dict[str, Any]]``, optional
+        metadata : `List[Dict[str, Any]]`, optional
+            metadata : `List[Dict[str, Any]]`, optional
             If present, this should contain the question tokens, passage tokens, original passage
             text, and token offsets into the passage for each instance in the batch.  The length
             of this list should be the batch size, and each dictionary should have the keys
@@ -173,23 +173,24 @@ class BidirectionalAttentionFlow(Model):
         Returns
         -------
         An output dictionary consisting of:
-        span_start_logits : torch.FloatTensor
+
+        span_start_logits : `torch.FloatTensor`
             A tensor of shape ``(batch_size, passage_length)`` representing unnormalized log
             probabilities of the span start position.
-        span_start_probs : torch.FloatTensor
+        span_start_probs : `torch.FloatTensor`
             The result of ``softmax(span_start_logits)``.
-        span_end_logits : torch.FloatTensor
+        span_end_logits : `torch.FloatTensor`
             A tensor of shape ``(batch_size, passage_length)`` representing unnormalized log
             probabilities of the span end position (inclusive).
-        span_end_probs : torch.FloatTensor
+        span_end_probs : `torch.FloatTensor`
             The result of ``softmax(span_end_logits)``.
-        best_span : torch.IntTensor
+        best_span : `torch.IntTensor`
             The result of a constrained inference over ``span_start_logits`` and
             ``span_end_logits`` to find the most probable span.  Shape is ``(batch_size, 2)``
             and each offset is a token index.
-        loss : torch.FloatTensor, optional
+        loss : `torch.FloatTensor`, optional
             A scalar loss to be optimised.
-        best_span_str : List[str]
+        best_span_str : `List[str]`
             If sufficient metadata was provided for the instances in the batch, we also return the
             string from the original passage that the model thinks is the best answer to the
             question.

@@ -152,11 +152,11 @@ class CopyNetDatasetReader(DatasetReader):
         # Parameters
 
         source_string : `str`, required
-        target_string : `str`, optional (default = None)
+        target_string : `str`, optional (default = `None`)
 
         # Returns
 
-        Instance
+        `Instance`
             See the above for a description of the fields that the instance will contain.
         """
 

@@ -51,18 +51,18 @@ class CopyNetSeq2Seq(Model):
         Beam width to use for beam search prediction.
     max_decoding_steps : `int`, required
         Maximum sequence length of target predictions.
-    target_embedding_dim : `int`, optional (default = 30)
+    target_embedding_dim : `int`, optional (default = `30`)
         The size of the embeddings for the target vocabulary.
-    copy_token : `str`, optional (default = '@COPY@')
+    copy_token : `str`, optional (default = `'@COPY@'`)
         The token used to indicate that a target token was copied from the source.
         If this token is not already in your target vocabulary, it will be added.
-    target_namespace : `str`, optional (default = 'target_tokens')
+    target_namespace : `str`, optional (default = `'target_tokens'`)
         The namespace for the target vocabulary.
-    tensor_based_metric : `Metric`, optional (default = BLEU)
+    tensor_based_metric : `Metric`, optional (default = `'BLEU'`)
         A metric to track on validation data that takes raw tensors when its called.
         This metric must accept two arguments when called: a batched tensor
         of predicted token indices, and a batched tensor of gold token indices.
-    token_based_metric : `Metric`, optional (default = None)
+    token_based_metric : `Metric`, optional (default = `None`)
         A metric to track on validation data that takes lists of lists of tokens
         as input. This metric must accept two arguments when called, both
         of type `List[List[str]]`. The first is a predicted sequence for each item
@@ -177,17 +177,17 @@ class CopyNetSeq2Seq(Model):
             Metadata field that contains the original source tokens with key 'source_tokens'
             and any other meta fields. When 'target_tokens' is also passed, the metadata
             should also contain the original target tokens with key 'target_tokens'.
-        target_tokens : `TextFieldTensors`, optional (default = None)
+        target_tokens : `TextFieldTensors`, optional (default = `None`)
             Output of `Textfield.as_array()` applied on target `TextField`. We assume that the
             target tokens are also represented as a `TextField` which must contain a "tokens"
             key that uses single ids.
-        target_token_ids : `torch.Tensor`, optional (default = None)
+        target_token_ids : `torch.Tensor`, optional (default = `None`)
             A tensor of shape `(batch_size, target_sequence_length)` which indicates which
             tokens in the target sequence match tokens in the source sequence.
 
         # Returns
 
-        Dict[str, torch.Tensor]
+        `Dict[str, torch.Tensor]`
         """
         state = self._encode(source_tokens)
         state["source_token_ids"] = source_token_ids

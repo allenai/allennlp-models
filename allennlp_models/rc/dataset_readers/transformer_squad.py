@@ -38,21 +38,21 @@ class TransformerSquadReader(DatasetReader):
     metrics you get during training and evaluation don't correspond 100% to the SQuAD task. To get a final number,
     you have to run the script in scripts/transformer_qa_eval.py.
 
-    Parameters
-    ----------
-    transformer_model_name : ``str``, optional (default=``bert-base-cased``)
+    # Parameters
+
+    transformer_model_name : `str`, optional (default=`'bert-base-cased'`)
         This reader chooses tokenizer and token indexer according to this setting.
-    length_limit : ``int``, optional (default=384)
+    length_limit : `int`, optional (default=`384`)
         We will make sure that the length of context+question never exceeds this many word pieces.
-    stride : ``int``, optional (default=128)
+    stride : `int`, optional (default=`128`)
         When context+question are too long for the length limit, we emit multiple instances for one question,
         where the context is shifted. This parameter specifies the overlap between the shifted context window. It
         is called "stride" instead of "overlap" because that's what it's called in the original huggingface
         implementation.
-    skip_invalid_examples: ``bool``, optional (default=False)
+    skip_invalid_examples: `bool`, optional (default=`False`)
         If this is true, we will skip examples that don't have a gold answer. You should set this to True during
         training, and False any other time.
-    max_query_length : ``int``, optional (default=64)
+    max_query_length : `int`, optional (default=`64`)
         The maximum number of wordpieces dedicated to the question. If the question is longer than this, it will be
         truncated.
     """

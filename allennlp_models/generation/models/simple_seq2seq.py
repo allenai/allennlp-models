@@ -38,20 +38,20 @@ class SimpleSeq2Seq(Model):
         The encoder of the "encoder/decoder" model
     max_decoding_steps : `int`
         Maximum length of decoded sequences.
-    target_namespace : `str`, optional (default = 'tokens')
+    target_namespace : `str`, optional (default = `'tokens'`)
         If the target side vocabulary is different from the source side's, you need to specify the
         target's namespace here. If not, we'll assume it is "tokens", which is also the default
         choice for the source side, and this might cause them to share vocabularies.
-    target_embedding_dim : `int`, optional (default = source_embedding_dim)
+    target_embedding_dim : `int`, optional (default = `'source_embedding_dim'`)
         You can specify an embedding dimensionality for the target side. If not, we'll use the same
         value as the source embedder's.
-    attention : `Attention`, optional (default = None)
+    attention : `Attention`, optional (default = `None`)
         If you want to use attention to get a dynamic summary of the encoder outputs at each step
         of decoding, this is the function used to compute similarity between the decoder hidden
         state and encoder outputs.
-    beam_size : `int`, optional (default = None)
+    beam_size : `int`, optional (default = `None`)
         Width of the beam for beam search. If not specified, greedy decoding is used.
-    scheduled_sampling_ratio : `float`, optional (default = 0.)
+    scheduled_sampling_ratio : `float`, optional (default = `0.`)
         At each timestep during training, we sample a random number between 0 and 1, and if it is
         not less than this value, we use the ground truth labels for the whole batch. Else, we use
         the predictions from the previous time step for the whole batch. If this value is 0.0
@@ -59,9 +59,9 @@ class SimpleSeq2Seq(Model):
         using target side ground truth labels.  See the following paper for more information:
         [Scheduled Sampling for Sequence Prediction with Recurrent Neural Networks. Bengio et al.,
         2015](https://arxiv.org/abs/1506.03099).
-    use_bleu : `bool`, optional (default = True)
+    use_bleu : `bool`, optional (default = `True`)
         If True, the BLEU metric will be calculated during validation.
-    ngram_weights : `Iterable[float]`, optional (default = (0.25, 0.25, 0.25, 0.25))
+    ngram_weights : `Iterable[float]`, optional (default = `(0.25, 0.25, 0.25, 0.25)`)
         Weights to assign to scores for each ngram size.
     """
 
@@ -203,13 +203,13 @@ class SimpleSeq2Seq(Model):
         source_tokens : `TextFieldTensors`
            The output of `TextField.as_array()` applied on the source `TextField`. This will be
            passed through a `TextFieldEmbedder` and then through an encoder.
-        target_tokens : `TextFieldTensors`, optional (default = None)
+        target_tokens : `TextFieldTensors`, optional (default = `None`)
            Output of `Textfield.as_array()` applied on target `TextField`. We assume that the
            target tokens are also represented as a `TextField`.
 
         # Returns
 
-        Dict[str, torch.Tensor]
+        `Dict[str, torch.Tensor]`
         """
         state = self._encode(source_tokens)
 

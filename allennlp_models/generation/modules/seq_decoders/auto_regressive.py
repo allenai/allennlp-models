@@ -35,22 +35,22 @@ class AutoRegressiveSeqDecoder(SeqDecoder):
         Maximum length of decoded sequences.
     target_embedder : `Embedding`
         Embedder for target tokens.
-    target_namespace : `str`, optional (default = 'tokens')
+    target_namespace : `str`, optional (default = `'tokens'`)
         If the target side vocabulary is different from the source side's, you need to specify the
         target's namespace here. If not, we'll assume it is "tokens", which is also the default
         choice for the source side, and this might cause them to share vocabularies.
-    beam_size : `int`, optional (default = 4)
+    beam_size : `int`, optional (default = `4`)
         Width of the beam for beam search.
-    tensor_based_metric : `Metric`, optional (default = None)
+    tensor_based_metric : `Metric`, optional (default = `None`)
         A metric to track on validation data that takes raw tensors when its called.
         This metric must accept two arguments when called: a batched tensor
         of predicted token indices, and a batched tensor of gold token indices.
-    token_based_metric : `Metric`, optional (default = None)
+    token_based_metric : `Metric`, optional (default = `None`)
         A metric to track on validation data that takes lists of lists of tokens
         as input. This metric must accept two arguments when called, both
         of type `List[List[str]]`. The first is a predicted sequence for each item
         in the batch and the second is a gold sequence for each item in the batch.
-    scheduled_sampling_ratio : `float` optional (default = 0)
+    scheduled_sampling_ratio : `float` optional (default = `0.0`)
         Defines ratio between teacher forced training and real output usage. If its zero
         (teacher forcing only) and `decoder_net`supports parallel decoding, we get the output
         predictions in a single forward pass of the `decoder_net`.

@@ -70,33 +70,39 @@ class DropReader(DatasetReader):
     give passage spans as answers).  We typically return all possible ways of arriving at a given
     answer string, and expect models to marginalize over these possibilities.
 
-    Parameters
-    ----------
-    tokenizer : ``Tokenizer``, optional (default=``SpacyTokenizer()``)
-        We use this ``Tokenizer`` for both the question and the passage.  See :class:`Tokenizer`.
-        Default is ```SpacyTokenizer()``.
-    token_indexers : ``Dict[str, TokenIndexer]``, optional
+    # Parameters
+
+    tokenizer : `Tokenizer`, optional (default=`SpacyTokenizer()`)
+        We use this `Tokenizer` for both the question and the passage.  See :class:`Tokenizer`.
+        Default is `SpacyTokenizer()`.
+
+    token_indexers : `Dict[str, TokenIndexer]`, optional
         We similarly use this for both the question and the passage.  See :class:`TokenIndexer`.
-        Default is ``{"tokens": SingleIdTokenIndexer()}``.
-    passage_length_limit : ``int``, optional (default=None)
+        Default is `{"tokens": SingleIdTokenIndexer()}`.
+
+    passage_length_limit : `int`, optional (default=`None`)
         If specified, we will cut the passage if the length of passage exceeds this limit.
-    question_length_limit : ``int``, optional (default=None)
+
+    question_length_limit : `int`, optional (default=`None`)
         If specified, we will cut the question if the length of passage exceeds this limit.
-    skip_when_all_empty: ``List[str]``, optional (default=None)
+
+    skip_when_all_empty: `List[str]`, optional (default=`None`)
         In some cases such as preparing for training examples, you may want to skip some examples
         when there are no gold labels. You can specify on what condition should the examples be
         skipped. Currently, you can put "passage_span", "question_span", "addition_subtraction",
         or "counting" in this list, to tell the reader skip when there are no such label found.
         If not specified, we will keep all the examples.
-    instance_format: ``str``, optional (default="drop")
+
+    instance_format: `str`, optional (default=`"drop"`)
         We try to be generous in providing a few different formats for the instances in DROP,
-        in terms of the ``Fields`` that we return for each ``Instance``, to allow for several
+        in terms of the `Fields` that we return for each `Instance`, to allow for several
         different kinds of models.  "drop" format will do processing to detect numbers and
-        various ways those numbers can be arrived at from the passage, and return ``Fields``
+        various ways those numbers can be arrived at from the passage, and return `Fields`
         related to that.  "bert" format only allows passage spans as answers, and provides a
         "question_and_passage" field with the two pieces of text joined as BERT expects.
         "squad" format provides the same fields that our BiDAF and other SQuAD models expect.
-    relaxed_span_match_for_finding_labels : ``bool``, optional (default=True)
+
+    relaxed_span_match_for_finding_labels : `bool`, optional (default=`True`)
         DROP dataset contains multi-span answers, and the date-type answers are usually hard to
         find exact span matches for, also.  In order to use as many examples as possible
         to train the model, we may not want a strict match for such cases when finding the gold
@@ -105,6 +111,7 @@ class DropReader(DatasetReader):
         trained on DROP typically marginalize over all possible answer positions, this is just
         being a little more generous in what is being marginalized.  Note that this will not
         affect evaluation.
+
     """
 
     def __init__(

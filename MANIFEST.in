@@ -1,0 +1,1 @@
+include allennlp_models/structured_prediction/tools/srl-eval.pl
