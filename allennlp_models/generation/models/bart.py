@@ -194,8 +194,8 @@ class Bart(Model):
 
         outputs = {}
 
-        # If no targets are provided, then shift input to right by 1. Bart already does this interally
-        # but it does not use them for loss calculation
+        # If no targets are provided, then shift input to right by 1. Bart already does this internally
+        # but it does not use them for loss calculation.
         if targets is not None:
             target_ids, target_mask = targets["tokens"]["token_ids"], targets["tokens"]["mask"]
         else:
