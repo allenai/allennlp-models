@@ -208,6 +208,7 @@ class Bart(Model):
                 attention_mask=input_mask,
                 decoder_input_ids=target_ids[:, :-1].contiguous(),
                 decoder_attention_mask=target_mask[:, :-1].contiguous(),
+                use_cache=False,
             )[0]
 
             outputs["decoder_logits"] = decoder_logits
