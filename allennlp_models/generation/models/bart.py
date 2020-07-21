@@ -105,7 +105,7 @@ class _BartEncoderWrapper(nn.Module):
 class Bart(Model):
     """
     BART model from the paper "BART: Denosing Sequence-to-Sequence Pre-training for Natural Language Generation,
-    Translation, and Comprehension" (https://arxiv.org/abs/1910.13461). The `Bart` model here uses a language
+    Translation, and Comprehension" (https://arxiv.org/abs/1910.13461). The Bart model here uses a language
     modeling head and thus can be used for text generation.
     """
 
@@ -126,13 +126,13 @@ class Bart(Model):
             `transformers.modeling_bart.BART_PRETRAINED_MODEL_ARCHIVE_MAP`.
         vocab : `Vocabulary`, required
             Vocabulary containing source and target vocabularies.
-        indexer : `PretrainedTransformerIndexer`, optional (default = None)
+        indexer : `PretrainedTransformerIndexer`, optional (default = `None`)
             Indexer to be used for converting decoded sequences of ids to to sequences of tokens.
-        max_decoding_steps : `int`, optional (default = 128)
+        max_decoding_steps : `int`, optional (default = `128`)
             Number of decoding steps during beam search.
-        beam_size : `int`, optional (default = 5)
+        beam_size : `int`, optional (default = `5`)
             Number of beams to use in beam search. The default is from the BART paper.
-        encoder : `Seq2SeqEncoder`, optional (default = None)
+        encoder : `Seq2SeqEncoder`, optional (default = `None`)
             Encoder to used in BART. By default, the original BART encoder is used.
         """
         super().__init__(vocab)
@@ -175,14 +175,14 @@ class Bart(Model):
 
         source_tokens : `TextFieldTensors`, required
             The source tokens for the encoder. We assume they are stored under the `tokens` key.
-        target_tokens : `TextFieldTensors`, optional (default = None)
+        target_tokens : `TextFieldTensors`, optional (default = `None`)
             The target tokens for the decoder. We assume they are stored under the `tokens` key. If no target
             tokens are given, the source tokens are shifted to the right by 1.
 
 
         # Returns
 
-        Dict[str, torch.Tensor]
+        `Dict[str, torch.Tensor]`
             During training, this dictionary contains the `decoder_logits` of shape `(batch_size,
             max_target_length, target_vocab_size)` and the `loss`. During inference, it contains `predictions`
             of shape `(batch_size, max_decoding_steps)` and `log_probabilities` of shape `(batch_size,)`.
@@ -299,7 +299,7 @@ class Bart(Model):
 
         # Returns
 
-        Tuple[torch.Tensor, Dict[str, torch.Tensor]]
+        `Tuple[torch.Tensor, Dict[str, torch.Tensor]]`
             A tuple containing logits for the next tokens of shape `(group_size, target_vocab_size)` and
             an updated state dictionary.
         """
@@ -375,7 +375,7 @@ class Bart(Model):
 
         # Returns
 
-        Dict[str, Any]
+        `Dict[str, Any]`
             Original `output_dict` with an additional `predicted_tokens` key that maps to a list of lists of
             tokens.
 

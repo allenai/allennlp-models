@@ -42,9 +42,9 @@ class CNNDailyMailDatasetReader(DatasetReader):
     target_token_indexers : `Dict[str, TokenIndexer]`, optional
         Indexers used to define output (target side) token representations. Defaults to
         `source_token_indexers`.
-    source_max_tokens : int, optional
+    source_max_tokens : `int`, optional
         Maximum number of tokens in source sequence.
-    target_max_tokens : int, (optional
+    target_max_tokens : `int`, optional
         Maximum number of tokens in target sequence.
     """
 
