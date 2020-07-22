@@ -16,11 +16,14 @@ from allennlp.nn import InitializerApplicator, util
 from allennlp.training.metrics import Metric, BLEU
 from allennlp.nn.beam_search import BeamSearch
 
+from allennlp_models.common.pretrained_model_config import PretrainedModelConfiguration
+
 
 logger = logging.getLogger(__name__)
 
 
 @Model.register("copynet_seq2seq")
+@Model.register("generation-copynet-seq2seq")
 class CopyNetSeq2Seq(Model):
     """
     This is an implementation of [CopyNet](https://arxiv.org/pdf/1603.06393).
@@ -910,3 +913,6 @@ class CopyNetSeq2Seq(Model):
         return all_metrics
 
     default_predictor = "seq2seq"
+
+
+model_config = PretrainedModelConfiguration.from_dict({"id": "generation-copynet-seq2seq"})

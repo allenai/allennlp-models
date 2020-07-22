@@ -12,8 +12,11 @@ from allennlp.nn import util, InitializerApplicator
 
 from allennlp_models.generation.modules.seq_decoders.seq_decoder import SeqDecoder
 
+from allennlp_models.common.pretrained_model_config import PretrainedModelConfiguration
+
 
 @Model.register("composed_seq2seq")
+@Model.register("generation-composed-seq2seq")
 class ComposedSeq2Seq(Model):
     """
     This `ComposedSeq2Seq` class is a `Model` which takes a sequence, encodes it, and then
@@ -160,3 +163,6 @@ class ComposedSeq2Seq(Model):
         return self._decoder.get_metrics(reset)
 
     default_predictor = "seq2seq"
+
+
+model_config = PretrainedModelConfiguration.from_dict({"id": "generation-composed-seq2seq"})

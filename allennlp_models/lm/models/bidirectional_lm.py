@@ -6,9 +6,11 @@ from allennlp.nn import InitializerApplicator
 
 from allennlp_models.lm.models.language_model import LanguageModel
 
+from allennlp_models.common.pretrained_model_config import PretrainedModelConfiguration
+
 
 @Model.register("bidirectional-language-model")
-@Model.register("bidirectional_language_model")
+@Model.register("lm-bidirectional-language-model")
 class BidirectionalLanguageModel(LanguageModel):
     """
     The `BidirectionalLanguageModel` applies a bidirectional "contextualizing"
@@ -62,3 +64,6 @@ class BidirectionalLanguageModel(LanguageModel):
             initializer=initializer,
             **kwargs,
         )
+
+
+model_config = PretrainedModelConfiguration.from_dict({"id": "lm-bidirectional-language-model"})

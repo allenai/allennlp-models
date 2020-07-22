@@ -13,8 +13,11 @@ from allennlp_models.rc.models.bidaf import BidirectionalAttentionFlow
 from allennlp_models.rc.models.utils import get_best_span
 from allennlp_models.rc.metrics import SquadEmAndF1
 
+from allennlp_models.common.pretrained_model_config import PretrainedModelConfiguration
+
 
 @Model.register("bidaf-ensemble")
+@Model.register("rc-bidaf-ensemble")
 class BidafEnsemble(Model):
     """
     This class ensembles the output from multiple BiDAF models.
@@ -163,6 +166,9 @@ class BidafEnsemble(Model):
         return model
 
     default_predictor = "reading_comprehension"
+
+
+model_config = PretrainedModelConfiguration.from_dict({"id": "rc-bidaf-ensemble"})
 
 
 def ensemble(subresults: List[Dict[str, torch.Tensor]]) -> torch.Tensor:

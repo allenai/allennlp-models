@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 @Model.register("naqanet")
+@Model.register("rc-naqanet")
 class NumericallyAugmentedQaNet(Model):
     """
     This class augments the QANet model with some rudimentary numerical reasoning abilities, as

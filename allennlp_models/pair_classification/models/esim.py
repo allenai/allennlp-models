@@ -17,8 +17,11 @@ from allennlp.nn.util import (
 )
 from allennlp.training.metrics import CategoricalAccuracy
 
+from allennlp_models.common.pretrained_model_config import PretrainedModelConfiguration
+
 
 @Model.register("esim")
+@Model.register("pc-esim")
 class ESIM(Model):
     """
     This `Model` implements the ESIM sequence model described in [Enhanced LSTM for Natural Language Inference]
@@ -242,3 +245,8 @@ class ESIM(Model):
         return {"accuracy": self._accuracy.get_metric(reset)}
 
     default_predictor = "textual_entailment"
+
+
+model_config = PretrainedModelConfiguration.from_dict(
+    {"id": "pc-esim", "name": "ESIM Sequence Model"}
+)

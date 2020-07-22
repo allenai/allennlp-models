@@ -17,10 +17,13 @@ from allennlp.nn import util, InitializerApplicator
 from allennlp_models.coref.metrics.conll_coref_scores import ConllCorefScores
 from allennlp_models.coref.metrics.mention_recall import MentionRecall
 
+from allennlp_models.common.pretrained_model_config import PretrainedModelConfiguration
+
 logger = logging.getLogger(__name__)
 
 
 @Model.register("coref")
+@Model.register("coref-spanbert")
 class CoreferenceResolver(Model):
     """
     This `Model` implements the coreference resolution model described in
@@ -874,3 +877,8 @@ class CoreferenceResolver(Model):
         return coreference_scores
 
     default_predictor = "coreference_resolution"
+
+
+model_config = PretrainedModelConfiguration.from_dict(
+    {"id": "coref-spanbert", "archive_file": "coref-spanbert-large-2020.02.27.tar.gz"}
+)

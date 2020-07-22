@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 @Model.register("transformer_qa")
+@Model.register("rc-transformer-qa")
 class TransformerQA(Model):
     """
     This class implements a reading comprehension model patterned after the proposed model in

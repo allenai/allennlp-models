@@ -12,8 +12,11 @@ from allennlp.nn import InitializerApplicator
 from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum
 from allennlp.training.metrics import CategoricalAccuracy
 
+from allennlp_models.common.pretrained_model_config import PretrainedModelConfiguration
+
 
 @Model.register("decomposable_attention")
+@Model.register("pc-decomposable-attention")
 class DecomposableAttention(Model):
     """
     This `Model` implements the Decomposable Attention model described in [A Decomposable
@@ -202,3 +205,11 @@ class DecomposableAttention(Model):
         return {"accuracy": self._accuracy.get_metric(reset)}
 
     default_predictor = "textual_entailment"
+
+
+model_config = PretrainedModelConfiguration.from_dict(
+    {
+        "id": "pc-decomposable-attention",
+        "archive_file": "decomposable-attention-elmo-2020.04.09.tar.gz",
+    }
+)
