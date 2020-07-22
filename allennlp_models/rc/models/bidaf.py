@@ -19,10 +19,13 @@ from allennlp_models.rc.models.utils import (
     replace_masked_values_with_big_negative_number,
 )
 
+from allennlp_models.common.pretrained_model_config import PretrainedModelConfiguration
+
 logger = logging.getLogger(__name__)
 
 
 @Model.register("bidaf")
+@Model.register("rc-bidaf")
 class BidirectionalAttentionFlow(Model):
     """
     This class implements Minjoon Seo's `Bidirectional Attention Flow model
@@ -378,3 +381,12 @@ class BidirectionalAttentionFlow(Model):
         return torch.stack([span_start_indices, span_end_indices], dim=-1)
 
     default_predictor = "reading_comprehension"
+
+
+model_config = PretrainedModelConfiguration.from_dict(
+    {
+        "id": "rc-bidaf",
+        "name": "Bidirectional Attention Flow",
+        "archive_file": "bidaf-model-2020.03.19.tar.gz",
+    }
+)

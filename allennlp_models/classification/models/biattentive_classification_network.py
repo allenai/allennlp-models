@@ -14,8 +14,11 @@ from allennlp.nn import InitializerApplicator
 from allennlp.nn import util
 from allennlp.training.metrics import CategoricalAccuracy
 
+from allennlp_models.common.pretrained_model_config import PretrainedModelConfiguration
+
 
 @Model.register("bcn")
+@Model.register("classification-bcn")
 class BiattentiveClassificationNetwork(Model):
     """
     This class implements the Biattentive Classification Network model described
@@ -338,3 +341,6 @@ class BiattentiveClassificationNetwork(Model):
         return {
             metric_name: metric.get_metric(reset) for metric_name, metric in self.metrics.items()
         }
+
+
+model_config = PretrainedModelConfiguration.from_dict({"id": "classification-bcn"})

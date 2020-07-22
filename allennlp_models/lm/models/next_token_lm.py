@@ -11,8 +11,11 @@ from allennlp.nn import util, InitializerApplicator
 from allennlp.training.metrics import Perplexity
 from allennlp_models.lm.modules.language_model_heads import LanguageModelHead
 
+from allennlp_models.common.pretrained_model_config import PretrainedModelConfiguration
+
 
 @Model.register("next_token_lm")
+@Model.register("lm-next-token-lm-gpt2")
 class NextTokenLM(Model):
     """
     The `NextTokenLM` embeds some input tokens, contextualizes them, then predicts the next word,
@@ -145,3 +148,12 @@ class NextTokenLM(Model):
         return output_dict
 
     default_predictor = "next_token_lm"
+
+
+model_config = PretrainedModelConfiguration.from_dict(
+    {
+        "id": "lm-next-token-lm-gpt2",
+        "name": "GPT2-based Next Token Language Model",
+        "archive_file": "gpt2-next-word-lm-2020.06.30.tar.gz",
+    }
+)
