@@ -148,7 +148,7 @@ class SrlReader(DatasetReader):
     ) -> Tuple[List[str], List[int], List[int]]:
         """
         Convert a list of tokens to wordpiece tokens and offsets, as well as adding
-        BERT CLS and SEP tokens to the begining and end of the sentence.
+        BERT CLS and SEP tokens to the beginning and end of the sentence.
 
         A slight oddity with this function is that it also returns the wordpiece offsets
         corresponding to the _start_ of words as well as the end.
@@ -159,7 +159,7 @@ class SrlReader(DatasetReader):
         because otherwise we might select an ill-formed BIO sequence from the BIO sequence on top of
         wordpieces (this happens in the case that a word is split into multiple word pieces,
         and then we take the last tag of the word, which might correspond to, e.g, I-V, which
-        would not be allowed as it is not preceeded by a B tag).
+        would not be allowed as it is not preceded by a B tag).
 
         For example:
 
