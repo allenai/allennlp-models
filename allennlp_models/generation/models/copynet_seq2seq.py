@@ -747,7 +747,7 @@ class CopyNetSeq2Seq(Model):
         return modified_log_probs
 
     def take_search_step(
-        self, last_predictions: torch.Tensor, state: Dict[str, torch.Tensor]
+        self, last_predictions: torch.Tensor, state: Dict[str, torch.Tensor], step: int
     ) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
         """
         Take step during beam search.
@@ -790,6 +790,9 @@ class CopyNetSeq2Seq(Model):
         state : `Dict[str, torch.Tensor]`
             Contains all state tensors necessary to produce generation and copy scores
             for next step.
+
+        step : `int`
+            The time step in beam search decoding.
 
         Notes
         -----

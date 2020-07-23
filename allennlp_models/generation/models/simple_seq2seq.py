@@ -146,7 +146,7 @@ class SimpleSeq2Seq(Model):
         self._output_projection_layer = Linear(self._decoder_output_dim, num_classes)
 
     def take_step(
-        self, last_predictions: torch.Tensor, state: Dict[str, torch.Tensor]
+        self, last_predictions: torch.Tensor, state: Dict[str, torch.Tensor], step: int
     ) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
         """
         Take a decoding step. This is called by the beam search class.
@@ -162,6 +162,8 @@ class SimpleSeq2Seq(Model):
             the source mask, and the decoder hidden state and context. Each of these
             tensors has shape `(group_size, *)`, where `*` can be any other number
             of dimensions.
+        step : `int`
+            The time step in beam search decoding.
 
         # Returns
 
