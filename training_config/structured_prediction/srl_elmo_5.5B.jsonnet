@@ -58,7 +58,6 @@
         "grad_clipping": 1.0,
         "patience": 200,
         "validation_metric": "+f1-measure-overall",
-        "cuda_device": 0,
         "checkpointer": {
             "num_serialized_models_to_keep": 10,
         },

@@ -134,7 +134,6 @@
         "grad_norm": 5,
         "patience": 10,
         "validation_metric": "+em",
-        "cuda_device": 0,
         "optimizer": {
             "type": "adam",
             "lr": 0.001,
