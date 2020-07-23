@@ -879,4 +879,4 @@ class CoreferenceResolver(Model):
     default_predictor = "coreference_resolution"
 
 
-add_pretrained_model(id="coref-spanbert", archive_file="coref-spanbert-large-2020.02.27.tar.gz")
+add_pretrained_model(name="coref-spanbert", archive_file="coref-spanbert-large-2020.02.27.tar.gz")

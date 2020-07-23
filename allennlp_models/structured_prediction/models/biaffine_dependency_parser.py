@@ -690,7 +690,7 @@ class BiaffineDependencyParser(Model):
 
 
 add_pretrained_model(
-    id="sp-biaffine-parser",
-    name="Deep Biaffine Attention for Neural Dependency Parsing",
+    name="sp-biaffine-parser",
+    display_name="Deep Biaffine Attention for Neural Dependency Parsing",
     archive_file="biaffine-dependency-parser-ptb-2020.04.06.tar.gz",
 )

@@ -495,5 +495,7 @@ def write_to_conll_eval_file(
 
 
 add_pretrained_model(
-    id="sp-srl", name="Open Information Extraction", archive_file="openie-model.2020.03.26.tar.gz"
+    name="sp-srl",
+    display_name="Open Information Extraction",
+    archive_file="openie-model.2020.03.26.tar.gz",
 )

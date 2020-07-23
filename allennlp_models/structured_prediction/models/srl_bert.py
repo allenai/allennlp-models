@@ -296,5 +296,5 @@ class SrlBert(Model):
 
 
 add_pretrained_model(
-    id="sp-srl-bert", name="SRL BERT", archive_file="bert-base-srl-2020.07.14.tar.gz"
+    name="sp-srl-bert", display_name="SRL BERT", archive_file="bert-base-srl-2020.07.14.tar.gz",
 )

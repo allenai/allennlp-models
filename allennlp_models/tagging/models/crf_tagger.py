@@ -304,22 +304,22 @@ class CrfTagger(Model):
 
 
 add_pretrained_model(
-    id="tagging-elmo-crf-tagger",
-    name="ELMo-based Named Entity Recognition",
+    name="tagging-elmo-crf-tagger",
+    display_name="ELMo-based Named Entity Recognition",
     archive_file="ner-model-2020.02.10.tar.gz",
     model_class=CrfTagger,
 )
 
 add_pretrained_model(
-    id="tagging-fine-grained-crf-tagger",
-    name="Fine Grained Named Entity Recognition",
+    name="tagging-fine-grained-crf-tagger",
+    display_name="Fine Grained Named Entity Recognition",
     archive_file="fine-grained-ner.2020-06-24.tar.gz",
     model_class=CrfTagger,
 )
 
 add_pretrained_model(
-    id="tagging-fine-grained-transformer-crf-tagger",
-    name="Fine Grained Named Entity Recognition with Transformer",
+    name="tagging-fine-grained-transformer-crf-tagger",
+    display_name="Fine Grained Named Entity Recognition with Transformer",
     archive_file="fgner_transformer.2020-07-14.tar.gz",
     model_class=CrfTagger,
 )

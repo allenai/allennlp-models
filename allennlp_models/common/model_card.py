@@ -6,7 +6,6 @@ from typing import Optional, Union, Mapping, Dict
 from allennlp.models import Model
 from allennlp.common.checks import ConfigurationError
 
-PRETRAINED_MODELS: Dict = {}
 STORAGE_LOCATION = "https://storage.googleapis.com/allennlp-public-models/"
 
 logger = logging.getLogger(__name__)
@@ -26,7 +25,7 @@ def get_description(model_class):
     return model_class.__doc__.split("# Parameters")[0].strip()
 
 
-@dataclass
+@dataclass(frozen=True)
 class ModelCardInfo(object):
     """
     Base class for different recommended attributes included
@@ -53,8 +52,17 @@ class ModelCardInfo(object):
                 info[key] = val
         return info
 
+    def __str__(self):
+        display = ""
+        for key, val in self.to_dict().items():
+            display += "\n" + key.replace("_", " ").capitalize() + ": "
+            display += "\n\t" + val.replace("\n", "\n\t") + "\n"
+        if not display:
+            display = super(ModelCardInfo, self).__str__()
+        return display
 
-@dataclass
+
+@dataclass(frozen=True)
 class ModelDetails(ModelCardInfo):
     """
     This provides the basic information about the model.
@@ -71,7 +79,7 @@ class ModelDetails(ModelCardInfo):
     contact: Optional[str] = None
 
 
-@dataclass
+@dataclass(frozen=True)
 class IntendedUse(ModelCardInfo):
     """
     This determines what the model should and should not be
@@ -83,7 +91,7 @@ class IntendedUse(ModelCardInfo):
     out_of_scope_uses_cases: Optional[str] = None
 
 
-@dataclass
+@dataclass(frozen=True)
 class Factors(ModelCardInfo):
     """
     This provides a summary of relevant factors such as
@@ -95,7 +103,7 @@ class Factors(ModelCardInfo):
     evaluation_factors: Optional[str] = None
 
 
-@dataclass
+@dataclass(frozen=True)
 class Metrics(ModelCardInfo):
     """
     This lists the reported metrics and the reasons
@@ -107,7 +115,7 @@ class Metrics(ModelCardInfo):
     variation_approaches: Optional[str] = None
 
 
-@dataclass
+@dataclass(frozen=True)
 class EvaluationData(ModelCardInfo):
     """
     This provides information about the evaluation data.
@@ -125,7 +133,7 @@ class EvaluationData(ModelCardInfo):
         return info
 
 
-@dataclass
+@dataclass(frozen=True)
 class TrainingData(ModelCardInfo):
     """
     This provides information about the training data.
@@ -143,7 +151,7 @@ class TrainingData(ModelCardInfo):
         return info
 
 
-@dataclass
+@dataclass(frozen=True)
 class QuantitativeAnalyses(ModelCardInfo):
     """
     This provides disaggregated evaluation of how the
@@ -154,7 +162,7 @@ class QuantitativeAnalyses(ModelCardInfo):
     intersectional_results: Optional[str] = None
 
 
-@dataclass
+@dataclass(frozen=True)
 class EthicalConsiderations(ModelCardInfo):
     """
     This highlights any ethical considerations to keep
@@ -168,7 +176,7 @@ class EthicalConsiderations(ModelCardInfo):
     ethical_considerations: Optional[str] = None
 
 
-@dataclass
+@dataclass(frozen=True)
 class CaveatsAndRecommendations(ModelCardInfo):
     """
     This lists any additional concerns. Eg. were any relevant
@@ -186,8 +194,8 @@ class ModelCard(ModelCardInfo):
     (https://arxiv.org/pdf/1810.03993.pdf).
     """
 
-    id: str
-    name: Optional[str] = None
+    name: str
+    display_name: Optional[str] = None
     archive_file: Optional[str] = None
     overrides: Optional[Mapping] = None
     model_details: Optional[ModelDetails] = None
@@ -203,7 +211,7 @@ class ModelCard(ModelCardInfo):
     def to_dict(self):
         info = {}
         for key, val in self.__dict__.items():
-            if key != "id":
+            if key != "name":
                 if isinstance(val, ModelCardInfo):
                     info.update(val.to_dict())
                 else:
@@ -211,10 +219,13 @@ class ModelCard(ModelCardInfo):
         return info
 
 
+PRETRAINED_MODELS: Dict[str, ModelCard] = {}
+
+
 def add_pretrained_model(
-    id: str,
+    name: str,
     model_class: Optional[type] = None,
-    name: Optional[str] = None,
+    display_name: Optional[str] = None,
     archive_file: Optional[str] = None,
     overrides: Optional[Mapping] = None,
     model_details: Optional[Union[str, ModelDetails]] = None,
@@ -231,23 +242,23 @@ def add_pretrained_model(
     Creates a `ModelCard` object and registers it
     in the global dict of available pretrained models.
     """
-    assert id
+    assert name
     config = {}
-    config["id"] = id
+    config["name"] = name
     if not model_class:
         try:
-            model_class = Model.by_name(id)
+            model_class = Model.by_name(name)
         except ConfigurationError:
-            logger.warning("{} is not a registered model.".format(id))
+            logger.warning("{} is not a registered model.".format(name))
 
     if model_class:
-        name = name or model_class.__name__
+        display_name = display_name or model_class.__name__
         model_details = model_details or get_description(model_class)
 
     if archive_file and not archive_file.startswith("https:"):
         archive_file = os.path.join(STORAGE_LOCATION, archive_file)
 
-    config["name"] = name
+    config["display_name"] = display_name
     config["archive_file"] = archive_file
 
     config["model_details"] = ModelDetails.from_object(model_details)
@@ -263,5 +274,5 @@ def add_pretrained_model(
     )
 
     model_card = ModelCard(**config)  # type: ignore
-    PRETRAINED_MODELS[model_card.id] = model_card
+    PRETRAINED_MODELS[model_card.name] = model_card
     return model_card

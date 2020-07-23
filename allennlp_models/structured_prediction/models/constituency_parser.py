@@ -503,5 +503,5 @@ class SpanConstituencyParser(Model):
 
 
 add_pretrained_model(
-    id="sp-constituency-parser", archive_file="elmo-constituency-parser-2020.02.10.tar.gz"
+    name="sp-constituency-parser", archive_file="elmo-constituency-parser-2020.02.10.tar.gz"
 )

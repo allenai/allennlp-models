@@ -18,8 +18,6 @@ from allennlp_models.rc.models.utils import (
 )
 from allennlp_models.rc.metrics import SquadEmAndF1
 
-from allennlp_models.common.model_card import add_pretrained_model
-
 
 @Model.register("qanet")
 @Model.register("rc-qanet")
@@ -292,6 +290,3 @@ class QaNet(Model):
         }
 
     default_predictor = "reading_comprehension"
-
-
-add_pretrained_model(id="rc-qanet")

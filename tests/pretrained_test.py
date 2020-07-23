@@ -382,3 +382,14 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
         result = predictor.predict_json({"sentence": text})
         # Just assert that we predicted something better than all-O.
         assert len(frozenset(result["tags"])) > 1
+
+    def test_get_model_config(self):
+        config = pretrained.get_model_config("rc-bidaf")
+        assert isinstance(config, dict)
+        assert "display_name" in config
+
+    def test_pretrained_models_archives(self):
+        pretrained_models = pretrained.PRETRAINED_MODELS
+        for key, val in pretrained_models.items():
+            # Each model in pretrained_models should have an archive.
+            assert val.get("archive_file")

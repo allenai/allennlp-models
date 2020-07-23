@@ -248,7 +248,7 @@ class ESIM(Model):
 
 
 add_pretrained_model(
-    id="pc-esim",
-    name="Enhanced LSTM for Natural Language Inference",
+    name="pc-esim",
+    display_name="Enhanced LSTM for Natural Language Inference",
     archive_file="decomposable-attention-elmo-2020.04.09.tar.gz",
 )

@@ -207,22 +207,22 @@ class DecomposableAttention(Model):
 
 
 add_pretrained_model(
-    id="pc-decomposable-attention-elmo",
-    name="ELMo-based Decomposable Attention",
+    name="pc-decomposable-attention-elmo",
+    display_name="ELMo-based Decomposable Attention",
     archive_file="decomposable-attention-elmo-2020.04.09.tar.gz",
     model_class=DecomposableAttention,
 )
 
 add_pretrained_model(
-    id="pc-decomposable-attention-roberta-snli",
-    name="RoBERTa SNLI based Decomposable Attention",
+    name="pc-decomposable-attention-roberta-snli",
+    display_name="RoBERTa SNLI based Decomposable Attention",
     archive_file="snli_roberta-2020.06.09.tar.gz",
     model_class=DecomposableAttention,
 )
 
 add_pretrained_model(
-    id="pc-decomposable-attention-roberta-mnli",
-    name="RoBERTa MNLI based Decomposable Attention",
+    name="pc-decomposable-attention-roberta-mnli",
+    display_name="RoBERTa MNLI based Decomposable Attention",
     archive_file="mnli_roberta-2020.06.09.tar.gz",
     model_class=DecomposableAttention,
 )

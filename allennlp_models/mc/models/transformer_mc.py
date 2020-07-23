@@ -120,20 +120,20 @@ class TransformerMC(Model):
 
 
 add_pretrained_model(
-    id="mc-roberta-piqa",
-    name="Physical Interaction Question Answering",
+    name="mc-roberta-piqa",
+    display_name="Physical Interaction Question Answering",
     archive_file="piqa.2020-07-08.tar.gz",
     model_class=TransformerMC,
 )
 add_pretrained_model(
-    id="mc-roberta-swag",
-    name="RoBERTa SWAG",
+    name="mc-roberta-swag",
+    display_name="RoBERTa SWAG",
     archive_file="swag.2020-07-08.tar.gz",
     model_class=TransformerMC,
 )
 add_pretrained_model(
-    id="mc-roberta-commonsenseqa",
-    name="RoBERTa Common Sense QA",
+    name="mc-roberta-commonsenseqa",
+    display_name="RoBERTa Common Sense QA",
     archive_file="commonsenseqa.2020-07-08.tar.gz",
     model_class=TransformerMC,
 )

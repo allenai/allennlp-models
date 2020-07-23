@@ -650,8 +650,8 @@ class NumericallyAugmentedQaNet(Model):
 
 
 add_pretrained_model(
-    id="rc-naqanet",
-    name="Numerically Augmented QA Net",
+    name="rc-naqanet",
+    display_name="Numerically Augmented QA Net",
     archive_file="naqanet-2020.02.19.tar.gz",
     training_data="DROP",
 )

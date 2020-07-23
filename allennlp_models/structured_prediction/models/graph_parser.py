@@ -19,8 +19,6 @@ from allennlp.nn.util import get_text_field_mask
 from allennlp.nn.util import get_lengths_from_binary_sequence_mask
 from allennlp.training.metrics import F1Measure
 
-from allennlp_models.common.model_card import add_pretrained_model
-
 logger = logging.getLogger(__name__)
 
 
@@ -368,6 +366,3 @@ class GraphParser(Model):
         metrics["recall"] = recall
         metrics["f1"] = f1_measure
         return metrics
-
-
-add_pretrained_model(id="sp-graph-parser")

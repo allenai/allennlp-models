@@ -151,7 +151,7 @@ class NextTokenLM(Model):
 
 
 add_pretrained_model(
-    id="lm-next-token-lm-gpt2",
-    name="GPT2-based Next Token Language Model",
+    name="lm-next-token-lm-gpt2",
+    display_name="GPT2-based Next Token Language Model",
     archive_file="gpt2-next-word-lm-2020.06.30.tar.gz",
 )

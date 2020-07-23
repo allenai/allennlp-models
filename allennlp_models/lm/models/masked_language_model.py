@@ -187,7 +187,7 @@ class MaskedLanguageModel(Model):
 
 
 add_pretrained_model(
-    id="lm-masked-language-model",
-    name="BERT-based Masked Language Model",
+    name="lm-masked-language-model",
+    display_name="BERT-based Masked Language Model",
     archive_file="bert-masked-lm-2019.09.17.tar.gz",
 )
