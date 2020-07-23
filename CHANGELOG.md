@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added BART model
 - Added `ModelCard` and related classes. Added model cards for all the pretrained models.
+
 
 ## [v1.1.0rc1](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc1) - 2020-07-14
 
@@ -33,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added two models for fine-grained NER
 - Added a category for multiple choice models, including a few reference implementations
 - Implemented manual distributed sharding for SNLI dataset reader.
+
 
 ## [v1.0.0](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0) - 2020-06-16
 
