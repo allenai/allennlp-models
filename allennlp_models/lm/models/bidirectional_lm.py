@@ -10,7 +10,6 @@ from allennlp_models.common.model_card import add_pretrained_model
 
 
 @Model.register("bidirectional-language-model")
-@Model.register("bidirectional_language_model")
 @Model.register("lm-bidirectional-language-model")
 class BidirectionalLanguageModel(LanguageModel):
     """
@@ -65,3 +64,6 @@ class BidirectionalLanguageModel(LanguageModel):
             initializer=initializer,
             **kwargs,
         )
+
+
+add_pretrained_model(id="lm-bidirectional-language-model")

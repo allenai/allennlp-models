@@ -392,5 +392,5 @@ add_pretrained_model(
     name="ELMo-BiDAF",
     archive_file="bidaf-elmo-model-2020.03.19.tar.gz",
     training_data="SQuAD",
-    model_class=BidirectionalAttentionFlow
+    model_class=BidirectionalAttentionFlow,
 )
