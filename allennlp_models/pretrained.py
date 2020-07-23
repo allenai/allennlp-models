@@ -158,7 +158,7 @@ def glove_sst() -> TextClassifierPredictor:
 
 def roberta_sst() -> TextClassifierPredictor:
     return _load_predictor(
-        "https://storage.googleapis.com/allennlp-public-models/sst-roberta-large-2020.06.08.tar.gz"
+        "https://storage.googleapis.com/allennlp-public-models/sst-roberta-large-2020.07.23.tar.gz"
     )
 
 
