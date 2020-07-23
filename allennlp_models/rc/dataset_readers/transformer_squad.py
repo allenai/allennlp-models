@@ -66,7 +66,9 @@ class TransformerSquadReader(DatasetReader):
         max_query_length: int = 64,
         **kwargs
     ) -> None:
-        super().__init__(**kwargs)
+        super().__init__(
+            manual_distributed_sharding=True, manual_multi_process_sharding=True, **kwargs
+        )
         self._tokenizer = PretrainedTransformerTokenizer(
             transformer_model_name, add_special_tokens=False
         )
@@ -91,7 +93,7 @@ class TransformerSquadReader(DatasetReader):
         for article in dataset:
             for paragraph_json in article["paragraphs"]:
                 context = paragraph_json["context"]
-                for question_answer in paragraph_json["qas"]:
+                for question_answer in self.shard_iterable(paragraph_json["qas"]):
                     answers = [answer_json["text"] for answer_json in question_answer["answers"]]
 
                     # Just like huggingface, we only use the first answer for training.
