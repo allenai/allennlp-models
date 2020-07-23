@@ -16,7 +16,7 @@ from allennlp.nn import InitializerApplicator, util
 from allennlp.training.metrics import Metric, BLEU
 from allennlp.nn.beam_search import BeamSearch
 
-from allennlp_models.common.pretrained_model_config import PretrainedModelConfiguration
+from allennlp_models.common.model_card import add_pretrained_model
 
 
 logger = logging.getLogger(__name__)
@@ -915,4 +915,4 @@ class CopyNetSeq2Seq(Model):
     default_predictor = "seq2seq"
 
 
-model_config = PretrainedModelConfiguration.from_dict({"id": "generation-copynet-seq2seq"})
+add_pretrained_model(id="generation-copynet-seq2seq")

@@ -19,7 +19,7 @@ from allennlp_models.rc.models.utils import (
     replace_masked_values_with_big_negative_number,
 )
 
-from allennlp_models.common.pretrained_model_config import PretrainedModelConfiguration
+from allennlp_models.common.model_card import add_pretrained_model
 
 logger = logging.getLogger(__name__)
 
@@ -383,10 +383,6 @@ class BidirectionalAttentionFlow(Model):
     default_predictor = "reading_comprehension"
 
 
-model_config = PretrainedModelConfiguration.from_dict(
-    {
-        "id": "rc-bidaf",
-        "name": "Bidirectional Attention Flow",
-        "archive_file": "bidaf-model-2020.03.19.tar.gz",
-    }
+add_pretrained_model(
+    id="rc-bidaf", name="Bidirectional Attention Flow", archive_file="bidaf-model-2020.03.19.tar.gz"
 )

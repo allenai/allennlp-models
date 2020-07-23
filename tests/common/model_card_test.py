@@ -10,14 +10,12 @@ class TestPretrainedModelConfiguration(AllenNlpTestCase):
             name="Fake Name",
             model_details="Model's description",
             archive_file="fake.tar.gz",
-            predictor_name="fake_predictor",
-            overrides={}
+            overrides={},
         )
 
         assert model_card.id == "fake_id"
         assert model_card.name == "Fake Name"
         assert model_card.archive_file == mc.STORAGE_LOCATION + "fake.tar.gz"
-        assert model_card.predictor_name == "fake_predictor"
         assert model_card.model_details.description == "Model's description"
 
     def test_init_registered_model(self):
@@ -75,11 +73,16 @@ class TestPretrainedModelConfiguration(AllenNlpTestCase):
                 return {}
 
         model_card = mc.add_pretrained_model(
-            **{"id": "fake-model-2", "model_details": "This is the fake model trained on a dataset.",
-               "model_class": FakeModel}
+            **{
+                "id": "fake-model-2",
+                "model_details": "This is the fake model trained on a dataset.",
+                "model_class": FakeModel,
+            }
         )
 
-        assert model_card.model_details.description == "This is the fake model trained on a dataset."
+        assert (
+            model_card.model_details.description == "This is the fake model trained on a dataset."
+        )
 
     def test_init_model_card_info_obj(self):
         @Model.register("fake-model-3")
@@ -98,8 +101,7 @@ class TestPretrainedModelConfiguration(AllenNlpTestCase):
 
         intended_use = mc.IntendedUse("Use 1", "User 1")
 
-        model_card = mc.add_pretrained_model(**{"id": "fake-model-3", 
-                                           "intended_use": intended_use})
+        model_card = mc.add_pretrained_model(**{"id": "fake-model-3", "intended_use": intended_use})
 
         model_card_dict = model_card.to_dict()
         assert model_card.name == "FakeModel"

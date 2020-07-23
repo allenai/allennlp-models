@@ -16,7 +16,7 @@ from allennlp.nn import util
 from allennlp.nn.beam_search import BeamSearch
 from allennlp.training.metrics import BLEU
 
-from allennlp_models.common.pretrained_model_config import PretrainedModelConfiguration
+from allennlp_models.common.model_card import add_pretrained_model
 
 
 @Model.register("simple_seq2seq")
@@ -508,4 +508,4 @@ class SimpleSeq2Seq(Model):
     default_predictor = "seq2seq"
 
 
-model_config = PretrainedModelConfiguration.from_dict({"id": "generation-simple-seq2seq"})
+add_pretrained_model(id="generation-simple-seq2seq")

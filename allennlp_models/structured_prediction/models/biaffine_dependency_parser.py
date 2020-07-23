@@ -24,12 +24,15 @@ from allennlp.nn.util import (
 from allennlp.nn.chu_liu_edmonds import decode_mst
 from allennlp.training.metrics import AttachmentScores
 
+from allennlp_models.common.model_card import add_pretrained_model
+
 logger = logging.getLogger(__name__)
 
 POS_TO_IGNORE = {"`", "''", ":", ",", ".", "PU", "PUNCT", "SYM"}
 
 
 @Model.register("biaffine_parser")
+@Model.register("sp-biaffine-parser")
 class BiaffineDependencyParser(Model):
     """
     This dependency parser follows the model of
@@ -684,3 +687,10 @@ class BiaffineDependencyParser(Model):
         return self._attachment_scores.get_metric(reset)
 
     default_predictor = "biaffine_dependency_parser"
+
+
+add_pretrained_model(
+    id="sp-biaffine-parser",
+    name="Deep Biaffine Attention for Neural Dependency Parsing",
+    archive_file="biaffine-dependency-parser-ptb-2020.04.06.tar.gz",
+)

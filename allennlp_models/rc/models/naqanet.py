@@ -19,6 +19,8 @@ from allennlp_models.rc.models.utils import (
 )
 from allennlp_models.rc.metrics.drop_em_and_f1 import DropEmAndF1
 
+from allennlp_models.common.model_card import add_pretrained_model
+
 logger = logging.getLogger(__name__)
 
 
@@ -645,3 +647,8 @@ class NumericallyAugmentedQaNet(Model):
         return {"em": exact_match, "f1": f1_score}
 
     default_predictor = "reading_comprehension"
+
+
+add_pretrained_model(
+    id="rc-naqanet", name="Numerically Augmented QA Net", archive_file="naqanet-2020.02.19.tar.gz"
+)

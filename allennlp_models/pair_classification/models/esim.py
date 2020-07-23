@@ -17,7 +17,7 @@ from allennlp.nn.util import (
 )
 from allennlp.training.metrics import CategoricalAccuracy
 
-from allennlp_models.common.pretrained_model_config import PretrainedModelConfiguration
+from allennlp_models.common.model_card import add_pretrained_model
 
 
 @Model.register("esim")
@@ -247,6 +247,8 @@ class ESIM(Model):
     default_predictor = "textual_entailment"
 
 
-model_config = PretrainedModelConfiguration.from_dict(
-    {"id": "pc-esim", "name": "ESIM Sequence Model"}
+add_pretrained_model(
+    id="pc-esim",
+    name="Enhanced LSTM for Natural Language Inference",
+    archive_file="decomposable-attention-elmo-2020.04.09.tar.gz",
 )

@@ -5,7 +5,7 @@ import torch
 from allennlp.data import Vocabulary, TextFieldTensors
 from allennlp.models import Model
 
-from allennlp_models.common.pretrained_model_config import PretrainedModelConfiguration
+from allennlp_models.common.model_card import add_pretrained_model
 
 logger = logging.getLogger(__name__)
 
@@ -119,23 +119,21 @@ class TransformerMC(Model):
     default_predictor = "transformer_mc"
 
 
-model_config1 = PretrainedModelConfiguration.from_dict(
-    {
-        "id": "mc-roberta-piqa",
-        "name": "Physical Interaction Question Answering",
-        "archive_file": "piqa.2020-07-08.tar.gz",
-    },
-    TransformerMC,
+add_pretrained_model(
+    id="mc-roberta-piqa",
+    name="Physical Interaction Question Answering",
+    archive_file="piqa.2020-07-08.tar.gz",
+    model_class=TransformerMC,
 )
-model_config2 = PretrainedModelConfiguration.from_dict(
-    {"id": "mc-roberta-swag", "name": "RoBERTa SWAG", "archive_file": "swag.2020-07-08.tar.gz"},
-    TransformerMC,
+add_pretrained_model(
+    id="mc-roberta-swag",
+    name="RoBERTa SWAG",
+    archive_file="swag.2020-07-08.tar.gz",
+    model_class=TransformerMC,
 )
-model_config3 = PretrainedModelConfiguration.from_dict(
-    {
-        "id": "mc-roberta-commonsenseqa",
-        "name": "RoBERTa Common Sense QA",
-        "archive_file": "commonsenseqa.2020-07-08.tar.gz",
-    },
-    TransformerMC,
+add_pretrained_model(
+    id="mc-roberta-commonsenseqa",
+    name="RoBERTa Common Sense QA",
+    archive_file="commonsenseqa.2020-07-08.tar.gz",
+    model_class=TransformerMC,
 )

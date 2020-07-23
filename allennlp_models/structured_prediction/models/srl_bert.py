@@ -17,8 +17,11 @@ from allennlp_models.structured_prediction.metrics.srl_eval_scorer import (
     SrlEvalScorer,
 )
 
+from allennlp_models.common.model_card import add_pretrained_model
+
 
 @Model.register("srl_bert")
+@Model.register("sp-srl-bert")
 class SrlBert(Model):
     """
 
@@ -290,3 +293,8 @@ class SrlBert(Model):
         return start_transitions
 
     default_predictor = "semantic_role_labeling"
+
+
+add_pretrained_model(
+    id="sp-srl-bert", name="SRL BERT", archive_file="bert-base-srl-2020.07.14.tar.gz"
+)

@@ -14,7 +14,7 @@ from allennlp.nn import InitializerApplicator
 from allennlp.nn import util
 from allennlp.training.metrics import CategoricalAccuracy
 
-from allennlp_models.common.pretrained_model_config import PretrainedModelConfiguration
+from allennlp_models.common.model_card import add_pretrained_model
 
 
 @Model.register("bcn")
@@ -343,4 +343,4 @@ class BiattentiveClassificationNetwork(Model):
         }
 
 
-model_config = PretrainedModelConfiguration.from_dict({"id": "classification-bcn"})
+add_pretrained_model("classification-bcn")

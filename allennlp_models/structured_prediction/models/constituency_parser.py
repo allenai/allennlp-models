@@ -18,6 +18,8 @@ from allennlp.training.metrics import CategoricalAccuracy
 from allennlp.training.metrics import EvalbBracketingScorer, DEFAULT_EVALB_DIR
 from allennlp.common.checks import ConfigurationError
 
+from allennlp_models.common.model_card import add_pretrained_model
+
 
 class SpanInformation(NamedTuple):
     """
@@ -43,6 +45,7 @@ class SpanInformation(NamedTuple):
 
 
 @Model.register("constituency_parser")
+@Model.register("sp-constituency-parser")
 class SpanConstituencyParser(Model):
     """
     This `SpanConstituencyParser` simply encodes a sequence of text
@@ -497,3 +500,8 @@ class SpanConstituencyParser(Model):
         return all_metrics
 
     default_predictor = "constituency_parser"
+
+
+add_pretrained_model(
+    id="sp-constituency-parser", archive_file="elmo-constituency-parser-2020.02.10.tar.gz"
+)

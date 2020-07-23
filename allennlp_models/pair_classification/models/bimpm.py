@@ -18,7 +18,7 @@ from allennlp.training.metrics import CategoricalAccuracy
 
 from allennlp.modules.bimpm_matching import BiMpmMatching
 
-from allennlp_models.common.pretrained_model_config import PretrainedModelConfiguration
+from allennlp_models.common.model_card import add_pretrained_model
 
 
 @Model.register("bimpm")
@@ -251,6 +251,4 @@ class BiMpm(Model):
     default_predictor = "textual_entailment"
 
 
-model_config = PretrainedModelConfiguration.from_dict(
-    {"id": "pc-bimpm", "name": "Bilateral Multi-Perspective Matching Model"}
-)
+add_pretrained_model(id="pc-bimpm", name="Bilateral Multi-Perspective Matching Model")
