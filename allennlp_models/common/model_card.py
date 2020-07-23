@@ -26,7 +26,7 @@ def get_description(model_class):
 
 
 @dataclass(frozen=True)
-class ModelCardInfo(object):
+class ModelCardInfo:
     """
     Base class for different recommended attributes included
     in a model card.
