@@ -50,19 +50,18 @@ local transformer_dim = 1024;
     }
   },
   "trainer": {
-    "num_epochs": 20,
-    "patience": 5,
+    "num_epochs": 10,
     "validation_metric": "+accuracy",
     "learning_rate_scheduler": {
-      "type": "linear_with_warmup",
+      "type": "slanted_triangular",
+      "num_epochs": 10,
+      "num_steps_per_epoch": 3088,
+      "cut_frac": 0.06
     },
     "optimizer": {
       "type": "huggingface_adamw",
-      "weight_decay": 0.01,
-      "parameter_groups": [[["bias", "LayerNorm\\.weight", "layer_norm\\.weight"], {"weight_decay": 0}]],
-      "lr": 1e-5,
-      "eps": 1e-8,
-      "correct_bias": true
-    },
+      "lr": 2e-5,
+      "weight_decay": 0.1,
+    }
   }
 }
