@@ -65,6 +65,3 @@ class BidirectionalLanguageModel(LanguageModel):
             initializer=initializer,
             **kwargs,
         )
-
-
-add_pretrained_model(id="lm-bidirectional-language-model")

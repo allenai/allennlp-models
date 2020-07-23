@@ -249,4 +249,9 @@ class TransformerQA(Model):
     default_predictor = "transformer_qa"
 
 
-add_pretrained_model(id="rc-transformer-qa", name="Transformer QA")
+add_pretrained_model(
+    id="rc-transformer-qa",
+    name="Transformer QA",
+    archive_file="transformer-qa-2020-05-26.tar.gz",
+    training_data="SQuAD",
+)

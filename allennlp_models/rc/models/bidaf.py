@@ -384,5 +384,13 @@ class BidirectionalAttentionFlow(Model):
 
 
 add_pretrained_model(
-    id="rc-bidaf", name="Bidirectional Attention Flow", archive_file="bidaf-model-2020.03.19.tar.gz"
+    id="rc-bidaf", name="BiDAF", archive_file="bidaf-model-2020.03.19.tar.gz", training_data="SQuAD"
+)
+
+add_pretrained_model(
+    id="rc-bidaf-elmo",
+    name="ELMo-BiDAF",
+    archive_file="bidaf-elmo-model-2020.03.19.tar.gz",
+    training_data="SQuAD",
+    model_class=BidirectionalAttentionFlow
 )
