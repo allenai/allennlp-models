@@ -11,21 +11,17 @@ local cls_is_last_token = false;
     "granularity": "2-class",
     "token_indexers": {
       "tokens": {
-        "type": "pretrained_transformer_mismatched",
+        "type": "pretrained_transformer",
         "model_name": transformer_model
       }
+    },
+    "tokenizer": {
+      "type": "pretrained_transformer",
+      "model_name": transformer_model
     }
   },
-  "validation_dataset_reader":{
-    "type": "sst_tokens",
-    "use_subtrees": false,
-    "granularity": "2-class",
-    "token_indexers": {
-      "tokens": {
-        "type": "pretrained_transformer_mismatched",
-        "model_name": transformer_model
-      }
-    }
+  "validation_dataset_reader": self.dataset_reader + {
+    "use_subtrees": false
   },
   "train_data_path": "https://allennlp.s3.amazonaws.com/datasets/sst/train.txt",
   "validation_data_path": "https://allennlp.s3.amazonaws.com/datasets/sst/dev.txt",
@@ -35,17 +31,16 @@ local cls_is_last_token = false;
     "text_field_embedder": {
       "token_embedders": {
         "tokens": {
-          "type": "pretrained_transformer_mismatched",
+          "type": "pretrained_transformer",
           "model_name": transformer_model
         }
       }
     },
     "seq2vec_encoder": {
-       "type": "cls_pooler",
-       "embedding_dim": transformer_dim,
-       "cls_is_last_token": cls_is_last_token
+       "type": "bert_pooler",
+       "pretrained_model": transformer_model,
+       "dropout": 0.1,
     },
-    "dropout": 0.1,
     "namespace": "tags"
   },
   "data_loader": {
@@ -57,7 +52,6 @@ local cls_is_last_token = false;
   },
   "trainer": {
     "num_epochs": 10,
-    "cuda_device" : 0,
     "validation_metric": "+accuracy",
     "learning_rate_scheduler": {
       "type": "slanted_triangular",
