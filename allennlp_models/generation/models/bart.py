@@ -136,7 +136,7 @@ class Bart(Model):
             Encoder to used in BART. By default, the original BART encoder is used.
         """
         super().__init__(vocab)
-        self.bart = BartForConditionalGeneration.from_pretrained(model_name, output_past=True)
+        self.bart = BartForConditionalGeneration.from_pretrained(model_name)
         self._indexer = indexer or PretrainedTransformerIndexer(model_name, namespace="tokens")
 
         self._start_id = self.bart.config.bos_token_id  # CLS
