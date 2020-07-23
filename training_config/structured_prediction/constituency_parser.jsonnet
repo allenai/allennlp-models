@@ -67,7 +67,6 @@
       "grad_norm": 5.0,
       "patience": 20,
       "validation_metric": "+evalb_f1_measure",
-      "cuda_device": 0,
       "optimizer": {
         "type": "adadelta",
         "lr": 1.0,

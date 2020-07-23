@@ -54,7 +54,6 @@ local cls_is_last_token = false;
   },
   "trainer": {
     "num_epochs": 10,
-    "cuda_device" : -1,
     "validation_metric": "+accuracy",
     "learning_rate_scheduler": {
       "type": "slanted_triangular",

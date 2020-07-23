@@ -43,7 +43,6 @@
     "grad_clipping": 1.0,
     "patience": 20,
     "validation_metric": "+f1-measure-overall",
-    "cuda_device": 0,
     "optimizer": {
       "type": "adadelta",
       "rho": 0.95
