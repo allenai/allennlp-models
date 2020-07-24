@@ -12,10 +12,11 @@ from allennlp.nn import InitializerApplicator
 from allennlp.nn.util import get_text_field_mask, masked_softmax, weighted_sum
 from allennlp.training.metrics import CategoricalAccuracy
 
-from allennlp_models.common.model_card import add_pretrained_model
-
 
 @Model.register("decomposable_attention")
+@Model.register("pc-decomposable-attention-elmo")
+@Model.register("pc-decomposable-attention-roberta-snli")
+@Model.register("pc-decomposable-attention-roberta-mnli")
 class DecomposableAttention(Model):
     """
     This `Model` implements the Decomposable Attention model described in [A Decomposable
@@ -204,25 +205,3 @@ class DecomposableAttention(Model):
         return {"accuracy": self._accuracy.get_metric(reset)}
 
     default_predictor = "textual_entailment"
-
-
-add_pretrained_model(
-    name="pc-decomposable-attention-elmo",
-    display_name="ELMo-based Decomposable Attention",
-    archive_file="decomposable-attention-elmo-2020.04.09.tar.gz",
-    model_class=DecomposableAttention,
-)
-
-add_pretrained_model(
-    name="pc-decomposable-attention-roberta-snli",
-    display_name="RoBERTa SNLI based Decomposable Attention",
-    archive_file="snli_roberta-2020.06.09.tar.gz",
-    model_class=DecomposableAttention,
-)
-
-add_pretrained_model(
-    name="pc-decomposable-attention-roberta-mnli",
-    display_name="RoBERTa MNLI based Decomposable Attention",
-    archive_file="mnli_roberta-2020.06.09.tar.gz",
-    model_class=DecomposableAttention,
-)

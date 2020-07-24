@@ -14,10 +14,11 @@ from allennlp.nn import InitializerApplicator
 import allennlp.nn.util as util
 from allennlp.training.metrics import CategoricalAccuracy, SpanBasedF1Measure
 
-from allennlp_models.common.model_card import add_pretrained_model
-
 
 @Model.register("crf_tagger")
+@Model.register("tagging-elmo-crf-tagger")
+@Model.register("tagging-fine-grained-crf-tagger")
+@Model.register("tagging-fine-grained-transformer-crf-tagger")
 class CrfTagger(Model):
     """
     The `CrfTagger` encodes a sequence of text with a `Seq2SeqEncoder`,
@@ -301,25 +302,3 @@ class CrfTagger(Model):
         return metrics_to_return
 
     default_predictor = "sentence_tagger"
-
-
-add_pretrained_model(
-    name="tagging-elmo-crf-tagger",
-    display_name="ELMo-based Named Entity Recognition",
-    archive_file="ner-model-2020.02.10.tar.gz",
-    model_class=CrfTagger,
-)
-
-add_pretrained_model(
-    name="tagging-fine-grained-crf-tagger",
-    display_name="Fine Grained Named Entity Recognition",
-    archive_file="fine-grained-ner.2020-06-24.tar.gz",
-    model_class=CrfTagger,
-)
-
-add_pretrained_model(
-    name="tagging-fine-grained-transformer-crf-tagger",
-    display_name="Fine Grained Named Entity Recognition with Transformer",
-    archive_file="fgner_transformer.2020-07-14.tar.gz",
-    model_class=CrfTagger,
-)

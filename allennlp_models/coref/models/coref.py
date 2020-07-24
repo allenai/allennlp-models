@@ -17,8 +17,6 @@ from allennlp.nn import util, InitializerApplicator
 from allennlp_models.coref.metrics.conll_coref_scores import ConllCorefScores
 from allennlp_models.coref.metrics.mention_recall import MentionRecall
 
-from allennlp_models.common.model_card import add_pretrained_model
-
 logger = logging.getLogger(__name__)
 
 
@@ -877,6 +875,3 @@ class CoreferenceResolver(Model):
         return coreference_scores
 
     default_predictor = "coreference_resolution"
-
-
-add_pretrained_model(name="coref-spanbert", archive_file="coref-spanbert-large-2020.02.27.tar.gz")

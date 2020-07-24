@@ -1,0 +1,7 @@
+
+{
+    "name": "rc-bidaf",
+    "display_name": "BiDAF",
+    "archive_file": "bidaf-model-2020.03.19.tar.gz",
+    "training_data": "SQuAD"
+}

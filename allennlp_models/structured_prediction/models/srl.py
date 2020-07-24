@@ -19,8 +19,6 @@ from allennlp_models.structured_prediction.metrics.srl_eval_scorer import (
     DEFAULT_SRL_EVAL_PATH,
 )
 
-from allennlp_models.common.model_card import add_pretrained_model
-
 
 def write_bio_formatted_tags_to_file(
     prediction_file: TextIO,
@@ -492,10 +490,3 @@ def write_to_conll_eval_file(
     write_bio_formatted_tags_to_file(
         prediction_file, gold_file, verb_index, sentence, prediction, gold_labels
     )
-
-
-add_pretrained_model(
-    name="sp-srl",
-    display_name="Open Information Extraction",
-    archive_file="openie-model.2020.03.26.tar.gz",
-)

@@ -20,8 +20,6 @@ from allennlp_models.rc.models.utils import (
 )
 from allennlp_models.rc.metrics import SquadEmAndF1
 
-from allennlp_models.common.model_card import add_pretrained_model
-
 logger = logging.getLogger(__name__)
 
 
@@ -247,11 +245,3 @@ class TransformerQA(Model):
         }
 
     default_predictor = "transformer_qa"
-
-
-add_pretrained_model(
-    name="rc-transformer-qa",
-    display_name="Transformer QA",
-    archive_file="transformer-qa-2020-05-26.tar.gz",
-    training_data="SQuAD",
-)

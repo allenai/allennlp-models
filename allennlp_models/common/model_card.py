@@ -1,21 +1,13 @@
 import os
 import logging
 from dataclasses import dataclass
-from typing import Optional, Union, Mapping, Dict
+from typing import Optional, Union, Mapping, Dict, Any
+from allennlp.common.from_params import FromParams
 
 from allennlp.models import Model
 from allennlp.common.checks import ConfigurationError
 
-STORAGE_LOCATION = "https://storage.googleapis.com/allennlp-public-models/"
-
 logger = logging.getLogger(__name__)
-
-
-def get_pretrained_models():
-    pretrained_models = {}
-    for key, val in PRETRAINED_MODELS.items():
-        pretrained_models[key] = val.to_dict()
-    return pretrained_models
 
 
 def get_description(model_class):
@@ -25,23 +17,7 @@ def get_description(model_class):
     return model_class.__doc__.split("# Parameters")[0].strip()
 
 
-@dataclass(frozen=True)
-class ModelCardInfo:
-    """
-    Base class for different recommended attributes included
-    in a model card.
-    """
-
-    @classmethod
-    def from_object(cls, obj: Union[str, "ModelCardInfo"]):
-        """
-        Creates the relevant `ModelCardInfo` obj. If the input is str,
-        it is initialized as the first attribute of the class.
-        """
-        if isinstance(obj, str):
-            return cls(obj)  # type: ignore
-        return obj
-
+class ModelCardInfo(FromParams):
     def to_dict(self):
         """
         Only the non-empty attributes are returned, to minimize empty values.
@@ -88,7 +64,7 @@ class IntendedUse(ModelCardInfo):
 
     primary_uses: Optional[str] = None
     primary_users: Optional[str] = None
-    out_of_scope_uses_cases: Optional[str] = None
+    out_of_scope_use_cases: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -186,29 +162,110 @@ class CaveatsAndRecommendations(ModelCardInfo):
     caveats_and_recommendations: Optional[str] = None
 
 
-@dataclass(frozen=True)
 class ModelCard(ModelCardInfo):
     """
     The model card stores the recommended attributes for model reporting
     as described in the paper [Model Cards for Model Reporting (Mitchell et al, 2019)]
     (https://arxiv.org/pdf/1810.03993.pdf).
-    """
+
+    # Parameters:
 
     name: str
-    display_name: Optional[str] = None
-    archive_file: Optional[str] = None
-    overrides: Optional[Mapping] = None
-    model_details: Optional[ModelDetails] = None
-    intended_use: Optional[IntendedUse] = None
-    factors: Optional[Factors] = None
-    metrics: Optional[Metrics] = None
-    evaluation_data: Optional[EvaluationData] = None
-    training_data: Optional[TrainingData] = None
-    quantitative_analyses: Optional[QuantitativeAnalyses] = None
-    ethical_considerations: Optional[EthicalConsiderations] = None
-    caveats_and_recommendations: Optional[CaveatsAndRecommendations] = None
+        The model's registered name. If `model_class` is not given, this will be used
+        to find any available `Model` registered with this name.
+    model_class: type, optional
+        If given, the `ModelCard` will pull some default information from the class.
+    display_name: str, optional
+        The pretrained model's display name.
+    archive_file: str, optional
+        The location of model's pretrained weights.
+    overrides: Mapping, optional
+        Optional overrides for the model's architecture.
+    model_details: Union[ModelDetails, str], optional
+    intended_use: Union[IntendedUse, str], optional
+    factors: Union[Factors, str], optional
+    metrics: Union[Metrics, str], optional
+    evaluation_data: Union[EvaluationData, str], optional
+    quantitative_analyses: Union[QuantitativeAnalyses, str], optional
+    ethical_considerations: Union[EthicalConsiderations, str], optional
+    caveats_and_recommendations: Union[CaveatsAndRecommendations, str], optional
 
-    def to_dict(self):
+    Note: For all the fields that are Union[ModelCardInfo, str], a str input will be
+    treated as the first argument of the relevant constructor.
+
+    """
+
+    _storage_location = "https://storage.googleapis.com/allennlp-public-models/"
+
+    def __init__(
+        self,
+        name: str,
+        model_class: Optional[type] = None,
+        display_name: Optional[str] = None,
+        archive_file: Optional[str] = None,
+        overrides: Optional[Mapping] = None,
+        model_details: Optional[Union[str, ModelDetails]] = None,
+        intended_use: Optional[Union[str, IntendedUse]] = None,
+        factors: Optional[Union[str, Factors]] = None,
+        metrics: Optional[Union[str, Metrics]] = None,
+        evaluation_data: Optional[Union[str, EvaluationData]] = None,
+        training_data: Optional[Union[str, TrainingData]] = None,
+        quantitative_analyses: Optional[Union[str, QuantitativeAnalyses]] = None,
+        ethical_considerations: Optional[Union[str, EthicalConsiderations]] = None,
+        caveats_and_recommendations: Optional[Union[str, CaveatsAndRecommendations]] = None,
+    ):
+
+        assert name
+        if not model_class:
+            try:
+                model_class = Model.by_name(name)
+            except ConfigurationError:
+                logger.warning("{} is not a registered model.".format(name))
+
+        if model_class:
+            display_name = display_name or model_class.__name__
+            model_details = model_details or get_description(model_class)
+
+        if archive_file and not archive_file.startswith("https:"):
+            archive_file = os.path.join(self._storage_location, archive_file)
+
+        if isinstance(model_details, str):
+            model_details = ModelDetails(description=model_details)
+        if isinstance(intended_use, str):
+            intended_use = IntendedUse(primary_uses=intended_use)
+        if isinstance(factors, str):
+            factors = Factors(relevant_factors=factors)
+        if isinstance(metrics, str):
+            metrics = Metrics(model_performance_measures=metrics)
+        if isinstance(evaluation_data, str):
+            evaluation_data = EvaluationData(dataset=evaluation_data)
+        if isinstance(training_data, str):
+            training_data = TrainingData(dataset=training_data)
+        if isinstance(quantitative_analyses, str):
+            quantitative_analyses = QuantitativeAnalyses(unitary_results=quantitative_analyses)
+        if isinstance(ethical_considerations, str):
+            ethical_considerations = EthicalConsiderations(ethical_considerations)
+        if isinstance(caveats_and_recommendations, str):
+            caveats_and_recommendations = CaveatsAndRecommendations(caveats_and_recommendations)
+
+        self.name = name
+        self.display_name = display_name
+        self.archive_file = archive_file
+        self.model_details = model_details
+        self.intended_use = intended_use
+        self.factors = factors
+        self.metrics = metrics
+        self.evaluation_data = evaluation_data
+        self.training_data = training_data
+        self.quantitative_analyses = quantitative_analyses
+        self.ethical_considerations = ethical_considerations
+        self.caveats_and_recommendations = caveats_and_recommendations
+
+    def to_dict(self) -> Dict[str, Any]:
+        """
+        Coverts the `ModelCard` to a flat dictionary object. This can be converted to
+        json and passed to any front-end.
+        """
         info = {}
         for key, val in self.__dict__.items():
             if key != "name":
@@ -217,62 +274,3 @@ class ModelCard(ModelCardInfo):
                 else:
                     info[key] = val
         return info
-
-
-PRETRAINED_MODELS: Dict[str, ModelCard] = {}
-
-
-def add_pretrained_model(
-    name: str,
-    model_class: Optional[type] = None,
-    display_name: Optional[str] = None,
-    archive_file: Optional[str] = None,
-    overrides: Optional[Mapping] = None,
-    model_details: Optional[Union[str, ModelDetails]] = None,
-    intended_use: Optional[Union[str, IntendedUse]] = None,
-    factors: Optional[Union[str, Factors]] = None,
-    metrics: Optional[Union[str, Metrics]] = None,
-    evaluation_data: Optional[Union[str, EvaluationData]] = None,
-    training_data: Optional[Union[str, TrainingData]] = None,
-    quantitative_analyses: Optional[Union[str, QuantitativeAnalyses]] = None,
-    ethical_considerations: Optional[Union[str, EthicalConsiderations]] = None,
-    caveats_and_recommendations: Optional[Union[str, CaveatsAndRecommendations]] = None,
-) -> ModelCard:
-    """
-    Creates a `ModelCard` object and registers it
-    in the global dict of available pretrained models.
-    """
-    assert name
-    config = {}
-    config["name"] = name
-    if not model_class:
-        try:
-            model_class = Model.by_name(name)
-        except ConfigurationError:
-            logger.warning("{} is not a registered model.".format(name))
-
-    if model_class:
-        display_name = display_name or model_class.__name__
-        model_details = model_details or get_description(model_class)
-
-    if archive_file and not archive_file.startswith("https:"):
-        archive_file = os.path.join(STORAGE_LOCATION, archive_file)
-
-    config["display_name"] = display_name
-    config["archive_file"] = archive_file
-
-    config["model_details"] = ModelDetails.from_object(model_details)
-    config["intended_use"] = IntendedUse.from_object(intended_use)
-    config["factors"] = Factors.from_object(factors)
-    config["metrics"] = Metrics.from_object(metrics)
-    config["evaluation_data"] = EvaluationData.from_object(evaluation_data)
-    config["training_data"] = TrainingData.from_object(training_data)
-    config["quantitative_analyses"] = QuantitativeAnalyses.from_object(quantitative_analyses)
-    config["ethical_considerations"] = EthicalConsiderations.from_object(ethical_considerations)
-    config["caveats_and_recommendations"] = CaveatsAndRecommendations.from_object(
-        caveats_and_recommendations
-    )
-
-    model_card = ModelCard(**config)  # type: ignore
-    PRETRAINED_MODELS[model_card.name] = model_card
-    return model_card

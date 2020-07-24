@@ -5,12 +5,13 @@ import torch
 from allennlp.data import Vocabulary, TextFieldTensors
 from allennlp.models import Model
 
-from allennlp_models.common.model_card import add_pretrained_model
-
 logger = logging.getLogger(__name__)
 
 
 @Model.register("transformer_mc")
+@Model.register("mc-roberta-piqa")
+@Model.register("mc-roberta-swag")
+@Model.register("mc-roberta-commonsenseqa")
 class TransformerMC(Model):
     """
     This class implements a multiple choice model patterned after the proposed model in
@@ -117,23 +118,3 @@ class TransformerMC(Model):
         }
 
     default_predictor = "transformer_mc"
-
-
-add_pretrained_model(
-    name="mc-roberta-piqa",
-    display_name="Physical Interaction Question Answering",
-    archive_file="piqa.2020-07-08.tar.gz",
-    model_class=TransformerMC,
-)
-add_pretrained_model(
-    name="mc-roberta-swag",
-    display_name="RoBERTa SWAG",
-    archive_file="swag.2020-07-08.tar.gz",
-    model_class=TransformerMC,
-)
-add_pretrained_model(
-    name="mc-roberta-commonsenseqa",
-    display_name="RoBERTa Common Sense QA",
-    archive_file="commonsenseqa.2020-07-08.tar.gz",
-    model_class=TransformerMC,
-)

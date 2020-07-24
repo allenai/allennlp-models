@@ -11,8 +11,6 @@ from allennlp.nn import util, InitializerApplicator
 from allennlp.training.metrics import Perplexity
 from allennlp_models.lm.modules.language_model_heads import LanguageModelHead
 
-from allennlp_models.common.model_card import add_pretrained_model
-
 
 @Model.register("masked_language_model")
 @Model.register("lm-masked-language-model")
@@ -184,10 +182,3 @@ class MaskedLanguageModel(Model):
         return output_dict
 
     default_predictor = "masked_language_model"
-
-
-add_pretrained_model(
-    name="lm-masked-language-model",
-    display_name="BERT-based Masked Language Model",
-    archive_file="bert-masked-lm-2019.09.17.tar.gz",
-)
