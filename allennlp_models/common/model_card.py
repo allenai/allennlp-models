@@ -171,7 +171,10 @@ class ModelCard(ModelCardInfo):
 
     # Parameters:
 
-    name: str
+    id: str
+        Model's id, following the convention of task-model-relevant-details.
+        Example: rc-bidaf-elmo for a reading comprehension BiDAF model using ELMo embeddings.
+    registered_model_name: str, optional
         The model's registered name. If `model_class` is not given, this will be used
         to find any available `Model` registered with this name.
     model_class: type, optional
