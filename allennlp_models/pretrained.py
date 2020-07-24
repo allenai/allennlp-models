@@ -25,7 +25,7 @@ def get_pretrained_models() -> Dict[str, ModelCard]:
 
     pretrained_models = {}
     model_card_paths = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)), "modelcards/*.json"
+        os.path.dirname(os.path.realpath(__file__)), "modelcards", "*.json"
     )
 
     for model_card_path in glob.glob(model_card_paths):
