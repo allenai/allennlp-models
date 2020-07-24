@@ -1,6 +1,7 @@
 import csv
 from typing import Dict, Optional
 import logging
+import copy
 
 from overrides import overrides
 
@@ -10,7 +11,7 @@ from allennlp.common.util import START_SYMBOL, END_SYMBOL
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.fields import TextField
 from allennlp.data.instance import Instance
-from allennlp.data.tokenizers import Token, Tokenizer, SpacyTokenizer
+from allennlp.data.tokenizers import Tokenizer, SpacyTokenizer
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
 
 logger = logging.getLogger(__name__)
@@ -50,6 +51,8 @@ class Seq2SeqDatasetReader(DatasetReader):
         Whether or not to add `END_SYMBOL` to the end of the source sequence.
     delimiter : `str`, (optional, default=`"\t"`)
         Set delimiter for tsv/csv file.
+    quoting : `int`, (optional, default=`csv.QUOTE_MINIMAL`)
+        Quoting to use for csv reader.
     """
 
     def __init__(
@@ -60,9 +63,14 @@ class Seq2SeqDatasetReader(DatasetReader):
         target_token_indexers: Dict[str, TokenIndexer] = None,
         source_add_start_token: bool = True,
         source_add_end_token: bool = True,
+        target_add_start_token: bool = True,
+        target_add_end_token: bool = True,
+        start_symbol: str = START_SYMBOL,
+        end_symbol: str = END_SYMBOL,
         delimiter: str = "\t",
         source_max_tokens: Optional[int] = None,
         target_max_tokens: Optional[int] = None,
+        quoting: int = csv.QUOTE_MINIMAL,
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
@@ -72,11 +80,17 @@ class Seq2SeqDatasetReader(DatasetReader):
         self._target_token_indexers = target_token_indexers or self._source_token_indexers
         self._source_add_start_token = source_add_start_token
         self._source_add_end_token = source_add_end_token
+        self._target_add_start_token = target_add_start_token
+        self._target_add_end_token = target_add_end_token
+        self._start_token, self._end_token = self._source_tokenizer.tokenize(
+            start_symbol + " " + end_symbol
+        )
         self._delimiter = delimiter
         self._source_max_tokens = source_max_tokens
         self._target_max_tokens = target_max_tokens
         self._source_max_exceeded = 0
         self._target_max_exceeded = 0
+        self.quoting = quoting
 
     @overrides
     def _read(self, file_path: str):
@@ -85,12 +99,16 @@ class Seq2SeqDatasetReader(DatasetReader):
         self._target_max_exceeded = 0
         with open(cached_path(file_path), "r") as data_file:
             logger.info("Reading instances from lines in file at: %s", file_path)
-            for line_num, row in enumerate(csv.reader(data_file, delimiter=self._delimiter)):
+            for line_num, row in enumerate(
+                csv.reader(data_file, delimiter=self._delimiter, quoting=self.quoting)
+            ):
                 if len(row) != 2:
                     raise ConfigurationError(
                         "Invalid line format: %s (line number %d)" % (row, line_num + 1)
                     )
                 source_sequence, target_sequence = row
+                if len(source_sequence) == 0 or len(target_sequence) == 0:
+                    continue
                 yield self.text_to_instance(source_sequence, target_sequence)
         if self._source_max_tokens and self._source_max_exceeded:
             logger.info(
@@ -109,23 +127,24 @@ class Seq2SeqDatasetReader(DatasetReader):
     def text_to_instance(
         self, source_string: str, target_string: str = None
     ) -> Instance:  # type: ignore
-
         tokenized_source = self._source_tokenizer.tokenize(source_string)
         if self._source_max_tokens and len(tokenized_source) > self._source_max_tokens:
             self._source_max_exceeded += 1
             tokenized_source = tokenized_source[: self._source_max_tokens]
         if self._source_add_start_token:
-            tokenized_source.insert(0, Token(START_SYMBOL))
+            tokenized_source.insert(0, copy.deepcopy(self._start_token))
         if self._source_add_end_token:
-            tokenized_source.append(Token(END_SYMBOL))
+            tokenized_source.append(copy.deepcopy(self._end_token))
         source_field = TextField(tokenized_source, self._source_token_indexers)
         if target_string is not None:
             tokenized_target = self._target_tokenizer.tokenize(target_string)
             if self._target_max_tokens and len(tokenized_target) > self._target_max_tokens:
                 self._target_max_exceeded += 1
                 tokenized_target = tokenized_target[: self._target_max_tokens]
-            tokenized_target.insert(0, Token(START_SYMBOL))
-            tokenized_target.append(Token(END_SYMBOL))
+            if self._target_add_start_token:
+                tokenized_target.insert(0, copy.deepcopy(self._start_token))
+            if self._target_add_end_token:
+                tokenized_target.append(copy.deepcopy(self._end_token))
             target_field = TextField(tokenized_target, self._target_token_indexers)
             return Instance({"source_tokens": source_field, "target_tokens": target_field})
         else:

@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated the Roberta SST config to make proper use of the CLS token
 
+### Added
+
+- Added BART model
+
 
 ## [v1.1.0rc1](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc1) - 2020-07-14
 
@@ -34,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added two models for fine-grained NER
 - Added a category for multiple choice models, including a few reference implementations
 - Implemented manual distributed sharding for SNLI dataset reader.
+
 
 ## [v1.0.0](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0) - 2020-06-16
 
