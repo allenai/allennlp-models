@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added BART model
+- Added `ModelCard` and related classes. Added model cards for all the pretrained models.
 
 
 ## [v1.1.0rc1](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc1) - 2020-07-14

@@ -1,0 +1,7 @@
+{
+    "id": "rc-bidaf-elmo",
+    "registered_model_name": "bidaf",
+    "display_name": "ELMo-BiDAF",
+    "archive_file": "bidaf-elmo-model-2020.03.19.tar.gz",
+    "training_data": "SQuAD"
+}

@@ -22,6 +22,11 @@ from allennlp_models.structured_prediction.metrics.srl_eval_scorer import (
 class SrlBert(Model):
     """
 
+    A BERT based model [Simple BERT Models for Relation Extraction and Semantic Role Labeling (Shi et al, 2019)]
+    (https://arxiv.org/abs/1904.05255) with some modifications (no additional parameters apart from a linear
+    classification layer), which is currently the state-of-the-art single model for English PropBank SRL
+    (Newswire sentences).
+
     # Parameters
 
     vocab : `Vocabulary`, required
