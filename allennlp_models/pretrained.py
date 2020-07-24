@@ -4,6 +4,9 @@ from typing import Dict
 from allennlp.common import Params
 from allennlp_models.common.model_card import ModelCard
 
+# These imports are included so that the model cards can be filled with default information
+# obtained from the registered model classes.
+
 from allennlp_models.classification.models import *  # noqa: F401, F403
 from allennlp_models.coref.models import *  # noqa: F401, F403
 from allennlp_models.generation.models import *  # noqa: F401, F403
@@ -19,9 +22,6 @@ def get_pretrained_models() -> Dict[str, ModelCard]:
     """
     Returns a Dict of model cards of all available pretrained models.
     """
-
-    # These imports are included so that the model cards can be filled with default information
-    # obtained from the registered model classes.
 
     pretrained_models = {}
     model_card_paths = os.path.join(

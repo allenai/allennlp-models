@@ -35,7 +35,7 @@ class ModelCardInfo(FromParams):
             display += "\n\t" + val.replace("\n", "\n\t") + "\n"
         if not display:
             display = super(ModelCardInfo, self).__str__()
-        return display
+        return display.strip()
 
 
 @dataclass(frozen=True)
@@ -269,7 +269,7 @@ class ModelCard(ModelCardInfo):
 
     def to_dict(self) -> Dict[str, Any]:
         """
-        Coverts the `ModelCard` to a flat dictionary object. This can be converted to
+        Converts the `ModelCard` to a flat dictionary object. This can be converted to
         json and passed to any front-end.
         """
         info = {}
@@ -278,5 +278,6 @@ class ModelCard(ModelCardInfo):
                 if isinstance(val, ModelCardInfo):
                     info.update(val.to_dict())
                 else:
-                    info[key] = val
+                    if val is not None:
+                        info[key] = val
         return info
