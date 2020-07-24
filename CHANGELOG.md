@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- Updated the Roberta SST config to make proper use of the CLS token
+
 ### Added
 
 - Added BART model
