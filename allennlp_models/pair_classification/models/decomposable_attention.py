@@ -14,9 +14,6 @@ from allennlp.training.metrics import CategoricalAccuracy
 
 
 @Model.register("decomposable_attention")
-@Model.register("pc-decomposable-attention-elmo")
-@Model.register("pc-decomposable-attention-roberta-snli")
-@Model.register("pc-decomposable-attention-roberta-mnli")
 class DecomposableAttention(Model):
     """
     This `Model` implements the Decomposable Attention model described in [A Decomposable

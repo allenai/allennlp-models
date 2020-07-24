@@ -1,0 +1,6 @@
+{
+    "id": "pair-classification-decomposable-attention-roberta-snli",
+    "registered_model_name": "decomposable_attention",
+    "display_name": "RoBERTa SNLI based Decomposable Attention",
+    "archive_file": "snli_roberta-2020.06.09.tar.gz"
+}

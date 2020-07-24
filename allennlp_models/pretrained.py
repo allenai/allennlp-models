@@ -4,6 +4,16 @@ from typing import Dict
 from allennlp.common import Params
 from allennlp_models.common.model_card import ModelCard
 
+from allennlp_models.classification.models import *  # noqa: F401, F403
+from allennlp_models.coref.models import *  # noqa: F401, F403
+from allennlp_models.generation.models import *  # noqa: F401, F403
+from allennlp_models.lm.models import *  # noqa: F401, F403
+from allennlp_models.mc.models import *  # noqa: F401, F403
+from allennlp_models.pair_classification.models import *  # noqa: F401, F403
+from allennlp_models.rc.models import *  # noqa: F401, F403
+from allennlp_models.structured_prediction.models import *  # noqa: F401, F403
+from allennlp_models.tagging.models import *  # noqa: F401, F403
+
 
 def get_pretrained_models() -> Dict[str, ModelCard]:
     """
@@ -13,20 +23,12 @@ def get_pretrained_models() -> Dict[str, ModelCard]:
     # These imports are included so that the model cards can be filled with default information
     # obtained from the registered model classes.
 
-    from allennlp_models.classification import models as classification_models  # noqa: F401
-    from allennlp_models.coref import models as coref_models  # noqa: F401
-    from allennlp_models.generation import models as generation_models  # noqa: F401
-    from allennlp_models.lm import models as lm_models  # noqa: F401
-    from allennlp_models.mc import models as mc_models  # noqa: F401
-    from allennlp_models.pair_classification import models as pc_models  # noqa: F401
-    from allennlp_models.rc import models as rc_models  # noqa: F401
-    from allennlp_models.structured_prediction import models as sp_models  # noqa: F401
-    from allennlp_models.tagging import models as tagging_models  # noqa: F401
-
     pretrained_models = {}
-    modelcards = os.path.join(os.path.dirname(os.path.realpath(__file__)), "modelcards/*.json")
+    model_card_paths = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "modelcards/*.json"
+    )
 
-    for json_modelcard in glob.glob(modelcards):
-        model_card = ModelCard.from_params(params=Params.from_file(json_modelcard))
-        pretrained_models[model_card.name] = model_card
+    for model_card_path in glob.glob(model_card_paths):
+        model_card = ModelCard.from_params(params=Params.from_file(model_card_path))
+        pretrained_models[model_card.id] = model_card
     return pretrained_models

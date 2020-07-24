@@ -1,7 +1,7 @@
 import os
 import logging
 from dataclasses import dataclass
-from typing import Optional, Union, Mapping, Dict, Any
+from typing import Optional, Union, Dict, Any
 from allennlp.common.from_params import FromParams
 
 from allennlp.models import Model
@@ -46,6 +46,7 @@ class ModelDetails(ModelCardInfo):
 
     description: Optional[str] = None
     developed_by: Optional[str] = None
+    contributed_by: Optional[str] = None
     date: Optional[str] = None
     version: Optional[str] = None
     model_type: Optional[str] = None
@@ -179,7 +180,7 @@ class ModelCard(ModelCardInfo):
         The pretrained model's display name.
     archive_file: str, optional
         The location of model's pretrained weights.
-    overrides: Mapping, optional
+    overrides: Dict, optional
         Optional overrides for the model's architecture.
     model_details: Union[ModelDetails, str], optional
     intended_use: Union[IntendedUse, str], optional
@@ -199,11 +200,12 @@ class ModelCard(ModelCardInfo):
 
     def __init__(
         self,
-        name: str,
+        id: str,
+        registered_model_name: Optional[str] = None,
         model_class: Optional[type] = None,
         display_name: Optional[str] = None,
         archive_file: Optional[str] = None,
-        overrides: Optional[Mapping] = None,
+        overrides: Optional[Dict] = None,
         model_details: Optional[Union[str, ModelDetails]] = None,
         intended_use: Optional[Union[str, IntendedUse]] = None,
         factors: Optional[Union[str, Factors]] = None,
@@ -215,12 +217,12 @@ class ModelCard(ModelCardInfo):
         caveats_and_recommendations: Optional[Union[str, CaveatsAndRecommendations]] = None,
     ):
 
-        assert name
-        if not model_class:
+        assert id
+        if not model_class and registered_model_name:
             try:
-                model_class = Model.by_name(name)
+                model_class = Model.by_name(registered_model_name)
             except ConfigurationError:
-                logger.warning("{} is not a registered model.".format(name))
+                logger.warning("{} is not a registered model.".format(registered_model_name))
 
         if model_class:
             display_name = display_name or model_class.__name__
@@ -248,7 +250,8 @@ class ModelCard(ModelCardInfo):
         if isinstance(caveats_and_recommendations, str):
             caveats_and_recommendations = CaveatsAndRecommendations(caveats_and_recommendations)
 
-        self.name = name
+        self.id = id
+        self.registered_model_name = registered_model_name
         self.display_name = display_name
         self.archive_file = archive_file
         self.model_details = model_details
@@ -268,7 +271,7 @@ class ModelCard(ModelCardInfo):
         """
         info = {}
         for key, val in self.__dict__.items():
-            if key != "name":
+            if key != "id":
                 if isinstance(val, ModelCardInfo):
                     info.update(val.to_dict())
                 else:

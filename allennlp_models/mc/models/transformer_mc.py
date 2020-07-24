@@ -9,9 +9,6 @@ logger = logging.getLogger(__name__)
 
 
 @Model.register("transformer_mc")
-@Model.register("mc-roberta-piqa")
-@Model.register("mc-roberta-swag")
-@Model.register("mc-roberta-commonsenseqa")
 class TransformerMC(Model):
     """
     This class implements a multiple choice model patterned after the proposed model in

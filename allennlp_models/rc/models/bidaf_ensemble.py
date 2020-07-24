@@ -15,7 +15,6 @@ from allennlp_models.rc.metrics import SquadEmAndF1
 
 
 @Model.register("bidaf-ensemble")
-@Model.register("rc-bidaf-ensemble")
 class BidafEnsemble(Model):
     """
     This class ensembles the output from multiple BiDAF models.

@@ -1,4 +1,5 @@
-
 {
-"name": "coref-spanbert", "archive_file": "coref-spanbert-large-2020.02.27.tar.gz"
+"id": "coref-spanbert", 
+"registered_model_name": "coref",
+"archive_file": "coref-spanbert-large-2020.02.27.tar.gz"
 }

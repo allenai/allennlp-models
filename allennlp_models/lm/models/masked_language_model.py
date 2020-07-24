@@ -13,7 +13,6 @@ from allennlp_models.lm.modules.language_model_heads import LanguageModelHead
 
 
 @Model.register("masked_language_model")
-@Model.register("lm-masked-language-model")
 class MaskedLanguageModel(Model):
     """
     The `MaskedLanguageModel` embeds some input tokens (including some which are masked),

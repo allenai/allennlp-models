@@ -19,7 +19,6 @@ from allennlp_models.structured_prediction.metrics.srl_eval_scorer import (
 
 
 @Model.register("srl_bert")
-@Model.register("sp-srl-bert")
 class SrlBert(Model):
     """
 

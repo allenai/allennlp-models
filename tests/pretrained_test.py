@@ -29,7 +29,9 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
         assert correct == result["best_span_str"]
 
     def test_semantic_role_labeling(self):
-        predictor = Predictor.from_path(self.pretrained_models["sp-srl-bert"].archive_file)
+        predictor = Predictor.from_path(
+            self.pretrained_models["structured-prediction-srl-bert"].archive_file
+        )
 
         sentence = "If you liked the music we were playing last night, you will absolutely love what we're playing tomorrow!"
 
@@ -203,7 +205,7 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
 
     def test_textual_entailment(self):
         predictor = Predictor.from_path(
-            self.pretrained_models["pc-decomposable-attention-elmo"].archive_file
+            self.pretrained_models["pair-classification-decomposable-attention-elmo"].archive_file
         )
 
         result = predictor.predict_json(
@@ -328,7 +330,7 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
     )
     def test_constituency_parsing(self):
         predictor = Predictor.from_path(
-            self.pretrained_models["psp-constituency-parser"].archive_file
+            self.pretrained_models["structured-prediction-constituency-parser"].archive_file
         )
 
         sentence = """Pierre Vinken died aged 81; immortalised aged 61."""
@@ -353,7 +355,9 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
         )
 
     def test_dependency_parsing(self):
-        predictor = Predictor.from_path(self.pretrained_models["sp-biaffine-parser"].archive_file)
+        predictor = Predictor.from_path(
+            self.pretrained_models["structured-prediction-biaffine-parser"].archive_file
+        )
         sentence = """He ate spaghetti with chopsticks."""
         result = predictor.predict_json({"sentence": sentence})
         # Note that this tree is incorrect. We are checking here that the decoded
@@ -374,7 +378,9 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
         assert result["predicted_heads"] == [2, 0, 2, 2, 4, 2]
 
     def test_openie(self):
-        predictor = Predictor.from_path(self.pretrained_models["sp-srl"].archive_file)
+        predictor = Predictor.from_path(
+            self.pretrained_models["structured-prediction-srl"].archive_file
+        )
         result = predictor.predict_json(
             {"sentence": "I'm against picketing, but I don't know how to show it."}
         )

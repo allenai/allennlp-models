@@ -20,7 +20,6 @@ from allennlp.modules.bimpm_matching import BiMpmMatching
 
 
 @Model.register("bimpm")
-@Model.register("pc-bimpm")
 class BiMpm(Model):
     """
     This `Model` implements BiMPM model described in [Bilateral Multi-Perspective Matching

@@ -14,7 +14,6 @@ from allennlp_models.generation.modules.seq_decoders.seq_decoder import SeqDecod
 
 
 @Model.register("composed_seq2seq")
-@Model.register("generation-composed-seq2seq")
 class ComposedSeq2Seq(Model):
     """
     This `ComposedSeq2Seq` class is a `Model` which takes a sequence, encodes it, and then

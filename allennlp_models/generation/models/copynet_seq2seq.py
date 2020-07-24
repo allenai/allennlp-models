@@ -20,7 +20,6 @@ logger = logging.getLogger(__name__)
 
 
 @Model.register("copynet_seq2seq")
-@Model.register("generation-copynet-seq2seq")
 class CopyNetSeq2Seq(Model):
     """
     This is an implementation of [CopyNet](https://arxiv.org/pdf/1603.06393).

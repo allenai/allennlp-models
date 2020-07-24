@@ -18,7 +18,6 @@ from allennlp.training.metrics import BLEU
 
 
 @Model.register("simple_seq2seq")
-@Model.register("generation-simple-seq2seq")
 class SimpleSeq2Seq(Model):
     """
     This `SimpleSeq2Seq` class is a `Model` which takes a sequence, encodes it, and then

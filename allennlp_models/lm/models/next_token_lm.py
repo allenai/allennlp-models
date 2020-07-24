@@ -13,7 +13,6 @@ from allennlp_models.lm.modules.language_model_heads import LanguageModelHead
 
 
 @Model.register("next_token_lm")
-@Model.register("lm-next-token-lm-gpt2")
 class NextTokenLM(Model):
     """
     The `NextTokenLM` embeds some input tokens, contextualizes them, then predicts the next word,

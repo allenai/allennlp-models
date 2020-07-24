@@ -23,8 +23,6 @@ logger = logging.getLogger(__name__)
 
 
 @Model.register("bidaf")
-@Model.register("rc-bidaf")
-@Model.register("rc-bidaf-elmo")
 class BidirectionalAttentionFlow(Model):
     """
     This class implements Minjoon Seo's `Bidirectional Attention Flow model

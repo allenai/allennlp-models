@@ -1,7 +1,0 @@
-
-
-{
-    "name": "pc-decomposable-attention-roberta-mnli",
-    "display_name": "RoBERTa MNLI based Decomposable Attention",
-    "archive_file": "mnli_roberta-2020.06.09.tar.gz"
-}

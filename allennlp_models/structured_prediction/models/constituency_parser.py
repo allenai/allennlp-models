@@ -43,7 +43,6 @@ class SpanInformation(NamedTuple):
 
 
 @Model.register("constituency_parser")
-@Model.register("sp-constituency-parser")
 class SpanConstituencyParser(Model):
     """
     This `SpanConstituencyParser` simply encodes a sequence of text

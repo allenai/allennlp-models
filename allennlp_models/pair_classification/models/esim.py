@@ -19,7 +19,6 @@ from allennlp.training.metrics import CategoricalAccuracy
 
 
 @Model.register("esim")
-@Model.register("pc-esim")
 class ESIM(Model):
     """
     This `Model` implements the ESIM sequence model described in [Enhanced LSTM for Natural Language Inference]

@@ -1,7 +1,6 @@
-
-
 {
-    "name": "tagging-fine-grained-transformer-crf-tagger",
+    "id": "tagging-fine-grained-transformer-crf-tagger",
+    "registered_model_name": "crf_tagger",
     "display_name": "Fine Grained Named Entity Recognition with Transformer",
     "archive_file": "fgner_transformer.2020-07-14.tar.gz"
 }

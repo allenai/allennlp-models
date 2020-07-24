@@ -30,7 +30,6 @@ POS_TO_IGNORE = {"`", "''", ":", ",", ".", "PU", "PUNCT", "SYM"}
 
 
 @Model.register("biaffine_parser")
-@Model.register("sp-biaffine-parser")
 class BiaffineDependencyParser(Model):
     """
     This dependency parser follows the model of

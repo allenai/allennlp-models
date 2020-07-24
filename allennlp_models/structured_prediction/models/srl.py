@@ -160,7 +160,6 @@ def convert_bio_tags_to_conll_format(labels: List[str]):
 
 
 @Model.register("srl")
-@Model.register("sp-srl")
 class SemanticRoleLabeler(Model):
     """
     This model performs semantic role labeling using BIO tags using Propbank semantic roles.

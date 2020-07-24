@@ -16,9 +16,6 @@ from allennlp.training.metrics import CategoricalAccuracy, SpanBasedF1Measure
 
 
 @Model.register("crf_tagger")
-@Model.register("tagging-elmo-crf-tagger")
-@Model.register("tagging-fine-grained-crf-tagger")
-@Model.register("tagging-fine-grained-transformer-crf-tagger")
 class CrfTagger(Model):
     """
     The `CrfTagger` encodes a sequence of text with a `Seq2SeqEncoder`,

@@ -6,14 +6,14 @@ from allennlp.models import Model
 class TestPretrainedModelConfiguration(AllenNlpTestCase):
     def test_init(self):
         model_card = ModelCard(
-            name="fake_name",
+            id="fake_name",
             display_name="Fake Name",
             model_details="Model's description",
             archive_file="fake.tar.gz",
             overrides={},
         )
 
-        assert model_card.name == "fake_name"
+        assert model_card.id == "fake_name"
         assert model_card.display_name == "Fake Name"
         assert model_card.archive_file == ModelCard._storage_location + "fake.tar.gz"
         assert model_card.model_details.description == "Model's description"
@@ -33,7 +33,7 @@ class TestPretrainedModelConfiguration(AllenNlpTestCase):
             def forward(self, **kwargs):
                 return {}
 
-        model_card = ModelCard(**{"name": "fake-model"})
+        model_card = ModelCard(**{"id": "this-fake-model", "registered_model_name": "fake-model"})
 
         assert model_card.display_name == "FakeModel"
         assert model_card.model_details.description == "This is a fake model with a docstring."
@@ -52,7 +52,7 @@ class TestPretrainedModelConfiguration(AllenNlpTestCase):
             def forward(self, **kwargs):
                 return {}
 
-        model_card = ModelCard(**{"name": "fake-model", "model_class": FakeModel})
+        model_card = ModelCard(**{"id": "this-fake-model", "model_class": FakeModel})
 
         assert model_card.display_name == "FakeModel"
         assert model_card.model_details.description == "This is a fake model with a docstring."
@@ -74,7 +74,8 @@ class TestPretrainedModelConfiguration(AllenNlpTestCase):
 
         model_card = ModelCard(
             **{
-                "name": "fake-model-2",
+                "id": "this-fake-model",
+                "registered_model_name": "fake-model-2",
                 "model_details": "This is the fake model trained on a dataset.",
                 "model_class": FakeModel,
             }
@@ -101,7 +102,13 @@ class TestPretrainedModelConfiguration(AllenNlpTestCase):
 
         intended_use = IntendedUse("Use 1", "User 1")
 
-        model_card = ModelCard(**{"name": "fake-model-3", "intended_use": intended_use})
+        model_card = ModelCard(
+            **{
+                "id": "this-fake-model",
+                "registered_model_name": "fake-model-3",
+                "intended_use": intended_use,
+            }
+        )
 
         model_card_dict = model_card.to_dict()
         assert model_card.display_name == "FakeModel"

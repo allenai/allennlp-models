@@ -21,7 +21,6 @@ logger = logging.getLogger(__name__)
 
 
 @Model.register("coref")
-@Model.register("coref-spanbert")
 class CoreferenceResolver(Model):
     """
     This `Model` implements the coreference resolution model described in
