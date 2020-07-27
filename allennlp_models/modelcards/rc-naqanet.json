@@ -1,0 +1,7 @@
+{
+    "id": "rc-naqanet",
+    "registered_model_name": "naqanet",
+    "display_name": "Numerically Augmented QA Net",
+    "archive_file": "naqanet-2020.02.19.tar.gz",
+    "training_data": "DROP"
+}

@@ -1,0 +1,6 @@
+{
+    "id": "pair-classification-esim",
+    "registered_model_name": "esim",
+    "display_name": "Enhanced LSTM for Natural Language Inference",
+    "archive_file": "decomposable-attention-elmo-2020.04.09.tar.gz"
+}

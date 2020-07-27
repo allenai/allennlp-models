@@ -1,4 +1,5 @@
-git+https://github.com/allenai/allennlp.git@master
+# TODO: point this back to allenai/allennlp.git@master
+git+https://github.com/epwalsh/allennlp.git@data-loading
 
 # For structured prediction.
 conllu==3.0
@@ -7,3 +8,6 @@ conllu==3.0
 word2number>=1.1
 py-rouge==1.1
 nltk
+
+# For CNN/DailyMail dataset reader
+ftfy

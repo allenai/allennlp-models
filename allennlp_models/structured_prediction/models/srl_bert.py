@@ -22,6 +22,11 @@ from allennlp_models.structured_prediction.metrics.srl_eval_scorer import (
 class SrlBert(Model):
     """
 
+    A BERT based model [Simple BERT Models for Relation Extraction and Semantic Role Labeling (Shi et al, 2019)]
+    (https://arxiv.org/abs/1904.05255) with some modifications (no additional parameters apart from a linear
+    classification layer), which is currently the state-of-the-art single model for English PropBank SRL
+    (Newswire sentences).
+
     # Parameters
 
     vocab : `Vocabulary`, required
@@ -94,7 +99,7 @@ class SrlBert(Model):
             A torch tensor representing the sequence of integer gold class labels
             of shape `(batch_size, num_tokens)`
         metadata : `List[Dict[str, Any]]`, optional, (default = `None`)
-            metadata containg the original words in the sentence, the verb to compute the
+            metadata containing the original words in the sentence, the verb to compute the
             frame for, and start offsets for converting wordpieces back to a sequence of words,
             under 'words', 'verb' and 'offsets' keys, respectively.
 

@@ -1,0 +1,6 @@
+{
+    "id": "structured-prediction-srl",
+    "registered_model_name": "srl",
+    "display_name": "Open Information Extraction",
+    "archive_file": "openie-model.2020.03.26.tar.gz"
+}

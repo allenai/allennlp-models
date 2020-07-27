@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 @Model.register("graph_parser")
+@Model.register("sp-graph-parser")
 class GraphParser(Model):
     """
     A Parser for arbitrary graph structures.

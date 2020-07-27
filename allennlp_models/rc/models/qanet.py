@@ -20,6 +20,7 @@ from allennlp_models.rc.metrics import SquadEmAndF1
 
 
 @Model.register("qanet")
+@Model.register("rc-qanet")
 class QaNet(Model):
     """
     This class implements Adams Wei Yu's `QANet Model <https://openreview.net/forum?id=B14TlG-RW>`_
