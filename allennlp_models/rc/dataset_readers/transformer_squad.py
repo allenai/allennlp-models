@@ -233,7 +233,6 @@ class TransformerSquadReader(DatasetReader):
         # make the question field
         question_field = TextField(
             self._tokenizer.add_special_tokens(tokenized_question, tokenized_context),
-            self._token_indexers,
         )
         fields["question_with_context"] = question_field
         start_of_context = (
@@ -275,3 +274,7 @@ class TransformerSquadReader(DatasetReader):
         fields["metadata"] = MetadataField(metadata)
 
         return Instance(fields)
+
+    @overrides
+    def apply_token_indexers(self, instance: Instance) -> None:
+        instance["question_with_context"].token_indexers = self._token_indexers
