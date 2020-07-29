@@ -20,7 +20,7 @@ class TestCopyNetReader(AllenNlpTestCase):
             FIXTURES_ROOT / "generation" / "copynet" / "data" / "copyover.tsv"
         )
         self.instances = ensure_list(instances)
-        self.vocab = Vocabulary.from_params(params=params["vocabulary"], instances=instances)
+        self.vocab = Vocabulary.from_params(params=params["vocabulary"], instances=self.instances)
 
     def test_vocab_namespaces(self):
         assert self.vocab.get_vocab_size("target_tokens") > 5

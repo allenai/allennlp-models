@@ -9,9 +9,8 @@ from tests import FIXTURES_ROOT
 
 
 class TestSeq2SeqDatasetReader:
-    @pytest.mark.parametrize("lazy", (True, False))
-    def test_default_format(self, lazy):
-        reader = Seq2SeqDatasetReader(lazy=lazy)
+    def test_default_format(self):
+        reader = Seq2SeqDatasetReader()
         instances = reader.read(str(FIXTURES_ROOT / "generation" / "seq2seq_copy.tsv"))
         instances = ensure_list(instances)
 
