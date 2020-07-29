@@ -6,6 +6,7 @@ from allennlp.common.from_params import FromParams
 
 from allennlp.models import Model
 from allennlp.common.checks import ConfigurationError
+from allennlp.predictors import Predictor
 
 logger = logging.getLogger(__name__)
 
@@ -179,6 +180,8 @@ class ModelCard(ModelCardInfo):
         to find any available `Model` registered with this name.
     model_class: `type`, optional
         If given, the `ModelCard` will pull some default information from the class.
+    registered_predictor_name: `str`, optional
+        The registered name of the corresponding predictor.
     display_name: `str`, optional
         The pretrained model's display name.
     archive_file: `str`, optional
@@ -207,6 +210,7 @@ class ModelCard(ModelCardInfo):
         id: str,
         registered_model_name: Optional[str] = None,
         model_class: Optional[type] = None,
+        registered_predictor_name: Optional[str] = None,
         display_name: Optional[str] = None,
         archive_file: Optional[str] = None,
         overrides: Optional[Dict] = None,
@@ -231,6 +235,8 @@ class ModelCard(ModelCardInfo):
         if model_class:
             display_name = display_name or model_class.__name__
             model_details = model_details or get_description(model_class)
+            if not registered_predictor_name:
+                registered_predictor_name = model_class.default_predictor  # type: ignore
 
         if archive_file and not archive_file.startswith("https:"):
             archive_file = os.path.join(self._storage_location, archive_file)
@@ -256,6 +262,7 @@ class ModelCard(ModelCardInfo):
 
         self.id = id
         self.registered_model_name = registered_model_name
+        self.registered_predictor_name = registered_predictor_name
         self.display_name = display_name
         self.archive_file = archive_file
         self.model_details = model_details
@@ -282,3 +289,8 @@ class ModelCard(ModelCardInfo):
                     if val is not None:
                         info[key] = val
         return info
+
+    def load_predictor(self) -> Predictor:
+        if self.archive_file is None:
+            raise ValueError("archive_file is required")
+        return Predictor.from_path(self.archive_file, predictor_name=self.registered_predictor_name)

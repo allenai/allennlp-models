@@ -1,3 +1,3 @@
-from allennlp_models.pair_classification.predictors.decomposable_attention import (
-    DecomposableAttentionPredictor,
+from allennlp_models.pair_classification.predictors.textual_entailment import (
+    TextualEntailmentPredictor,
 )
