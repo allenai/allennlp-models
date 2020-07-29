@@ -6,7 +6,6 @@ from allennlp.common.from_params import FromParams
 
 from allennlp.models import Model
 from allennlp.common.checks import ConfigurationError
-from allennlp.predictors import Predictor
 
 logger = logging.getLogger(__name__)
 
@@ -289,8 +288,3 @@ class ModelCard(ModelCardInfo):
                     if val is not None:
                         info[key] = val
         return info
-
-    def load_predictor(self) -> Predictor:
-        if self.archive_file is None:
-            raise ValueError("archive_file is required")
-        return Predictor.from_path(self.archive_file, predictor_name=self.registered_predictor_name)
