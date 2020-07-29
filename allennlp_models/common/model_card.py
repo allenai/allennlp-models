@@ -166,8 +166,8 @@ class CaveatsAndRecommendations(ModelCardInfo):
 class ModelCard(ModelCardInfo):
     """
     The model card stores the recommended attributes for model reporting
-    as described in the paper [Model Cards for Model Reporting (Mitchell et al, 2019)]
-    (https://arxiv.org/pdf/1810.03993.pdf).
+    as described in the paper
+    [Model Cards for Model Reporting (Mitchell et al, 2019)](https://arxiv.org/pdf/1810.03993.pdf).
 
     # Parameters
 
@@ -194,8 +194,9 @@ class ModelCard(ModelCardInfo):
     ethical_considerations: `Union[EthicalConsiderations, str]`, optional
     caveats_and_recommendations: `Union[CaveatsAndRecommendations, str]`, optional
 
-    Note: For all the fields that are `Union[ModelCardInfo, str]`, a `str` input will be
-    treated as the first argument of the relevant constructor.
+    !!! Note
+        For all the fields that are `Union[ModelCardInfo, str]`, a `str` input will be
+        treated as the first argument of the relevant constructor.
 
     """
 

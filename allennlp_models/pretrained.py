@@ -20,7 +20,8 @@ from allennlp_models.tagging.models import *  # noqa: F401, F403
 
 def get_pretrained_models() -> Dict[str, ModelCard]:
     """
-    Returns a Dict of model cards of all available pretrained models.
+    Returns a mapping of [`ModelCard`](/models/common/model_card#modelcard)s for all
+    available pretrained models.
     """
 
     pretrained_models = {}
