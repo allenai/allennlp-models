@@ -1,7 +1,5 @@
 from typing import List, Tuple
 
-import pytest
-
 from allennlp.common.util import ensure_list
 from allennlp.common.testing import AllenNlpTestCase
 
@@ -12,9 +10,8 @@ from tests import FIXTURES_ROOT
 class TestWinobiasReader:
     span_width = 5
 
-    @pytest.mark.parametrize("lazy", (True, False))
-    def test_read_from_file(self, lazy):
-        conll_reader = WinobiasReader(max_span_width=self.span_width, lazy=lazy)
+    def test_read_from_file(self):
+        conll_reader = WinobiasReader(max_span_width=self.span_width)
         instances = ensure_list(conll_reader.read(str(FIXTURES_ROOT / "coref" / "winobias.sample")))
 
         assert len(instances) == 2

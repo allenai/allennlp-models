@@ -2,6 +2,8 @@ from allennlp.common.testing import ModelTestCase
 
 from tests import FIXTURES_ROOT
 
+from allennlp_models.generation import *
+
 
 class BartTest(ModelTestCase):
     def setup_method(self):
