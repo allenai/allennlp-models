@@ -383,7 +383,6 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
         assert len(frozenset(result["tags"])) > 1
 
     @pytest.mark.parametrize("model_id, model_card", get_pretrained_models().items())
-    def test_pretrained_models_cards(self, model_id, model_card):
+    def test_pretrained_models(self, model_id, model_card):
         # Each model in pretrained_models should have an archive and registered_predictor_name.
         assert model_card.archive_file is not None
-        assert model_card.registered_predictor_name is not None
