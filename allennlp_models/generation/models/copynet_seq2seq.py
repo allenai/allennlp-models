@@ -16,7 +16,6 @@ from allennlp.nn import InitializerApplicator, util
 from allennlp.training.metrics import Metric, BLEU
 from allennlp.nn.beam_search import BeamSearch
 
-
 logger = logging.getLogger(__name__)
 
 
