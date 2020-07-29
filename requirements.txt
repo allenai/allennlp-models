@@ -1,4 +1,5 @@
-git+https://github.com/allenai/allennlp.git@master
+# TODO: change this back to git@master
+git+https://github.com/allenai/allennlp.git@dependabot/pip/torch-gte-1.5.0-and-lt-1.7.0
 
 # For structured prediction.
 conllu==3.0
