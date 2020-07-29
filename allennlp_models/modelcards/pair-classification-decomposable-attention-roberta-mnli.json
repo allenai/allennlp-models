@@ -1,6 +1,9 @@
 {
-    "id": "pair-classification-decomposable-attention-roberta-mnli",
-    "registered_model_name": "decomposable_attention",
-    "display_name": "RoBERTa MNLI based Decomposable Attention",
-    "archive_file": "mnli_roberta-2020.06.09.tar.gz"
+    "id": "pair-classification-roberta-mnli",
+    "registered_model_name": "basic_classifier",
+    "display_name": "RoBERTa MNLI",
+    "archive_file": "mnli-roberta-2020.07.29.tar.gz",
+    "model_details": {
+        "paper": "https://www.semanticscholar.org/paper/RoBERTa%3A-A-Robustly-Optimized-BERT-Pretraining-Liu-Ott/077f8329a7b6fa3b7c877a57b81eb6c18b5f87de#paper-header"
+    }
 }

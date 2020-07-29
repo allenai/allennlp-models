@@ -169,32 +169,32 @@ class ModelCard(ModelCardInfo):
     as described in the paper [Model Cards for Model Reporting (Mitchell et al, 2019)]
     (https://arxiv.org/pdf/1810.03993.pdf).
 
-    # Parameters:
+    # Parameters
 
-    id: str
+    id: `str`
         Model's id, following the convention of task-model-relevant-details.
         Example: rc-bidaf-elmo for a reading comprehension BiDAF model using ELMo embeddings.
-    registered_model_name: str, optional
+    registered_model_name: `str`, optional
         The model's registered name. If `model_class` is not given, this will be used
         to find any available `Model` registered with this name.
-    model_class: type, optional
+    model_class: `type`, optional
         If given, the `ModelCard` will pull some default information from the class.
-    display_name: str, optional
+    display_name: `str`, optional
         The pretrained model's display name.
-    archive_file: str, optional
+    archive_file: `str`, optional
         The location of model's pretrained weights.
-    overrides: Dict, optional
+    overrides: `Dict`, optional
         Optional overrides for the model's architecture.
-    model_details: Union[ModelDetails, str], optional
-    intended_use: Union[IntendedUse, str], optional
-    factors: Union[Factors, str], optional
-    metrics: Union[Metrics, str], optional
-    evaluation_data: Union[EvaluationData, str], optional
-    quantitative_analyses: Union[QuantitativeAnalyses, str], optional
-    ethical_considerations: Union[EthicalConsiderations, str], optional
-    caveats_and_recommendations: Union[CaveatsAndRecommendations, str], optional
+    model_details: `Union[ModelDetails, str]`, optional
+    intended_use: `Union[IntendedUse, str]`, optional
+    factors: `Union[Factors, str]`, optional
+    metrics: `Union[Metrics, str]`, optional
+    evaluation_data: `Union[EvaluationData, str]`, optional
+    quantitative_analyses: `Union[QuantitativeAnalyses, str]`, optional
+    ethical_considerations: `Union[EthicalConsiderations, str]`, optional
+    caveats_and_recommendations: `Union[CaveatsAndRecommendations, str]`, optional
 
-    Note: For all the fields that are Union[ModelCardInfo, str], a str input will be
+    Note: For all the fields that are `Union[ModelCardInfo, str]`, a `str` input will be
     treated as the first argument of the relevant constructor.
 
     """
