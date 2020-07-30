@@ -17,7 +17,7 @@ DOCKER_RUN_CMD = docker run --rm \
 		-v $$HOME/.allennlp:/root/.allennlp \
 		-v $$HOME/.cache/torch:/root/.cache/torch \
 		-v $$HOME/nltk_data:/root/nltk_data
-ALLENNLP_COMMIT_SHA = $(shell git ls-remote https://github.com/allenai/allennlp master | cut -f 1)
+ALLENNLP_COMMIT_SHA = $(shell git ls-remote https://github.com/epwalsh/allennlp data-loading | cut -f 1)
 
 ifeq ($(shell uname),Darwin)
 ifeq ($(shell which gsed),)
