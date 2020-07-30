@@ -2,7 +2,7 @@ from allennlp.common.testing import ModelTestCase
 
 from tests import FIXTURES_ROOT
 
-from allennlp_models.generation import *
+from allennlp_models import generation  # noqa: F401
 
 
 class BartTest(ModelTestCase):
