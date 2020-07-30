@@ -23,6 +23,8 @@ local number_of_dev_instances = 5;
         "transformer_model_name": transformer_model,
     },
     "data_loader": {
+        // "type": "pytorch",
+        "shuffle": true,
         "batch_size": batch_size
     },
     "trainer": {
@@ -43,4 +45,7 @@ local number_of_dev_instances = 5;
       "num_epochs": epochs,
       "cuda_device": -1
     },
+    "random_seed": 823,
+    "numpy_seed": 123,
+    "pytorch_seed": 87,
 }
