@@ -1,5 +1,3 @@
-import pytest
-
 from allennlp.common import Params
 from allennlp.common.util import ensure_list
 
@@ -8,9 +6,8 @@ from tests import FIXTURES_ROOT
 
 
 class TestSquadReader:
-    @pytest.mark.parametrize("lazy", (True, False))
-    def test_read_from_file(self, lazy):
-        reader = SquadReader(lazy=lazy)
+    def test_read_from_file(self):
+        reader = SquadReader()
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "squad.json"))
         assert len(instances) == 5
 
