@@ -1,6 +1,5 @@
 local transformer_model = "roberta-large";
 local transformer_dim = 1024;
-local cls_is_last_token = false;
 
 {
   "dataset_reader": {
@@ -35,7 +34,6 @@ local cls_is_last_token = false;
     "seq2vec_encoder": {
        "type": "cls_pooler",
        "embedding_dim": transformer_dim,
-       "cls_is_last_token": cls_is_last_token
     },
     "feedforward": {
       "input_dim": transformer_dim,
@@ -61,7 +59,7 @@ local cls_is_last_token = false;
     },
     "optimizer": {
       "type": "huggingface_adamw",
-      "lr": 2e-5,
+      "lr": 2e-6,
       "weight_decay": 0.1,
     }
   }
