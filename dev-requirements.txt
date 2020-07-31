@@ -19,9 +19,6 @@ codecov
 # For running tests that aren't 100% reliable
 flaky
 
-# Required for automatic mixed precision (AMP) training
-git+https://github.com/NVIDIA/apex.git@master
-
 #### DOC-RELATED PACKAGES ####
 
 # YAML manipulation

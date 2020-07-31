@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Updated to PyTorch 1.6.
+
 ### Fixed
 
 - Updated the RoBERTa SST config to make proper use of the CLS token
