@@ -2,7 +2,7 @@ import numpy as np
 from scipy.special import logsumexp
 import torch
 
-from allennlp.common.testing import ModelTestCase
+from allennlp.common.testing import ModelTestCase, requires_gpu
 
 from allennlp_models.generation import CopyNetDatasetReader, CopyNetSeq2Seq  # noqa: F401
 from tests import FIXTURES_ROOT
@@ -16,8 +16,16 @@ class CopyNetTest(ModelTestCase):
             FIXTURES_ROOT / "generation" / "copynet" / "data" / "copyover.tsv",
         )
 
-    def test_model_can_train_save_load_predict(self):
+    def test_model_can_train_save_load(self):
         self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-2)
+
+    @requires_gpu
+    def test_model_can_train_save_load_with_amp(self):
+        self.ensure_model_can_train_save_and_load(
+            self.param_file,
+            tolerance=1e-2,
+            overrides="{'trainer.use_amp':true, 'trainer.cuda_device':0}",
+        )
 
     def test_vocab(self):
         vocab = self.model.vocab
