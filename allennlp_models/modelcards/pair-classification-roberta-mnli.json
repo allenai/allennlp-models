@@ -1,0 +1,10 @@
+{
+    "id": "pair-classification-roberta-mnli",
+    "registered_model_name": "basic_classifier",
+    "registered_predictor_name": "textual_entailment",
+    "display_name": "RoBERTa MNLI",
+    "archive_file": "mnli-roberta-2020-07-29.tar.gz",
+    "model_details": {
+        "paper": "https://www.semanticscholar.org/paper/RoBERTa%3A-A-Robustly-Optimized-BERT-Pretraining-Liu-Ott/077f8329a7b6fa3b7c877a57b81eb6c18b5f87de#paper-header"
+    }
+}
