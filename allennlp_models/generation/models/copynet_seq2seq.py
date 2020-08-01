@@ -339,7 +339,8 @@ class CopyNetSeq2Seq(Model):
         # TODO (epwalsh): revert this once torch's AMP is working for RNNs.
         with torch.cuda.amp.autocast(False):
             state["decoder_hidden"], state["decoder_context"] = self._decoder_cell(
-                projected_decoder_input.float(), (state["decoder_hidden"], state["decoder_context"])
+                projected_decoder_input.float(),
+                (state["decoder_hidden"].float(), state["decoder_context"].float()),
             )
 
         return state
