@@ -336,9 +336,12 @@ class CopyNetSeq2Seq(Model):
         # shape: (group_size, decoder_input_dim)
         projected_decoder_input = self._input_projection_layer(decoder_input)
 
-        state["decoder_hidden"], state["decoder_context"] = self._decoder_cell(
-            projected_decoder_input, (state["decoder_hidden"], state["decoder_context"])
-        )
+        # TODO (epwalsh): revert this once torch's AMP is working for RNNs.
+        with torch.cuda.amp.autocast(False):
+            state["decoder_hidden"], state["decoder_context"] = self._decoder_cell(
+                projected_decoder_input.float(), (state["decoder_hidden"], state["decoder_context"])
+            )
+
         return state
 
     def _get_generation_scores(self, state: Dict[str, torch.Tensor]) -> torch.Tensor:

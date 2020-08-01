@@ -2,6 +2,7 @@ import numpy as np
 from scipy.special import logsumexp
 import torch
 
+from allennlp.commands.train import train_model_from_file
 from allennlp.common.testing import ModelTestCase, requires_gpu
 
 from allennlp_models.generation import CopyNetDatasetReader, CopyNetSeq2Seq  # noqa: F401
@@ -20,11 +21,11 @@ class CopyNetTest(ModelTestCase):
         self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-2)
 
     @requires_gpu
-    def test_model_can_train_save_load_with_amp(self):
-        self.ensure_model_can_train_save_and_load(
+    def test_model_can_train_with_amp(self):
+        train_model_from_file(
             self.param_file,
-            tolerance=1e-2,
-            overrides="{'trainer.use_amp':true, 'trainer.cuda_device':0}",
+            self.TEST_DIR,
+            overrides="{'trainer.use_amp':true,'trainer.cuda_device':0}",
         )
 
     def test_vocab(self):
