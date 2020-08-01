@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.special import logsumexp
 import torch
+import pytest
 
 from allennlp.commands.train import train_model_from_file
 from allennlp.common.testing import ModelTestCase, requires_gpu
@@ -22,6 +23,22 @@ class CopyNetTest(ModelTestCase):
 
     @requires_gpu
     def test_model_can_train_with_amp(self):
+        # NOTE: if this part fails, that means that AMP may be working with RNNs now,
+        # in which case we can remove any calls to `autocast(False)` around RNNs like
+        # we do in CopyNet.
+        # Just do a grep search for uses of 'autocast(False)' or 'autocast(enabled=False)'
+        # in the library.
+        # If you're still confused, contact @epwalsh.
+        with pytest.raises(RuntimeError, match="expected scalar type Half but found Float"):
+            rnn = torch.nn.LSTMCell(10, 20).cuda()
+
+            hx = torch.rand((3, 20), device="cuda")
+            cx = torch.rand((3, 20), device="cuda")
+            inp = torch.rand((3, 10), device="cuda")
+
+            with torch.cuda.amp.autocast(True):
+                hx, cx = rnn(inp, (hx, cx))
+
         train_model_from_file(
             self.param_file,
             self.TEST_DIR,
