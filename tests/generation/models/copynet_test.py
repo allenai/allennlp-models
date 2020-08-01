@@ -23,10 +23,18 @@ class CopyNetTest(ModelTestCase):
 
     @requires_gpu
     def test_model_can_train_with_amp(self):
-        # NOTE: if this part fails, that means that AMP may be working with RNNs now,
-        # in which case we can remove any calls to `autocast(False)` around RNNs like
-        # we do in CopyNet.
-        # Just do a grep search for uses of 'autocast(False)' or 'autocast(enabled=False)'
+        train_model_from_file(
+            self.param_file,
+            self.TEST_DIR,
+            overrides="{'trainer.use_amp':true,'trainer.cuda_device':0}",
+        )
+
+        # NOTE: as of writing this test, AMP does not work with RNNs. Hence we had
+        # to wrap the call to LSTMCell() in CopyNet (and other models) within an autocast(False) context.
+        # But if this part of the test fails, i.e. a RuntimeError is never raised,
+        # that means AMP may be working now with RNNs, in which case we can remove
+        # any calls to `autocast(False)` around RNNs like we do in CopyNet.
+        # So just do a grep search for uses of 'autocast(False)' or 'autocast(enabled=False)'
         # in the library.
         # If you're still confused, contact @epwalsh.
         with pytest.raises(RuntimeError, match="expected scalar type Half but found Float"):
@@ -38,12 +46,6 @@ class CopyNetTest(ModelTestCase):
 
             with torch.cuda.amp.autocast(True):
                 hx, cx = rnn(inp, (hx, cx))
-
-        train_model_from_file(
-            self.param_file,
-            self.TEST_DIR,
-            overrides="{'trainer.use_amp':true,'trainer.cuda_device':0}",
-        )
 
     def test_vocab(self):
         vocab = self.model.vocab
