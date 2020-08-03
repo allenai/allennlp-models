@@ -4,11 +4,6 @@ import numpy
 from numpy.testing import assert_almost_equal
 import torch
 
-try:
-    from apex import amp
-except ImportError:
-    amp = None
-
 from allennlp.commands.train import train_model_from_file
 from allennlp.common import Params
 from allennlp.common.checks import ConfigurationError
@@ -141,12 +136,11 @@ class BidirectionalAttentionFlowTest(ModelTestCase):
 
 
 @requires_gpu
-@pytest.mark.skipif(amp is None, reason="Apex is not installed.")
 class BidirectionalAttentionFlowMixedPrecisionTest(AllenNlpTestCase):
     @flaky(max_runs=5)
     def test_model_can_train_save_and_load_with_mixed_precision(self):
         train_model_from_file(
             FIXTURES_ROOT / "rc" / "bidaf" / "experiment.json",
             self.TEST_DIR,
-            overrides="{'trainer.opt_level':'O2','trainer.cuda_device':0}",
+            overrides="{'trainer.use_amp':true,'trainer.cuda_device':0}",
         )
