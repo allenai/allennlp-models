@@ -1,0 +1,7 @@
+{
+    "id": "bart",
+    "registered_model_name": "bart",
+    "display_name": "BART",
+    "archive_file": "bart-2020.07.25.tar.gz",
+    "training_data": "CNN/DM"
+}
