@@ -166,36 +166,39 @@ class CaveatsAndRecommendations(ModelCardInfo):
 class ModelCard(ModelCardInfo):
     """
     The model card stores the recommended attributes for model reporting
-    as described in the paper [Model Cards for Model Reporting (Mitchell et al, 2019)]
-    (https://arxiv.org/pdf/1810.03993.pdf).
+    as described in the paper
+    [Model Cards for Model Reporting (Mitchell et al, 2019)](https://arxiv.org/pdf/1810.03993.pdf).
 
-    # Parameters:
+    # Parameters
 
-    id: str
+    id: `str`
         Model's id, following the convention of task-model-relevant-details.
         Example: rc-bidaf-elmo for a reading comprehension BiDAF model using ELMo embeddings.
-    registered_model_name: str, optional
+    registered_model_name: `str`, optional
         The model's registered name. If `model_class` is not given, this will be used
         to find any available `Model` registered with this name.
-    model_class: type, optional
+    model_class: `type`, optional
         If given, the `ModelCard` will pull some default information from the class.
-    display_name: str, optional
+    registered_predictor_name: `str`, optional
+        The registered name of the corresponding predictor.
+    display_name: `str`, optional
         The pretrained model's display name.
-    archive_file: str, optional
+    archive_file: `str`, optional
         The location of model's pretrained weights.
-    overrides: Dict, optional
+    overrides: `Dict`, optional
         Optional overrides for the model's architecture.
-    model_details: Union[ModelDetails, str], optional
-    intended_use: Union[IntendedUse, str], optional
-    factors: Union[Factors, str], optional
-    metrics: Union[Metrics, str], optional
-    evaluation_data: Union[EvaluationData, str], optional
-    quantitative_analyses: Union[QuantitativeAnalyses, str], optional
-    ethical_considerations: Union[EthicalConsiderations, str], optional
-    caveats_and_recommendations: Union[CaveatsAndRecommendations, str], optional
+    model_details: `Union[ModelDetails, str]`, optional
+    intended_use: `Union[IntendedUse, str]`, optional
+    factors: `Union[Factors, str]`, optional
+    metrics: `Union[Metrics, str]`, optional
+    evaluation_data: `Union[EvaluationData, str]`, optional
+    quantitative_analyses: `Union[QuantitativeAnalyses, str]`, optional
+    ethical_considerations: `Union[EthicalConsiderations, str]`, optional
+    caveats_and_recommendations: `Union[CaveatsAndRecommendations, str]`, optional
 
-    Note: For all the fields that are Union[ModelCardInfo, str], a str input will be
-    treated as the first argument of the relevant constructor.
+    !!! Note
+        For all the fields that are `Union[ModelCardInfo, str]`, a `str` input will be
+        treated as the first argument of the relevant constructor.
 
     """
 
@@ -206,6 +209,7 @@ class ModelCard(ModelCardInfo):
         id: str,
         registered_model_name: Optional[str] = None,
         model_class: Optional[type] = None,
+        registered_predictor_name: Optional[str] = None,
         display_name: Optional[str] = None,
         archive_file: Optional[str] = None,
         overrides: Optional[Dict] = None,
@@ -230,6 +234,8 @@ class ModelCard(ModelCardInfo):
         if model_class:
             display_name = display_name or model_class.__name__
             model_details = model_details or get_description(model_class)
+            if not registered_predictor_name:
+                registered_predictor_name = model_class.default_predictor  # type: ignore
 
         if archive_file and not archive_file.startswith("https:"):
             archive_file = os.path.join(self._storage_location, archive_file)
@@ -255,6 +261,7 @@ class ModelCard(ModelCardInfo):
 
         self.id = id
         self.registered_model_name = registered_model_name
+        self.registered_predictor_name = registered_predictor_name
         self.display_name = display_name
         self.archive_file = archive_file
         self.model_details = model_details
