@@ -1,0 +1,5 @@
+{
+    "id": "structured-prediction-constituency-parser", 
+    "registered_model_name": "constituency_parser",
+    "archive_file": "elmo-constituency-parser-2020.02.10.tar.gz"
+}

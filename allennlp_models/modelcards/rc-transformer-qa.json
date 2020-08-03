@@ -1,0 +1,7 @@
+{
+    "id": "rc-transformer-qa",
+    "registered_model_name": "transformer_qa",
+    "display_name": "Transformer QA",
+    "archive_file": "transformer-qa-2020-05-26.tar.gz",
+    "training_data": "SQuAD"
+}

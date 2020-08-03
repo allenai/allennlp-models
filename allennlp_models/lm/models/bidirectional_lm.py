@@ -8,7 +8,6 @@ from allennlp_models.lm.models.language_model import LanguageModel
 
 
 @Model.register("bidirectional-language-model")
-@Model.register("bidirectional_language_model")
 class BidirectionalLanguageModel(LanguageModel):
     """
     The `BidirectionalLanguageModel` applies a bidirectional "contextualizing"

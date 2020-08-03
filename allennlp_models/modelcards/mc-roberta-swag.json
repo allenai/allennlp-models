@@ -1,0 +1,6 @@
+{
+    "id": "mc-roberta-swag",
+    "registered_model_name": "transformer_mc",
+    "display_name": "RoBERTa SWAG",
+    "archive_file": "swag.2020-07-08.tar.gz"
+}
