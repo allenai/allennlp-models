@@ -211,9 +211,9 @@ class BiattentiveClassificationNetwork(Model):
         """
         # Parameters
 
-        tokens : TextFieldTensors, required
+        tokens : `TextFieldTensors`, required
             The output of `TextField.as_array()`.
-        label : torch.LongTensor, optional (default = None)
+        label : `torch.LongTensor`, optional (default = `None`)
             A variable representing the label for each instance in the batch.
 
         # Returns

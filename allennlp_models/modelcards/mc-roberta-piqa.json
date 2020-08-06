@@ -1,0 +1,6 @@
+{
+    "id": "mc-roberta-piqa",
+    "registered_model_name": "transformer_mc",
+    "display_name": "Physical Interaction Question Answering",
+    "archive_file": "piqa.2020-07-08.tar.gz"
+}

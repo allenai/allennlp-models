@@ -46,7 +46,7 @@ class ESIM(Model):
         Used to prepare the concatenated premise and hypothesis for prediction.
     output_logit : `FeedForward`
         This feedforward network computes the output logits.
-    dropout : `float`, optional (default=0.5)
+    dropout : `float`, optional (default=`0.5`)
         Dropout percentage to use.
     initializer : `InitializerApplicator`, optional (default=`InitializerApplicator()`)
         Used to initialize the model parameters.
@@ -123,13 +123,13 @@ class ESIM(Model):
         """
         # Parameters
 
-        premise : TextFieldTensors
+        premise : `TextFieldTensors`
             From a `TextField`
-        hypothesis : TextFieldTensors
+        hypothesis : `TextFieldTensors`
             From a `TextField`
-        label : torch.IntTensor, optional (default = None)
+        label : `torch.IntTensor`, optional (default = `None`)
             From a `LabelField`
-        metadata : `List[Dict[str, Any]]`, optional, (default = None)
+        metadata : `List[Dict[str, Any]]`, optional (default = `None`)
             Metadata containing the original tokenization of the premise and
             hypothesis with 'premise_tokens' and 'hypothesis_tokens' keys respectively.
 
@@ -137,13 +137,13 @@ class ESIM(Model):
 
         An output dictionary consisting of:
 
-        label_logits : torch.FloatTensor
+        label_logits : `torch.FloatTensor`
             A tensor of shape `(batch_size, num_labels)` representing unnormalised log
             probabilities of the entailment label.
-        label_probs : torch.FloatTensor
+        label_probs : `torch.FloatTensor`
             A tensor of shape `(batch_size, num_labels)` representing probabilities of the
             entailment label.
-        loss : torch.FloatTensor, optional
+        loss : `torch.FloatTensor`, optional
             A scalar loss to be optimised.
         """
         embedded_premise = self._text_field_embedder(premise)

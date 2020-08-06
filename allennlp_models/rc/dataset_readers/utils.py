@@ -191,31 +191,31 @@ def make_reading_comprehension_instance(
     and ``char_span_starts`` are given, the ``Instance`` has ``span_start`` and ``span_end``
     fields, which are both ``IndexFields``.
 
-    Parameters
-    ----------
-    question_tokens : ``List[Token]``
+    # Parameters
+
+    question_tokens : `List[Token]`
         An already-tokenized question.
-    passage_tokens : ``List[Token]``
+    passage_tokens : `List[Token]`
         An already-tokenized passage that contains the answer to the given question.
-    token_indexers : ``Dict[str, TokenIndexer]``
-        Determines how the question and passage ``TextFields`` will be converted into tensors that
+    token_indexers : `Dict[str, TokenIndexer]`
+        Determines how the question and passage `TextFields` will be converted into tensors that
         get input to a model.  See :class:`TokenIndexer`.
-    passage_text : ``str``
+    passage_text : `str`
         The original passage text.  We need this so that we can recover the actual span from the
         original passage that the model predicts as the answer to the question.  This is used in
         official evaluation scripts.
-    token_spans : ``List[Tuple[int, int]]``, optional
+    token_spans : `List[Tuple[int, int]]`, optional
         Indices into ``passage_tokens`` to use as the answer to the question for training.  This is
         a list because there might be several possible correct answer spans in the passage.
         Currently, we just select the most frequent span in this list (i.e., SQuAD has multiple
         annotations on the dev set; this will select the span that the most annotators gave as
         correct).
-    answer_texts : ``List[str]``, optional
+    answer_texts : `List[str]`, optional
         All valid answer strings for the given question.  In SQuAD, e.g., the training set has
         exactly one answer per question, but the dev and test sets have several.  TriviaQA has many
         possible answers, which are the aliases for the known correct entity.  This is put into the
         metadata for use with official evaluation scripts, but not used anywhere else.
-    additional_metadata : ``Dict[str, Any]``, optional
+    additional_metadata : `Dict[str, Any]`, optional
         The constructed ``metadata`` field will by default contain ``original_passage``,
         ``token_offsets``, ``question_tokens``, ``passage_tokens``, and ``answer_texts`` keys.  If
         you want any other metadata to be associated with each instance, you can pass that in here.
@@ -277,33 +277,33 @@ def make_reading_comprehension_instance_quac(
     and ``char_span_starts`` are given, the ``Instance`` has ``span_start`` and ``span_end``
     fields, which are both ``IndexFields``.
 
-    Parameters
-    ----------
-    question_list_tokens : ``List[List[Token]]``
+    # Parameters
+
+    question_list_tokens : `List[List[Token]]`
         An already-tokenized list of questions. Each dialog have multiple questions.
-    passage_tokens : ``List[Token]``
+    passage_tokens : `List[Token]`
         An already-tokenized passage that contains the answer to the given question.
-    token_indexers : ``Dict[str, TokenIndexer]``
-        Determines how the question and passage ``TextFields`` will be converted into tensors that
+    token_indexers : `Dict[str, TokenIndexer]`
+        Determines how the question and passage `TextFields` will be converted into tensors that
         get input to a model.  See :class:`TokenIndexer`.
-    passage_text : ``str``
+    passage_text : `str`
         The original passage text.  We need this so that we can recover the actual span from the
         original passage that the model predicts as the answer to the question.  This is used in
         official evaluation scripts.
-    token_span_lists : ``List[List[Tuple[int, int]]]``, optional
-        Indices into ``passage_tokens`` to use as the answer to the question for training.  This is
+    token_span_lists : `List[List[Tuple[int, int]]]`, optional
+        Indices into `passage_tokens` to use as the answer to the question for training.  This is
         a list of list, first because there is multiple questions per dialog, and
         because there might be several possible correct answer spans in the passage.
         Currently, we just select the last span in this list (i.e., QuAC has multiple
         annotations on the dev set; this will select the last span, which was given by the original annotator).
-    yesno_list : ``List[int]``
+    yesno_list : `List[int]`
         List of the affirmation bit for each question answer pairs.
-    followup_list : ``List[int]``
+    followup_list : `List[int]`
         List of the continuation bit for each question answer pairs.
-    num_context_answers : ``int``, optional
+    num_context_answers : `int`, optional
         How many answers to encode into the passage.
-    additional_metadata : ``Dict[str, Any]``, optional
-        The constructed ``metadata`` field will by default contain ``original_passage``,
+    additional_metadata : `Dict[str, Any]`, optional
+        The constructed `metadata` field will by default contain `original_passage`,
         ``token_offsets``, ``question_tokens``, ``passage_tokens``, and ``answer_texts`` keys.  If
         you want any other metadata to be associated with each instance, you can pass that in here.
         This dictionary will get added to the ``metadata`` dictionary we already construct.
