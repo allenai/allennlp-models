@@ -1,0 +1,6 @@
+{
+    "id": "tagging-elmo-crf-tagger",
+    "registered_model_name": "crf_tagger", 
+    "display_name": "ELMo-based Named Entity Recognition",
+    "archive_file": "ner-model-2020.02.10.tar.gz"
+}

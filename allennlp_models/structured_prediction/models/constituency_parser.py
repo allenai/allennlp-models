@@ -147,7 +147,7 @@ class SpanConstituencyParser(Model):
         """
         # Parameters
 
-        tokens : TextFieldTensors, required
+        tokens : `TextFieldTensors`, required
             The output of `TextField.as_array()`, which should typically be passed directly to a
             `TextFieldEmbedder`. This output is a dictionary mapping keys to `TokenIndexer`
             tensors.  At its most basic, using a `SingleIdTokenIndexer` this is : `{"tokens":
@@ -159,25 +159,26 @@ class SpanConstituencyParser(Model):
         spans : `torch.LongTensor`, required.
             A tensor of shape `(batch_size, num_spans, 2)` representing the
             inclusive start and end indices of all possible spans in the sentence.
-        metadata : List[Dict[str, Any]], required.
+        metadata : `List[Dict[str, Any]]`, required.
             A dictionary of metadata for each batch element which has keys:
                 tokens : `List[str]`, required.
                     The original string tokens in the sentence.
-                gold_tree : `nltk.Tree`, optional (default = None)
+                gold_tree : `nltk.Tree`, optional (default = `None`)
                     Gold NLTK trees for use in evaluation.
                 pos_tags : `List[str]`, optional.
                     The POS tags for the sentence. These can be used in the
                     model as embedded features, but they are passed here
                     in addition for use in constructing the tree.
-        pos_tags : `torch.LongTensor`, optional (default = None)
+        pos_tags : `torch.LongTensor`, optional (default = `None`)
             The output of a `SequenceLabelField` containing POS tags.
-        span_labels : `torch.LongTensor`, optional (default = None)
+        span_labels : `torch.LongTensor`, optional (default = `None`)
             A torch tensor representing the integer gold class labels for all possible
             spans, of shape `(batch_size, num_spans)`.
 
         # Returns
 
         An output dictionary consisting of:
+
         class_probabilities : `torch.FloatTensor`
             A tensor of shape `(batch_size, num_spans, span_label_vocab_size)`
             representing a distribution over the label classes per span.
@@ -311,7 +312,7 @@ class SpanConstituencyParser(Model):
             in `enumerated_spans`.
         sentences : `List[List[str]]`, required.
             A list of tokens in the sentence for each element in the batch.
-        pos_tags : `List[List[str]]`, optional (default = None).
+        pos_tags : `List[List[str]]`, optional (default = `None`).
             A list of POS tags for each word in the sentence for each element
             in the batch.
 
@@ -431,7 +432,7 @@ class SpanConstituencyParser(Model):
             A mapping from spans to constituency labels.
         sentence : `List[str]`, required.
             A list of tokens forming the sentence to be parsed.
-        pos_tags : `List[str]`, optional (default = None)
+        pos_tags : `List[str]`, optional (default = `None`)
             A list of the pos tags for the words in the sentence, if they
             were either predicted or taken as input to the model.
 

@@ -40,7 +40,6 @@ local batch_size = 8;
     },
     "grad_clipping": 1.0,
     "num_epochs": epochs,
-    "cuda_device": 0
   },
   "random_seed": 42,
   "numpy_seed": 42,

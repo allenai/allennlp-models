@@ -33,13 +33,13 @@ class MaskedLanguageModel(Model):
     language_model_head : `LanguageModelHead`
         The `torch.nn.Module` that goes from the hidden states output by the contextualizer to
         logits over some output vocabulary.
-    contextualizer : `Seq2SeqEncoder`, optional (default=None)
+    contextualizer : `Seq2SeqEncoder`, optional (default=`None`)
         Used to "contextualize" the embeddings.  This is optional because the contextualization
         might actually be done in the text field embedder.
-    target_namespace : `str`, optional (default='bert')
+    target_namespace : `str`, optional (default=`'bert'`)
         Namespace to use to convert predicted token ids to strings in
         `Model.make_output_human_readable`.
-    dropout : `float`, optional (default=0.0)
+    dropout : `float`, optional (default=`0.0`)
         If specified, dropout is applied to the contextualized embeddings before computation of
         the softmax. The contextualized embeddings themselves are returned without dropout.
     """

@@ -40,19 +40,19 @@ def write_bio_formatted_tags_to_file(
 
     # Parameters
 
-    prediction_file : TextIO, required.
+    prediction_file : `TextIO`, required.
         A file reference to print predictions to.
-    gold_file : TextIO, required.
+    gold_file : `TextIO`, required.
         A file reference to print gold labels to.
-    verb_index : Optional[int], required.
+    verb_index : `Optional[int]`, required.
         The index of the verbal predicate in the sentence which
         the gold labels are the arguments for, or None if the sentence
         contains no verbal predicate.
-    sentence : List[str], required.
+    sentence : `List[str]`, required.
         The word tokens.
-    prediction : List[str], required.
+    prediction : `List[str]`, required.
         The predicted BIO labels.
-    gold_labels : List[str], required.
+    gold_labels : `List[str]`, required.
         The gold BIO labels.
     """
     conll_formatted_predictions = convert_bio_tags_to_conll_format(prediction)
@@ -87,19 +87,19 @@ def write_conll_formatted_tags_to_file(
 
     # Parameters
 
-    prediction_file : TextIO, required.
+    prediction_file : `TextIO`, required.
         A file reference to print predictions to.
-    gold_file : TextIO, required.
+    gold_file : `TextIO`, required.
         A file reference to print gold labels to.
-    verb_index : Optional[int], required.
+    verb_index : `Optional[int]`, required.
         The index of the verbal predicate in the sentence which
         the gold labels are the arguments for, or None if the sentence
         contains no verbal predicate.
-    sentence : List[str], required.
+    sentence : `List[str]`, required.
         The word tokens.
-    conll_formatted_predictions : List[str], required.
+    conll_formatted_predictions : `List[str]`, required.
         The predicted CoNLL-formatted labels.
-    conll_formatted_gold_labels : List[str], required.
+    conll_formatted_gold_labels : `List[str]`, required.
         The gold CoNLL-formatted labels.
     """
     verb_only_sentence = ["-"] * len(sentence)
@@ -128,12 +128,12 @@ def convert_bio_tags_to_conll_format(labels: List[str]):
 
     A full example of the conversion performed:
 
-    [B-ARG-1, I-ARG-1, I-ARG-1, I-ARG-1, I-ARG-1, O]
-    [ "(ARG-1*", "*", "*", "*", "*)", "*"]
+        [B-ARG-1, I-ARG-1, I-ARG-1, I-ARG-1, I-ARG-1, O]
+        [ "(ARG-1*", "*", "*", "*", "*)", "*"]
 
     # Parameters
 
-    labels : List[str], required.
+    labels : `List[str]`, required.
         A list of BIO tags to convert to the CONLL span based format.
 
     # Returns
@@ -184,13 +184,13 @@ class SemanticRoleLabeler(Model):
     encoder : `Seq2SeqEncoder`
         The encoder (with its own internal stacking) that we will use in between embedding tokens
         and predicting output tags.
-    binary_feature_dim : int, required.
+    binary_feature_dim : `int`, required.
         The dimensionality of the embedding of the binary verb predicate features.
     initializer : `InitializerApplicator`, optional (default=`InitializerApplicator()`)
         Used to initialize the model parameters.
-    label_smoothing : `float`, optional (default = 0.0)
+    label_smoothing : `float`, optional (default = `0.0`)
         Whether or not to use label smoothing on the labels when computing cross entropy loss.
-    ignore_span_metric : `bool`, optional (default = False)
+    ignore_span_metric : `bool`, optional (default = `False`)
         Whether to calculate span loss, which is irrelevant when predicting BIO for Open Information Extraction.
     srl_eval_path : `str`, optional (default=`DEFAULT_SRL_EVAL_PATH`)
         The path to the srl-eval.pl script. By default, will use the srl-eval.pl included with allennlp,
@@ -253,7 +253,7 @@ class SemanticRoleLabeler(Model):
         """
         # Parameters
 
-        tokens : TextFieldTensors, required
+        tokens : `TextFieldTensors`, required
             The output of `TextField.as_array()`, which should typically be passed directly to a
             `TextFieldEmbedder`. This output is a dictionary mapping keys to `TokenIndexer`
             tensors.  At its most basic, using a `SingleIdTokenIndexer` this is : `{"tokens":
@@ -262,27 +262,28 @@ class SemanticRoleLabeler(Model):
             sequence.  The dictionary is designed to be passed directly to a `TextFieldEmbedder`,
             which knows how to combine different word representations into a single vector per
             token in your input.
-        verb_indicator: torch.LongTensor, required.
+        verb_indicator: `torch.LongTensor`, required.
             An integer `SequenceFeatureField` representation of the position of the verb
             in the sentence. This should have shape (batch_size, num_tokens) and importantly, can be
             all zeros, in the case that the sentence has no verbal predicate.
-        tags : torch.LongTensor, optional (default = None)
+        tags : `torch.LongTensor`, optional (default = `None`)
             A torch tensor representing the sequence of integer gold class labels
             of shape `(batch_size, num_tokens)`
-        metadata : `List[Dict[str, Any]]`, optional, (default = None)
+        metadata : `List[Dict[str, Any]]`, optional, (default = `None`)
             metadata containg the original words in the sentence and the verb to compute the
             frame for, under 'words' and 'verb' keys, respectively.
 
         # Returns
 
         An output dictionary consisting of:
-        logits : torch.FloatTensor
+
+        logits : `torch.FloatTensor`
             A tensor of shape `(batch_size, num_tokens, tag_vocab_size)` representing
             unnormalised log probabilities of the tag classes.
-        class_probabilities : torch.FloatTensor
+        class_probabilities : `torch.FloatTensor`
             A tensor of shape `(batch_size, num_tokens, tag_vocab_size)` representing
             a distribution of the tag classes per word.
-        loss : torch.FloatTensor, optional
+        loss : `torch.FloatTensor`, optional
             A scalar loss to be optimised.
 
         """
@@ -401,8 +402,8 @@ class SemanticRoleLabeler(Model):
 
         # Returns
 
-        transition_matrix : torch.Tensor
-            A (num_labels, num_labels) matrix of pairwise potentials.
+        transition_matrix : `torch.Tensor`
+            A `(num_labels, num_labels)` matrix of pairwise potentials.
         """
         all_labels = self.vocab.get_index_to_token_vocabulary("labels")
         num_labels = len(all_labels)
@@ -423,7 +424,7 @@ class SemanticRoleLabeler(Model):
 
         # Returns
 
-        start_transitions : torch.Tensor
+        start_transitions : `torch.Tensor`
             The pairwise potentials between a START token and
             the first token of the sequence.
         """
@@ -465,19 +466,19 @@ def write_to_conll_eval_file(
 
     # Parameters
 
-    prediction_file : TextIO, required.
+    prediction_file : `TextIO`, required.
         A file reference to print predictions to.
-    gold_file : TextIO, required.
+    gold_file : `TextIO`, required.
         A file reference to print gold labels to.
-    verb_index : Optional[int], required.
+    verb_index : `Optional[int]`, required.
         The index of the verbal predicate in the sentence which
         the gold labels are the arguments for, or None if the sentence
         contains no verbal predicate.
-    sentence : List[str], required.
+    sentence : `List[str]`, required.
         The word tokens.
-    prediction : List[str], required.
+    prediction : `List[str]`, required.
         The predicted BIO labels.
-    gold_labels : List[str], required.
+    gold_labels : `List[str]`, required.
         The gold BIO labels.
     """
     warnings.warn(

@@ -34,19 +34,19 @@ class TriviaQaReader(DatasetReader):
     parameters in your experiment configuration file, and something like ``"wikipedia-train.json"``
     for the ``train_data_path`` and ``validation_data_path``.
 
-    Parameters
-    ----------
-    base_tarball_path : ``str``
+    # Parameters
+
+    base_tarball_path : `str`
         This is the path to the main ``tar.gz`` file you can download from the TriviaQA website,
         with directories ``evidence`` and ``qa``.
-    unfiltered_tarball_path : ``str``, optional
+    unfiltered_tarball_path : `str`, optional
         This is the path to the "unfiltered" TriviaQA data that you can download from the TriviaQA
         website, containing just question JSON files that point to evidence files in the base
         tarball.
-    tokenizer : ``Tokenizer``, optional
+    tokenizer : `Tokenizer`, optional
         We'll use this tokenizer on questions and evidence passages, defaulting to
         ``SpacyTokenizer`` if none is provided.
-    token_indexers : ``Dict[str, TokenIndexer]``, optional
+    token_indexers : `Dict[str, TokenIndexer]`, optional
         Determines how both the question and the evidence passages are represented as arrays.  See
         :class:`TokenIndexer`.  Default is to have a single word ID for every token.
     """

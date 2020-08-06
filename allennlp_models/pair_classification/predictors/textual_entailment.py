@@ -10,7 +10,7 @@ from allennlp.data.fields import LabelField
 
 
 @Predictor.register("textual_entailment")
-class DecomposableAttentionPredictor(Predictor):
+class TextualEntailmentPredictor(Predictor):
     """
     Predictor for the [`DecomposableAttention`](../models/decomposable_attention.md) model.
 

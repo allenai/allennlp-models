@@ -33,26 +33,27 @@ def make_coref_instance(
         This is used to index the words in the document.  See :class:`TokenIndexer`.
     max_span_width : `int`, required.
         The maximum width of candidate spans to consider.
-    gold_clusters : `Optional[List[List[Tuple[int, int]]]]`, optional (default = None)
+    gold_clusters : `Optional[List[List[Tuple[int, int]]]]`, optional (default = `None`)
         A list of all clusters in the document, represented as word spans with absolute indices
         in the entire document. Each cluster contains some number of spans, which can be nested
         and overlap. If there are exact matches between clusters, they will be resolved
         using `_canonicalize_clusters`.
-    wordpiece_modeling_tokenizer: `PretrainedTransformerTokenizer`, optional (default = None)
+    wordpiece_modeling_tokenizer: `PretrainedTransformerTokenizer`, optional (default = `None`)
         If not None, this dataset reader does subword tokenization using the supplied tokenizer
         and distribute the labels to the resulting wordpieces. All the modeling will be based on
         wordpieces. If this is set to `False` (default), the user is expected to use
         `PretrainedTransformerMismatchedIndexer` and `PretrainedTransformerMismatchedEmbedder`,
         and the modeling will be on the word-level.
-    max_sentences: int, optional (default = None)
+    max_sentences: `int`, optional (default = `None`)
         The maximum number of sentences in each document to keep. By default keeps all sentences.
-    remove_singleton_clusters : `bool`, optional (default = True)
+    remove_singleton_clusters : `bool`, optional (default = `True`)
         Some datasets contain clusters that are singletons (i.e. no coreferents). This option allows
         the removal of them.
 
     # Returns
 
     An `Instance` containing the following `Fields`:
+
         text : `TextField`
             The text of the full document.
         spans : `ListField[SpanField]`

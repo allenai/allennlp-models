@@ -5,11 +5,6 @@ from allennlp.data import Batch
 from tests import FIXTURES_ROOT
 import pytest
 
-try:
-    from apex import amp
-except ImportError:
-    amp = None
-
 import allennlp_models.mc.models
 
 
@@ -53,11 +48,10 @@ class TransformerMcTest(ModelTestCase):
 
 
 @requires_gpu
-@pytest.mark.skipif(amp is None, reason="Apex is not installed.")
 class TransformerMcMixedPrecisionTest(AllenNlpTestCase):
     def test_model_can_train_save_and_load_with_mixed_precision(self):
         train_model_from_file(
             FIXTURES_ROOT / "mc" / "transformer_mc" / "experiment.jsonnet",
             self.TEST_DIR,
-            overrides="{'trainer.opt_level':'O2','trainer.cuda_device':0}",
+            overrides="{'trainer.use_amp':true,'trainer.cuda_device':0}",
         )

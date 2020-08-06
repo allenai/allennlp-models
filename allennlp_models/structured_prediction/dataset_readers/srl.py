@@ -111,10 +111,10 @@ class SrlReader(DatasetReader):
     token_indexers : `Dict[str, TokenIndexer]`, optional
         We similarly use this for both the premise and the hypothesis.  See :class:`TokenIndexer`.
         Default is `{"tokens": SingleIdTokenIndexer()}`.
-    domain_identifier : `str`, (default = None)
+    domain_identifier : `str`, (default = `None`)
         A string denoting a sub-domain of the Ontonotes 5.0 dataset to use. If present, only
         conll files under paths containing this domain identifier will be processed.
-    bert_model_name : `Optional[str]`, (default = None)
+    bert_model_name : `Optional[str]`, (default = `None`)
         The BERT model to be wrapped. If you specify a bert_model here, then we will
         assume you want to use BERT throughout; we will use the bert tokenizer,
         and will expand your tags and verb indicators accordingly. If not,
@@ -148,7 +148,7 @@ class SrlReader(DatasetReader):
     ) -> Tuple[List[str], List[int], List[int]]:
         """
         Convert a list of tokens to wordpiece tokens and offsets, as well as adding
-        BERT CLS and SEP tokens to the begining and end of the sentence.
+        BERT CLS and SEP tokens to the beginning and end of the sentence.
 
         A slight oddity with this function is that it also returns the wordpiece offsets
         corresponding to the _start_ of words as well as the end.
@@ -159,7 +159,7 @@ class SrlReader(DatasetReader):
         because otherwise we might select an ill-formed BIO sequence from the BIO sequence on top of
         wordpieces (this happens in the case that a word is split into multiple word pieces,
         and then we take the last tag of the word, which might correspond to, e.g, I-V, which
-        would not be allowed as it is not preceeded by a B tag).
+        would not be allowed as it is not preceded by a B tag).
 
         For example:
 
@@ -170,12 +170,12 @@ class SrlReader(DatasetReader):
 
         # Returns
 
-        wordpieces : List[str]
+        wordpieces : `List[str]`
             The BERT wordpieces from the words in the sentence.
-        end_offsets : List[int]
+        end_offsets : `List[int]`
             Indices into wordpieces such that `[wordpieces[i] for i in end_offsets]`
             results in the end wordpiece of each word being chosen.
-        start_offsets : List[int]
+        start_offsets : `List[int]`
             Indices into wordpieces such that `[wordpieces[i] for i in start_offsets]`
             results in the start wordpiece of each word being chosen.
         """

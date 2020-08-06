@@ -34,7 +34,7 @@ class CrfTagger(Model):
     label_namespace : `str`, optional (default=`labels`)
         This is needed to compute the SpanBasedF1Measure metric.
         Unless you did something unusual, the default value should be what you want.
-    feedforward : `FeedForward`, optional, (default = None).
+    feedforward : `FeedForward`, optional, (default = `None`).
         An optional feedforward layer to apply after the encoder.
     label_encoding : `str`, optional (default=`None`)
         Label encoding to use when calculating span f1 and constraining
@@ -56,7 +56,8 @@ class CrfTagger(Model):
         If `None` and label_encoding is not specified, it defaults
         to `False`.
     dropout:  `float`, optional (default=`None`)
-    verbose_metrics : `bool`, optional (default = False)
+        Dropout probability.
+    verbose_metrics : `bool`, optional (default = `False`)
         If true, metrics will be returned per label class in addition
         to the overall statistics.
     initializer : `InitializerApplicator`, optional (default=`InitializerApplicator()`)
@@ -181,12 +182,12 @@ class CrfTagger(Model):
             sequence.  The dictionary is designed to be passed directly to a `TextFieldEmbedder`,
             which knows how to combine different word representations into a single vector per
             token in your input.
-        tags : `torch.LongTensor`, optional (default = None)
+        tags : `torch.LongTensor`, optional (default = `None`)
             A torch tensor representing the sequence of integer gold class labels of shape
             `(batch_size, num_tokens)`.
-        metadata : `List[Dict[str, Any]]`, optional, (default = None)
+        metadata : `List[Dict[str, Any]]`, optional, (default = `None`)
             metadata containg the original words in the sentence to be tagged under a 'words' key.
-        ignore_loss_on_o_tags : `bool`, optional (default = False)
+        ignore_loss_on_o_tags : `bool`, optional (default = `False`)
             If True, we compute the loss only for actual spans in `tags`, and not on `O` tokens.
             This is useful for computing gradients of the loss on a _single span_, for
             interpretation / attacking.
