@@ -178,12 +178,9 @@ class SimpleSeq2Seq(Model):
             the source mask, and the decoder hidden state and context. Each of these
             tensors has shape `(group_size, *)`, where `*` can be any other number
             of dimensions.
-<<<<<<< HEAD
-=======
         step : `int`
             The time step in beam search decoding.
 
->>>>>>> 5d9098f6084a12da77b02d40e0d9392113aeb805
         # Returns
         Tuple[torch.Tensor, Dict[str, torch.Tensor]]
             A tuple of `(log_probabilities, updated_state)`, where `log_probabilities`
