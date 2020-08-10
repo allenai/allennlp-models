@@ -29,7 +29,7 @@ class CopyNetTest(ModelTestCase):
             overrides="{'trainer.use_amp':true,'trainer.cuda_device':0}",
         )
 
-        # NOTE: as of writing this test, AMP does not work with RNNs. Hence we had
+        # NOTE: as of writing this test, AMP does not work with RNNs and LSTMCells. Hence we had
         # to wrap the call to LSTMCell() in CopyNet (and other models) within an autocast(False) context.
         # But if this part of the test fails, i.e. a RuntimeError is never raised,
         # that means AMP may be working now with RNNs, in which case we can remove
