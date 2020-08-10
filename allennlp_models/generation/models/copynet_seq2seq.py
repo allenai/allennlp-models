@@ -336,7 +336,7 @@ class CopyNetSeq2Seq(Model):
         # shape: (group_size, decoder_input_dim)
         projected_decoder_input = self._input_projection_layer(decoder_input)
 
-        # TODO (epwalsh): remove the autocast(False) once torch's AMP is working for RNNs.
+        # TODO (epwalsh): remove the autocast(False) once torch's AMP is working for LSTMCells.
         with torch.cuda.amp.autocast(False):
             state["decoder_hidden"], state["decoder_context"] = self._decoder_cell(
                 projected_decoder_input.float(),
