@@ -336,9 +336,13 @@ class CopyNetSeq2Seq(Model):
         # shape: (group_size, decoder_input_dim)
         projected_decoder_input = self._input_projection_layer(decoder_input)
 
-        state["decoder_hidden"], state["decoder_context"] = self._decoder_cell(
-            projected_decoder_input, (state["decoder_hidden"], state["decoder_context"])
-        )
+        # TODO (epwalsh): remove the autocast(False) once torch's AMP is working for LSTMCells.
+        with torch.cuda.amp.autocast(False):
+            state["decoder_hidden"], state["decoder_context"] = self._decoder_cell(
+                projected_decoder_input.float(),
+                (state["decoder_hidden"].float(), state["decoder_context"].float()),
+            )
+
         return state
 
     def _get_generation_scores(self, state: Dict[str, torch.Tensor]) -> torch.Tensor:
