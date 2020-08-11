@@ -463,15 +463,19 @@ class SimpleSeq2Seq(Model):
 
             # shape (decoder_hidden): (num_layers, batch_size, decoder_output_dim)
             # shape (decoder_context): (num_layers, batch_size, decoder_output_dim)
-            _, (decoder_hidden, decoder_context) = self._decoder_cell(
-                decoder_input, (decoder_hidden, decoder_context)
-            )
+            # TODO (epwalsh): remove the autocast(False) once torch's AMP is working for LSTMCells.
+            with torch.cuda.amp.autocast(False):
+                _, (decoder_hidden, decoder_context) = self._decoder_cell(
+                    decoder_input.float(), (decoder_hidden.float(), decoder_context.float())
+                )
         else:
             # shape (decoder_hidden): (batch_size, decoder_output_dim)
             # shape (decoder_context): (batch_size, decoder_output_dim)
-            decoder_hidden, decoder_context = self._decoder_cell(
-                decoder_input, (decoder_hidden, decoder_context)
-            )
+            # TODO (epwalsh): remove the autocast(False) once torch's AMP is working for LSTMCells.
+            with torch.cuda.amp.autocast(False):
+                decoder_hidden, decoder_context = self._decoder_cell(
+                    decoder_input.float(), (decoder_hidden.float(), decoder_context.float())
+                )
 
         state["decoder_hidden"] = decoder_hidden
         state["decoder_context"] = decoder_context
