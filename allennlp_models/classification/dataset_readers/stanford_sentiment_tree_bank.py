@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 import logging
 
 from allennlp.data import Tokenizer
@@ -111,9 +111,20 @@ class StanfordSentimentTreeBankDatasetReader(DatasetReader):
             label : `LabelField`
                 The sentiment label of the sentence or phrase.
         """
-
+        assert isinstance(
+            tokens, list
+        )  # If tokens is a str, nothing breaks but the results are garbage, so we check.
         if self._tokenizer is None:
-            tokens = [Token(x) for x in tokens]
+
+            def make_token(t: Union[str, Token]):
+                if isinstance(t, str):
+                    return Token(t)
+                elif isinstance(t, Token):
+                    return t
+                else:
+                    raise ValueError("Tokens must be either str or Token.")
+
+            tokens = [make_token(x) for x in tokens]
         else:
             tokens = self._tokenizer.tokenize(" ".join(tokens))
         text_field = TextField(tokens, token_indexers=self._token_indexers)
