@@ -13,10 +13,11 @@ from allennlp_models.pretrained import get_pretrained_models, load_predictor
 
 
 def find_configs() -> Iterable[str]:
-    for x in os.walk("training_config/"):
-        for y in glob(os.path.join(x[0], "*.json")):
-            if os.path.basename(y) != "common.jsonnet":
-                yield y
+    for item in os.walk("training_config/"):
+        for pattern in ("*.json", "*.jsonnet"):
+            for path in glob(os.path.join(item[0], pattern)):
+                if os.path.basename(path) != "common.jsonnet":
+                    yield path
 
 
 # But default we don't run these tests
