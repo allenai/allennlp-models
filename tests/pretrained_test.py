@@ -1,15 +1,31 @@
+from glob import glob
 import os
+from typing import Iterable
 
 import pytest
 import spacy
 
+from allennlp.commands.train import TrainModel
 from allennlp.common.testing import AllenNlpTestCase
+from allennlp.common.params import Params
+from allennlp.common.plugins import import_plugins
 from allennlp_models.pretrained import get_pretrained_models, load_predictor
+
+
+def find_configs() -> Iterable[str]:
+    for x in os.walk("training_config/"):
+        for y in glob(os.path.join(x[0], "*.json")):
+            if os.path.basename(y) != "common.jsonnet":
+                yield y
 
 
 # But default we don't run these tests
 @pytest.mark.pretrained_model_test
 class TestAllenNlpPretrained(AllenNlpTestCase):
+    def setup_method(self):
+        super().setup_method()
+        import_plugins()
+
     def test_machine_comprehension(self):
         predictor = load_predictor("rc-bidaf")
 
@@ -386,3 +402,18 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
     def test_pretrained_models(self, model_id, model_card):
         # Each model in pretrained_models should have an archive and registered_predictor_name.
         assert model_card.archive_file is not None
+
+    @pytest.mark.parametrize("path", find_configs())
+    def test_pretrained_configs(self, path):
+        params = Params.from_file(
+            path,
+            params_overrides="{"
+            "'trainer.cuda_device': -1, "
+            "'trainer.use_amp': false, "
+            "'trainer.num_epochs': 2, "
+            "'distributed': null, "
+            "'dataset_reader.max_instances': 4, "
+            "}",
+        )
+        # Just make sure the train loop can be instantiated.
+        TrainModel.from_params(params=params, serialization_dir=self.TEST_DIR, local_rank=0)
