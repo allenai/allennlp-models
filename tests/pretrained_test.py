@@ -409,9 +409,7 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
             path,
             params_overrides="{"
             "'trainer.cuda_device': -1, "
-            "'trainer.use_amp': false, "
             "'trainer.num_epochs': 2, "
-            "'distributed': null, "
             "'dataset_reader.max_instances': 4, "
             "}",
         )
