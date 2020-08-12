@@ -45,7 +45,7 @@ class SimpleSeq2Seq(Model):
         value as the source embedder's.
     target_pretrain_file : `str`, optional (default = `None`)
         Path to target pretrain embedding files
-    target_decoder_layers : `int`, optional (default = 1)
+    target_decoder_layers : `int`, optional (default = `1`)
         Nums of layer for decoder
     attention : `Attention`, optional (default = None)
         If you want to use attention to get a dynamic summary of the encoder outputs at each step
