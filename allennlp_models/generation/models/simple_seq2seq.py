@@ -43,7 +43,7 @@ class SimpleSeq2Seq(Model):
     target_embedding_dim : `int`, optional (default = `'source_embedding_dim'`)
         You can specify an embedding dimensionality for the target side. If not, we'll use the same
         value as the source embedder's.
-    target_pretrain_file : `str`, optional (default = None)
+    target_pretrain_file : `str`, optional (default = `None`)
         Path to target pretrain embedding files
     target_decoder_layers : `int`, optional (default = 1)
         Nums of layer for decoder
