@@ -447,5 +447,9 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
             "'dataset_reader.max_instances': 4, "
             "}",
         )
+        # Remove unnecessary keys.
+        for key in ("random_seed", "numpy_seed", "pytorch_seed"):
+            if key in params:
+                del params[key]
         # Just make sure the train loop can be instantiated.
         TrainModel.from_params(params=params, serialization_dir=self.TEST_DIR, local_rank=0)
