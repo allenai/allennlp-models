@@ -6,9 +6,9 @@
         "type":"semantic_dependencies",
         "skip_when_no_arcs": false
     },
-    "train_data_path": "/home/markn/data/semantic_dependency_parsing/semeval2015_data/dm/data/english/english_dm_augmented_train.sdp",
-    "validation_data_path": "/home/markn/data/semantic_dependency_parsing/semeval2015_data/dm/data/english/english_dm_augmented_dev.sdp",
-    "test_data_path": "/home/markn/data/semantic_dependency_parsing/semeval2015_data/dm/data/english/english_id_dm_augmented_test.sdp",
+    "train_data_path": std.extVar("SEMEVAL_TRAIN"),
+    "validation_data_path": std.extVar("SEMEVAL_DEV"),
+    "test_data_path": std.extVar("SEMEVAL_TEST"),
     "model": {
       "type": "graph_parser",
       "text_field_embedder": {
@@ -16,7 +16,7 @@
           "tokens": {
             "type": "embedding",
             "embedding_dim": 100,
-            "pretrained_file": "/home/markn/data/glove/glove.6B/glove.6B.100d.txt",
+            "pretrained_file": "https://allennlp.s3.amazonaws.com/datasets/glove/glove.6B.100d.txt.gz",
             "trainable": true,
             "sparse": true
           }

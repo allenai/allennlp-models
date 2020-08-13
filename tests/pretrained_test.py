@@ -47,6 +47,14 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
                 FIXTURES_ROOT / "structured_prediction" / "dependencies.conllu"
             )
         for var_name in (
+            "SEMEVAL_TRAIN",
+            "SEMEVAL_DEV",
+            "SEMEVAL_TEST",
+        ):
+            os.environ[var_name] = str(
+                FIXTURES_ROOT / "structured_prediction" / "semantic_dependencies" / "dm.sdp"
+            )
+        for var_name in (
             "NER_TRAIN_DATA_PATH",
             "NER_TEST_DATA_PATH",
         ):
