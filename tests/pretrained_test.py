@@ -5,6 +5,7 @@ from typing import Iterable
 import pytest
 import spacy
 
+from tests import FIXTURES_ROOT
 from allennlp.commands.train import TrainModel
 from allennlp.common.testing import AllenNlpTestCase
 from allennlp.common.params import Params
@@ -26,6 +27,25 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
     def setup_method(self):
         super().setup_method()
         import_plugins()
+        for var_name in ("SRL_TRAIN_DATA_PATH", "SRL_VALIDATION_DATA_PATH"):
+            os.environ[var_name] = str(
+                FIXTURES_ROOT / "structured_prediction" / "srl" / "conll_2012"
+            )
+        for var_name in (
+            "PTB_TRAIN_PATH",
+            "PTB_DEV_PATH",
+            "PTB_TEST_PATH",
+        ):
+            os.environ[var_name] = str(
+                FIXTURES_ROOT / "structured_prediction" / "example_ptb.trees"
+            )
+        for var_name in (
+            "PTB_DEPENDENCIES_TRAIN",
+            "PTB_DEPENDENCIES_VAL",
+        ):
+            os.environ[var_name] = str(
+                FIXTURES_ROOT / "structured_prediction" / "dependencies.conllu"
+            )
 
     def test_machine_comprehension(self):
         predictor = load_predictor("rc-bidaf")
