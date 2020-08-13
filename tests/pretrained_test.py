@@ -458,6 +458,7 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
             "'trainer.cuda_device': -1, "
             "'trainer.num_epochs': 2, "
             "'dataset_reader.max_instances': 4, "
+            "'dataset_reader.lazy': false, "
             "}",
         )
         # Remove unnecessary keys.
