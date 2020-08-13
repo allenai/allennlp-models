@@ -37,15 +37,17 @@
             "use_input_projection_bias": false
         },
         "binary_feature_dim": 100,
-        "regularizer": [
-            [
-                ".*scalar_parameters.*",
-                {
-                    "type": "l2",
-                    "alpha": 0.001
-                }
+        "regularizer": {
+            "regexes": [
+                [
+                    ".*scalar_parameters.*",
+                    {
+                        "type": "l2",
+                        "alpha": 0.001
+                    }
+                ]
             ]
-        ]
+        }
     },
     "data_loader": {
         "batch_sampler": {
