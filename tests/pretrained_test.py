@@ -46,6 +46,11 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
             os.environ[var_name] = str(
                 FIXTURES_ROOT / "structured_prediction" / "dependencies.conllu"
             )
+        for var_name in (
+            "NER_TRAIN_DATA_PATH",
+            "NER_TEST_DATA_PATH",
+        ):
+            os.environ[var_name] = str(FIXTURES_ROOT / "tagging" / "conll2003.txt")
 
     def test_machine_comprehension(self):
         predictor = load_predictor("rc-bidaf")
