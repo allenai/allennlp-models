@@ -67,6 +67,11 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
             "SWAG_TEST",
         ):
             os.environ[var_name] = str(FIXTURES_ROOT / "mc" / "swag.csv")
+        for var_name in (
+            "DROP_TRAIN",
+            "DROP_DEV",
+        ):
+            os.environ[var_name] = str(FIXTURES_ROOT / "rc" / "drop.json")
 
     def test_machine_comprehension(self):
         predictor = load_predictor("rc-bidaf")

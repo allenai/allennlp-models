@@ -42,8 +42,8 @@
         },
         "only_include_pretrained_words": true
     },
-    "train_data_path": "drop_dataset_train.json",
-    "validation_data_path": "drop_dataset_dev.json",
+    "train_data_path": std.extVar("DROP_TRAIN"),
+    "validation_data_path": std.extVar("DROP_DEV"),
     "model": {
         "type": "naqanet",
         "text_field_embedder": {
@@ -106,14 +106,14 @@
             "attention_dropout_prob": 0
         },
         "dropout_prob": 0.1,
-        "regularizer": [
+        "regularizer": {
             "regexes": [
                 [".*", {
                     "type": "l2",
                     "alpha": 1e-07
                 }]
             ]
-        ],
+        },
         "answering_abilities": [
             "passage_span_extraction",
             "question_span_extraction",
