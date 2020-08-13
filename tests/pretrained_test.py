@@ -26,6 +26,8 @@ def find_configs() -> Iterable[str]:
 class TestAllenNlpPretrained(AllenNlpTestCase):
     def setup_method(self):
         super().setup_method()
+
+    def setup_class(cls):
         import_plugins()
         for var_name in ("SRL_TRAIN_DATA_PATH", "SRL_VALIDATION_DATA_PATH"):
             os.environ[var_name] = str(
@@ -59,6 +61,12 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
             "NER_TEST_DATA_PATH",
         ):
             os.environ[var_name] = str(FIXTURES_ROOT / "tagging" / "conll2003.txt")
+        for var_name in (
+            "SWAG_TRAIN",
+            "SWAG_DEV",
+            "SWAG_TEST",
+        ):
+            os.environ[var_name] = str(FIXTURES_ROOT / "mc" / "swag.csv")
 
     def test_machine_comprehension(self):
         predictor = load_predictor("rc-bidaf")
