@@ -73,7 +73,7 @@ test-with-cov :
 
 .PHONY : test-pretrained
 test-pretrained :
-	pytest -v --color=yes -m "pretrained_model_test"
+	pytest -v --color=yes --durations=10 -m "pretrained_model_test"
 
 .PHONY : build-all-api-docs
 build-all-api-docs : scripts/py2md.py
