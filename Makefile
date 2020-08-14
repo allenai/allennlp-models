@@ -77,6 +77,10 @@ test-with-cov :
 test-pretrained :
 	pytest -v --color=yes --durations=10 -m "pretrained_model_test"
 
+.PHONY : test-configs
+test-configs :
+	pytest -v --color=yes --durations=10 -m "pretrained_config_test"
+
 .PHONY : build-all-api-docs
 build-all-api-docs : scripts/py2md.py
 	@PYTHONPATH=./ $(MD_DOCS_CMD) $(subst /,.,$(subst .py,,$(MD_DOCS_SRC))) -o $(MD_DOCS)
