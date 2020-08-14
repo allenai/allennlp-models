@@ -1,78 +1,13 @@
-from glob import glob
-import os
-from typing import Iterable
-
 import pytest
 import spacy
 
-from tests import FIXTURES_ROOT
-from allennlp.commands.train import TrainModel
 from allennlp.common.testing import AllenNlpTestCase
-from allennlp.common.params import Params
-from allennlp.common.plugins import import_plugins
 from allennlp_models.pretrained import get_pretrained_models, load_predictor
-
-
-def find_configs() -> Iterable[str]:
-    for item in os.walk("training_config/"):
-        for pattern in ("*.json", "*.jsonnet"):
-            for path in glob(os.path.join(item[0], pattern)):
-                if os.path.basename(path) != "common.jsonnet":
-                    yield path
 
 
 # But default we don't run these tests
 @pytest.mark.pretrained_model_test
-class TestAllenNlpPretrained(AllenNlpTestCase):
-    def setup_method(self):
-        super().setup_method()
-
-    def setup_class(cls):
-        import_plugins()
-        for var_name in ("SRL_TRAIN_DATA_PATH", "SRL_VALIDATION_DATA_PATH"):
-            os.environ[var_name] = str(
-                FIXTURES_ROOT / "structured_prediction" / "srl" / "conll_2012"
-            )
-        for var_name in (
-            "PTB_TRAIN_PATH",
-            "PTB_DEV_PATH",
-            "PTB_TEST_PATH",
-        ):
-            os.environ[var_name] = str(
-                FIXTURES_ROOT / "structured_prediction" / "example_ptb.trees"
-            )
-        for var_name in (
-            "PTB_DEPENDENCIES_TRAIN",
-            "PTB_DEPENDENCIES_VAL",
-        ):
-            os.environ[var_name] = str(
-                FIXTURES_ROOT / "structured_prediction" / "dependencies.conllu"
-            )
-        for var_name in (
-            "SEMEVAL_TRAIN",
-            "SEMEVAL_DEV",
-            "SEMEVAL_TEST",
-        ):
-            os.environ[var_name] = str(
-                FIXTURES_ROOT / "structured_prediction" / "semantic_dependencies" / "dm.sdp"
-            )
-        for var_name in (
-            "NER_TRAIN_DATA_PATH",
-            "NER_TEST_DATA_PATH",
-        ):
-            os.environ[var_name] = str(FIXTURES_ROOT / "tagging" / "conll2003.txt")
-        for var_name in (
-            "SWAG_TRAIN",
-            "SWAG_DEV",
-            "SWAG_TEST",
-        ):
-            os.environ[var_name] = str(FIXTURES_ROOT / "mc" / "swag.csv")
-        for var_name in (
-            "DROP_TRAIN",
-            "DROP_DEV",
-        ):
-            os.environ[var_name] = str(FIXTURES_ROOT / "rc" / "drop.json")
-
+class TestAllenNlpPretrainedModels(AllenNlpTestCase):
     def test_machine_comprehension(self):
         predictor = load_predictor("rc-bidaf")
 
@@ -449,21 +384,3 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
     def test_pretrained_models(self, model_id, model_card):
         # Each model in pretrained_models should have an archive and registered_predictor_name.
         assert model_card.archive_file is not None
-
-    @pytest.mark.parametrize("path", find_configs())
-    def test_pretrained_configs(self, path):
-        params = Params.from_file(
-            path,
-            params_overrides="{"
-            "'trainer.cuda_device': -1, "
-            "'trainer.num_epochs': 2, "
-            "'dataset_reader.max_instances': 4, "
-            "'dataset_reader.lazy': false, "
-            "}",
-        )
-        # Remove unnecessary keys.
-        for key in ("random_seed", "numpy_seed", "pytorch_seed"):
-            if key in params:
-                del params[key]
-        # Just make sure the train loop can be instantiated.
-        TrainModel.from_params(params=params, serialization_dir=self.TEST_DIR, local_rank=0)
