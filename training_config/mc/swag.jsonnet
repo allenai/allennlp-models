@@ -15,6 +15,10 @@ local gradient_accumulation_steps = batch_size / gpu_batch_size;
   "train_data_path": std.extVar("SWAG_TRAIN"),
   "validation_data_path": std.extVar("SWAG_DEV"),
   //"test_data_path": std.extVar("SWAG_TEST")
+  // Replace the above few lines with these if you are Dirk:
+  //"train_data_path": "/net/nfs.corp/allennlp/dirkg/data/swag/train.csv"
+  //"validation_data_path": "/net/nfs.corp/allennlp/dirkg/data/swag/val.csv"
+  //"test_data_path": "/net/nfs.corp/allennlp/dirkg/data/swag/test.csv"
   "model": {
       "type": "transformer_mc",
       "transformer_model": transformer_model,
