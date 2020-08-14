@@ -58,57 +58,60 @@ def patch_glove(params):
             patch_glove(value)
 
 
+DATASET_PATCHES: Dict[Path, Tuple[str, ...]] = {
+    FIXTURES_ROOT
+    / "structured_prediction"
+    / "srl"
+    / "conll_2012": ("SRL_TRAIN_DATA_PATH", "SRL_VALIDATION_DATA_PATH"),
+    FIXTURES_ROOT
+    / "structured_prediction"
+    / "example_ptb.trees": ("PTB_TRAIN_PATH", "PTB_DEV_PATH", "PTB_TEST_PATH"),
+    FIXTURES_ROOT
+    / "structured_prediction"
+    / "dependencies.conllu": ("PTB_DEPENDENCIES_TRAIN", "PTB_DEPENDENCIES_VAL"),
+    FIXTURES_ROOT
+    / "structured_prediction"
+    / "semantic_dependencies"
+    / "dm.sdp": ("SEMEVAL_TRAIN", "SEMEVAL_DEV", "SEMEVAL_TEST"),
+    FIXTURES_ROOT / "tagging" / "conll2003.txt": ("NER_TRAIN_DATA_PATH", "NER_TEST_DATA_PATH"),
+    FIXTURES_ROOT / "mc" / "swag.csv": ("SWAG_TRAIN", "SWAG_DEV", "SWAG_TEST"),
+    FIXTURES_ROOT / "rc" / "drop.json": ("DROP_TRAIN", "DROP_DEV"),
+    FIXTURES_ROOT / "lm" / "language_model" / "sentences.txt": ("BIDIRECTIONAL_LM_TRAIN_PATH",),
+    FIXTURES_ROOT / "rc" / "squad.json": ("SQUAD_TRAIN", "SQUAD_DEV"),
+    FIXTURES_ROOT
+    / "coref"
+    / "coref.gold_conll": ("COREF_TRAIN_DATA_PATH", "COREF_DEV_DATA_PATH", "COREF_TEST_DATA_PATH",),
+    FIXTURES_ROOT
+    / "structured_prediction"
+    / "srl"
+    / "conll_2012"
+    / "subdomain": ("CONLL_TRAIN_DATA_PATH", "CONLL_DEV_DATA_PATH"),
+    FIXTURES_ROOT
+    / "tagging"
+    / "conll2003.txt": (
+        "NER_TRAIN_DATA_PATH",
+        "NER_TEST_DATA_PATH",
+        "NER_TEST_A_PATH",
+        "NER_TEST_B_PATH",
+    ),
+    FIXTURES_ROOT
+    / "generation"
+    / "bart"
+    / "data"
+    / "url_lists"
+    / "all_train.txt": ("CNNDM_TRAIN", "CNNDM_DEV",),
+}
+
+
 @pytest.mark.pretrained_config_test
 class TestAllenNlpPretrainedModelConfigs(AllenNlpTestCase):
-    DATASET_PATCHES: Dict[Path, Tuple[str, ...]] = {
-        FIXTURES_ROOT
-        / "structured_prediction"
-        / "srl"
-        / "conll_2012": ("SRL_TRAIN_DATA_PATH", "SRL_VALIDATION_DATA_PATH"),
-        FIXTURES_ROOT
-        / "structured_prediction"
-        / "example_ptb.trees": ("PTB_TRAIN_PATH", "PTB_DEV_PATH", "PTB_TEST_PATH"),
-        FIXTURES_ROOT
-        / "structured_prediction"
-        / "dependencies.conllu": ("PTB_DEPENDENCIES_TRAIN", "PTB_DEPENDENCIES_VAL"),
-        FIXTURES_ROOT
-        / "structured_prediction"
-        / "semantic_dependencies"
-        / "dm.sdp": ("SEMEVAL_TRAIN", "SEMEVAL_DEV", "SEMEVAL_TEST"),
-        FIXTURES_ROOT / "tagging" / "conll2003.txt": ("NER_TRAIN_DATA_PATH", "NER_TEST_DATA_PATH"),
-        FIXTURES_ROOT / "mc" / "swag.csv": ("SWAG_TRAIN", "SWAG_DEV", "SWAG_TEST"),
-        FIXTURES_ROOT / "rc" / "drop.json": ("DROP_TRAIN", "DROP_DEV"),
-        FIXTURES_ROOT / "lm" / "language_model" / "sentences.txt": ("BIDIRECTIONAL_LM_TRAIN_PATH",),
-        FIXTURES_ROOT / "rc" / "squad.json": ("SQUAD_TRAIN", "SQUAD_DEV"),
-        FIXTURES_ROOT
-        / "coref"
-        / "coref.gold_conll": (
-            "COREF_TRAIN_DATA_PATH",
-            "COREF_DEV_DATA_PATH",
-            "COREF_TEST_DATA_PATH",
-        ),
-        FIXTURES_ROOT
-        / "structured_prediction"
-        / "srl"
-        / "conll_2012"
-        / "subdomain": ("CONLL_TRAIN_DATA_PATH", "CONLL_DEV_DATA_PATH"),
-        FIXTURES_ROOT
-        / "tagging"
-        / "conll2003.txt": (
-            "NER_TRAIN_DATA_PATH",
-            "NER_TEST_DATA_PATH",
-            "NER_TEST_A_PATH",
-            "NER_TEST_B_PATH",
-        ),
-    }
-
     @classmethod
     def setup_class(cls):
         # Make sure all the classes we need are registered.
         import_plugins()
 
         # Patch dataset paths.
-        for dataset_patch, patch_targets in cls.DATASET_PATCHES.items():
+        for dataset_patch, patch_targets in DATASET_PATCHES.items():
             for patch_target in patch_targets:
                 os.environ[patch_target] = str(dataset_patch)
 
