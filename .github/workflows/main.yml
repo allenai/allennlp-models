@@ -110,7 +110,7 @@ jobs:
   configs:
     name: Training Configs 
     # Don't run for forks, and only run for master pushes and on schedule.
-    if: github.repository == 'allenai/allennlp-models' && github.event_name != "pull_request"
+    if: github.repository == 'allenai/allennlp-models' && github.event_name != 'pull_request'
     runs-on: [self-hosted]
 
     steps:
