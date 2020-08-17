@@ -107,6 +107,27 @@ jobs:
       run: |
         make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='test-pretrained'
 
+  configs:
+    name: Training Configs 
+    # Don't run for forks, and only run for master pushes and on schedule.
+    if: github.repository == 'allenai/allennlp-models' && github.event_name != 'pull_request'
+    runs-on: [self-hosted]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set Docker tag
+      run: |
+        echo "::set-env name=DOCKER_TAG::$GITHUB_SHA";
+
+    - name: Build test image
+      run: |
+        make docker-test-image DOCKER_TAG=$DOCKER_TAG
+
+    - name: Validate training configs
+      run: |
+        make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='test-configs'
+
   gpu_checks:
     name: GPU Checks
     # Don't run for forks.

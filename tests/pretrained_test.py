@@ -1,5 +1,3 @@
-import os
-
 import pytest
 import spacy
 
@@ -9,7 +7,7 @@ from allennlp_models.pretrained import get_pretrained_models, load_predictor
 
 # But default we don't run these tests
 @pytest.mark.pretrained_model_test
-class TestAllenNlpPretrained(AllenNlpTestCase):
+class TestAllenNlpPretrainedModels(AllenNlpTestCase):
     def test_machine_comprehension(self):
         predictor = load_predictor("rc-bidaf")
 

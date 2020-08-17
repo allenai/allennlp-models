@@ -1,6 +1,9 @@
-local data_dir = std.extVar("CONLL_DATA_PATH");
-// local data_dir = "/net/nfs.corp/allennlp/dirkg/data/conll-formatted-ontonotes-5.0/data";
-// local data_dir = "/Users/dirkg/Documents/data/conll-formatted-ontonotes-5.0/data";
+local train_data = std.extVar("CONLL_TRAIN_DATA_PATH");
+local dev_data = std.extVar("CONLL_DEV_DATA_PATH");
+// local train_data = "/net/nfs.corp/allennlp/dirkg/data/conll-formatted-ontonotes-5.0/data/train";
+// local dev_data = "/net/nfs.corp/allennlp/dirkg/data/conll-formatted-ontonotes-5.0/data/development";
+// local train_data = "/Users/dirkg/Documents/data/conll-formatted-ontonotes-5.0/data/train";
+// local dev_data = "/Users/dirkg/Documents/data/conll-formatted-ontonotes-5.0/data/development";
 
 {
     "dataset_reader": {
@@ -19,8 +22,8 @@ local data_dir = std.extVar("CONLL_DATA_PATH");
             }
         }
     },
-    "train_data_path": data_dir + "/train",
-    "validation_data_path": data_dir + "/development",
+    "train_data_path": train_data,
+    "validation_data_path": dev_data,
     "data_loader": {
         "batch_sampler": {
             "type": "bucket",
