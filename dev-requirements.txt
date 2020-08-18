@@ -9,8 +9,17 @@ mypy==0.782
 # Automatic code formatting
 black
 
+# Running unit tests.
+pytest
+
 # Allows generation of coverage reports with pytest.
 pytest-cov
+
+# Lets you run tests in forked subprocesses.
+pytest-forked
+
+# Lets you run tests in parallel.
+pytest-xdist
 
 # Allows codecov to generate coverage reports
 coverage
