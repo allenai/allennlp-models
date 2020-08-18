@@ -18,6 +18,9 @@ pytest-cov
 # Lets you run tests in forked subprocesses.
 pytest-forked
 
+# Lets you run tests in parallel.
+pytest-xdist
+
 # Allows codecov to generate coverage reports
 coverage
 codecov
