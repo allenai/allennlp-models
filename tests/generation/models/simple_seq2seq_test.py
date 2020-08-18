@@ -36,6 +36,12 @@ class SimpleSeq2SeqTest(ModelTestCase):
             self.param_file, tolerance=1e-2, overrides=param_overrides
         )
 
+    def test_multi_layer_decoder_model_can_train_save_and_load(self):
+        param_overrides = json.dumps({"model": {"target_decoder_layers": 2}})
+        self.ensure_model_can_train_save_and_load(
+            self.param_file, tolerance=1e-2, overrides=param_overrides
+        )
+
     def test_no_attention_model_can_train_save_and_load(self):
         param_overrides = json.dumps({"model": {"attention": None}})
         self.ensure_model_can_train_save_and_load(
@@ -49,7 +55,6 @@ class SimpleSeq2SeqTest(ModelTestCase):
         )
 
     def test_loss_is_computed_correctly(self):
-
         batch_size = 5
         num_decoding_steps = 5
         num_classes = 10
@@ -85,7 +90,6 @@ class SimpleSeq2SeqTest(ModelTestCase):
         assert "predicted_tokens" in decode_output_dict
 
     def test_greedy_decode_matches_beam_search(self):
-
         beam_search = BeamSearch(
             self.model._end_index, max_steps=self.model._max_decoding_steps, beam_size=1
         )

@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Made the SST reader a little more strict in the kinds of input it accepts.
 
 
+
 ## [v1.1.0rc2](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc2) - 2020-07-31
 
 ### Changed
@@ -37,9 +38,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `ModelCard` and related classes. Added model cards for all the pretrained models.
 - Added a field `registered_predictor_name` to `ModelCard`.
 - Added a method `load_predictor` to `allennlp_models.pretrained`.
+- Added support to multi-layer decoder in simple seq2seq model.
 
 
 ## [v1.1.0rc1](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc1) - 2020-07-14
+
 
 ### Fixed
 
