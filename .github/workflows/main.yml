@@ -44,7 +44,7 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
 
-    - uses: actions/cache@v1
+    - uses: actions/cache@v2
       with:
         path: ${{ env.pythonLocation }}
         key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
@@ -170,7 +170,7 @@ jobs:
       with:
         python-version: 3.7
 
-    - uses: actions/cache@v1
+    - uses: actions/cache@v2
       with:
         path: ${{ env.pythonLocation }}
         key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
