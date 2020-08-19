@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Optional, Dict
 import logging
 import csv
 
