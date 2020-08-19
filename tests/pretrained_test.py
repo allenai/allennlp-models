@@ -1,5 +1,3 @@
-import os
-
 import pytest
 import spacy
 
@@ -9,7 +7,7 @@ from allennlp_models.pretrained import get_pretrained_models, load_predictor
 
 # But default we don't run these tests
 @pytest.mark.pretrained_model_test
-class TestAllenNlpPretrained(AllenNlpTestCase):
+class TestAllenNlpPretrainedModels(AllenNlpTestCase):
     def test_machine_comprehension(self):
         predictor = load_predictor("rc-bidaf")
 
@@ -362,6 +360,11 @@ class TestAllenNlpPretrained(AllenNlpTestCase):
             "punct",
         ]
         assert result["predicted_heads"] == [2, 0, 2, 2, 4, 2]
+
+    def test_sentiment_analysis(self):
+        predictor = load_predictor("roberta-sst")
+        result = predictor.predict_json({"sentence": "This is a positive review."})
+        assert result["label"] == "1"
 
     def test_openie(self):
         predictor = load_predictor("structured-prediction-srl")
