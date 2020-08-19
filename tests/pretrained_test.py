@@ -361,6 +361,11 @@ class TestAllenNlpPretrainedModels(AllenNlpTestCase):
         ]
         assert result["predicted_heads"] == [2, 0, 2, 2, 4, 2]
 
+    def test_sentiment_analysis(self):
+        predictor = load_predictor("roberta-sst")
+        result = predictor.predict_json({"sentence": "This is a positive review."})
+        assert result["label"] == "1"
+
     def test_openie(self):
         predictor = load_predictor("structured-prediction-srl")
         result = predictor.predict_json(
