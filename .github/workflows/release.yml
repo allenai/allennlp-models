@@ -239,6 +239,30 @@ jobs:
       run: |
         make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='gpu-test'
 
+  configs:
+    name: Training Configs 
+    if: github.repository == 'allenai/allennlp-models'
+    runs-on: [self-hosted]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set Docker tag
+      run: |
+        if [[ $GITHUB_EVENT_NAME == 'release' ]]; then
+            echo "::set-env name=DOCKER_TAG::${GITHUB_REF#refs/tags/}";
+        else
+            echo "::set-env name=DOCKER_TAG::$GITHUB_SHA";
+        fi
+
+    - name: Build test image
+      run: |
+        make docker-test-image DOCKER_TAG=$DOCKER_TAG
+
+    - name: Validate training configs
+      run: |
+        make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='test-configs'
+
   # Builds the API documentation and pushes it to the appropriate folder in the
   # allennlp-docs repo.
   docs:
