@@ -1,8 +1,10 @@
 import numpy as np
 from scipy.special import logsumexp
 import torch
+import pytest
 
-from allennlp.common.testing import ModelTestCase
+from allennlp.commands.train import train_model_from_file
+from allennlp.common.testing import ModelTestCase, requires_gpu
 
 from allennlp_models.generation import CopyNetDatasetReader, CopyNetSeq2Seq  # noqa: F401
 from tests import FIXTURES_ROOT
@@ -16,8 +18,34 @@ class CopyNetTest(ModelTestCase):
             FIXTURES_ROOT / "generation" / "copynet" / "data" / "copyover.tsv",
         )
 
-    def test_model_can_train_save_load_predict(self):
+    def test_model_can_train_save_load(self):
         self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-2)
+
+    @requires_gpu
+    def test_model_can_train_with_amp(self):
+        train_model_from_file(
+            self.param_file,
+            self.TEST_DIR,
+            overrides="{'trainer.use_amp':true,'trainer.cuda_device':0}",
+        )
+
+        # NOTE: as of writing this test, AMP does not work with RNNs and LSTMCells. Hence we had
+        # to wrap the call to LSTMCell() in CopyNet (and other models) within an autocast(False) context.
+        # But if this part of the test fails, i.e. a RuntimeError is never raised,
+        # that means AMP may be working now with RNNs, in which case we can remove
+        # any calls to `autocast(False)` around RNNs like we do in CopyNet.
+        # So just do a grep search for uses of 'autocast(False)' or 'autocast(enabled=False)'
+        # in the library.
+        # If you're still confused, contact @epwalsh.
+        with pytest.raises(RuntimeError, match="expected scalar type Half but found Float"):
+            rnn = torch.nn.LSTMCell(10, 20).cuda()
+
+            hx = torch.rand((3, 20), device="cuda")
+            cx = torch.rand((3, 20), device="cuda")
+            inp = torch.rand((3, 10), device="cuda")
+
+            with torch.cuda.amp.autocast(True):
+                hx, cx = rnn(inp, (hx, cx))
 
     def test_vocab(self):
         vocab = self.model.vocab

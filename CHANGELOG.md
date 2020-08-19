@@ -11,6 +11,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated dataset readers for new API: https://github.com/allenai/allennlp/pull/4497.
 
+### Added
+
+- Added regression tests for training configs that run on a scheduled workflow.
+- Added a test for the pretrained sentiment analysis model.
+
+## [v1.1.0rc3](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc3) - 2020-08-12
+
+### Fixed
+
+- Fixed `GraphParser.get_metrics` so that it expects a dict from `F1Measure.get_metric`.
+- `CopyNet` and `SimpleSeq2Seq` models now work with AMP.
+- Made the SST reader a little more strict in the kinds of input it accepts.
+
 ## [v1.1.0rc2](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc2) - 2020-07-31
 
 ### Changed
@@ -28,8 +41,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `ModelCard` and related classes. Added model cards for all the pretrained models.
 - Added a field `registered_predictor_name` to `ModelCard`.
 - Added a method `load_predictor` to `allennlp_models.pretrained`.
+- Added support to multi-layer decoder in simple seq2seq model.
+
 
 ## [v1.1.0rc1](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc1) - 2020-07-14
+
 
 ### Fixed
 

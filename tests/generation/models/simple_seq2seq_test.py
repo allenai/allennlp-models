@@ -3,7 +3,8 @@ import json
 import numpy
 import torch
 
-from allennlp.common.testing import ModelTestCase
+from allennlp.commands.train import train_model_from_file
+from allennlp.common.testing import ModelTestCase, requires_gpu
 from allennlp.nn.beam_search import BeamSearch
 from allennlp.nn.util import sequence_cross_entropy_with_logits
 
@@ -21,8 +22,22 @@ class SimpleSeq2SeqTest(ModelTestCase):
     def test_model_can_train_save_and_load(self):
         self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-2)
 
+    @requires_gpu
+    def test_model_can_train_with_amp(self):
+        train_model_from_file(
+            self.param_file,
+            self.TEST_DIR,
+            overrides="{'trainer.use_amp':true,'trainer.cuda_device':0}",
+        )
+
     def test_bidirectional_model_can_train_save_and_load(self):
         param_overrides = json.dumps({"model": {"encoder": {"bidirectional": True}}})
+        self.ensure_model_can_train_save_and_load(
+            self.param_file, tolerance=1e-2, overrides=param_overrides
+        )
+
+    def test_multi_layer_decoder_model_can_train_save_and_load(self):
+        param_overrides = json.dumps({"model": {"target_decoder_layers": 2}})
         self.ensure_model_can_train_save_and_load(
             self.param_file, tolerance=1e-2, overrides=param_overrides
         )
@@ -40,7 +55,6 @@ class SimpleSeq2SeqTest(ModelTestCase):
         )
 
     def test_loss_is_computed_correctly(self):
-
         batch_size = 5
         num_decoding_steps = 5
         num_classes = 10
@@ -76,7 +90,6 @@ class SimpleSeq2SeqTest(ModelTestCase):
         assert "predicted_tokens" in decode_output_dict
 
     def test_greedy_decode_matches_beam_search(self):
-
         beam_search = BeamSearch(
             self.model._end_index, max_steps=self.model._max_decoding_steps, beam_size=1
         )

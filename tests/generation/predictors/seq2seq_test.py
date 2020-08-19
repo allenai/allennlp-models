@@ -19,7 +19,8 @@ class TestSeq2SeqPredictor(AllenNlpTestCase):
         predicted_tokens = result.get("predicted_tokens")
         assert predicted_tokens is not None
         assert isinstance(predicted_tokens, list)
-        assert all(isinstance(x, str) for x in predicted_tokens)
+        for predicted_token in predicted_tokens:
+            assert all(isinstance(x, str) for x in predicted_token)
 
     def test_uses_named_inputs_with_composed_seq2seq(self):
         inputs = {"source": "What kind of test succeeded on its first attempt?"}

@@ -58,7 +58,7 @@ typecheck :
 
 .PHONY : test
 test :
-	pytest --color=yes -rf --durations=40 -m "not pretrained_model_test"
+	pytest --color=yes -rf --durations=40 -m "not pretrained_model_test" -m "not pretrained_config_test"
 
 .PHONY : gpu-test
 gpu-test :
@@ -66,14 +66,20 @@ gpu-test :
 
 .PHONY : test-with-cov
 test-with-cov :
-	pytest --color=yes -rf --durations=40 -m "not pretrained_model_test" \
+	pytest --color=yes -rf --durations=40 \
+			-m "not pretrained_model_test" \
+			-m "not pretrained_config_test" \
 			--cov-config=.coveragerc \
 			--cov=allennlp_models/ \
 			--cov-report=xml
 
 .PHONY : test-pretrained
 test-pretrained :
-	pytest -v --color=yes -m "pretrained_model_test"
+	pytest -v -n2 --forked --color=yes --durations=10 -m "pretrained_model_test"
+
+.PHONY : test-configs
+test-configs :
+	pytest -v -n2 --forked --color=yes --durations=10 -m "pretrained_config_test"
 
 .PHONY : build-all-api-docs
 build-all-api-docs : scripts/py2md.py
