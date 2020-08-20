@@ -1,5 +1,5 @@
 # TODO: point this back to allenai/allennlp.git@master
-git+https://github.com/epwalsh/allennlp.git@data-loading
+git+https://github.com/allenai/allennlp.git@vision
 
 # For structured prediction.
 conllu==4.0
