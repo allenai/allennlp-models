@@ -7,7 +7,7 @@ import argparse
 from typing import List
 
 import torch
-from allennlp.data.samplers import SequentialSampler
+from allennlp.data.samplers import PyTorchSequentialSampler
 
 from allennlp_models.structured_prediction.models.srl import write_to_conll_eval_file
 
@@ -66,7 +66,7 @@ def main(serialization_directory: str, device: int, data: str, prefix: str, doma
     dataset = dataset_reader.read(evaluation_data_path)
 
     with torch.autograd.no_grad():
-        loader = DataLoader(dataset, sampler=SequentialSampler(dataset), batch_size=32)
+        loader = DataLoader(dataset, sampler=PyTorchSequentialSampler(dataset), batch_size=32)
         model_predictions: List[List[str]] = []
         for batch in Tqdm.tqdm(loader):
             batch = move_to_device(batch, device)

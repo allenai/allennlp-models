@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Updated dataset readers for new API: https://github.com/allenai/allennlp/pull/4497.
+
 ### Added
 
 - Added regression tests for training configs that run on a scheduled workflow.
@@ -19,8 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed `GraphParser.get_metrics` so that it expects a dict from `F1Measure.get_metric`.
 - `CopyNet` and `SimpleSeq2Seq` models now work with AMP.
 - Made the SST reader a little more strict in the kinds of input it accepts.
-
-
 
 ## [v1.1.0rc2](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc2) - 2020-07-31
 
