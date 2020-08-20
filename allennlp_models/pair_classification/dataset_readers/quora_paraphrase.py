@@ -39,9 +39,9 @@ class QuoraParaphraseDatasetReader(DatasetReader):
     """
 
     def __init__(
-        self, 
-        tokenizer: Tokenizer = None, 
-        token_indexers: Dict[str, TokenIndexer] = None, 
+        self,
+        tokenizer: Tokenizer = None,
+        token_indexers: Dict[str, TokenIndexer] = None,
         combine_input_fields: Optional[bool] = None,
         **kwargs,
     ) -> None:
@@ -86,7 +86,7 @@ class QuoraParaphraseDatasetReader(DatasetReader):
             hypothesis_tokens = self._tokenizer.add_special_tokens(hypothesis)
             fields["premise"] = TextField(premise_tokens, self._token_indexers)
             fields["hypothesis"] = TextField(hypothesis_tokens, self._token_indexers)
-        
+
         if label is not None:
             fields["label"] = LabelField(label)
 
