@@ -8,6 +8,7 @@ on:
   push:
     branches:
     - master
+    - vision
   schedule:
     - cron: '17 10 * * *' # run at 10 AM UTC every day.
 
@@ -264,7 +265,7 @@ jobs:
 
     - name: Deploy docs
       # Only run this on master commits to main repo.
-      if: github.repository == 'allenai/allennlp-models' && github.event_name == 'push'
+      if: github.repository == 'allenai/allennlp-models' && github.event_name == 'push' && github.ref == 'refs/heads/master'
       run: |
         # And push them up to GitHub
         cd ~/allennlp-docs/
