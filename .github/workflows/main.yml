@@ -8,6 +8,7 @@ on:
   push:
     branches:
     - master
+    - vision
   schedule:
     - cron: '17 10 * * *' # run at 10 AM UTC every day.
 
@@ -28,7 +29,7 @@ jobs:
       run: |
         # If this step fails, this means you haven't updated the CHANGELOG.md
         # file with notes on your contribution.
-        git diff --name-only $(git merge-base origin/master HEAD) | grep '^CHANGELOG.md$' && echo "Thanks for helping keep our CHANGELOG up-to-date!"
+        git diff --name-only $(git merge-base origin/${{ github.base_ref }} HEAD) | grep '^CHANGELOG.md$' && echo "Thanks for helping keep our CHANGELOG up-to-date!"
 
   checks:
     name: Checks
@@ -264,7 +265,7 @@ jobs:
 
     - name: Deploy docs
       # Only run this on master commits to main repo.
-      if: github.repository == 'allenai/allennlp-models' && github.event_name == 'push'
+      if: github.repository == 'allenai/allennlp-models' && github.event_name == 'push' && github.ref == 'refs/heads/master'
       run: |
         # And push them up to GitHub
         cd ~/allennlp-docs/
