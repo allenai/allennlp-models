@@ -51,7 +51,6 @@ class DropEmAndF1(Metric):
         count = 1
 
         if is_distributed():
-            print(exact_match, f1_score)
             if dist.get_backend() == "nccl":
                 device = torch.cuda.current_device()
             else:

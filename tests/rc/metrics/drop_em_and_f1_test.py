@@ -8,7 +8,7 @@ from allennlp_models.rc.metrics import DropEmAndF1
 
 
 class DropEmAndF1Test(AllenNlpTestCase):
-    def test_squad_em_and_f1(self):
+    def test_drop_em_and_f1(self):
         metric = DropEmAndF1()
 
         metric(
@@ -18,7 +18,7 @@ class DropEmAndF1Test(AllenNlpTestCase):
         assert exact_match == 0.0
         assert f1_score == 0.38
 
-    def test_distributed_squad_em_and_f1(self):
+    def test_distributed_drop_em_and_f1(self):
         prediction = ["this is the best span", "this is another span"]
         ground_truths = [
             [{"spans": ["this is a good span", "something irrelevant"]}],
