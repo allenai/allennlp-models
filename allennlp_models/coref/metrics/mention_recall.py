@@ -35,7 +35,6 @@ class MentionRecall(Metric):
 
         if is_distributed():
             device = batched_top_spans.device
-            # Converting bool to float here, since we want to count the number of exact matches.
             _num_gold_mentions = torch.tensor(num_gold_mentions).to(device)
             _num_recalled_mentions = torch.tensor(num_recalled_mentions).to(device)
             dist.all_reduce(_num_gold_mentions, op=dist.ReduceOp.SUM)
