@@ -84,7 +84,9 @@ setup(
     author="Allen Institute for Artificial Intelligence",
     author_email="allennlp@allenai.org",
     license="Apache",
-    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"],),
+    packages=find_packages(
+        exclude=["*.tests", "*.tests.*", "tests.*", "tests"],
+    ),
     install_requires=install_requirements,
     include_package_data=True,
     package_data={

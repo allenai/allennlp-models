@@ -63,14 +63,14 @@ class SeqDecoder(Module, Registrable):
         target_tokens : `Dict[str, torch.LongTensor]`, optional
             The output of `TextField.as_array()` applied on the target `TextField`.
 
-       """
+        """
 
         raise NotImplementedError()
 
     def post_process(self, output_dict: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
         """
-            Post processing for converting raw outputs to prediction during inference.
-            The composing models such `allennlp.models.encoder_decoders.composed_seq2seq.ComposedSeq2Seq`
-            can call this method when `decode` is called.
+        Post processing for converting raw outputs to prediction during inference.
+        The composing models such `allennlp.models.encoder_decoders.composed_seq2seq.ComposedSeq2Seq`
+        can call this method when `decode` is called.
         """
         raise NotImplementedError()

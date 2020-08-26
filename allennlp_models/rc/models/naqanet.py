@@ -445,8 +445,11 @@ class NumericallyAugmentedQaNet(Model):
                         + log_likelihood_for_passage_span_ends
                     )
                     # For those padded spans, we set their log probabilities to be very small negative value
-                    log_likelihood_for_passage_spans = replace_masked_values_with_big_negative_number(
-                        log_likelihood_for_passage_spans, gold_passage_span_mask,
+                    log_likelihood_for_passage_spans = (
+                        replace_masked_values_with_big_negative_number(
+                            log_likelihood_for_passage_spans,
+                            gold_passage_span_mask,
+                        )
                     )
                     # Shape: (batch_size, )
                     log_marginal_likelihood_for_passage_span = util.logsumexp(
@@ -480,8 +483,11 @@ class NumericallyAugmentedQaNet(Model):
                         + log_likelihood_for_question_span_ends
                     )
                     # For those padded spans, we set their log probabilities to be very small negative value
-                    log_likelihood_for_question_spans = replace_masked_values_with_big_negative_number(
-                        log_likelihood_for_question_spans, gold_question_span_mask,
+                    log_likelihood_for_question_spans = (
+                        replace_masked_values_with_big_negative_number(
+                            log_likelihood_for_question_spans,
+                            gold_question_span_mask,
+                        )
                     )
                     # Shape: (batch_size, )
 
