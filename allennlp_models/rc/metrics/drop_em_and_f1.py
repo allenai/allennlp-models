@@ -55,8 +55,8 @@ class DropEmAndF1(Metric):
                 device = torch.cuda.current_device()
             else:
                 device = torch.device("cpu")
-            # Converting bool to float here, since we want to count the number of exact matches.
-            _exact_match = torch.tensor(exact_match, dtype=torch.float).to(device)
+            # Converting bool to int here, since we want to count the number of exact matches.
+            _exact_match = torch.tensor(exact_match, dtype=torch.int).to(device)
             _f1_score = torch.tensor(f1_score).to(device)
             _count = torch.tensor(count).to(device)
             dist.all_reduce(_exact_match, op=dist.ReduceOp.SUM)
