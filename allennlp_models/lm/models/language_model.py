@@ -213,9 +213,7 @@ class LanguageModel(Model):
                 + "does not report how many layers it has."
             )
 
-    def forward(  # type: ignore
-        self, source: TextFieldTensors
-    ) -> Dict[str, torch.Tensor]:
+    def forward(self, source: TextFieldTensors) -> Dict[str, torch.Tensor]:  # type: ignore
         """
         Computes the averaged forward (and backward, if language model is bidirectional)
         LM loss from the batch.

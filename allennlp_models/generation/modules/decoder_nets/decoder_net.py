@@ -94,5 +94,5 @@ class DecoderNet(torch.nn.Module, Registrable):
 
         Tuple[Dict[str, torch.Tensor], torch.Tensor]
         Tuple of new decoder state and decoder output. Output should be used to generate out sequence elements
-       """
+        """
         raise NotImplementedError()

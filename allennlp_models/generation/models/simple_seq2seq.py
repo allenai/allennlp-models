@@ -98,7 +98,8 @@ class SimpleSeq2Seq(Model):
                 self.vocab._padding_token, self._target_namespace
             )
             self._bleu = BLEU(
-                bleu_ngram_weights, exclude_indices={pad_index, self._end_index, self._start_index},
+                bleu_ngram_weights,
+                exclude_indices={pad_index, self._end_index, self._start_index},
             )
         else:
             self._bleu = None
@@ -154,7 +155,9 @@ class SimpleSeq2Seq(Model):
         # TODO (pradeep): Do not hardcode decoder cell type.
         if self._target_decoder_layers > 1:
             self._decoder_cell = LSTM(
-                self._decoder_input_dim, self._decoder_output_dim, self._target_decoder_layers,
+                self._decoder_input_dim,
+                self._decoder_output_dim,
+                self._target_decoder_layers,
             )
         else:
             self._decoder_cell = LSTMCell(self._decoder_input_dim, self._decoder_output_dim)
@@ -295,7 +298,9 @@ class SimpleSeq2Seq(Model):
         batch_size = state["source_mask"].size(0)
         # shape: (batch_size, encoder_output_dim)
         final_encoder_output = util.get_final_encoder_states(
-            state["encoder_outputs"], state["source_mask"], self._encoder.is_bidirectional(),
+            state["encoder_outputs"],
+            state["source_mask"],
+            self._encoder.is_bidirectional(),
         )
         # Initialize the decoder hidden state with the final output of the encoder.
         # shape: (batch_size, decoder_output_dim)
@@ -504,7 +509,9 @@ class SimpleSeq2Seq(Model):
 
     @staticmethod
     def _get_loss(
-        logits: torch.LongTensor, targets: torch.LongTensor, target_mask: torch.BoolTensor,
+        logits: torch.LongTensor,
+        targets: torch.LongTensor,
+        target_mask: torch.BoolTensor,
     ) -> torch.Tensor:
         """
         Compute loss.
