@@ -133,7 +133,13 @@ class SrlReader(DatasetReader):
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
-        self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
+        if token_indexers is not None:
+            self._token_indexers = token_indexers
+        elif bert_model_name is not None:
+            from allennlp.data.token_indexers import PretrainedTransformerIndexer
+            self._token_indexers = {"tokens": PretrainedTransformerIndexer(bert_model_name, "tokens")}
+        else:
+            self._token_indexers = {"tokens": SingleIdTokenIndexer()}
         self._domain_identifier = domain_identifier
 
         if bert_model_name is not None:
