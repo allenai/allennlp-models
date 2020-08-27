@@ -80,7 +80,11 @@ DATASET_PATCHES: Dict[Path, Tuple[str, ...]] = {
     FIXTURES_ROOT / "rc" / "squad.json": ("SQUAD_TRAIN", "SQUAD_DEV"),
     FIXTURES_ROOT
     / "coref"
-    / "coref.gold_conll": ("COREF_TRAIN_DATA_PATH", "COREF_DEV_DATA_PATH", "COREF_TEST_DATA_PATH",),
+    / "coref.gold_conll": (
+        "COREF_TRAIN_DATA_PATH",
+        "COREF_DEV_DATA_PATH",
+        "COREF_TEST_DATA_PATH",
+    ),
     FIXTURES_ROOT
     / "structured_prediction"
     / "srl"
@@ -99,7 +103,10 @@ DATASET_PATCHES: Dict[Path, Tuple[str, ...]] = {
     / "bart"
     / "data"
     / "url_lists"
-    / "all_train.txt": ("CNNDM_TRAIN", "CNNDM_DEV",),
+    / "all_train.txt": (
+        "CNNDM_TRAIN",
+        "CNNDM_DEV",
+    ),
 }
 
 
