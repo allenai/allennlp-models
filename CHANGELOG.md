@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added regression tests for training configs that run on a scheduled workflow.
 - Added a test for the pretrained sentiment analysis model.
+- Added way for questions from quora dataset to be concatenated like the sequences in the SNLI dataset.
 
 ## [v1.1.0rc3](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc3) - 2020-08-12
 
