@@ -223,7 +223,7 @@ class BiattentiveClassificationNetwork(Model):
                  A tensor of shape `(batch_size, num_classes)` representing a
                  distribution over the label classes for each instance.
              - `loss` (`torch.FloatTensor`, optional) :
-                 A scalar loss to be optimised.        """
+                 A scalar loss to be optimised."""
         text_mask = util.get_text_field_mask(tokens)
         # Pop elmo tokens, since elmo embedder should not be present.
         elmo_tokens = tokens.pop("elmo", None)

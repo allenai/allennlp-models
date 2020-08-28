@@ -58,7 +58,7 @@ typecheck :
 
 .PHONY : test
 test :
-	pytest --color=yes -rf --durations=40 -m "not pretrained_model_test" -m "not pretrained_config_test"
+	pytest --color=yes -rf --durations=40 -m "not pretrained_model_test and not pretrained_config_test"
 
 .PHONY : gpu-test
 gpu-test :
@@ -67,8 +67,7 @@ gpu-test :
 .PHONY : test-with-cov
 test-with-cov :
 	pytest --color=yes -rf --durations=40 \
-			-m "not pretrained_model_test" \
-			-m "not pretrained_config_test" \
+			-m "not pretrained_model_test and not pretrained_config_test" \
 			--cov-config=.coveragerc \
 			--cov=allennlp_models/ \
 			--cov-report=xml
