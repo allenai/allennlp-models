@@ -20,9 +20,9 @@ import torch.nn.functional as F
 @Seq2SeqEncoder.register("bart_encoder")
 class BartEncoder(Seq2SeqEncoder):
     """
-    The BART encoder without the token and position embeddings. This model requires inputs to already be embedded. 
+    The BART encoder without the token and position embeddings. This model requires inputs to already be embedded.
     For a pre-trained encoder model with pre-trained token and position embeddings use
-    `PretrainedTransformerEmbedder(model_name, sub_module="encoder")` with a pretrained BART model. 
+    `PretrainedTransformerEmbedder(model_name, sub_module="encoder")` with a pretrained BART model.
 
     # Parameters
 
@@ -95,9 +95,7 @@ class _BartEncoderWrapper(nn.Module):
 
     @overrides
     def forward(
-        self,
-        input_ids,
-        attention_mask=None,
+        self, input_ids, attention_mask=None,
     ):
         x = self.embed_tokens(input_ids) + self.embed_positions(input_ids)
         encoder_states = self.encoder(x, attention_mask)
