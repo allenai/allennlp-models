@@ -97,7 +97,9 @@ class _BartEncoderWrapper(nn.Module):
 
     @overrides
     def forward(
-        self, input_ids, attention_mask=None,
+        self,
+        input_ids,
+        attention_mask=None,
     ):
         x = self.embed_tokens(input_ids) + self.embed_positions(input_ids)
         encoder_states = self.encoder(x, attention_mask)
