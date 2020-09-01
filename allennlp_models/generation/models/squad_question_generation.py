@@ -10,18 +10,16 @@ from transformers import BartForConditionalGeneration
 from typing import Any, Dict, List, Tuple
 from allennlp.nn.beam_search import BeamSearch
 
-SPAN_START_TOKEN = '<m>'
-SPAN_END_TOKEN = '</m>'
+SPAN_START_TOKEN = "<m>"
+SPAN_END_TOKEN = "</m>"
 ALL_SPECIAL_TOKENS = [SPAN_START_TOKEN, SPAN_END_TOKEN]
 
 
-@Model.register('squad_question_generation')
+@Model.register("squad_question_generation")
 class QuestionGenerationModel(Model):
-    def __init__(self,
-                 vocab: Vocabulary,
-                 model_name: str,
-                 max_decoding_steps: int = 50,
-                 beam_size: int = 4) -> None:
+    def __init__(
+        self, vocab: Vocabulary, model_name: str, max_decoding_steps: int = 50, beam_size: int = 4
+    ) -> None:
         super().__init__(vocab)
         self.bart = BartForConditionalGeneration.from_pretrained(model_name, output_past=True)
         self.tokenizer = PretrainedTransformerTokenizer(model_name)
@@ -42,18 +40,20 @@ class QuestionGenerationModel(Model):
         )
 
     @overrides
-    def forward(self,
-                source_tokens: TextFieldTensors,
-                metadata: List[Dict[str, Any]],
-                target_tokens: TextFieldTensors = None) -> Dict[str, Any]:
-        source_ids = source_tokens['tokens']['token_ids']
-        source_mask = source_tokens['tokens']['mask']
+    def forward(
+        self,
+        source_tokens: TextFieldTensors,
+        metadata: List[Dict[str, Any]],
+        target_tokens: TextFieldTensors = None,
+    ) -> Dict[str, Any]:
+        source_ids = source_tokens["tokens"]["token_ids"]
+        source_mask = source_tokens["tokens"]["mask"]
 
-        output_dict = {'metadata': metadata}
+        output_dict = {"metadata": metadata}
         if target_tokens is not None:
             # Calculate loss
-            target_ids = target_tokens['tokens']['token_ids']
-            target_mask = target_tokens['tokens']['mask']
+            target_ids = target_tokens["tokens"]["token_ids"]
+            target_mask = target_tokens["tokens"]["mask"]
 
             logits = self.bart(
                 input_ids=source_ids,
@@ -69,9 +69,9 @@ class QuestionGenerationModel(Model):
                 target_ids[:, 1:].contiguous(),
                 target_mask[:, 1:].contiguous(),
                 label_smoothing=0.1,
-                average='token'
+                average="token",
             )
-            output_dict['loss'] = loss
+            output_dict["loss"] = loss
 
         if not self.training:
             # Run inference: This differs from the original code which
@@ -132,7 +132,7 @@ class QuestionGenerationModel(Model):
         return decoder_cache
 
     def take_step(
-            self, last_predictions: torch.Tensor, state: Dict[str, torch.Tensor], step: int
+        self, last_predictions: torch.Tensor, state: Dict[str, torch.Tensor], step: int
     ) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
         if len(last_predictions.shape) == 1:
             last_predictions = last_predictions.unsqueeze(-1)

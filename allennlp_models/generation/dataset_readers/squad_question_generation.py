@@ -1,4 +1,4 @@
-from typing import Any, Dict, Iterable, Optional, List
+from typing import Iterable, Optional, List, Any, Dict
 import json
 import logging
 from allennlp.data import DatasetReader, Instance, Token
@@ -9,8 +9,8 @@ from overrides import overrides
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
-SPAN_START_TOKEN = '<m>'
-SPAN_END_TOKEN = '</m>'
+SPAN_START_TOKEN = "<m>"
+SPAN_END_TOKEN = "</m>"
 ALL_SPECIAL_TOKENS = [SPAN_START_TOKEN, SPAN_END_TOKEN]
 
 
@@ -49,16 +49,15 @@ def _KnuthMorrisPratt(text, pattern):
             yield startPos
 
 
-@DatasetReader.register('squad_question_generation')
+@DatasetReader.register("squad_question_generation")
 class SquadConditionalQuestionGenerationReader(DatasetReader):
-    def __init__(self,
-                 model_name: str,
-                 max_instances=None,
-                 lazy: bool = False):
+    def __init__(self, model_name: str, max_instances=None, lazy: bool = False):
         super().__init__(lazy=lazy)
         # Setting this to false to encode pairs of text
         self.tokenizer = PretrainedTransformerTokenizer(model_name, add_special_tokens=False)
-        self.token_indexers = {'tokens': PretrainedTransformerIndexer(model_name, namespace='tokens')}
+        self.token_indexers = {
+            "tokens": PretrainedTransformerIndexer(model_name, namespace="tokens")
+        }
 
         # Add the tokens which will mark the answer span
         self.tokenizer.tokenizer.add_tokens(ALL_SPECIAL_TOKENS)
@@ -96,54 +95,59 @@ class SquadConditionalQuestionGenerationReader(DatasetReader):
                     if self.max_instances is not None and instances_read > self.max_instances:
                         break
 
-
-                    yield self.text_to_instance(passage=passage,
-                                                answer_text=answer_text,
-                                                answer_start_charoffsets=answer_start_charoffsets,
-                                                passage_id=passage_id,
-                                                query_id=query_id,
-                                                question=question)
+                    yield self.text_to_instance(
+                        passage=passage,
+                        answer_text=answer_text,
+                        answer_start_charoffsets=answer_start_charoffsets,
+                        passage_id=passage_id,
+                        query_id=query_id,
+                        question=question,
+                    )
             if self.max_instances is not None and instances_read > self.max_instances:
                 break
 
         logger.info("Total questions: {} Instances read: {}".format(total_ques, instances_read))
 
     def _insert_span_symbols(self, context: str, start: int, end: int) -> str:
-        return f'{context[:start]}{SPAN_START_TOKEN} {context[start:end]} {SPAN_END_TOKEN}{context[end:]}'
+        return f"{context[:start]}{SPAN_START_TOKEN} {context[start:end]} {SPAN_END_TOKEN}{context[end:]}"
 
     @overrides
-    def text_to_instance(self,
-                         passage: str,
-                         answer_text: str,
-                         answer_start_charoffsets: List[int],
-                         passage_id: str = None,
-                         query_id: str = None,
-                         question: Optional[str] = None) -> Instance:
+    def text_to_instance(
+        self,
+        passage: str,
+        answer_text: str,
+        answer_start_charoffsets: List[int],
+        passage_id: str = None,
+        query_id: str = None,
+        question: Optional[str] = None,
+    ) -> Instance:
         fields = {}
         # Using just the first occurrence of the answer in the passage
         answer_start_charoffset = answer_start_charoffsets[0]
         ans_end_charoffset = answer_start_charoffset + len(answer_text)
 
-        ans_marked_passage = self._insert_span_symbols(passage, answer_start_charoffset, ans_end_charoffset)
+        ans_marked_passage = self._insert_span_symbols(
+            passage, answer_start_charoffset, ans_end_charoffset
+        )
         ans_marked_passage_tokens: List[Token] = self.tokenizer.tokenize(ans_marked_passage)
         # source: paragraph
         source_tokens = self.tokenizer.add_special_tokens(ans_marked_passage_tokens)
-        fields['source_tokens'] = TextField(source_tokens, self.token_indexers)
+        fields["source_tokens"] = TextField(source_tokens, self.token_indexers)
 
-        metadata = {}
-        metadata['answer'] = answer_text
-        metadata['answer_start'] = answer_start_charoffset
-        metadata['answer_end'] = ans_end_charoffset
-        metadata['passage'] = passage
-        metadata['ans_marked_passage'] = ans_marked_passage
-        metadata['source_tokens'] = source_tokens
+        metadata: Dict[str, Any] = {}
+        metadata["answer"] = answer_text
+        metadata["answer_start"] = answer_start_charoffset
+        metadata["answer_end"] = ans_end_charoffset
+        metadata["passage"] = passage
+        metadata["ans_marked_passage"] = ans_marked_passage
+        metadata["source_tokens"] = source_tokens
 
         if question is not None:
             target_tokens = self.tokenizer.tokenize(question)
             target_tokens = self.tokenizer.add_special_tokens(target_tokens)
-            fields['target_tokens'] = TextField(target_tokens, self.token_indexers)
-            metadata['question'] = question
-            metadata['target_tokens'] = target_tokens
+            fields["target_tokens"] = TextField(target_tokens, self.token_indexers)
+            metadata["question"] = question
+            metadata["target_tokens"] = target_tokens
 
-        fields['metadata'] = MetadataField(metadata)
+        fields["metadata"] = MetadataField(metadata)
         return Instance(fields)
