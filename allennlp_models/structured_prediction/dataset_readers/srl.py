@@ -138,9 +138,7 @@ class SrlReader(DatasetReader):
         elif bert_model_name is not None:
             from allennlp.data.token_indexers import PretrainedTransformerIndexer
 
-            self._token_indexers = {
-                "tokens": PretrainedTransformerIndexer(bert_model_name)
-            }
+            self._token_indexers = {"tokens": PretrainedTransformerIndexer(bert_model_name)}
         else:
             self._token_indexers = {"tokens": SingleIdTokenIndexer()}
         self._domain_identifier = domain_identifier
