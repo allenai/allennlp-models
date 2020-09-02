@@ -139,7 +139,7 @@ class SrlReader(DatasetReader):
             from allennlp.data.token_indexers import PretrainedTransformerIndexer
 
             self._token_indexers = {
-                "tokens": PretrainedTransformerIndexer(bert_model_name, "tokens")
+                "tokens": PretrainedTransformerIndexer(bert_model_name)
             }
         else:
             self._token_indexers = {"tokens": SingleIdTokenIndexer()}
