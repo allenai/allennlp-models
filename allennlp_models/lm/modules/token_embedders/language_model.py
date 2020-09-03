@@ -77,19 +77,25 @@ class LanguageModelTokenEmbedder(TokenEmbedder):
 
         # Extract the name of the tokens that the LM was trained on.
         text_field_embedder = dict_config["model"]["text_field_embedder"]
-        non_empty_embedders = [token_embedder_key for token_embedder_key, token_embedder_value in
-                               text_field_embedder["token_embedders"].items()
-                               if token_embedder_value.get("type") != "empty"]
+        non_empty_embedders = [
+            token_embedder_key
+            for token_embedder_key, token_embedder_value in text_field_embedder[
+                "token_embedders"
+            ].items()
+            if token_embedder_value.get("type") != "empty"
+        ]
 
         if len(non_empty_embedders) == 0:
             # Only empty embedders were contained in the language model
             # We need at least one non-empty embedder in the language model
-            raise ConfigurationError(f"Language model from {archive_file} trained with only empty embedders!")
+            raise ConfigurationError(
+                f"Language model from {archive_file} trained with only empty embedders!"
+            )
         elif len(non_empty_embedders) > 1:
             warnings.warn(
                 "Multiple non-empty embedders were found, but we will only use "
                 f"the first one: {non_empty_embedders[0]}",
-                RuntimeWarning
+                RuntimeWarning,
             )
 
         self._token_name = non_empty_embedders[0]
