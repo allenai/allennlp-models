@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Updated `LanguageModelTokenEmbedder` to allow allow multiple token embedders, but only use first with non-empty type
 - Fixed evaluation of metrics when using distributed setting.
 
 ## [v1.1.0rc4](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc4) - 2020-08-21
