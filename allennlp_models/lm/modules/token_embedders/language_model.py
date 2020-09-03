@@ -1,4 +1,5 @@
 import json
+import warnings
 from typing import Dict, Tuple, TYPE_CHECKING
 
 import torch
@@ -76,15 +77,22 @@ class LanguageModelTokenEmbedder(TokenEmbedder):
 
         # Extract the name of the tokens that the LM was trained on.
         text_field_embedder = dict_config["model"]["text_field_embedder"]
-        token_names = list(text_field_embedder["token_embedders"].keys())
-        if len(token_names) != 1:
-            # We don't currently support embedding with language models trained with multiple
-            # embedded indices.
-            #
-            # Note: We only care about embedded indices. This does not include "tokens" which
-            # is just used to compute the loss in LanguageModel.
-            raise ConfigurationError(f"LM from {archive_file} trained with multiple embedders!")
-        self._token_name = token_names[0]
+        non_empty_embedders = [token_embedder_key for token_embedder_key, token_embedder_value in
+                               text_field_embedder["token_embedders"].items()
+                               if token_embedder_value.get("type") != "empty"]
+
+        if len(non_empty_embedders) == 0:
+            # Only empty embedders were contained in the language model
+            # We need at least one non-empty embedder in the language model
+            raise ConfigurationError(f"Language model from {archive_file} trained with only empty embedders!")
+        elif len(non_empty_embedders) > 1:
+            warnings.warn(
+                "Multiple non-empty embedders were found, but we will only use "
+                f"the first one: {non_empty_embedders[0]}",
+                RuntimeWarning
+            )
+
+        self._token_name = non_empty_embedders[0]
 
         # TODO(brendanr): Find a way to remove this hack. The issue fundamentally is that the
         # BasicTextFieldEmbedder concatenates multiple embedded representations. When a
