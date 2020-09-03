@@ -15,7 +15,7 @@ from allennlp.nn.util import (
 
 # Importing at runtime results in a circular dependency.
 if TYPE_CHECKING:
-    from allennlp.models.language_model import LanguageModel
+    from allennlp_models.lm.models.language_model import LanguageModel
 
 
 @TokenEmbedder.register("language_model_token_embedder")

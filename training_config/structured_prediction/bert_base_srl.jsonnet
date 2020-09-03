@@ -1,7 +1,9 @@
+local bert_model = "bert-base-uncased";
+
 {
     "dataset_reader": {
       "type": "srl",
-      "bert_model_name": "bert-base-uncased",
+      "bert_model_name": bert_model,
     },
 
     "data_loader": {
@@ -19,7 +21,7 @@
     "model": {
         "type": "srl_bert",
         "embedding_dropout": 0.1,
-        "bert_model": "bert-base-uncased",
+        "bert_model": bert_model,
     },
 
     "trainer": {
