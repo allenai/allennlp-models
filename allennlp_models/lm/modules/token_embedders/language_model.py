@@ -2,10 +2,14 @@ import json
 from typing import Dict, Tuple, TYPE_CHECKING
 
 import torch
+from allennlp.common import Params
 
 from allennlp.common.checks import ConfigurationError
 from allennlp.data import TokenIndexer, Token
+from allennlp.modules import TextFieldEmbedder
 from allennlp.modules.scalar_mix import ScalarMix
+from allennlp.modules.text_field_embedders import BasicTextFieldEmbedder
+from allennlp.modules.token_embedders import EmptyEmbedder
 from allennlp.modules.token_embedders.token_embedder import TokenEmbedder
 from allennlp.nn.util import (
     remove_sentence_boundaries,
@@ -76,12 +80,15 @@ class LanguageModelTokenEmbedder(TokenEmbedder):
 
         # Extract the name of the tokens that the LM was trained on.
         text_field_embedder = dict_config["model"]["text_field_embedder"]
+        text_field_embedder = TextFieldEmbedder.from_params(Params(text_field_embedder))
+        if not isinstance(text_field_embedder, BasicTextFieldEmbedder):
+            raise ConfigurationError(
+                f"Language model from {archive_file} uses a non-standard TextFieldEmbedder!"
+            )
         non_empty_embedders = [
-            token_embedder_key
-            for token_embedder_key, token_embedder_value in text_field_embedder[
-                "token_embedders"
-            ].items()
-            if token_embedder_value.get("type") != "empty"
+            name
+            for name, token_embedder in text_field_embedder._token_embedders.items()
+            if not isinstance(token_embedder, EmptyEmbedder)
         ]
 
         if len(non_empty_embedders) == 0:
