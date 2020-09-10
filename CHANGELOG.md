@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [v1.1.0](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0) - 2020-09-08
+
 ### Fixed
 
 - Updated `LanguageModelTokenEmbedder` to allow allow multiple token embedders, but only use first with non-empty type
 - Fixed evaluation of metrics when using distributed setting.
+- Fixed a bug introduced in 1.0 where the SRL model did not reproduce the original result.
 
 ## [v1.1.0rc4](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc4) - 2020-08-21
 
