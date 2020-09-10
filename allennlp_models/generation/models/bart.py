@@ -344,7 +344,7 @@ class Bart(Model):
                 attention_mask=state["input_mask"],
                 encoder_outputs=encoder_outputs,
                 decoder_input_ids=last_predictions[:, : i + 1],
-                decoder_cached_states=decoder_cache,
+                past_key_values=decoder_cache,
                 generation_mode=True,
                 use_cache=True,
             )
@@ -359,7 +359,7 @@ class Bart(Model):
                     dim=-1, index=idx
                 )
 
-            decoder_cache = outputs[1][1]
+            decoder_cache = outputs[1]
 
             state["encoder_states"] = outputs[2]
 

@@ -1,4 +1,5 @@
-git+https://github.com/allenai/allennlp.git@master
+# TODO: change this back to master branch
+git+https://github.com/allenai/allennlp.git@dependabot/pip/transformers-gte-3.0-and-lt-3.2
 
 # For structured prediction.
 conllu==4.1
