@@ -1,5 +1,4 @@
 import json
-import warnings
 from typing import Dict, Tuple, TYPE_CHECKING
 
 import torch
@@ -92,10 +91,8 @@ class LanguageModelTokenEmbedder(TokenEmbedder):
                 f"Language model from {archive_file} trained with only empty embedders!"
             )
         elif len(non_empty_embedders) > 1:
-            warnings.warn(
-                "Multiple non-empty embedders were found, but we will only use "
-                f"the first one: {non_empty_embedders[0]}",
-                RuntimeWarning,
+            raise ConfigurationError(
+                f"Language model from {archive_file} trained with multiple non-empty embedders!"
             )
 
         self._token_name = non_empty_embedders[0]
