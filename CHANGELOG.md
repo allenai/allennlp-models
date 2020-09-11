@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Updated `LanguageModelTokenEmbedder` to allow allow multiple token embedders, but only use first with non-empty type
 - Fixed evaluation of metrics when using distributed setting.
 - Fixed a bug introduced in 1.0 where the SRL model did not reproduce the original result.
 

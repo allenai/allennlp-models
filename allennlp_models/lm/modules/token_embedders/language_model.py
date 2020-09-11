@@ -2,10 +2,14 @@ import json
 from typing import Dict, Tuple, TYPE_CHECKING
 
 import torch
+from allennlp.common import Params
 
 from allennlp.common.checks import ConfigurationError
 from allennlp.data import TokenIndexer, Token
+from allennlp.modules import TextFieldEmbedder
 from allennlp.modules.scalar_mix import ScalarMix
+from allennlp.modules.text_field_embedders import BasicTextFieldEmbedder
+from allennlp.modules.token_embedders import EmptyEmbedder
 from allennlp.modules.token_embedders.token_embedder import TokenEmbedder
 from allennlp.nn.util import (
     remove_sentence_boundaries,
@@ -76,15 +80,29 @@ class LanguageModelTokenEmbedder(TokenEmbedder):
 
         # Extract the name of the tokens that the LM was trained on.
         text_field_embedder = dict_config["model"]["text_field_embedder"]
-        token_names = list(text_field_embedder["token_embedders"].keys())
-        if len(token_names) != 1:
-            # We don't currently support embedding with language models trained with multiple
-            # embedded indices.
-            #
-            # Note: We only care about embedded indices. This does not include "tokens" which
-            # is just used to compute the loss in LanguageModel.
-            raise ConfigurationError(f"LM from {archive_file} trained with multiple embedders!")
-        self._token_name = token_names[0]
+        text_field_embedder = TextFieldEmbedder.from_params(Params(text_field_embedder))
+        if not isinstance(text_field_embedder, BasicTextFieldEmbedder):
+            raise ConfigurationError(
+                f"Language model from {archive_file} uses a non-standard TextFieldEmbedder!"
+            )
+        non_empty_embedders = [
+            name
+            for name, token_embedder in text_field_embedder._token_embedders.items()
+            if not isinstance(token_embedder, EmptyEmbedder)
+        ]
+
+        if len(non_empty_embedders) == 0:
+            # Only empty embedders were contained in the language model
+            # We need at least one non-empty embedder in the language model
+            raise ConfigurationError(
+                f"Language model from {archive_file} trained with only empty embedders!"
+            )
+        elif len(non_empty_embedders) > 1:
+            raise ConfigurationError(
+                f"Language model from {archive_file} trained with multiple non-empty embedders!"
+            )
+
+        self._token_name = non_empty_embedders[0]
 
         # TODO(brendanr): Find a way to remove this hack. The issue fundamentally is that the
         # BasicTextFieldEmbedder concatenates multiple embedded representations. When a
