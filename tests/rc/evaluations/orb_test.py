@@ -70,10 +70,13 @@ class TestDROP:
         ) == (0.0, 0.4)
 
     def test_multiple_gold_spans(self):
-        assert get_metric_drop(
-            ["Thomas David Arquette"],
-            [["David Thomas"], ["Thomas Jefferson"], ["David Thomas"], ["Thomas David"]],
-        ) == (0.0, 0.8)
+        assert (
+            get_metric_drop(
+                ["Thomas David Arquette"],
+                [["David Thomas"], ["Thomas Jefferson"], ["David Thomas"], ["Thomas David"]],
+            )
+            == (0.0, 0.8)
+        )
 
     def test_long_gold_spans(self):
         assert get_metric_drop(
@@ -83,18 +86,27 @@ class TestDROP:
 
 class TestNarrativeQA:
     def test_ngrams(self):
-        assert get_metric_narrativeqa(
-            "David Thomas was eating an apple",
-            ["David Thomas was eating an apple and fell to the ground"],
-        ) == (0.43, 0.43, 0.57, 0.75, 1.0, 0.6)
-        assert get_metric_narrativeqa(
-            "David Thomas was eating an apple and fell to the ground",
-            ["David Thomas was eating an apple", "he fell to the ground"],
-        ) == (0.55, 0.38, 0.92, 0.75, 0.6, 1.0)
-        assert get_metric_narrativeqa(
-            "David Thomas was eating an apple and fell to the ground",
-            ["David Thomas was eating an apple and fell to the ground"],
-        ) == (1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+        assert (
+            get_metric_narrativeqa(
+                "David Thomas was eating an apple",
+                ["David Thomas was eating an apple and fell to the ground"],
+            )
+            == (0.43, 0.43, 0.57, 0.75, 1.0, 0.6)
+        )
+        assert (
+            get_metric_narrativeqa(
+                "David Thomas was eating an apple and fell to the ground",
+                ["David Thomas was eating an apple", "he fell to the ground"],
+            )
+            == (0.55, 0.38, 0.92, 0.75, 0.6, 1.0)
+        )
+        assert (
+            get_metric_narrativeqa(
+                "David Thomas was eating an apple and fell to the ground",
+                ["David Thomas was eating an apple and fell to the ground"],
+            )
+            == (1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+        )
 
 
 class TestQuoREF:
@@ -141,10 +153,13 @@ class TestQuoREF:
         ) == (0.0, 0.4)
 
     def test_multiple_gold_spans(self):
-        assert get_metric_drop(
-            ["Thomas David Arquette"],
-            [["David Thomas"], ["Thomas Jefferson"], ["David Thomas"], ["Thomas David"]],
-        ) == (0.0, 0.8)
+        assert (
+            get_metric_drop(
+                ["Thomas David Arquette"],
+                [["David Thomas"], ["Thomas Jefferson"], ["David Thomas"], ["Thomas David"]],
+            )
+            == (0.0, 0.8)
+        )
 
     def test_long_gold_spans(self):
         assert get_metric_drop(

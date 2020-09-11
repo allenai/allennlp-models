@@ -21,7 +21,7 @@ class LanguageModel(Model):
     `Seq2SeqEncoder` to uncontextualized embeddings, using a `SoftmaxLoss`
     module (defined above) to compute the language modeling loss.
 
-    If bidirectional is True,  the language model is trained to predict the next and
+    If bidirectional is True, the language model is trained to predict the next and
     previous tokens for each token in the input. In this case, the contextualizer must
     be bidirectional. If bidirectional is False, the language model is trained to only
     predict the next token for each token in the input; the contextualizer should also
@@ -213,9 +213,7 @@ class LanguageModel(Model):
                 + "does not report how many layers it has."
             )
 
-    def forward(  # type: ignore
-        self, source: TextFieldTensors
-    ) -> Dict[str, torch.Tensor]:
+    def forward(self, source: TextFieldTensors) -> Dict[str, torch.Tensor]:  # type: ignore
         """
         Computes the averaged forward (and backward, if language model is bidirectional)
         LM loss from the batch.

@@ -7,14 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Changed
+### Fixed
 
-- Updated dataset readers for new API: https://github.com/allenai/allennlp/pull/4497.
+- Fixed BART for latest `transformers` version.
+
+## [v1.1.0](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0) - 2020-09-08
+
+### Fixed
+
+- Updated `LanguageModelTokenEmbedder` to allow allow multiple token embedders, but only use first with non-empty type
+- Fixed evaluation of metrics when using distributed setting.
+- Fixed a bug introduced in 1.0 where the SRL model did not reproduce the original result.
+
+## [v1.1.0rc4](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc4) - 2020-08-21
 
 ### Added
 
 - Added regression tests for training configs that run on a scheduled workflow.
 - Added a test for the pretrained sentiment analysis model.
+- Added way for questions from quora dataset to be concatenated like the sequences in the SNLI dataset.
 
 ## [v1.1.0rc3](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc3) - 2020-08-12
 
