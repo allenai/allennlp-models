@@ -159,13 +159,7 @@ class CNNDailyMailDatasetReader(DatasetReader):
         if self._source_max_tokens is not None and len(tokenized_source) > self._source_max_tokens:
             tokenized_source = tokenized_source[: self._source_max_tokens]
 
-        source_field = TextField(
-            tokenized_source,
-            # Token indexers are applied later during multi-process loading with
-            # the `apply_token_indexers` method, so we only apply them now if there
-            # is a single worker.
-            None if self._worker_info is not None else self._source_token_indexers,
-        )
+        source_field = TextField(tokenized_source)
         if target_sequence is not None:
             tokenized_target = self._target_tokenizer.tokenize(target_sequence)
             if (
@@ -173,13 +167,7 @@ class CNNDailyMailDatasetReader(DatasetReader):
                 and len(tokenized_target) > self._target_max_tokens
             ):
                 tokenized_target = tokenized_target[: self._target_max_tokens]
-            target_field = TextField(
-                tokenized_target,
-                # Token indexers are applied later during multi-process loading with
-                # the `apply_token_indexers` method, so we only apply them now if there
-                # is a single worker.
-                None if self._worker_info is not None else self._target_token_indexers,
-            )
+            target_field = TextField(tokenized_target)
             return Instance({"source_tokens": source_field, "target_tokens": target_field})
         else:
             return Instance({"source_tokens": source_field})

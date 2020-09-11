@@ -137,13 +137,7 @@ class Seq2SeqDatasetReader(DatasetReader):
             tokenized_source.insert(0, copy.deepcopy(self._start_token))
         if self._source_add_end_token:
             tokenized_source.append(copy.deepcopy(self._end_token))
-        source_field = TextField(
-            tokenized_source,
-            # Token indexers are applied later during multi-process loading with
-            # the `apply_token_indexers` method, so we only apply them now if there
-            # is a single worker.
-            None if self._worker_info is not None else self._source_token_indexers,
-        )
+        source_field = TextField(tokenized_source)
         if target_string is not None:
             tokenized_target = self._target_tokenizer.tokenize(target_string)
             if self._target_max_tokens and len(tokenized_target) > self._target_max_tokens:
@@ -153,13 +147,7 @@ class Seq2SeqDatasetReader(DatasetReader):
                 tokenized_target.insert(0, copy.deepcopy(self._start_token))
             if self._target_add_end_token:
                 tokenized_target.append(copy.deepcopy(self._end_token))
-            target_field = TextField(
-                tokenized_target,
-                # Token indexers are applied later during multi-process loading with
-                # the `apply_token_indexers` method, so we only apply them now if there
-                # is a single worker.
-                None if self._worker_info is not None else self._target_token_indexers,
-            )
+            target_field = TextField(tokenized_target)
             return Instance({"source_tokens": source_field, "target_tokens": target_field})
         else:
             return Instance({"source_tokens": source_field})

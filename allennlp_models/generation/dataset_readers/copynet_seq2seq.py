@@ -166,13 +166,7 @@ class CopyNetDatasetReader(DatasetReader):
         if not tokenized_source:
             # If the tokenized source is empty, it will cause issues downstream.
             raise ValueError(f"source tokenizer produced no tokens from source '{source_string}'")
-        source_field = TextField(
-            tokenized_source,
-            # Token indexers are applied later during multi-process loading with
-            # the `apply_token_indexers` method, so we only apply them now if there
-            # is a single worker.
-            None if self._worker_info is not None else self._source_token_indexers,
-        )
+        source_field = TextField(tokenized_source)
 
         # For each token in the source sentence, we keep track of the matching token
         # in the target sentence (which will be the OOV symbol if there is no match).
@@ -185,13 +179,7 @@ class CopyNetDatasetReader(DatasetReader):
             tokenized_target = self._target_tokenizer.tokenize(target_string)
             tokenized_target.insert(0, Token(START_SYMBOL))
             tokenized_target.append(Token(END_SYMBOL))
-            target_field = TextField(
-                tokenized_target,
-                # Token indexers are applied later during multi-process loading with
-                # the `apply_token_indexers` method, so we only apply them now if there
-                # is a single worker.
-                None if self._worker_info is not None else self._target_token_indexers,
-            )
+            target_field = TextField(tokenized_target)
 
             fields_dict["target_tokens"] = target_field
             meta_fields["target_tokens"] = [y.text for y in tokenized_target[1:-1]]
