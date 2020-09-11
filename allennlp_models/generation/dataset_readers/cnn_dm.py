@@ -58,7 +58,9 @@ class CNNDailyMailDatasetReader(DatasetReader):
         target_max_tokens: Optional[int] = None,
         **kwargs,
     ) -> None:
-        super().__init__(**kwargs)
+        super().__init__(
+            manual_distributed_sharding=True, manual_multi_process_sharding=True, **kwargs
+        )
         self._source_tokenizer = source_tokenizer or SpacyTokenizer()
         self._target_tokenizer = target_tokenizer or self._source_tokenizer
         self._source_token_indexers = source_token_indexers or {"tokens": SingleIdTokenIndexer()}
@@ -127,7 +129,7 @@ class CNNDailyMailDatasetReader(DatasetReader):
         dm_stories = {Path(s).stem for s in glob.glob(os.path.join(dm_stories_path, "*.story"))}
 
         with open(url_file_path, "r") as url_file:
-            for url in url_file:
+            for url in self.shard_iterable(url_file):
                 url = url.strip()
 
                 url_hash = self._hashhex(url.encode("utf-8"))
@@ -157,7 +159,7 @@ class CNNDailyMailDatasetReader(DatasetReader):
         if self._source_max_tokens is not None and len(tokenized_source) > self._source_max_tokens:
             tokenized_source = tokenized_source[: self._source_max_tokens]
 
-        source_field = TextField(tokenized_source, self._source_token_indexers)
+        source_field = TextField(tokenized_source)
         if target_sequence is not None:
             tokenized_target = self._target_tokenizer.tokenize(target_sequence)
             if (
@@ -165,7 +167,13 @@ class CNNDailyMailDatasetReader(DatasetReader):
                 and len(tokenized_target) > self._target_max_tokens
             ):
                 tokenized_target = tokenized_target[: self._target_max_tokens]
-            target_field = TextField(tokenized_target, self._target_token_indexers)
+            target_field = TextField(tokenized_target)
             return Instance({"source_tokens": source_field, "target_tokens": target_field})
         else:
             return Instance({"source_tokens": source_field})
+
+    @overrides
+    def apply_token_indexers(self, instance: Instance) -> None:
+        instance.fields["source_tokens"]._token_indexers = self._source_token_indexers  # type: ignore
+        if "target_tokens" in instance.fields:
+            instance.fields["target_tokens"]._token_indexers = self._target_token_indexers  # type: ignore

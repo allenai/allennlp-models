@@ -95,7 +95,9 @@ class CopyNetDatasetReader(DatasetReader):
         source_token_indexers: Dict[str, TokenIndexer] = None,
         **kwargs,
     ) -> None:
-        super().__init__(**kwargs)
+        super().__init__(
+            manual_distributed_sharding=True, manual_multi_process_sharding=True, **kwargs
+        )
         self._target_namespace = target_namespace
         self._source_tokenizer = source_tokenizer or SpacyTokenizer()
         self._target_tokenizer = target_tokenizer or self._source_tokenizer
@@ -120,7 +122,7 @@ class CopyNetDatasetReader(DatasetReader):
     def _read(self, file_path):
         with open(cached_path(file_path), "r") as data_file:
             logger.info("Reading instances from lines in file at: %s", file_path)
-            for line_num, line in enumerate(data_file):
+            for line_num, line in self.shard_iterable(enumerate(data_file)):
                 line = line.strip("\n")
                 if not line:
                     continue
@@ -164,7 +166,7 @@ class CopyNetDatasetReader(DatasetReader):
         if not tokenized_source:
             # If the tokenized source is empty, it will cause issues downstream.
             raise ValueError(f"source tokenizer produced no tokens from source '{source_string}'")
-        source_field = TextField(tokenized_source, self._source_token_indexers)
+        source_field = TextField(tokenized_source)
 
         # For each token in the source sentence, we keep track of the matching token
         # in the target sentence (which will be the OOV symbol if there is no match).
@@ -177,7 +179,7 @@ class CopyNetDatasetReader(DatasetReader):
             tokenized_target = self._target_tokenizer.tokenize(target_string)
             tokenized_target.insert(0, Token(START_SYMBOL))
             tokenized_target.append(Token(END_SYMBOL))
-            target_field = TextField(tokenized_target, self._target_token_indexers)
+            target_field = TextField(tokenized_target)
 
             fields_dict["target_tokens"] = target_field
             meta_fields["target_tokens"] = [y.text for y in tokenized_target[1:-1]]
@@ -193,3 +195,9 @@ class CopyNetDatasetReader(DatasetReader):
         fields_dict["metadata"] = MetadataField(meta_fields)
 
         return Instance(fields_dict)
+
+    @overrides
+    def apply_token_indexers(self, instance: Instance) -> None:
+        instance.fields["source_tokens"]._token_indexers = self._source_token_indexers  # type: ignore
+        if "target_tokens" in instance.fields:
+            instance.fields["target_tokens"]._token_indexers = self._target_token_indexers  # type: ignore
