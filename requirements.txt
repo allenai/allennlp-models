@@ -1,3 +1,4 @@
+# TODO: change this back to master branch
 git+https://github.com/allenai/allennlp.git@master
 
 # For structured prediction.
