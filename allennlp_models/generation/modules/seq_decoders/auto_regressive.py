@@ -401,7 +401,9 @@ class AutoRegressiveSeqDecoder(SeqDecoder):
 
     @overrides
     def forward(
-        self, encoder_out: Dict[str, torch.LongTensor], target_tokens: TextFieldTensors = None,
+        self,
+        encoder_out: Dict[str, torch.LongTensor],
+        target_tokens: TextFieldTensors = None,
     ) -> Dict[str, torch.Tensor]:
         state = encoder_out
         decoder_init_state = self._decoder_net.init_decoder_state(state)
@@ -427,16 +429,15 @@ class AutoRegressiveSeqDecoder(SeqDecoder):
                     # shape: (batch_size, max_predicted_sequence_length)
                     best_predictions = top_k_predictions[:, 0, :]
 
-                    self._tensor_based_metric(  # type: ignore
-                        best_predictions, targets
-                    )
+                    self._tensor_based_metric(best_predictions, targets)  # type: ignore
 
                 if self._token_based_metric is not None:
                     output_dict = self.post_process(output_dict)
                     predicted_tokens = output_dict["predicted_tokens"]
 
                     self._token_based_metric(  # type: ignore
-                        predicted_tokens, self.indices_to_tokens(targets[:, 1:]),
+                        predicted_tokens,
+                        self.indices_to_tokens(targets[:, 1:]),
                     )
 
         return output_dict

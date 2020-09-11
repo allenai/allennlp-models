@@ -2,7 +2,7 @@
 git+https://github.com/allenai/allennlp.git@vision
 
 # For structured prediction.
-conllu==4.0
+conllu==4.1
 
 # For RC models
 word2number>=1.1
