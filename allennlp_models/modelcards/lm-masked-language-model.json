@@ -1,0 +1,6 @@
+{
+    "id": "lm-masked-language-model",
+    "registered_model_name": "masked_language_model",
+    "display_name": "BERT-based Masked Language Model",
+    "archive_file": "bert-masked-lm-2019.09.17.tar.gz"
+}

@@ -20,7 +20,10 @@ class NextTokenLMPredictor(Predictor):
     ):
         new_instance = instance.duplicate()
         token_field: TextField = instance["tokens"]  # type: ignore
-        mask_targets = [Token(target_top_k[0]) for target_top_k in outputs["words"]]
+        mask_targets = [
+            Token(target_top_k_text[0], text_id=target_top_id_id)
+            for (target_top_k_text, target_top_id_id) in zip(outputs["words"], outputs["token_ids"])
+        ]
 
         new_instance.add_field(
             "target_ids",

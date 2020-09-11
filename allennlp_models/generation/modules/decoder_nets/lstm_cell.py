@@ -22,7 +22,7 @@ class LstmCellDecoderNet(DecoderNet):
     target_embedding_dim : `int`, required
         Defines dimensionality of input target embeddings.  Since this model takes it's output on a previous step
         as input of following step, this is also an input dimensionality.
-    attention : `Attention`, optional (default = None)
+    attention : `Attention`, optional (default = `None`)
         If you want to use attention to get a dynamic summary of the encoder outputs at each step
         of decoding, this is the function used to compute similarity between the decoder hidden
         state and encoder outputs.
@@ -126,9 +126,11 @@ class LstmCellDecoderNet(DecoderNet):
 
         # shape (decoder_hidden): (batch_size, decoder_output_dim)
         # shape (decoder_context): (batch_size, decoder_output_dim)
-        decoder_hidden, decoder_context = self._decoder_cell(
-            decoder_input, (decoder_hidden, decoder_context)
-        )
+        # TODO (epwalsh): remove the autocast(False) once torch's AMP is working for LSMTCells.
+        with torch.cuda.amp.autocast(False):
+            decoder_hidden, decoder_context = self._decoder_cell(
+                decoder_input.float(), (decoder_hidden.float(), decoder_context.float())
+            )
 
         return (
             {"decoder_hidden": decoder_hidden, "decoder_context": decoder_context},

@@ -58,20 +58,20 @@ class BiaffineDependencyParser(Model):
         The dimension of the MLPs used for dependency tag prediction.
     arc_representation_dim : `int`, required.
         The dimension of the MLPs used for head arc prediction.
-    tag_feedforward : `FeedForward`, optional, (default = None).
+    tag_feedforward : `FeedForward`, optional, (default = `None`).
         The feedforward network used to produce tag representations.
         By default, a 1 layer feedforward network with an elu activation is used.
-    arc_feedforward : `FeedForward`, optional, (default = None).
+    arc_feedforward : `FeedForward`, optional, (default = `None`).
         The feedforward network used to produce arc representations.
         By default, a 1 layer feedforward network with an elu activation is used.
     pos_tag_embedding : `Embedding`, optional.
         Used to embed the `pos_tags` `SequenceLabelField` we get as input to the model.
-    use_mst_decoding_for_validation : `bool`, optional (default = True).
+    use_mst_decoding_for_validation : `bool`, optional (default = `True`).
         Whether to use Edmond's algorithm to find the optimal minimum spanning tree during validation.
         If false, decoding is greedy.
-    dropout : `float`, optional, (default = 0.0)
+    dropout : `float`, optional, (default = `0.0`)
         The variational dropout applied to the output of the encoder and MLP layers.
-    input_dropout : `float`, optional, (default = 0.0)
+    input_dropout : `float`, optional, (default = `0.0`)
         The dropout applied to the embedded text input.
     initializer : `InitializerApplicator`, optional (default=`InitializerApplicator()`)
         Used to initialize the model parameters.
@@ -177,7 +177,7 @@ class BiaffineDependencyParser(Model):
         """
         # Parameters
 
-        words : TextFieldTensors, required
+        words : `TextFieldTensors`, required
             The output of `TextField.as_array()`, which should typically be passed directly to a
             `TextFieldEmbedder`. This output is a dictionary mapping keys to `TokenIndexer`
             tensors.  At its most basic, using a `SingleIdTokenIndexer` this is : `{"tokens":
@@ -191,22 +191,23 @@ class BiaffineDependencyParser(Model):
             POS tags are required regardless of whether they are used in the model,
             because they are used to filter the evaluation metric to only consider
             heads of words which are not punctuation.
-        metadata : List[Dict[str, Any]], optional (default=None)
+        metadata : `List[Dict[str, Any]]`, optional (default=`None`)
             A dictionary of metadata for each batch element which has keys:
                 words : `List[str]`, required.
                     The tokens in the original sentence.
                 pos : `List[str]`, required.
                     The dependencies POS tags for each word.
-        head_tags : torch.LongTensor, optional (default = None)
+        head_tags : `torch.LongTensor`, optional (default = `None`)
             A torch tensor representing the sequence of integer gold class labels for the arcs
             in the dependency parse. Has shape `(batch_size, sequence_length)`.
-        head_indices : torch.LongTensor, optional (default = None)
+        head_indices : `torch.LongTensor`, optional (default = `None`)
             A torch tensor representing the sequence of integer indices denoting the parent of every
             word in the dependency parse. Has shape `(batch_size, sequence_length)`.
 
         # Returns
 
         An output dictionary consisting of:
+
         loss : `torch.FloatTensor`, optional
             A scalar loss to be optimised.
         arc_loss : `torch.FloatTensor`

@@ -37,15 +37,17 @@
             "use_input_projection_bias": false
         },
         "binary_feature_dim": 100,
-        "regularizer": [
-            [
-                ".*scalar_parameters.*",
-                {
-                    "type": "l2",
-                    "alpha": 0.001
-                }
+        "regularizer": {
+            "regexes": [
+                [
+                    ".*scalar_parameters.*",
+                    {
+                        "type": "l2",
+                        "alpha": 0.001
+                    }
+                ]
             ]
-        ]
+        }
     },
     "data_loader": {
         "batch_sampler": {
@@ -58,7 +60,6 @@
         "grad_clipping": 1.0,
         "patience": 200,
         "validation_metric": "+f1-measure-overall",
-        "cuda_device": 0,
         "checkpointer": {
             "num_serialized_models_to_keep": 10,
         },

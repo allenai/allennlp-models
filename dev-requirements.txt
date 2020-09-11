@@ -4,13 +4,22 @@
 flake8
 
 # Static type checking
-mypy==0.780
+mypy==0.782
 
 # Automatic code formatting
 black
 
+# Running unit tests.
+pytest
+
 # Allows generation of coverage reports with pytest.
 pytest-cov
+
+# Lets you run tests in forked subprocesses.
+pytest-forked
+
+# Lets you run tests in parallel.
+pytest-xdist
 
 # Allows codecov to generate coverage reports
 coverage
@@ -19,8 +28,19 @@ codecov
 # For running tests that aren't 100% reliable
 flaky
 
-# Required for automatic mixed precision (AMP) training
-git+https://github.com/NVIDIA/apex.git@master
+#### DOC-RELATED PACKAGES ####
+
+# YAML manipulation
+ruamel.yaml
+
+# Generating markdown files from Python modules.
+git+https://github.com/NiklasRosenstein/pydoc-markdown.git@f0bf8af1db4f11581c19d206d4ed1ab34b4854c1
+nr.databind.core<0.0.17
+nr.interface<0.0.4
+
+mkdocs==1.1.2
+mkdocs-material>=5.5.0,<5.6.0
+markdown-include==0.6.0
 
 #### PACKAGE-UPLOAD PACKAGES ####
 

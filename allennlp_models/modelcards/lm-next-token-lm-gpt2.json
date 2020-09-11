@@ -1,0 +1,6 @@
+{
+    "id": "lm-next-token-lm-gpt2",
+    "registered_model_name": "next_token_lm",
+    "display_name": "GPT2-based Next Token Language Model",
+    "archive_file": "gpt2-next-word-lm-2020.06.30.tar.gz"
+}

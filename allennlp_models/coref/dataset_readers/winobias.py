@@ -58,7 +58,10 @@ class WinobiasReader(DatasetReader):
     """
 
     def __init__(
-        self, max_span_width: int, token_indexers: Dict[str, TokenIndexer] = None, **kwargs,
+        self,
+        max_span_width: int,
+        token_indexers: Dict[str, TokenIndexer] = None,
+        **kwargs,
     ) -> None:
         super().__init__(**kwargs)
         self._max_span_width = max_span_width
@@ -113,7 +116,7 @@ class WinobiasReader(DatasetReader):
 
         sentence : `List[Token]`, required.
             The already tokenised sentence to analyse.
-        gold_clusters : `Optional[List[List[Tuple[int, int]]]]`, optional (default = None)
+        gold_clusters : `Optional[List[List[Tuple[int, int]]]]`, optional (default = `None`)
             A list of all clusters in the sentence, represented as word spans. Each cluster
             contains some number of spans, which can be nested and overlap, but will never
             exactly match between clusters.

@@ -24,11 +24,11 @@
       },
       "elmo": {
         "type": "elmo_characters"
-     }
+      }
     }
   },
   "train_data_path": std.extVar("NER_TRAIN_DATA_PATH"),
-  "validation_data_path": std.extVar("NER_TEST_A_PATH"),
+  "validation_data_path": std.extVar("NER_TEST_DATA_PATH"),
   "model": {
     "type": "crf_tagger",
     "label_encoding": "BIOUL",
@@ -72,15 +72,17 @@
       "dropout": 0.5,
       "bidirectional": true
     },
-    "regularizer": [
-      [
-        "scalar_parameters",
-        {
-          "type": "l2",
-          "alpha": 0.1
-        }
+    "regularizer": {
+      "regexes": [
+        [
+          "scalar_parameters",
+          {
+            "type": "l2",
+            "alpha": 0.1
+          }
+        ]
       ]
-    ]
+    }
   },
   "data_loader": {
     "batch_size": 64
@@ -97,6 +99,5 @@
     "num_epochs": 75,
     "grad_norm": 5.0,
     "patience": 25,
-    "cuda_device": 0
   }
 }

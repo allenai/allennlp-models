@@ -6,6 +6,8 @@ from allennlp.common.util import ensure_list
 from allennlp.data import DatasetReader
 from allennlp.data.vocabulary import Vocabulary, DEFAULT_OOV_TOKEN
 
+from allennlp_models.generation.dataset_readers import CopyNetDatasetReader
+
 from tests import FIXTURES_ROOT
 
 
@@ -13,7 +15,7 @@ class TestCopyNetReader(AllenNlpTestCase):
     def setup_method(self):
         super().setup_method()
         params = Params.from_file(FIXTURES_ROOT / "generation" / "copynet" / "experiment.json")
-        self.reader = DatasetReader.from_params(params["dataset_reader"])
+        self.reader: CopyNetDatasetReader = DatasetReader.from_params(params["dataset_reader"])
         instances = self.reader.read(
             FIXTURES_ROOT / "generation" / "copynet" / "data" / "copyover.tsv"
         )
@@ -39,7 +41,6 @@ class TestCopyNetReader(AllenNlpTestCase):
     def test_tokens(self):
         fields = self.instances[0].fields
         assert [t.text for t in fields["source_tokens"].tokens] == [
-            "@start@",
             "these",
             "tokens",
             "should",
@@ -49,7 +50,6 @@ class TestCopyNetReader(AllenNlpTestCase):
             ":",
             "hello",
             "world",
-            "@end@",
         ]
         assert fields["metadata"]["source_tokens"] == [
             "these",
@@ -97,8 +97,8 @@ class TestCopyNetReader(AllenNlpTestCase):
             5,  # over
             6,  # :
             7,  # hello
-            8,
-        ]  # world
+            8,  # world
+        ]
         assert list(target_token_ids) == [
             9,  # @start@
             10,  # the
@@ -109,8 +109,8 @@ class TestCopyNetReader(AllenNlpTestCase):
             11,  # "
             12,  # were
             4,  # copied
-            13,
-        ]  # @end@
+            13,  # @end@
+        ]
 
     def test_source_to_target(self):
         source_to_target_field = self.instances[0].fields["source_to_target"]

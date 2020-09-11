@@ -126,13 +126,13 @@ class CcgBankDatasetReader(DatasetReader):
 
         tokens : `List[str]`, required.
             The tokens in a given sentence.
-        ccg_categories : `List[str]`, optional, (default = None).
+        ccg_categories : `List[str]`, optional, (default = `None`).
             The CCG categories for the words in the sentence. (e.g. N/N)
-        original_pos_tags : `List[str]`, optional, (default = None).
+        original_pos_tags : `List[str]`, optional, (default = `None`).
             The tag assigned to the word in the Penn Treebank.
-        modified_pos_tags : `List[str]`, optional, (default = None).
+        modified_pos_tags : `List[str]`, optional, (default = `None`).
             The POS tag might have changed during the translation to CCG.
-        predicate_arg_categories : `List[str]`, optional, (default = None).
+        predicate_arg_categories : `List[str]`, optional, (default = `None`).
             Encodes the word-word dependencies in the underlying predicate-
             argument structure.
 

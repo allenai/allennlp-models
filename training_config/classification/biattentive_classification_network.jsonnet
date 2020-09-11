@@ -66,7 +66,6 @@
     "patience": 5,
     "grad_norm": 5.0,
     "validation_metric": "+accuracy",
-    "cuda_device": 0,
     "optimizer": {
       "type": "adam",
       "lr": 0.001

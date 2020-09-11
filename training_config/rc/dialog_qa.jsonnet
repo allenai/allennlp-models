@@ -62,27 +62,29 @@
             "num_layers": 1
         },
         "text_field_embedder": {
-            "elmo": {
-                "type": "elmo_token_embedder",
-                "do_layer_norm": false,
-                "dropout": 0.2,
-                "options_file": "https://allennlp.s3.amazonaws.com/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_options.json",
-                "weight_file": "https://allennlp.s3.amazonaws.com/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5"
-            },
-            "token_characters": {
-                "type": "character_encoding",
-                "dropout": 0.2,
-                "embedding": {
-                    "embedding_dim": 20,
-                    "num_embeddings": 262
+            "token_embedders": {
+                "elmo": {
+                    "type": "elmo_token_embedder",
+                    "do_layer_norm": false,
+                    "dropout": 0.2,
+                    "options_file": "https://allennlp.s3.amazonaws.com/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_options.json",
+                    "weight_file": "https://allennlp.s3.amazonaws.com/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5"
                 },
-                "encoder": {
-                    "type": "cnn",
-                    "embedding_dim": 20,
-                    "ngram_filter_sizes": [
-                        5
-                    ],
-                    "num_filters": 100
+                "token_characters": {
+                    "type": "character_encoding",
+                    "dropout": 0.2,
+                    "embedding": {
+                        "embedding_dim": 20,
+                        "num_embeddings": 262
+                    },
+                    "encoder": {
+                        "type": "cnn",
+                        "embedding_dim": 20,
+                        "ngram_filter_sizes": [
+                            5
+                        ],
+                        "num_filters": 100
+                    }
                 }
             }
         }
@@ -90,7 +92,6 @@
     "train_data_path": "https://s3.amazonaws.com/my89public/quac/train_5000.json",
     "validation_data_path": "https://s3.amazonaws.com/my89public/quac/val.json",
     "trainer": {
-        "cuda_device": 0,
         "learning_rate_scheduler": {
             "type": "reduce_on_plateau",
             "factor": 0.5,

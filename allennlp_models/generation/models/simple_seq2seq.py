@@ -1,11 +1,11 @@
-from typing import Dict, List, Tuple, Iterable
+from typing import Dict, List, Tuple, Iterable, Any
 
 import numpy
 from overrides import overrides
 import torch
 import torch.nn.functional as F
 from torch.nn.modules.linear import Linear
-from torch.nn.modules.rnn import LSTMCell
+from torch.nn.modules.rnn import LSTMCell, LSTM
 
 from allennlp.common.util import START_SYMBOL, END_SYMBOL
 from allennlp.data import TextFieldTensors, Vocabulary
@@ -25,9 +25,7 @@ class SimpleSeq2Seq(Model):
     a neural machine translation system, an abstractive summarization system, or any other common
     seq2seq problem.  The model here is simple, but should be a decent starting place for
     implementing recent models for these tasks.
-
     # Parameters
-
     vocab : `Vocabulary`, required
         Vocabulary containing source and target vocabularies. They may be under the same namespace
         (`tokens`) or the target tokens can have a different namespace, in which case it needs to
@@ -38,20 +36,24 @@ class SimpleSeq2Seq(Model):
         The encoder of the "encoder/decoder" model
     max_decoding_steps : `int`
         Maximum length of decoded sequences.
-    target_namespace : `str`, optional (default = 'tokens')
+    target_namespace : `str`, optional (default = `'tokens'`)
         If the target side vocabulary is different from the source side's, you need to specify the
         target's namespace here. If not, we'll assume it is "tokens", which is also the default
         choice for the source side, and this might cause them to share vocabularies.
-    target_embedding_dim : `int`, optional (default = source_embedding_dim)
+    target_embedding_dim : `int`, optional (default = `'source_embedding_dim'`)
         You can specify an embedding dimensionality for the target side. If not, we'll use the same
         value as the source embedder's.
-    attention : `Attention`, optional (default = None)
+    target_pretrain_file : `str`, optional (default = `None`)
+        Path to target pretrain embedding files
+    target_decoder_layers : `int`, optional (default = `1`)
+        Nums of layer for decoder
+    attention : `Attention`, optional (default = `None`)
         If you want to use attention to get a dynamic summary of the encoder outputs at each step
         of decoding, this is the function used to compute similarity between the decoder hidden
         state and encoder outputs.
-    beam_size : `int`, optional (default = None)
+    beam_size : `int`, optional (default = `None`)
         Width of the beam for beam search. If not specified, greedy decoding is used.
-    scheduled_sampling_ratio : `float`, optional (default = 0.)
+    scheduled_sampling_ratio : `float`, optional (default = `0.`)
         At each timestep during training, we sample a random number between 0 and 1, and if it is
         not less than this value, we use the ground truth labels for the whole batch. Else, we use
         the predictions from the previous time step for the whole batch. If this value is 0.0
@@ -59,9 +61,9 @@ class SimpleSeq2Seq(Model):
         using target side ground truth labels.  See the following paper for more information:
         [Scheduled Sampling for Sequence Prediction with Recurrent Neural Networks. Bengio et al.,
         2015](https://arxiv.org/abs/1506.03099).
-    use_bleu : `bool`, optional (default = True)
+    use_bleu : `bool`, optional (default = `True`)
         If True, the BLEU metric will be calculated during validation.
-    ngram_weights : `Iterable[float]`, optional (default = (0.25, 0.25, 0.25, 0.25))
+    ngram_weights : `Iterable[float]`, optional (default = `(0.25, 0.25, 0.25, 0.25)`)
         Weights to assign to scores for each ngram size.
     """
 
@@ -78,9 +80,12 @@ class SimpleSeq2Seq(Model):
         scheduled_sampling_ratio: float = 0.0,
         use_bleu: bool = True,
         bleu_ngram_weights: Iterable[float] = (0.25, 0.25, 0.25, 0.25),
+        target_pretrain_file: str = None,
+        target_decoder_layers: int = 1,
     ) -> None:
         super().__init__(vocab)
         self._target_namespace = target_namespace
+        self._target_decoder_layers = target_decoder_layers
         self._scheduled_sampling_ratio = scheduled_sampling_ratio
 
         # We need the start symbol to provide as the input at the first timestep of decoding, and
@@ -93,7 +98,8 @@ class SimpleSeq2Seq(Model):
                 self.vocab._padding_token, self._target_namespace
             )
             self._bleu = BLEU(
-                bleu_ngram_weights, exclude_indices={pad_index, self._end_index, self._start_index}
+                bleu_ngram_weights,
+                exclude_indices={pad_index, self._end_index, self._start_index},
             )
         else:
             self._bleu = None
@@ -118,9 +124,17 @@ class SimpleSeq2Seq(Model):
 
         # Dense embedding of vocab words in the target space.
         target_embedding_dim = target_embedding_dim or source_embedder.get_output_dim()
-        self._target_embedder = Embedding(
-            num_embeddings=num_classes, embedding_dim=target_embedding_dim
-        )
+        if not target_pretrain_file:
+            self._target_embedder = Embedding(
+                num_embeddings=num_classes, embedding_dim=target_embedding_dim
+            )
+        else:
+            self._target_embedder = Embedding(
+                embedding_dim=target_embedding_dim,
+                pretrained_file=target_pretrain_file,
+                vocab_namespace=self._target_namespace,
+                vocab=self.vocab,
+            )
 
         # Decoder output dim needs to be the same as the encoder output dim since we initialize the
         # hidden state of the decoder with the final hidden state of the encoder.
@@ -139,20 +153,25 @@ class SimpleSeq2Seq(Model):
         # We'll use an LSTM cell as the recurrent cell that produces a hidden state
         # for the decoder at each time step.
         # TODO (pradeep): Do not hardcode decoder cell type.
-        self._decoder_cell = LSTMCell(self._decoder_input_dim, self._decoder_output_dim)
+        if self._target_decoder_layers > 1:
+            self._decoder_cell = LSTM(
+                self._decoder_input_dim,
+                self._decoder_output_dim,
+                self._target_decoder_layers,
+            )
+        else:
+            self._decoder_cell = LSTMCell(self._decoder_input_dim, self._decoder_output_dim)
 
         # We project the hidden state from the decoder into the output vocabulary space
         # in order to get log probabilities of each target token, at each time step.
         self._output_projection_layer = Linear(self._decoder_output_dim, num_classes)
 
     def take_step(
-        self, last_predictions: torch.Tensor, state: Dict[str, torch.Tensor]
+        self, last_predictions: torch.Tensor, state: Dict[str, torch.Tensor], step: int
     ) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
         """
         Take a decoding step. This is called by the beam search class.
-
         # Parameters
-
         last_predictions : `torch.Tensor`
             A tensor of shape `(group_size,)`, which gives the indices of the predictions
             during the last time step.
@@ -162,16 +181,16 @@ class SimpleSeq2Seq(Model):
             the source mask, and the decoder hidden state and context. Each of these
             tensors has shape `(group_size, *)`, where `*` can be any other number
             of dimensions.
+        step : `int`
+            The time step in beam search decoding.
 
         # Returns
-
         Tuple[torch.Tensor, Dict[str, torch.Tensor]]
             A tuple of `(log_probabilities, updated_state)`, where `log_probabilities`
             is a tensor of shape `(group_size, num_classes)` containing the predicted
             log probability of each class for the next step, for each item in the group,
             while `updated_state` is a dictionary of tensors containing the encoder outputs,
             source mask, and updated decoder hidden state and context.
-
         Notes
         -----
             We treat the inputs as a batch, even though `group_size` is not necessarily
@@ -195,19 +214,17 @@ class SimpleSeq2Seq(Model):
 
         """
         Make foward pass with decoder logic for producing the entire target sequence.
-
         # Parameters
-
         source_tokens : `TextFieldTensors`
            The output of `TextField.as_array()` applied on the source `TextField`. This will be
            passed through a `TextFieldEmbedder` and then through an encoder.
-        target_tokens : `TextFieldTensors`, optional (default = None)
+        target_tokens : `TextFieldTensors`, optional (default = `None`)
            Output of `Textfield.as_array()` applied on target `TextField`. We assume that the
            target tokens are also represented as a `TextField`.
-
         # Returns
 
-        Dict[str, torch.Tensor]
+        `Dict[str, torch.Tensor]`
+
         """
         state = self._encode(source_tokens)
 
@@ -233,16 +250,12 @@ class SimpleSeq2Seq(Model):
         return output_dict
 
     @overrides
-    def make_output_human_readable(
-        self, output_dict: Dict[str, torch.Tensor]
-    ) -> Dict[str, torch.Tensor]:
+    def make_output_human_readable(self, output_dict: Dict[str, Any]) -> Dict[str, Any]:
         """
         Finalize predictions.
-
         This method overrides `Model.make_output_human_readable`, which gets called after `Model.forward`, at test
         time, to finalize predictions. The logic for the decoder part of the encoder-decoder lives
         within the `forward` method.
-
         This method trims the output predictions to the first end symbol, replaces indices with
         corresponding tokens, and adds a field called `predicted_tokens` to the `output_dict`.
         """
@@ -250,20 +263,25 @@ class SimpleSeq2Seq(Model):
         if not isinstance(predicted_indices, numpy.ndarray):
             predicted_indices = predicted_indices.detach().cpu().numpy()
         all_predicted_tokens = []
-        for indices in predicted_indices:
+        for top_k_predictions in predicted_indices:
             # Beam search gives us the top k results for each source sentence in the batch
-            # but we just want the single best.
-            if len(indices.shape) > 1:
-                indices = indices[0]
-            indices = list(indices)
-            # Collect indices till the first end_symbol
-            if self._end_index in indices:
-                indices = indices[: indices.index(self._end_index)]
-            predicted_tokens = [
-                self.vocab.get_token_from_index(x, namespace=self._target_namespace)
-                for x in indices
-            ]
-            all_predicted_tokens.append(predicted_tokens)
+            # we want top-k results.
+            if len(top_k_predictions.shape) == 1:
+                top_k_predictions = [top_k_predictions]
+
+            batch_predicted_tokens = []
+            for indices in top_k_predictions:
+                indices = list(indices)
+                # Collect indices till the first end_symbol
+                if self._end_index in indices:
+                    indices = indices[: indices.index(self._end_index)]
+                predicted_tokens = [
+                    self.vocab.get_token_from_index(x, namespace=self._target_namespace)
+                    for x in indices
+                ]
+                batch_predicted_tokens.append(predicted_tokens)
+
+            all_predicted_tokens.append(batch_predicted_tokens)
         output_dict["predicted_tokens"] = all_predicted_tokens
         return output_dict
 
@@ -280,7 +298,9 @@ class SimpleSeq2Seq(Model):
         batch_size = state["source_mask"].size(0)
         # shape: (batch_size, encoder_output_dim)
         final_encoder_output = util.get_final_encoder_states(
-            state["encoder_outputs"], state["source_mask"], self._encoder.is_bidirectional()
+            state["encoder_outputs"],
+            state["source_mask"],
+            self._encoder.is_bidirectional(),
         )
         # Initialize the decoder hidden state with the final output of the encoder.
         # shape: (batch_size, decoder_output_dim)
@@ -289,6 +309,17 @@ class SimpleSeq2Seq(Model):
         state["decoder_context"] = state["encoder_outputs"].new_zeros(
             batch_size, self._decoder_output_dim
         )
+        if self._target_decoder_layers > 1:
+            # shape: (num_layers, batch_size, decoder_output_dim)
+            state["decoder_hidden"] = (
+                state["decoder_hidden"].unsqueeze(0).repeat(self._target_decoder_layers, 1, 1)
+            )
+
+            # shape: (num_layers, batch_size, decoder_output_dim)
+            state["decoder_context"] = (
+                state["decoder_context"].unsqueeze(0).repeat(self._target_decoder_layers, 1, 1)
+            )
+
         return state
 
     def _forward_loop(
@@ -296,7 +327,6 @@ class SimpleSeq2Seq(Model):
     ) -> Dict[str, torch.Tensor]:
         """
         Make forward pass during training or do greedy search during prediction.
-
         Notes
         -----
         We really only use the predictions from the method to test that beam search
@@ -399,7 +429,6 @@ class SimpleSeq2Seq(Model):
         Decode current state and last prediction to produce produce projections
         into the target space, which can then be used to get probabilities of
         each target token for the next step.
-
         Inputs are the same as for `take_step()`.
         """
         # shape: (group_size, max_input_sequence_length, encoder_output_dim)
@@ -408,10 +437,10 @@ class SimpleSeq2Seq(Model):
         # shape: (group_size, max_input_sequence_length)
         source_mask = state["source_mask"]
 
-        # shape: (group_size, decoder_output_dim)
+        # shape: (num_layers, group_size, decoder_output_dim)
         decoder_hidden = state["decoder_hidden"]
 
-        # shape: (group_size, decoder_output_dim)
+        # shape: (num_layers, group_size, decoder_output_dim)
         decoder_context = state["decoder_context"]
 
         # shape: (group_size, target_embedding_dim)
@@ -419,28 +448,48 @@ class SimpleSeq2Seq(Model):
 
         if self._attention:
             # shape: (group_size, encoder_output_dim)
-            attended_input = self._prepare_attended_input(
-                decoder_hidden, encoder_outputs, source_mask
-            )
-
+            if self._target_decoder_layers > 1:
+                attended_input = self._prepare_attended_input(
+                    decoder_hidden[0], encoder_outputs, source_mask
+                )
+            else:
+                attended_input = self._prepare_attended_input(
+                    decoder_hidden, encoder_outputs, source_mask
+                )
             # shape: (group_size, decoder_output_dim + target_embedding_dim)
             decoder_input = torch.cat((attended_input, embedded_input), -1)
         else:
             # shape: (group_size, target_embedding_dim)
             decoder_input = embedded_input
 
-        # shape (decoder_hidden): (batch_size, decoder_output_dim)
-        # shape (decoder_context): (batch_size, decoder_output_dim)
-        decoder_hidden, decoder_context = self._decoder_cell(
-            decoder_input, (decoder_hidden, decoder_context)
-        )
+        if self._target_decoder_layers > 1:
+            # shape: (1, batch_size, target_embedding_dim)
+            decoder_input = decoder_input.unsqueeze(0)
+
+            # shape (decoder_hidden): (num_layers, batch_size, decoder_output_dim)
+            # shape (decoder_context): (num_layers, batch_size, decoder_output_dim)
+            # TODO (epwalsh): remove the autocast(False) once torch's AMP is working for LSTMCells.
+            with torch.cuda.amp.autocast(False):
+                _, (decoder_hidden, decoder_context) = self._decoder_cell(
+                    decoder_input.float(), (decoder_hidden.float(), decoder_context.float())
+                )
+        else:
+            # shape (decoder_hidden): (batch_size, decoder_output_dim)
+            # shape (decoder_context): (batch_size, decoder_output_dim)
+            # TODO (epwalsh): remove the autocast(False) once torch's AMP is working for LSTMCells.
+            with torch.cuda.amp.autocast(False):
+                decoder_hidden, decoder_context = self._decoder_cell(
+                    decoder_input.float(), (decoder_hidden.float(), decoder_context.float())
+                )
 
         state["decoder_hidden"] = decoder_hidden
         state["decoder_context"] = decoder_context
 
         # shape: (group_size, num_classes)
-        output_projections = self._output_projection_layer(decoder_hidden)
-
+        if self._target_decoder_layers > 1:
+            output_projections = self._output_projection_layer(decoder_hidden[-1])
+        else:
+            output_projections = self._output_projection_layer(decoder_hidden)
         return output_projections, state
 
     def _prepare_attended_input(
@@ -460,20 +509,19 @@ class SimpleSeq2Seq(Model):
 
     @staticmethod
     def _get_loss(
-        logits: torch.LongTensor, targets: torch.LongTensor, target_mask: torch.BoolTensor
+        logits: torch.LongTensor,
+        targets: torch.LongTensor,
+        target_mask: torch.BoolTensor,
     ) -> torch.Tensor:
         """
         Compute loss.
-
         Takes logits (unnormalized outputs from the decoder) of size (batch_size,
         num_decoding_steps, num_classes), target indices of size (batch_size, num_decoding_steps+1)
         and corresponding masks of size (batch_size, num_decoding_steps+1) steps and computes cross
         entropy loss while taking the mask into account.
-
         The length of `targets` is expected to be greater than that of `logits` because the
         decoder does not need to compute the output corresponding to the last timestep of
         `targets`. This method aligns the inputs appropriately to compute the loss.
-
         During training, we want the logit corresponding to timestep i to be similar to the target
         token from timestep i + 1. That is, the targets should be shifted by one timestep for
         appropriate comparison.  Consider a single example where the target has 3 words, and

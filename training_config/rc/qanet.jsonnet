@@ -47,8 +47,11 @@
         },
         "only_include_pretrained_words": true
     },
-    "train_data_path": "https://allennlp.s3.amazonaws.com/datasets/squad/squad-train-v1.1.json",
-    "validation_data_path": "https://allennlp.s3.amazonaws.com/datasets/squad/squad-dev-v1.1.json",
+    "train_data_path": std.extVar("SQUAD_TRAIN"),
+    "validation_data_path": std.extVar("SQUAD_DEV"),
+    // You can replace the above two lines with these to get the actual squad datasets.
+    // "train_data_path": "https://allennlp.s3.amazonaws.com/datasets/squad/squad-train-v1.1.json",
+    // "validation_data_path": "https://allennlp.s3.amazonaws.com/datasets/squad/squad-dev-v1.1.json",
     "model": {
         "type": "qanet",
         "text_field_embedder": {
@@ -111,15 +114,17 @@
             "attention_dropout_prob": 0
         },
         "dropout_prob": 0.1,
-        "regularizer": [
-            [
-                ".*",
-                {
-                    "type": "l2",
-                    "alpha": 1e-07
-                }
+        "regularizer": {
+            "regexes": [
+                [
+                    ".*",
+                    {
+                        "type": "l2",
+                        "alpha": 1e-07
+                    }
+                ]
             ]
-        ]
+        }
     },
     "data_loader": {
         "batch_sampler": {
@@ -132,7 +137,6 @@
         "grad_norm": 5,
         "patience": 10,
         "validation_metric": "+em",
-        "cuda_device": 0,
         "optimizer": {
             "type": "adam",
             "lr": 0.001,

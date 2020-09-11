@@ -1,9 +1,12 @@
 import numpy as np
 from scipy.special import logsumexp
 import torch
+import pytest
 
-from allennlp.common.testing import ModelTestCase
+from allennlp.commands.train import train_model_from_file
+from allennlp.common.testing import ModelTestCase, requires_gpu
 
+from allennlp_models.generation import CopyNetDatasetReader, CopyNetSeq2Seq  # noqa: F401
 from tests import FIXTURES_ROOT
 
 
@@ -15,8 +18,34 @@ class CopyNetTest(ModelTestCase):
             FIXTURES_ROOT / "generation" / "copynet" / "data" / "copyover.tsv",
         )
 
-    def test_model_can_train_save_load_predict(self):
+    def test_model_can_train_save_load(self):
         self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-2)
+
+    @requires_gpu
+    def test_model_can_train_with_amp(self):
+        train_model_from_file(
+            self.param_file,
+            self.TEST_DIR,
+            overrides="{'trainer.use_amp':true,'trainer.cuda_device':0}",
+        )
+
+        # NOTE: as of writing this test, AMP does not work with RNNs and LSTMCells. Hence we had
+        # to wrap the call to LSTMCell() in CopyNet (and other models) within an autocast(False) context.
+        # But if this part of the test fails, i.e. a RuntimeError is never raised,
+        # that means AMP may be working now with RNNs, in which case we can remove
+        # any calls to `autocast(False)` around RNNs like we do in CopyNet.
+        # So just do a grep search for uses of 'autocast(False)' or 'autocast(enabled=False)'
+        # in the library.
+        # If you're still confused, contact @epwalsh.
+        with pytest.raises(RuntimeError, match="expected scalar type Half but found Float"):
+            rnn = torch.nn.LSTMCell(10, 20).cuda()
+
+            hx = torch.rand((3, 20), device="cuda")
+            cx = torch.rand((3, 20), device="cuda")
+            inp = torch.rand((3, 10), device="cuda")
+
+            with torch.cuda.amp.autocast(True):
+                hx, cx = rnn(inp, (hx, cx))
 
     def test_vocab(self):
         vocab = self.model.vocab
@@ -30,7 +59,7 @@ class CopyNetTest(ModelTestCase):
         source_tokens = inputs["source_tokens"]["tokens"]
         target_tokens = inputs["target_tokens"]["tokens"]
 
-        assert list(source_tokens["tokens"].size()) == [11]
+        assert list(source_tokens["tokens"].size()) == [9]
         assert list(target_tokens["tokens"].size()) == [10]
 
         assert target_tokens["tokens"][0] == self.model._start_index
@@ -131,11 +160,11 @@ class CopyNetTest(ModelTestCase):
         last_predictions = torch.tensor(
             [5, 6, target_vocab_size + 1]  # only generated.  # copied AND generated.
         )  # only copied.
-        # shape: (group_size, trimmed_source_length)
+        # shape: (group_size, source_sequence_length)
         source_to_target = torch.tensor(
             [[6, oov_index, oov_index], [6, oov_index, 6], [5, oov_index, oov_index]]
         )
-        # shape: (group_size, trimmed_source_length)
+        # shape: (group_size, source_sequence_length)
         source_token_ids = torch.tensor(
             [
                 [0, 1, 2],
@@ -143,7 +172,7 @@ class CopyNetTest(ModelTestCase):
                 [0, 1, 1],
             ]  # no duplicates.  # first and last source tokens match.
         )  # middle and last source tokens match.
-        # shape: (group_size, trimmed_source_length)
+        # shape: (group_size, source_sequence_length)
         copy_probs = torch.tensor([[0.1, 0.1, 0.1], [0.1, 0.1, 0.1], [0.1, 0.1, 0.1]])
 
         state = {
@@ -162,7 +191,7 @@ class CopyNetTest(ModelTestCase):
         input_choices_check = np.array([5, 6, copy_index])
         np.testing.assert_equal(input_choices.numpy(), input_choices_check)
 
-        # shape: (group_size, trimmed_source_length)
+        # shape: (group_size, source_sequence_length)
         selective_weights_check = np.array([[0.0, 0.0, 0.0], [0.5, 0.0, 0.5], [0.0, 0.5, 0.5]])
         np.testing.assert_equal(selective_weights.numpy(), selective_weights_check)
 
@@ -173,13 +202,13 @@ class CopyNetTest(ModelTestCase):
         oov_index = self.model._oov_index
         assert oov_index not in [5, 6]
 
-        # shape: (group_size, trimmed_source_length)
+        # shape: (group_size, source_sequence_length)
         source_to_target = torch.tensor([[6, oov_index, oov_index], [oov_index, 5, 5]])
-        # shape: (group_size, trimmed_source_length)
+        # shape: (group_size, source_sequence_length)
         source_token_ids = torch.tensor([[0, 1, 1], [0, 1, 1]])
         # shape: (group_size, target_vocab_size)
         generation_probs = torch.tensor([[0.1] * target_vocab_size, [0.1] * target_vocab_size])
-        # shape: (group_size, trimmed_source_length)
+        # shape: (group_size, source_sequence_length)
         copy_probs = torch.tensor([[0.1, 0.1, 0.1], [0.1, 0.1, 0.1]])
 
         state = {"source_to_target": source_to_target, "source_token_ids": source_token_ids}
@@ -253,7 +282,7 @@ class CopyNetTest(ModelTestCase):
                 [tok_index, oov_index, tok_index, end_index],
             ]
         )
-        # shape: (batch_size, trimmed_source_length)
+        # shape: (batch_size, source_sequence_length)
         source_token_ids = torch.tensor([[0, 1, 2, 3], [0, 1, 0, 2]])
         # shape: (batch_size, target_sequence_length)
         target_token_ids = torch.tensor([[4, 5, 6, 7], [1, 0, 3, 4]])

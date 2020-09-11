@@ -1,7 +1,9 @@
+local bert_model = "bert-base-uncased";
+
 {
     "dataset_reader": {
       "type": "srl",
-      "bert_model_name": "bert-base-uncased",
+      "bert_model_name": bert_model,
     },
 
     "data_loader": {
@@ -11,13 +13,15 @@
       }
     },
 
+    // "train_data_path": "/net/nfs.corp/allennlp/data/ontonotes/conll-formatted-ontonotes-5.0/data/train",
+    // "validation_data_path": "/net/nfs.corp/allennlp/data/ontonotes/conll-formatted-ontonotes-5.0/data/development",
     "train_data_path": std.extVar("SRL_TRAIN_DATA_PATH"),
     "validation_data_path": std.extVar("SRL_VALIDATION_DATA_PATH"),
 
     "model": {
         "type": "srl_bert",
         "embedding_dropout": 0.1,
-        "bert_model": "bert-base-uncased",
+        "bert_model": bert_model,
     },
 
     "trainer": {
@@ -33,8 +37,6 @@
 
         "learning_rate_scheduler": {
             "type": "slanted_triangular",
-            "num_epochs": 15,
-            "num_steps_per_epoch": 8829,
         },
         "checkpointer": {
             "num_serialized_models_to_keep": 2,
@@ -42,7 +44,5 @@
         "grad_norm": 1.0,
         "num_epochs": 15,
         "validation_metric": "+f1-measure-overall",
-        "cuda_device": 0,
     },
-
 }

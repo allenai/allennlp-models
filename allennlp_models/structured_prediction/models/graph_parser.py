@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 @Model.register("graph_parser")
+@Model.register("sp-graph-parser")
 class GraphParser(Model):
     """
     A Parser for arbitrary graph structures.
@@ -42,19 +43,19 @@ class GraphParser(Model):
         The dimension of the MLPs used for arc tag prediction.
     arc_representation_dim : `int`, required.
         The dimension of the MLPs used for arc prediction.
-    tag_feedforward : `FeedForward`, optional, (default = None).
+    tag_feedforward : `FeedForward`, optional, (default = `None`).
         The feedforward network used to produce tag representations.
         By default, a 1 layer feedforward network with an elu activation is used.
-    arc_feedforward : `FeedForward`, optional, (default = None).
+    arc_feedforward : `FeedForward`, optional, (default = `None`).
         The feedforward network used to produce arc representations.
         By default, a 1 layer feedforward network with an elu activation is used.
     pos_tag_embedding : `Embedding`, optional.
         Used to embed the `pos_tags` `SequenceLabelField` we get as input to the model.
-    dropout : `float`, optional, (default = 0.0)
+    dropout : `float`, optional, (default = `0.0`)
         The variational dropout applied to the output of the encoder and MLP layers.
-    input_dropout : `float`, optional, (default = 0.0)
+    input_dropout : `float`, optional, (default = `0.0`)
         The dropout applied to the embedded text input.
-    edge_prediction_threshold : `int`, optional (default = 0.5)
+    edge_prediction_threshold : `int`, optional (default = `0.5`)
         The probability at which to consider a scored edge to be 'present'
         in the decoded graph. Must be between 0 and 1.
     initializer : `InitializerApplicator`, optional (default=`InitializerApplicator()`)
@@ -153,15 +154,15 @@ class GraphParser(Model):
         """
         # Parameters
 
-        tokens : TextFieldTensors, required
+        tokens : `TextFieldTensors`, required
             The output of `TextField.as_array()`.
-        pos_tags : torch.LongTensor, optional (default = None)
+        pos_tags : `torch.LongTensor`, optional (default = `None`)
             The output of a `SequenceLabelField` containing POS tags.
-        metadata : List[Dict[str, Any]], optional (default = None)
+        metadata : `List[Dict[str, Any]]`, optional (default = `None`)
             A dictionary of metadata for each batch element which has keys:
                 tokens : `List[str]`, required.
                     The original string tokens in the sentence.
-        arc_tags : torch.LongTensor, optional (default = None)
+        arc_tags : `torch.LongTensor`, optional (default = `None`)
             A torch tensor representing the sequence of integer indices denoting the parent of every
             word in the dependency parse. Has shape `(batch_size, sequence_length, sequence_length)`.
 
@@ -359,9 +360,4 @@ class GraphParser(Model):
 
     @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
-        metrics = {}
-        precision, recall, f1_measure = self._unlabelled_f1.get_metric(reset)
-        metrics["precision"] = precision
-        metrics["recall"] = recall
-        metrics["f1"] = f1_measure
-        return metrics
+        return self._unlabelled_f1.get_metric(reset)

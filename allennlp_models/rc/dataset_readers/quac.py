@@ -28,15 +28,15 @@ class QuACReader(DatasetReader):
     and token offsets into the original passage, accessible as ``metadata['id']``,
     ``metadata['original_passage']``, ``metadata['answer_text_lists'] and ``metadata['token_offsets']``.
 
-    Parameters
-    ----------
-    tokenizer : ``Tokenizer``, optional (default=``SpacyTokenizer()``)
+    # Parameters
+
+    tokenizer : `Tokenizer`, optional (default=`SpacyTokenizer()`)
         We use this ``Tokenizer`` for both the question and the passage.  See :class:`Tokenizer`.
-        Default is ```SpacyTokenizer()``.
-    token_indexers : ``Dict[str, TokenIndexer]``, optional
+        Default is `SpacyTokenizer()`.
+    token_indexers : `Dict[str, TokenIndexer]`, optional
         We similarly use this for both the question and the passage.  See :class:`TokenIndexer`.
-        Default is ``{"tokens": SingleIdTokenIndexer()}``.
-    num_context_answers : ``int``, optional
+        Default is `{"tokens": SingleIdTokenIndexer()}`.
+    num_context_answers : `int`, optional
         How many previous question answers to consider in a context.
     """
 
@@ -44,10 +44,10 @@ class QuACReader(DatasetReader):
         self,
         tokenizer: Tokenizer = None,
         token_indexers: Dict[str, TokenIndexer] = None,
-        lazy: bool = False,
         num_context_answers: int = 0,
+        **kwargs,
     ) -> None:
-        super().__init__(lazy)
+        super().__init__(**kwargs)
         self._tokenizer = tokenizer or SpacyTokenizer()
         self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
         self._num_context_answers = num_context_answers

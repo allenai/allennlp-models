@@ -55,7 +55,7 @@ class TransformerQAPredictor(Predictor):
         # We allow the passage / context to be specified with either key.
         # But we do it this way so that a 'KeyError: context' exception will be raised
         # when neither key is specified, since the 'context' key is the default and
-        # the 'passage' key was only added to be compatable with the input for other
+        # the 'passage' key was only added to be compatible with the input for other
         # RC models.
         context = json_dict["passage"] if "passage" in json_dict else json_dict["context"]
         result = list(

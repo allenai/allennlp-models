@@ -8,7 +8,6 @@ from allennlp_models.lm.models.language_model import LanguageModel
 
 
 @Model.register("bidirectional-language-model")
-@Model.register("bidirectional_language_model")
 class BidirectionalLanguageModel(LanguageModel):
     """
     The `BidirectionalLanguageModel` applies a bidirectional "contextualizing"
@@ -29,14 +28,14 @@ class BidirectionalLanguageModel(LanguageModel):
     contextualizer : `Seq2SeqEncoder`
         Used to "contextualize" the embeddings. As described above,
         this encoder must not cheat by peeking ahead.
-    dropout : `float`, optional (default: None)
+    dropout : `float`, optional (default=`None`)
         If specified, dropout is applied to the contextualized embeddings before computation of
         the softmax. The contextualized embeddings themselves are returned without dropout.
-    num_samples : `int`, optional (default: None)
+    num_samples : `int`, optional (default=`None`)
         If provided, the model will use `SampledSoftmaxLoss`
         with the specified number of samples. Otherwise, it will use
         the full `_SoftmaxLoss` defined above.
-    sparse_embeddings : `bool`, optional (default: False)
+    sparse_embeddings : `bool`, optional (default=`False`)
         Passed on to `SampledSoftmaxLoss` if True.
     """
 

@@ -1,6 +1,6 @@
 local target_namespace = "target_tokens";
-local transformer_model = "bert-base-cased";
-local hidden_size = 768;
+local transformer_model = "test_fixtures/bert-xsmall-dummy";
+local hidden_size = 20;
 
 {
     "dataset_reader": {
@@ -21,7 +21,6 @@ local hidden_size = 768;
                 "model_name": transformer_model,
             },
         },
-        "add_start_and_end_tokens": false,
     },
     "train_data_path": "test_fixtures/generation/copynet/data/copyover.tsv",
     "validation_data_path": "test_fixtures/generation/copynet/data/copyover.tsv",

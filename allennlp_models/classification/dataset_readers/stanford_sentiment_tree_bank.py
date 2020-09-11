@@ -1,6 +1,7 @@
-from typing import Dict, List
+from typing import Dict, List, Optional, Union
 import logging
 
+from allennlp.data import Tokenizer
 from overrides import overrides
 from nltk.tree import Tree
 
@@ -53,12 +54,14 @@ class StanfordSentimentTreeBankDatasetReader(DatasetReader):
     def __init__(
         self,
         token_indexers: Dict[str, TokenIndexer] = None,
+        tokenizer: Optional[Tokenizer] = None,
         use_subtrees: bool = False,
         granularity: str = "5-class",
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
         self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
+        self._tokenizer = tokenizer
         self._use_subtrees = use_subtrees
         allowed_granularities = ["5-class", "3-class", "2-class"]
         if granularity not in allowed_granularities:
@@ -89,17 +92,15 @@ class StanfordSentimentTreeBankDatasetReader(DatasetReader):
                         yield instance
 
     @overrides
-    def text_to_instance(
-        self, tokens: List[str], sentiment: str = None
-    ) -> Instance:  # type: ignore
+    def text_to_instance(self, tokens: List[str], sentiment: str = None) -> Optional[Instance]:
         """
-        We take `pre-tokenized` input here, because we don't have a tokenizer in this class.
+        We take `pre-tokenized` input here, because we might not have a tokenizer in this class.
 
         # Parameters
 
         tokens : `List[str]`, required.
             The tokens in a given sentence.
-        sentiment : `str`, optional, (default = None).
+        sentiment : `str`, optional, (default = `None`).
             The sentiment for this sentence.
 
         # Returns
@@ -110,8 +111,23 @@ class StanfordSentimentTreeBankDatasetReader(DatasetReader):
             label : `LabelField`
                 The sentiment label of the sentence or phrase.
         """
+        assert isinstance(
+            tokens, list
+        )  # If tokens is a str, nothing breaks but the results are garbage, so we check.
+        if self._tokenizer is None:
 
-        text_field = TextField([Token(x) for x in tokens], token_indexers=self._token_indexers)
+            def make_token(t: Union[str, Token]):
+                if isinstance(t, str):
+                    return Token(t)
+                elif isinstance(t, Token):
+                    return t
+                else:
+                    raise ValueError("Tokens must be either str or Token.")
+
+            tokens = [make_token(x) for x in tokens]
+        else:
+            tokens = self._tokenizer.tokenize(" ".join(tokens))
+        text_field = TextField(tokens, token_indexers=self._token_indexers)
         fields: Dict[str, Field] = {"tokens": text_field}
         if sentiment is not None:
             # 0 and 1 are negative sentiment, 2 is neutral, and 3 and 4 are positive sentiment

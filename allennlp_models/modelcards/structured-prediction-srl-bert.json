@@ -1,0 +1,6 @@
+{
+    "id": "structured-prediction-srl-bert",
+    "registered_model_name": "srl_bert",
+    "display_name": "SRL BERT",
+    "archive_file": "bert-base-srl-2020.09.03.tar.gz"
+}
