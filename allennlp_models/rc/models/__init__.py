@@ -1,5 +1,6 @@
 from allennlp_models.rc.models.bidaf_ensemble import BidafEnsemble
 from allennlp_models.rc.models.bidaf import BidirectionalAttentionFlow
+from allennlp_models.rc.models.bidaf_no_answer import BidirectionalAttentionFlowNoAnswer
 from allennlp_models.rc.models.dialog_qa import DialogQA
 from allennlp_models.rc.models.naqanet import NumericallyAugmentedQaNet
 from allennlp_models.rc.models.qanet import QaNet
