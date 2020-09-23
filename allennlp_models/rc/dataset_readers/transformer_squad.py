@@ -36,7 +36,7 @@ class TransformerSquadReader(DatasetReader):
     sliding window over the context and emit multiple instances for a single question. At training time, we only
     emit instances that contain a gold answer. At test time, we emit all instances. As a result, the per-instance
     metrics you get during training and evaluation don't correspond 100% to the SQuAD task. To get a final number,
-    you have to run the script in scripts/transformer_qa_eval.py.
+    you have to run `python -m allennlp_models.rc.tools.transformer_qa_eval`.
 
     # Parameters
 
