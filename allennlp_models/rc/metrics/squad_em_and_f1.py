@@ -2,11 +2,10 @@ from typing import Tuple
 
 import torch
 import torch.distributed as dist
-
-from allennlp.common.util import is_distributed
-from allennlp.training.metrics.metric import Metric
 from overrides import overrides
 
+from allennlp.training.metrics.metric import Metric
+from allennlp.common.util import is_distributed
 from allennlp_models.rc.tools import squad
 
 
@@ -14,8 +13,8 @@ from allennlp_models.rc.tools import squad
 class SquadEmAndF1(Metric):
     """
     This :class:`Metric` takes the best span string computed by a model, along with the answer
-    strings labeled in the data, and computed exact match and F1 score using the official SQuAD
-    evaluation script.
+    strings labeled in the data, and computed exact match and F1 score using functions from the
+    official SQuAD2 and SQuAD1.1 evaluation scripts.
     """
 
     def __init__(self) -> None:
@@ -25,17 +24,11 @@ class SquadEmAndF1(Metric):
 
     @overrides
     def __call__(self, best_span_string, answer_strings):
-        """
-        Parameters
-        ----------
-        value : ``float``
-            The value to average.
-        """
-        exact_match = squad.metric_max_over_ground_truths(
-            squad.exact_match_score, best_span_string, answer_strings
+        exact_match = max(
+            squad.compute_exact(gold_answer, best_span_string) for gold_answer in answer_strings
         )
-        f1_score = squad.metric_max_over_ground_truths(
-            squad.f1_score, best_span_string, answer_strings
+        f1_score = max(
+            squad.compute_f1(gold_answer, best_span_string) for gold_answer in answer_strings
         )
 
         count = 1

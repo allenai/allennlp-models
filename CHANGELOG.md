@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added 
+
+- Updated the SQuAD v1.1 metric to work with SQuAD 2.0 as well.
+
 ### Fixed
 
 - Fixed BART for latest `transformers` version.
@@ -80,13 +84,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added two models for fine-grained NER
 - Added a category for multiple choice models, including a few reference implementations
 - Implemented manual distributed sharding for SNLI dataset reader.
-
-
-### Added
-
-- Added a new dataset reader for the SQuAD 2.0 dataset.
-- Added a new metric for the EM and F1 on the SQuAD 2.0 dataset.
-- Added the BiDAF-no-answer model for SQuAD 2.0 from ["Zero-Shot Relation Extraction via Reading Comprehension" (Levy et al., CoNLL 2017"](https://www.semanticscholar.org/paper/Zero-Shot-Relation-Extraction-via-Reading-Levy-Seo/fa025e5d117929361bcf798437957762eb5bb6d4).
 
 ## [v1.0.0](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0) - 2020-06-16
 
