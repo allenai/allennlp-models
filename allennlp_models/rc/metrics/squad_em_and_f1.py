@@ -24,11 +24,11 @@ class SquadEmAndF1(Metric):
 
     @overrides
     def __call__(self, best_span_string, answer_strings):
-        exact_match = max(
-            squad.compute_exact(gold_answer, best_span_string) for gold_answer in answer_strings
+        exact_match = squad.metric_max_over_ground_truths(
+            squad.compute_exact, best_span_string, answer_strings
         )
-        f1_score = max(
-            squad.compute_f1(gold_answer, best_span_string) for gold_answer in answer_strings
+        f1_score = squad.metric_max_over_ground_truths(
+            squad.compute_f1, best_span_string, answer_strings
         )
 
         count = 1
