@@ -72,6 +72,6 @@ def metric_max_over_ground_truths(metric_fn, prediction, ground_truths):
 
 
 def get_metric_score(prediction, gold_answers):
-    exact_scores = metric_max_over_ground_truths(compute_f1, prediction, gold_answers)
-    f1_scores = metric_max_over_ground_truths(compute_exact, prediction, gold_answers)
+    exact_scores = metric_max_over_ground_truths(compute_exact, prediction, gold_answers)
+    f1_scores = metric_max_over_ground_truths(compute_f1, prediction, gold_answers)
     return exact_scores, f1_scores
