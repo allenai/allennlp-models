@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+###
+
+- Added official support for Python 3.8.
+
 ### Fixed
 
 - Fixed BART for latest `transformers` version.
