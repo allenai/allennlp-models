@@ -22,7 +22,7 @@
                      booktitle={NAACL-HLT},
                      year={2019}}",
         "license": null,
-        "contact": null
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
