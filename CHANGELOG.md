@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added official support for Python 3.8.
 - Added a json template for model cards.
 
 ### Fixed
