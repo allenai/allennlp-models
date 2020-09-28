@@ -53,7 +53,7 @@ class BaseSquadReader(DatasetReader):
     passage_length_limit : `int`, optional (default=`None`)
         If specified, we will cut the passage if the length of passage exceeds this limit.
     question_length_limit : `int`, optional (default=`None`)
-        If specified, we will cut the passage if the length of passage exceeds this limit.
+        If specified, we will cut the question if the length of question exceeds this limit.
     skip_invalid_examples: `bool`, optional (default=`False`)
         If this is true, we will skip invalid examples that don't contain the answer spans.
     no_answer_token: `Optional[str]`, optional (default=`None`)
