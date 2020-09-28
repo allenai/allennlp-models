@@ -42,19 +42,19 @@ class BaseSquadReader(DatasetReader):
     computed loss will not be accurate as a result. But this will not affect the answer evaluation,
     because we keep all the original gold answer texts.
 
-    Parameters
-    ----------
+    # Parameters
+
     tokenizer : `Tokenizer`, optional (default=`SpacyTokenizer()`)
         We use this `Tokenizer` for both the question and the passage.  See :class:`Tokenizer`.
-        Default is ``SpacyTokenizer()`.
+        Default is `SpacyTokenizer()`.
     token_indexers : `Dict[str, TokenIndexer]`, optional
         We similarly use this for both the question and the passage.  See :class:`TokenIndexer`.
         Default is `{"tokens": SingleIdTokenIndexer()}`.
-    passage_length_limit : `int`, optional (default=None)
+    passage_length_limit : `int`, optional (default=`None`)
         If specified, we will cut the passage if the length of passage exceeds this limit.
-    question_length_limit : `int`, optional (default=None)
+    question_length_limit : `int`, optional (default=`None`)
         If specified, we will cut the passage if the length of passage exceeds this limit.
-    skip_invalid_examples: `bool`, optional (default=False)
+    skip_invalid_examples: `bool`, optional (default=`False`)
         If this is true, we will skip invalid examples that don't contain the answer spans.
     no_answer_token: `Optional[str]`, optional (default=`None`)
         A special token to append to each context. If using a SQuAD 2.0-style dataset, this
@@ -213,7 +213,7 @@ class BaseSquadReader(DatasetReader):
 
 
 @DatasetReader.register("squad")
-class Squad1Reader(BaseSquadReader):
+class SquadReader(BaseSquadReader):
     """
     Dataset reader for SQuAD v1.1-style datasets. Arguments are the same as `BaseSquadReader`.
 

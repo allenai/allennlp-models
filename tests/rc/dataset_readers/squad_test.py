@@ -3,15 +3,15 @@ import pytest
 from allennlp.common import Params
 from allennlp.common.util import ensure_list
 
-from allennlp_models.rc import Squad1Reader, Squad2Reader
+from allennlp_models.rc import SquadReader, Squad2Reader
 from allennlp_models.rc.dataset_readers.squad import SQUAD2_NO_ANSWER_TOKEN
 from tests import FIXTURES_ROOT
 
 
-class TestSquad1Reader:
+class TestSquadReader:
     @pytest.mark.parametrize("lazy", (True, False))
     def test_read_from_file(self, lazy):
-        reader = Squad1Reader(lazy=lazy)
+        reader = SquadReader(lazy=lazy)
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "squad.json"))
         assert len(instances) == 5
 
@@ -60,14 +60,14 @@ class TestSquad1Reader:
         assert [t.text for t in answer_tokens] == expected_answer_tokens
 
     def test_can_build_from_params(self):
-        reader = Squad1Reader.from_params(Params({}))
+        reader = SquadReader.from_params(Params({}))
 
         assert reader._tokenizer.__class__.__name__ == "SpacyTokenizer"
         assert reader._token_indexers["tokens"].__class__.__name__ == "SingleIdTokenIndexer"
 
     def test_length_limit_works(self):
         # We're making sure the length of the text is correct if length limit is provided.
-        reader = Squad1Reader(
+        reader = SquadReader(
             passage_length_limit=30, question_length_limit=10, skip_invalid_examples=True
         )
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "squad.json"))
@@ -77,7 +77,7 @@ class TestSquad1Reader:
         assert len(instances) == 3
 
         # Length limit still works if we do not skip the invalid examples
-        reader = Squad1Reader(
+        reader = SquadReader(
             passage_length_limit=30, question_length_limit=10, skip_invalid_examples=False
         )
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "squad.json"))
@@ -87,7 +87,7 @@ class TestSquad1Reader:
         assert len(instances) == 5
 
         # Make sure the answer texts does not change, so that the evaluation will not be affected
-        reader_unlimited = Squad1Reader(
+        reader_unlimited = SquadReader(
             passage_length_limit=30, question_length_limit=10, skip_invalid_examples=False
         )
         instances_unlimited = ensure_list(
