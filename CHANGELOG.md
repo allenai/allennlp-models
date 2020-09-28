@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added 
 
 - Updated the SQuAD v1.1 metric to work with SQuAD 2.0 as well.
+- Added official support for Python 3.8.
+- Added a json template for model cards.
 
 ### Fixed
 
