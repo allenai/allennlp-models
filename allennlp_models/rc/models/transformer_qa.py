@@ -26,16 +26,22 @@ logger = logging.getLogger(__name__)
 @Model.register("transformer_qa")
 class TransformerQA(Model):
     """
-    This class implements a reading comprehension model patterned after the proposed model in
-    [Devlin et al](git@github.com:huggingface/transformers.git),
+    Registered as `"transformer_qa"`, this class implements a reading comprehension model patterned
+    after the proposed model in [Devlin et al](git@github.com:huggingface/transformers.git),
     with improvements borrowed from the SQuAD model in the transformers project.
 
     It predicts start tokens and end tokens with a linear layer on top of word piece embeddings.
 
+    If you want to use this model on the SQuAD v1.1 dataset, you can use it with the
+    [`transformer_squad`](../../dataset_readers/transformer_squad#transformersquadreader)
+    dataset reader, and if you want to use it the SQuAD v2.0 dataset, you can use it with
+    the  [`transformer_squad2`](../../dataset_readers/transformer_squad#transformersquad2reader)
+    dataset reader.
+
     Note that the metrics that the model produces are calculated on a per-instance basis only. Since there could
     be more than one instance per question, these metrics are not the official numbers on either SQuAD task.
 
-    To get official numbers for SQuAD v1.1, run
+    To get official numbers for SQuAD v1.1, for example, you can run
 
     ```
     python -m allennlp_models.rc.tools.transformer_qa_eval
@@ -72,28 +78,39 @@ class TransformerQA(Model):
         metadata: List[Dict[str, Any]] = None,
         cls_index: Optional[torch.LongTensor] = None,
     ) -> Dict[str, torch.Tensor]:
-
         """
         # Parameters
 
         question_with_context : `Dict[str, torch.LongTensor]`
             From a `TextField`. The model assumes that this text field contains the context followed by the
             question. It further assumes that the tokens have type ids set such that any token that can be part of
-            the answer (i.e., tokens from the context) has type id 0, and any other token (including [CLS] and
-            [SEP]) has type id 1.
+            the answer (i.e., tokens from the context) has type id 0, and any other token (including
+            `[CLS]` and `[SEP]`) has type id 1.
+
         context_span : `torch.IntTensor`
             From a `SpanField`. This marks the span of word pieces in `question` from which answers can come.
+
         answer_span : `torch.IntTensor`, optional
             From a `SpanField`. This is the thing we are trying to predict - the span of text that marks the
             answer. If given, we compute a loss that gets included in the output directory.
+
         metadata : `List[Dict[str, Any]]`, optional
             If present, this should contain the question id, and the original texts of context, question, tokenized
             version of both, and a list of possible answers. The length of the `metadata` list should be the
             batch size, and each dictionary should have the keys `id`, `question`, `context`,
             `question_tokens`, `context_tokens`, and `answers`.
+
         cls_index : `Optional[torch.LongTensor]`, optional (default = `None`)
-            A tensor of shape `(batch_size, )` that provides the index of the `[CLS]` token
+            A tensor of shape `(batch_size,)` that provides the index of the `[CLS]` token
             in the `question_with_context` for each instance.
+
+            This is optional because whether or not it's passed with a non-`None` value depends
+            on the dataset reader.
+
+            The [`transformer_squad`](../../dataset_readers/transformer_squad#transformersquadreader)
+            reader for SQuAD v1.1 does not use this field, while the
+            [`transformer_squad2`](../../dataset_readers/transformer_squad#transformersquad2reader)
+            reader for SQuAD v2.0 does.
 
         # Returns
 

@@ -116,4 +116,4 @@ class TestTransformerSquad2Reader:
             context_end = instance.fields["context_span"].span_end + 1
             assert all(id == 0 for id in token_type_ids[:context_start])
             assert all(id == 1 for id in token_type_ids[context_start:context_end])
-            assert tokens[instance.fields["cls_index"].label].text == "[CLS]"
+            assert tokens[instance.fields["cls_index"].sequence_index].text == "[CLS]"

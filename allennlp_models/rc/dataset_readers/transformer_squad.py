@@ -2,10 +2,10 @@ import json
 import logging
 from typing import Any, Dict, List, Tuple, Optional, Iterable
 
-from allennlp.common.util import sanitize_wordpiece
-from allennlp.data.fields import MetadataField, TextField, SpanField, LabelField
 from overrides import overrides
 
+from allennlp.common.util import sanitize_wordpiece
+from allennlp.data.fields import MetadataField, TextField, SpanField, IndexField
 from allennlp.common.file_utils import cached_path, open_compressed
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.instance import Instance
@@ -38,7 +38,7 @@ class BaseTransformerSquadReader(DatasetReader):
        `metadata['id']`, `metadata['question']`, `metadata['context']`, `metadata['question_tokens']`,
        `metadata['context_tokens']`, and `metadata['answers']`. This is so that we can more easily use the
        official SQuAD evaluation script to get metrics.
-     * `cls_index`, a `LabelField` that holds the index of the `[CLS]` token within the
+     * `cls_index`, a `IndexField` that holds the index of the `[CLS]` token within the
        `question_with_context` field. This is only present if `use_cls_token_for_unanswerable`
        is set to `True`.
 
@@ -276,7 +276,7 @@ class BaseTransformerSquadReader(DatasetReader):
             cls_index = next(
                 i for i, t in enumerate(question_field.tokens) if t.text == self._cls_token
             )
-            fields["cls_index"] = LabelField(cls_index, skip_indexing=True)
+            fields["cls_index"] = IndexField(cls_index, question_field)
 
         start_of_context = (
             len(self._tokenizer.sequence_pair_start_tokens)
@@ -295,7 +295,7 @@ class BaseTransformerSquadReader(DatasetReader):
                 question_field,
             )
         elif self.use_cls_token_for_unanswerable:
-            cls_index = fields["cls_index"].label
+            cls_index = fields["cls_index"].sequence_index
             fields["answer_span"] = SpanField(cls_index, cls_index, question_field)
         elif for_training:
             # We have to put in something even when we don't have an answer, so that this instance can be batched
@@ -357,7 +357,7 @@ class TransformerSquad2Reader(BaseTransformerSquadReader):
 
     This differs from the SQuAD v1.1 dataset reader in that questions without a
     valid answer will have an `answer_span` that just spans the `[CLS]` token,
-    and all instances will have an additional `cls_index` field.
+    and all instances will have the additional `cls_index` field.
 
     For an explanation of the other parameters, see :class:`BaseTransformerSquadReader`.
     """
