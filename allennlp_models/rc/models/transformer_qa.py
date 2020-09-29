@@ -92,7 +92,7 @@ class TransformerQA(Model):
             batch size, and each dictionary should have the keys `id`, `question`, `context`,
             `question_tokens`, `context_tokens`, and `answers`.
         cls_index : `Optional[torch.LongTensor]`, optional (default = `None`)
-            A tensor of shape `(batch_size, 1)` that provides the index of the `[CLS]` token
+            A tensor of shape `(batch_size, )` that provides the index of the `[CLS]` token
             in the `question_with_context` for each instance.
 
         # Returns
@@ -203,7 +203,7 @@ class TransformerQA(Model):
                 context_tokens_for_question = metadata_entry["context_tokens"]
                 context_tokens.append(context_tokens_for_question)
 
-                if cls_index is not None and best_span[0] == cls_index[i][0]:
+                if cls_index is not None and best_span[0] == cls_index[i]:
                     # Predicting [CLS] is interpreted as predicting the question as unanswerable.
                     best_span_string = ""
                 else:

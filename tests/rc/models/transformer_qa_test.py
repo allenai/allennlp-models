@@ -53,6 +53,25 @@ class TransformerQaTest(ModelTestCase):
         assert isinstance(output_dict["best_span_str"][0], str)
 
 
+class TransformerQaV2Test(ModelTestCase):
+    def setup_method(self):
+        super().setup_method()
+        self.set_up_model(
+            FIXTURES_ROOT / "rc" / "transformer_qa" / "experiment_v2.jsonnet",
+            FIXTURES_ROOT / "rc" / "squad2.json",
+        )
+
+    def test_model_can_train_save_and_load(self):
+        # Huggingface transformer models come with pooler weights, but this model doesn't use the pooler.
+        self.ensure_model_can_train_save_and_load(
+            self.param_file,
+            gradients_to_ignore={
+                "_text_field_embedder.token_embedder_tokens.transformer_model.pooler.weight",
+                "_text_field_embedder.token_embedder_tokens.transformer_model.pooler.bias",
+            },
+        )
+
+
 @requires_gpu
 class TransformerQaMixedPrecisionTest(AllenNlpTestCase):
     def test_model_can_train_save_and_load_with_mixed_precision(self):
