@@ -154,7 +154,7 @@ class BaseSquadReader(DatasetReader):
         if self.question_length_limit is not None:
             question_tokens = question_tokens[: self.question_length_limit]
 
-        if is_impossible is True:
+        if is_impossible:
             if self.no_answer_token is None:
                 raise ValueError(
                     "This is a SQuAD 2.0 dataset, yet your using a SQuAD reader has 'no_answer_token' "
@@ -195,6 +195,8 @@ class BaseSquadReader(DatasetReader):
                 if self.skip_invalid_examples:
                     return None
                 else:
+                    if self.no_answer_token is not None:
+                        answer_texts = [self.no_answer_token]
                     token_spans.append(
                         (
                             len(passage_tokens) - 1,

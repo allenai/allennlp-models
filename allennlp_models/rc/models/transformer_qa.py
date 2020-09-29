@@ -27,14 +27,15 @@ logger = logging.getLogger(__name__)
 class TransformerQA(Model):
     """
     This class implements a reading comprehension model patterned after the proposed model in
-    https://arxiv.org/abs/1810.04805 (Devlin et al), with improvements borrowed from the SQuAD model in the
-    transformers project.
+    [Devlin et al](git@github.com:huggingface/transformers.git),
+    with improvements borrowed from the SQuAD model in the transformers project.
 
     It predicts start tokens and end tokens with a linear layer on top of word piece embeddings.
 
     Note that the metrics that the model produces are calculated on a per-instance basis only. Since there could
-    be more than one instance per question, these metrics are not the official numbers on the SQuAD task. To get
-    official numbers, run the script in scripts/transformer_qa_eval.py.
+    be more than one instance per question, these metrics are not the official numbers on either SQuAD task.
+
+    To get official numbers for SQuAD v1.1, run `python -m allennlp_models.rc.tools.transformer_qa_eval`.
 
     # Parameters
 
@@ -65,44 +66,48 @@ class TransformerQA(Model):
         context_span: torch.IntTensor,
         answer_span: Optional[torch.IntTensor] = None,
         metadata: List[Dict[str, Any]] = None,
+        cls_index: Optional[torch.LongTensor] = None,
     ) -> Dict[str, torch.Tensor]:
 
         """
         # Parameters
 
         question_with_context : `Dict[str, torch.LongTensor]`
-            From a ``TextField``. The model assumes that this text field contains the context followed by the
+            From a `TextField`. The model assumes that this text field contains the context followed by the
             question. It further assumes that the tokens have type ids set such that any token that can be part of
             the answer (i.e., tokens from the context) has type id 0, and any other token (including [CLS] and
             [SEP]) has type id 1.
         context_span : `torch.IntTensor`
-            From a ``SpanField``. This marks the span of word pieces in ``question`` from which answers can come.
+            From a `SpanField`. This marks the span of word pieces in `question` from which answers can come.
         answer_span : `torch.IntTensor`, optional
-            From a ``SpanField``. This is the thing we are trying to predict - the span of text that marks the
+            From a `SpanField`. This is the thing we are trying to predict - the span of text that marks the
             answer. If given, we compute a loss that gets included in the output directory.
         metadata : `List[Dict[str, Any]]`, optional
             If present, this should contain the question id, and the original texts of context, question, tokenized
-            version of both, and a list of possible answers. The length of the ``metadata`` list should be the
-            batch size, and each dictionary should have the keys ``id``, ``question``, ``context``,
-            ``question_tokens``, ``context_tokens``, and ``answers``.
+            version of both, and a list of possible answers. The length of the `metadata` list should be the
+            batch size, and each dictionary should have the keys `id`, `question`, `context`,
+            `question_tokens`, `context_tokens`, and `answers`.
+        cls_index : `Optional[torch.LongTensor]`, optional (default = `None`)
+            A tensor of shape `(batch_size, 1)` that provides the index of the `[CLS]` token
+            in the `question_with_context` for each instance.
 
         # Returns
 
         An output dictionary consisting of:
 
         span_start_logits : `torch.FloatTensor`
-            A tensor of shape ``(batch_size, passage_length)`` representing unnormalized log
+            A tensor of shape `(batch_size, passage_length)` representing unnormalized log
             probabilities of the span start position.
         span_start_probs : `torch.FloatTensor`
             The result of `softmax(span_start_logits)`.
         span_end_logits : `torch.FloatTensor`
-            A tensor of shape ``(batch_size, passage_length)`` representing unnormalized log
+            A tensor of shape `(batch_size, passage_length)` representing unnormalized log
             probabilities of the span end position (inclusive).
         span_end_probs : `torch.FloatTensor`
-            The result of ``softmax(span_end_logits)``.
+            The result of `softmax(span_end_logits)`.
         best_span : `torch.IntTensor`
-            The result of a constrained inference over ``span_start_logits`` and
-            ``span_end_logits`` to find the most probable span.  Shape is ``(batch_size, 2)``
+            The result of a constrained inference over `span_start_logits` and
+            `span_end_logits` to find the most probable span.  Shape is `(batch_size, 2)`
             and each offset is a token index.
         best_span_scores : `torch.FloatTensor`
             The score for each of the best spans.
@@ -124,6 +129,8 @@ class TransformerQA(Model):
         )
         for i, (start, end) in enumerate(context_span):
             possible_answer_mask[i, start : end + 1] = True
+            if cls_index is not None:
+                possible_answer_mask[i, cls_index[i]] = True
 
         # Replace the masked values with a very negative constant.
         span_start_logits = replace_masked_values_with_big_negative_number(
@@ -186,45 +193,52 @@ class TransformerQA(Model):
 
             output_dict["best_span_str"] = []
             context_tokens = []
-            for metadata_entry, best_span, cspan in zip(metadata, best_spans, context_span):
+            for i, (metadata_entry, best_span, cspan) in enumerate(
+                zip(metadata, best_spans, context_span)
+            ):
                 context_tokens_for_question = metadata_entry["context_tokens"]
                 context_tokens.append(context_tokens_for_question)
 
-                best_span -= int(cspan[0])
-                assert np.all(best_span >= 0)
-
-                predicted_start, predicted_end = tuple(best_span)
-
-                while (
-                    predicted_start >= 0
-                    and context_tokens_for_question[predicted_start].idx is None
-                ):
-                    predicted_start -= 1
-                if predicted_start < 0:
-                    logger.warning(
-                        f"Could not map the token '{context_tokens_for_question[best_span[0]].text}' at index "
-                        f"'{best_span[0]}' to an offset in the original text."
-                    )
-                    character_start = 0
+                if cls_index is not None and best_span[0] == cls_index[i][0]:
+                    # Predicting [CLS] is interpreted as predicting the question as unanswerable.
+                    best_span_string = ""
                 else:
-                    character_start = context_tokens_for_question[predicted_start].idx
+                    best_span -= int(cspan[0])
+                    assert np.all(best_span >= 0)
 
-                while (
-                    predicted_end < len(context_tokens_for_question)
-                    and context_tokens_for_question[predicted_end].idx is None
-                ):
-                    predicted_end += 1
-                if predicted_end >= len(context_tokens_for_question):
-                    logger.warning(
-                        f"Could not map the token '{context_tokens_for_question[best_span[1]].text}' at index "
-                        f"'{best_span[1]}' to an offset in the original text."
-                    )
-                    character_end = len(metadata_entry["context"])
-                else:
-                    end_token = context_tokens_for_question[predicted_end]
-                    character_end = end_token.idx + len(sanitize_wordpiece(end_token.text))
+                    predicted_start, predicted_end = tuple(best_span)
 
-                best_span_string = metadata_entry["context"][character_start:character_end]
+                    while (
+                        predicted_start >= 0
+                        and context_tokens_for_question[predicted_start].idx is None
+                    ):
+                        predicted_start -= 1
+                    if predicted_start < 0:
+                        logger.warning(
+                            f"Could not map the token '{context_tokens_for_question[best_span[0]].text}' at index "
+                            f"'{best_span[0]}' to an offset in the original text."
+                        )
+                        character_start = 0
+                    else:
+                        character_start = context_tokens_for_question[predicted_start].idx
+
+                    while (
+                        predicted_end < len(context_tokens_for_question)
+                        and context_tokens_for_question[predicted_end].idx is None
+                    ):
+                        predicted_end += 1
+                    if predicted_end >= len(context_tokens_for_question):
+                        logger.warning(
+                            f"Could not map the token '{context_tokens_for_question[best_span[1]].text}' at index "
+                            f"'{best_span[1]}' to an offset in the original text."
+                        )
+                        character_end = len(metadata_entry["context"])
+                    else:
+                        end_token = context_tokens_for_question[predicted_end]
+                        character_end = end_token.idx + len(sanitize_wordpiece(end_token.text))
+
+                    best_span_string = metadata_entry["context"][character_start:character_end]
+
                 output_dict["best_span_str"].append(best_span_string)
 
                 answers = metadata_entry.get("answers")

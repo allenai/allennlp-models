@@ -3,7 +3,7 @@ import pytest
 from allennlp.common import Params
 from allennlp.common.util import ensure_list
 
-from allennlp_models.rc import TransformerSquadReader
+from allennlp_models.rc import TransformerSquadReader, TransformerSquad2Reader
 from tests import FIXTURES_ROOT
 
 
@@ -92,3 +92,28 @@ class TestTransformerSquadReader:
             2264,
             6476,
         ]
+
+
+class TestTransformerSquad2Reader:
+    def test_read_from_file(self):
+        reader = TransformerSquad2Reader()
+        instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "squad2.json"))
+        assert len(instances) == 6
+
+        token_text = [t.text for t in instances[0].fields["question_with_context"].tokens]
+        token_type_ids = [t.type_id for t in instances[0].fields["question_with_context"].tokens]
+
+        assert token_text[:3] == ["[CLS]", "This", "is"]
+        assert token_type_ids[:3] == [0, 0, 0]
+
+        assert token_text[-3:] == ["Mary", ".", "[SEP]"]
+        assert token_type_ids[-3:] == [1, 1, 1]
+
+        for instance in instances:
+            tokens = instance.fields["question_with_context"].tokens
+            token_type_ids = [t.type_id for t in tokens]
+            context_start = instance.fields["context_span"].span_start
+            context_end = instance.fields["context_span"].span_end + 1
+            assert all(id == 0 for id in token_type_ids[:context_start])
+            assert all(id == 1 for id in token_type_ids[context_start:context_end])
+            assert tokens[instance.fields["cls_index"].label].text == "[CLS]"

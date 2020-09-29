@@ -3,7 +3,7 @@ import logging
 from typing import Any, Dict, List, Tuple, Optional, Iterable
 
 from allennlp.common.util import sanitize_wordpiece
-from allennlp.data.fields import MetadataField, TextField, SpanField
+from allennlp.data.fields import MetadataField, TextField, SpanField, LabelField
 from overrides import overrides
 
 from allennlp.common.file_utils import cached_path, open_compressed
@@ -17,26 +17,30 @@ from allennlp_models.rc.dataset_readers.utils import char_span_to_token_span
 logger = logging.getLogger(__name__)
 
 
-@DatasetReader.register("transformer_squad")
-class TransformerSquadReader(DatasetReader):
+class BaseTransformerSquadReader(DatasetReader):
     """
-    Reads a JSON-formatted SQuAD file and returns a ``Dataset`` where the ``Instances`` have four
+    Reads a JSON-formatted SQuAD file and returns a `Dataset` where the `Instances` have following
     fields:
-     * ``question_with_context``, a ``TextField`` that contains the concatenation of question and context,
-     * ``answer_span``, a ``SpanField`` into the ``question`` ``TextField`` denoting the answer.
-     * ``context_span`` a ``SpanField`` into the ``question`` ``TextField`` denoting the context, i.e., the part of
+
+     * `question_with_context`, a `TextField` that contains the concatenation of question and context,
+     * `answer_span`, a `SpanField` into the `question` `TextField` denoting the answer.
+     * `context_span`, a `SpanField` into the `question` `TextField` denoting the context, i.e., the part of
        the text that potential answers can come from.
-     * A ``MetadataField`` that stores the instance's ID, the original question, the original passage text, both of
-       these in tokenized form, and the gold answer strings, accessible as ``metadata['id']``,
-       ``metadata['question']``, ``metadata['context']``, ``metadata['question_tokens']``,
-       ``metadata['context_tokens']``, and ``metadata['answers']. This is so that we can more easily use the
+     * `metadata`, a `MetadataField` that stores the instance's ID, the original question, the original
+       passage text, both of these in tokenized form, and the gold answer strings, accessible as
+       `metadata['id']`, `metadata['question']`, `metadata['context']`, `metadata['question_tokens']`,
+       `metadata['context_tokens']`, and `metadata['answers']`. This is so that we can more easily use the
        official SQuAD evaluation script to get metrics.
+     * `cls_index`, a `LabelField` that holds the index of the `[CLS]` token within the
+       `question_with_context` field. This is only present if `use_cls_token_for_unanswerable`
+       is set to `True`.
 
     We also support limiting the maximum length for the question. When the context+question is too long, we run a
     sliding window over the context and emit multiple instances for a single question. At training time, we only
     emit instances that contain a gold answer. At test time, we emit all instances. As a result, the per-instance
-    metrics you get during training and evaluation don't correspond 100% to the SQuAD task. To get a final number,
-    you have to run `python -m allennlp_models.rc.tools.transformer_qa_eval`.
+    metrics you get during training and evaluation don't correspond 100% to either SQuAD task.
+
+    To get a final number for SQuAD v1.1, you have to run `python -m allennlp_models.rc.tools.transformer_qa_eval`.
 
     # Parameters
 
@@ -50,11 +54,19 @@ class TransformerSquadReader(DatasetReader):
         is called "stride" instead of "overlap" because that's what it's called in the original huggingface
         implementation.
     skip_invalid_examples: `bool`, optional (default=`False`)
-        If this is true, we will skip examples that don't have a gold answer. You should set this to True during
-        training, and False any other time.
+        If this is true, we will skip examples where the question+context is truncated according to `length_limit`
+        such that the context no longer contains a gold answer. For SQuAD v1.1-style datasets, you should set this
+        to `True` during training, and `False` any other time.
     max_query_length : `int`, optional (default=`64`)
         The maximum number of wordpieces dedicated to the question. If the question is longer than this, it will be
         truncated.
+    use_cls_token_for_unanswerable : `bool`, optional (default=`False`)
+        If this is true, we'll use the `[CLS]` token as the gold answer for questions that don't have a gold
+        answer. For SQuAD v2.0-style datasets that include impossible questions, this should
+        be set to `True`.
+    cls_token : `str`, optional (default=`[CLS]`)
+        The `[CLS]` token of the tokenizer. If `use_cls_token_for_unanswerable` is `False`, you don't
+        need to worry about this.
     """
 
     def __init__(
@@ -64,6 +76,8 @@ class TransformerSquadReader(DatasetReader):
         stride: int = 128,
         skip_invalid_examples: bool = False,
         max_query_length: int = 64,
+        use_cls_token_for_unanswerable: bool = False,
+        cls_token: str = "[CLS]",
         **kwargs
     ) -> None:
         super().__init__(**kwargs)
@@ -75,6 +89,14 @@ class TransformerSquadReader(DatasetReader):
         self.stride = stride
         self.skip_invalid_examples = skip_invalid_examples
         self.max_query_length = max_query_length
+        self.use_cls_token_for_unanswerable = use_cls_token_for_unanswerable
+        self._cls_token = cls_token
+        if use_cls_token_for_unanswerable:
+            # Make sure the [CLS] token is valid.
+            cls_token_id = self._tokenizer.tokenizer.convert_tokens_to_ids(cls_token)
+            assert (
+                self._tokenizer.tokenizer.convert_ids_to_tokens(cls_token_id) == cls_token
+            ), "Invalid [CLS] token"
 
     @overrides
     def _read(self, file_path: str):
@@ -106,6 +128,7 @@ class TransformerSquadReader(DatasetReader):
                         answers,
                         context,
                         first_answer_offset,
+                        True,
                     )
                     instances_yielded = 0
                     for instance in instances:
@@ -129,6 +152,7 @@ class TransformerSquadReader(DatasetReader):
         answers: List[str],
         context: str,
         first_answer_offset: Optional[int],
+        for_training: bool = False,
     ) -> Iterable[Instance]:
         # tokenize context by spaces first, and then with the wordpiece tokenizer
         # For RoBERTa, this produces a bug where every token is marked as beginning-of-sentence. To fix it, we
@@ -170,13 +194,11 @@ class TransformerSquadReader(DatasetReader):
                 (first_answer_offset, first_answer_offset + len(answers[0])),
             )
 
-        # Tokenize the question
+        # Tokenize the question.
         tokenized_question = self._tokenizer.tokenize(question)
         tokenized_question = tokenized_question[: self.max_query_length]
 
-        # Stride over the context, making instances
-        # Sequences are [CLS] question [SEP] [SEP] context [SEP], hence the - 4 for four special tokens.
-        # This is technically not correct for anything but RoBERTa, but it does not affect the scores.
+        # Stride over the context, making instances.
         space_for_context = (
             self.length_limit
             - len(tokenized_question)
@@ -207,6 +229,7 @@ class TransformerSquadReader(DatasetReader):
                     answers,
                     window_token_answer_span,
                     additional_metadata,
+                    for_training,
                 )
                 yield instance
 
@@ -225,6 +248,7 @@ class TransformerSquadReader(DatasetReader):
         answers: List[str],
         token_answer_span: Optional[Tuple[int, int]],
         additional_metadata: Dict[str, Any] = None,
+        for_training: bool = False,
     ) -> Instance:
         fields = {}
 
@@ -234,6 +258,14 @@ class TransformerSquadReader(DatasetReader):
             self._token_indexers,
         )
         fields["question_with_context"] = question_field
+
+        if self.use_cls_token_for_unanswerable:
+            # add an indicator of where the [CLS] token is
+            cls_index = next(
+                i for i, t in enumerate(question_field.tokens) if t.text == self._cls_token
+            )
+            fields["cls_index"] = LabelField(cls_index, skip_indexing=True)
+
         start_of_context = (
             len(self._tokenizer.sequence_pair_start_tokens)
             + len(tokenized_question)
@@ -250,7 +282,10 @@ class TransformerSquadReader(DatasetReader):
                 token_answer_span[1] + start_of_context,
                 question_field,
             )
-        else:
+        elif self.use_cls_token_for_unanswerable:
+            cls_index = fields["cls_index"].label
+            fields["answer_span"] = SpanField(cls_index, cls_index, question_field)
+        elif for_training:
             # We have to put in something even when we don't have an answer, so that this instance can be batched
             # together with other instances that have answers.
             fields["answer_span"] = SpanField(-1, -1, question_field)
@@ -273,3 +308,57 @@ class TransformerSquadReader(DatasetReader):
         fields["metadata"] = MetadataField(metadata)
 
         return Instance(fields)
+
+
+@DatasetReader.register("transformer_squad")
+class TransformerSquadReader(BaseTransformerSquadReader):
+    """
+    SQuAD v1.1 dataset reader suitable for transformer models.
+    """
+
+    def __init__(
+        self,
+        transformer_model_name: str = "bert-base-cased",
+        length_limit: int = 384,
+        stride: int = 128,
+        skip_invalid_examples: bool = False,
+        max_query_length: int = 64,
+        **kwargs
+    ) -> None:
+        super().__init__(
+            transformer_model_name=transformer_model_name,
+            length_limit=length_limit,
+            stride=stride,
+            skip_invalid_examples=skip_invalid_examples,
+            max_query_length=max_query_length,
+            use_cls_token_for_unanswerable=False,
+            **kwargs,
+        )
+
+
+@DatasetReader.register("transformer_squad2")
+class TransformerSquad2Reader(BaseTransformerSquadReader):
+    """
+    SQuAD v2.0 dataset reader suitable for transformer models.
+    """
+
+    def __init__(
+        self,
+        transformer_model_name: str = "bert-base-cased",
+        length_limit: int = 384,
+        stride: int = 128,
+        skip_invalid_examples: bool = False,
+        max_query_length: int = 64,
+        cls_token: str = "[CLS]",
+        **kwargs
+    ) -> None:
+        super().__init__(
+            transformer_model_name=transformer_model_name,
+            length_limit=length_limit,
+            stride=stride,
+            skip_invalid_examples=skip_invalid_examples,
+            max_query_length=max_query_length,
+            use_cls_token_for_unanswerable=True,
+            cls_token=cls_token,
+            **kwargs,
+        )
