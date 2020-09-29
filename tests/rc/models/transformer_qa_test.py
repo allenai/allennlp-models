@@ -28,6 +28,7 @@ class TransformerQaTest(ModelTestCase):
         )
 
     def test_forward_pass_runs_correctly(self):
+        self.model.training = False
         batch = Batch(self.instances)
         batch.index_instances(self.vocab)
         training_tensors = batch.as_tensor_dict()

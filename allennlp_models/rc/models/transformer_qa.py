@@ -130,14 +130,14 @@ class TransformerQA(Model):
             The result of a constrained inference over `span_start_logits` and
             `span_end_logits` to find the most probable span.  Shape is `(batch_size, 2)`
             and each offset is a token index.
-        best_span_scores : `torch.FloatTensor`
-            The score for each of the best spans.
         loss : `torch.FloatTensor`, optional
             A scalar loss to be optimised.
+        best_span_scores : `torch.FloatTensor`
+            The score for each of the best spans if `answer_span` was provided.
         best_span_str : `List[str]`
-            If sufficient metadata was provided for the instances in the batch, we also return the
-            string from the original passage that the model thinks is the best answer to the
-            question.
+            If not in train mode and if sufficient metadata was provided for the instances in the batch,
+            we also return the string from the original passage that the model thinks is the best answer
+            to the question.
         """
         embedded_question = self._text_field_embedder(question_with_context)
         logits = self._linear_layer(embedded_question)
@@ -177,7 +177,7 @@ class TransformerQA(Model):
             "best_span_scores": best_span_scores,
         }
 
-        # Compute the loss for training.
+        # Compute the loss.
         if answer_span is not None:
             span_start = answer_span[:, 0]
             span_end = answer_span[:, 1]
@@ -209,7 +209,7 @@ class TransformerQA(Model):
             output_dict["loss"] = loss
 
         # Compute the EM and F1 on SQuAD and add the tokenized input to the output.
-        if metadata is not None:
+        if not self.training and metadata is not None:
             best_spans = best_spans.detach().cpu().numpy()
 
             output_dict["best_span_str"] = []
@@ -269,13 +269,15 @@ class TransformerQA(Model):
         return output_dict
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
-        exact_match, f1_score = self._per_instance_metrics.get_metric(reset)
-        return {
+        output = {
             "start_acc": self._span_start_accuracy.get_metric(reset),
             "end_acc": self._span_end_accuracy.get_metric(reset),
             "span_acc": self._span_accuracy.get_metric(reset),
-            "per_instance_em": exact_match,
-            "per_instance_f1": f1_score,
         }
+        if not self.training:
+            exact_match, f1_score = self._per_instance_metrics.get_metric(reset)
+            output["per_instance_em"] = exact_match
+            output["per_instance_f1"] = f1_score
+        return output
 
     default_predictor = "transformer_qa"
