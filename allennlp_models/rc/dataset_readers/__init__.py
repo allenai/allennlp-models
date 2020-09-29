@@ -3,6 +3,7 @@ from allennlp_models.rc.dataset_readers.qangaroo import QangarooReader
 from allennlp_models.rc.dataset_readers.quac import QuACReader
 from allennlp_models.rc.dataset_readers.squad import BaseSquadReader, SquadReader, Squad2Reader
 from allennlp_models.rc.dataset_readers.transformer_squad import (
+    BaseTransformerSquadReader,
     TransformerSquadReader,
     TransformerSquad2Reader,
 )

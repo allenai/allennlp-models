@@ -19,8 +19,15 @@ logger = logging.getLogger(__name__)
 
 class BaseTransformerSquadReader(DatasetReader):
     """
-    Reads a JSON-formatted SQuAD file and returns a `Dataset` where the `Instances` have following
-    fields:
+    !!! Note
+        This `DatasetReader` is not meant to be used directly. If you're training on SQuAD v1.1
+        you should use the :class:`TransformerSquadReader`, and for SQuAD v2.0 you should use the
+        :class:`TransformerSquad2Reader`.
+
+    Dataset reader suitable for JSON-formatted SQuAD-like datasets to be used with a transformer-based
+    QA model, such as [`TransformerQA`](../../models/transformer_qa#TransformerQA).
+
+    It will generate `Instances` with the following fields:
 
      * `question_with_context`, a `TextField` that contains the concatenation of question and context,
      * `answer_span`, a `SpanField` into the `question` `TextField` denoting the answer.
@@ -36,11 +43,16 @@ class BaseTransformerSquadReader(DatasetReader):
        is set to `True`.
 
     We also support limiting the maximum length for the question. When the context+question is too long, we run a
-    sliding window over the context and emit multiple instances for a single question. At training time, we only
-    emit instances that contain a gold answer. At test time, we emit all instances. As a result, the per-instance
-    metrics you get during training and evaluation don't correspond 100% to either SQuAD task.
+    sliding window over the context and emit multiple instances for a single question.
+    If `skip_invalid_examples` is `True`, then we only emit instances that contain a gold answer.
+    As a result, the per-instance metrics you get during training and evaluation might not correspond
+    100% to the SQuAD task.
 
-    To get a final number for SQuAD v1.1, you have to run `python -m allennlp_models.rc.tools.transformer_qa_eval`.
+    To get a final number for SQuAD v1.1, you have to run
+
+    ```
+    python -m allennlp_models.rc.tools.transformer_qa_eval
+    ```
 
     # Parameters
 
@@ -314,6 +326,8 @@ class BaseTransformerSquadReader(DatasetReader):
 class TransformerSquadReader(BaseTransformerSquadReader):
     """
     SQuAD v1.1 dataset reader suitable for transformer models.
+
+    For an explanation of the parameters, see :class:`BaseTransformerSquadReader`.
     """
 
     def __init__(
@@ -340,6 +354,12 @@ class TransformerSquadReader(BaseTransformerSquadReader):
 class TransformerSquad2Reader(BaseTransformerSquadReader):
     """
     SQuAD v2.0 dataset reader suitable for transformer models.
+
+    This differs from the SQuAD v1.1 dataset reader in that questions without a
+    valid answer will have an `answer_span` that just spans the `[CLS]` token,
+    and all instances will have an additional `cls_index` field.
+
+    For an explanation of the other parameters, see :class:`BaseTransformerSquadReader`.
     """
 
     def __init__(
@@ -347,7 +367,6 @@ class TransformerSquad2Reader(BaseTransformerSquadReader):
         transformer_model_name: str = "bert-base-cased",
         length_limit: int = 384,
         stride: int = 128,
-        skip_invalid_examples: bool = False,
         max_query_length: int = 64,
         cls_token: str = "[CLS]",
         **kwargs
@@ -356,7 +375,7 @@ class TransformerSquad2Reader(BaseTransformerSquadReader):
             transformer_model_name=transformer_model_name,
             length_limit=length_limit,
             stride=stride,
-            skip_invalid_examples=skip_invalid_examples,
+            skip_invalid_examples=False,
             max_query_length=max_query_length,
             use_cls_token_for_unanswerable=True,
             cls_token=cls_token,

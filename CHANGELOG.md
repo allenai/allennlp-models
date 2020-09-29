@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Added 
+### Added
 
 - Added dataset readers for SQuAD 2.0, the `Squad2Reader` (registered as `"squad2"`) and `TransformerSquad2Reader`
   (registered as `"transformer_squad2"`).

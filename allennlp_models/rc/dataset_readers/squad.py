@@ -16,14 +16,22 @@ logger = logging.getLogger(__name__)
 
 SQUAD2_NO_ANSWER_TOKEN = "@@<NO_ANSWER>@@"
 """
-The default 'no_answer_token' for the `Squad2Reader`.
+The default `no_answer_token` for the :class:`Squad2Reader`.
 """
 
 
 class BaseSquadReader(DatasetReader):
     """
-    Reads a JSON-formatted SQuAD 1.1/2.0 file and returns a `Dataset` where the `Instances` have the
-    following fields:
+    !!! Note
+        This `DatasetReader` is not meant to be used directly. If you're training on SQuAD v1.1
+        you should use the :class:`SquadReader`, and for SQuAD v2.0 you should use the
+        :class:`Squad2Reader`.
+
+        Also, for transformer-based models you should be using one of the readers in
+        [`transformer_squad`](../transformer_squad).
+
+    Dataset reader suitable for JSON-formatted SQuAD-like datasets.
+    It will generate `Instances` with the following fields:
 
       - `question`, a `TextField`,
       - `passage`, another `TextField`,
@@ -217,9 +225,9 @@ class BaseSquadReader(DatasetReader):
 @DatasetReader.register("squad")
 class SquadReader(BaseSquadReader):
     """
-    Dataset reader for SQuAD v1.1-style datasets. Arguments are the same as `BaseSquadReader`.
+    Dataset reader for SQuAD v1.1-style datasets. Arguments are the same as :class:`BaseSquadReader`.
 
-    Registered as 'squad'.
+    Registered as "squad".
     """
 
     def __init__(
@@ -245,13 +253,13 @@ class SquadReader(BaseSquadReader):
 @DatasetReader.register("squad2")
 class Squad2Reader(BaseSquadReader):
     """
-    Dataset reader for SQuAD v2.0-style datasets. Arguments are the same as `BaseSquadReader`.
+    Dataset reader for SQuAD v2.0-style datasets. Arguments are the same as :class:`BaseSquadReader`.
 
-    The only difference between this and `Squad1Reader` is that this reader appends a
-    special 'no_answer_token' to the passage field. For questions that are marked impossible,
-    the correct answer will just be the 'no_answer_token'.
+    The only difference between this and :class:`Squad1Reader` is that this reader appends a
+    special `no_answer_token` to the passage field. For questions that are marked impossible,
+    the correct answer will just be the `no_answer_token`.
 
-    Registered as 'squad2'.
+    Registered as "squad2".
     """
 
     def __init__(

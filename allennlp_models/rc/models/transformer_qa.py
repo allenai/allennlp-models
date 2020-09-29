@@ -35,7 +35,11 @@ class TransformerQA(Model):
     Note that the metrics that the model produces are calculated on a per-instance basis only. Since there could
     be more than one instance per question, these metrics are not the official numbers on either SQuAD task.
 
-    To get official numbers for SQuAD v1.1, run `python -m allennlp_models.rc.tools.transformer_qa_eval`.
+    To get official numbers for SQuAD v1.1, run
+
+    ```
+    python -m allennlp_models.rc.tools.transformer_qa_eval
+    ```
 
     # Parameters
 
