@@ -127,7 +127,9 @@ class TransformerQA(Model):
         best_span : `torch.IntTensor`
             The result of a constrained inference over `span_start_logits` and
             `span_end_logits` to find the most probable span.  Shape is `(batch_size, 2)`
-            and each offset is a token index.
+            and each offset is a token index, unless the best span for an instance
+            was predicted to be the `[CLS]` token, in which case the span will be (-1, -1).
+            Note that that is only possible if the `cls_index` parameter is non-`None`.
         best_span_scores : `torch.FloatTensor`
             The score for each of the best spans.
         loss : `torch.FloatTensor`, optional
@@ -253,6 +255,9 @@ class TransformerQA(Model):
             if cls_index is not None and best_span[0] == cls_index[i]:
                 # Predicting [CLS] is interpreted as predicting the question as unanswerable.
                 best_span_string = ""
+                # NOTE: even though we've "detached" 'best_spans' above, this still
+                # modifies the original tensor in-place.
+                best_span[0], best_span[1] = -1, -1
             else:
                 best_span -= int(cspan[0])
                 assert np.all(best_span >= 0)

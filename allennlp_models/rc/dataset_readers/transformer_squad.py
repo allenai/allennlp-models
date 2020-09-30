@@ -238,10 +238,10 @@ class TransformerSquadReader(DatasetReader):
                     tokenized_question,
                     context,
                     tokenized_context_window,
-                    answers,
-                    window_token_answer_span,
-                    additional_metadata,
-                    for_training,
+                    answers=answers,
+                    token_answer_span=window_token_answer_span,
+                    additional_metadata=additional_metadata,
+                    for_training=for_training,
                 )
                 yield instance
 
@@ -257,8 +257,8 @@ class TransformerSquadReader(DatasetReader):
         tokenized_question: List[Token],
         context: str,
         tokenized_context: List[Token],
-        answers: List[str],
-        token_answer_span: Optional[Tuple[int, int]],
+        answers: List[str] = None,
+        token_answer_span: Optional[Tuple[int, int]] = None,
         additional_metadata: Dict[str, Any] = None,
         for_training: bool = False,
     ) -> Instance:
@@ -294,7 +294,7 @@ class TransformerSquadReader(DatasetReader):
                 token_answer_span[1] + start_of_context,
                 question_field,
             )
-        elif self.use_cls_token_for_unanswerable:
+        elif for_training and self.use_cls_token_for_unanswerable:
             cls_index = fields["cls_index"].sequence_index
             fields["answer_span"] = SpanField(cls_index, cls_index, question_field)
         elif for_training:
@@ -313,7 +313,7 @@ class TransformerSquadReader(DatasetReader):
             "question_tokens": tokenized_question,
             "context": context,
             "context_tokens": tokenized_context,
-            "answers": answers,
+            "answers": answers or [],
         }
         if additional_metadata is not None:
             metadata.update(additional_metadata)
