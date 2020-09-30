@@ -133,8 +133,8 @@ class TransformerQA(Model):
         best_span_scores : `torch.FloatTensor`
             The score for each of the best spans.
         loss : `torch.FloatTensor`, optional
-            A scalar loss to be optimised.
-        best_span_str : `List[str]`
+            A scalar loss to be optimised, evaluated against `answer_span`.
+        best_span_str : `List[str]`, optional
             If not in train mode and if sufficient metadata was provided for the instances in the batch,
             we also return the string from the original passage that the model thinks is the best answer
             to the question.
@@ -212,6 +212,9 @@ class TransformerQA(Model):
         span_end_logits: torch.Tensor,
         answer_span: torch.Tensor,
     ) -> torch.Tensor:
+        """
+        Calculate the loss against the `answer_span` and also update the  span metrics.
+        """
         span_start = answer_span[:, 0]
         span_end = answer_span[:, 1]
         span_mask = span_start != -1
@@ -236,6 +239,11 @@ class TransformerQA(Model):
         metadata: List[Dict[str, Any]],
         cls_index: Optional[torch.LongTensor],
     ) -> List[str]:
+        """
+        Collect the string of the best predicted span from the context metadata and
+        update `self._per_instance_metrics`, which in the case of SQuAD v1.1 / v2.0
+        includes the EM and F1 score.
+        """
         best_spans = best_spans.detach().cpu().numpy()
 
         best_span_strings = []
