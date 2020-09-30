@@ -5,6 +5,7 @@ from allennlp.common.testing import ModelTestCase, AllenNlpTestCase, requires_gp
 from allennlp.data import Batch
 from tests import FIXTURES_ROOT
 import pytest
+import torch
 
 import allennlp_models.rc
 
@@ -43,8 +44,12 @@ class TransformerQaTest(ModelTestCase):
         # script.
         assert metrics["per_instance_f1"] > 0
 
-        span_start_probs = output_dict["span_start_probs"][0].data.numpy()
-        span_end_probs = output_dict["span_start_probs"][0].data.numpy()
+        span_start_probs = torch.nn.functional.softmax(output_dict["span_start_logits"], dim=-1)[
+            0
+        ].data.numpy()
+        span_end_probs = torch.nn.functional.softmax(output_dict["span_end_logits"], dim=-1)[
+            0
+        ].data.numpy()
         assert_almost_equal(numpy.sum(span_start_probs, -1), 1, decimal=6)
         assert_almost_equal(numpy.sum(span_end_probs, -1), 1, decimal=6)
         span_start, span_end = tuple(output_dict["best_span"][0].data.numpy())

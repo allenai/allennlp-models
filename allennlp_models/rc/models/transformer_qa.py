@@ -119,50 +119,61 @@ class TransformerQA(Model):
         span_start_logits : `torch.FloatTensor`
             A tensor of shape `(batch_size, passage_length)` representing unnormalized log
             probabilities of the span start position.
-        span_start_probs : `torch.FloatTensor`
-            The result of `softmax(span_start_logits)`.
         span_end_logits : `torch.FloatTensor`
             A tensor of shape `(batch_size, passage_length)` representing unnormalized log
             probabilities of the span end position (inclusive).
-        span_end_probs : `torch.FloatTensor`
-            The result of `softmax(span_end_logits)`.
         best_span : `torch.IntTensor`
             The result of a constrained inference over `span_start_logits` and
             `span_end_logits` to find the most probable span.  Shape is `(batch_size, 2)`
             and each offset is a token index.
+        best_span_scores : `torch.FloatTensor`
+            The score for each of the best spans.
         loss : `torch.FloatTensor`, optional
             A scalar loss to be optimised.
-        best_span_scores : `torch.FloatTensor`
-            The score for each of the best spans if `answer_span` was provided.
         best_span_str : `List[str]`
             If not in train mode and if sufficient metadata was provided for the instances in the batch,
             we also return the string from the original passage that the model thinks is the best answer
             to the question.
         """
         embedded_question = self._text_field_embedder(question_with_context)
+        # shape: (batch_size, sequence_length, 2)
         logits = self._linear_layer(embedded_question)
+        # shape: (batch_size, sequence_length, 1)
         span_start_logits, span_end_logits = logits.split(1, dim=-1)
+        # shape: (batch_size, sequence_length)
         span_start_logits = span_start_logits.squeeze(-1)
+        # shape: (batch_size, sequence_length)
         span_end_logits = span_end_logits.squeeze(-1)
 
+        # Create a mask for `question_with_context` to mask out tokens that are not part
+        # of the context.
+        # shape: (batch_size, sequence_length)
         possible_answer_mask = torch.zeros_like(
             get_token_ids_from_text_field_tensors(question_with_context), dtype=torch.bool
         )
         for i, (start, end) in enumerate(context_span):
             possible_answer_mask[i, start : end + 1] = True
+            # If `cls_index` is not `None`, we also unmask the [CLS] token since that token
+            # is used to indicate that the question is impossible.
             if cls_index is not None:
                 possible_answer_mask[i, cls_index[i]] = True
 
-        # Replace the masked values with a very negative constant.
+        # Replace the masked values with a very negative constant since we're in log-space.
+        # shape: (batch_size, sequence_length)
         span_start_logits = replace_masked_values_with_big_negative_number(
             span_start_logits, possible_answer_mask
         )
+        # shape: (batch_size, sequence_length)
         span_end_logits = replace_masked_values_with_big_negative_number(
             span_end_logits, possible_answer_mask
         )
-        span_start_probs = torch.nn.functional.softmax(span_start_logits, dim=-1)
-        span_end_probs = torch.nn.functional.softmax(span_end_logits, dim=-1)
+
+        # Now calculate the best span.
+        # shape: (batch_size, 2)
         best_spans = get_best_span(span_start_logits, span_end_logits)
+
+        # Sum the span start score with the span end score to get an overall score for the span.
+        # shape: (batch_size,)
         best_span_scores = torch.gather(
             span_start_logits, 1, best_spans[:, 0].unsqueeze(1)
         ) + torch.gather(span_end_logits, 1, best_spans[:, 1].unsqueeze(1))
@@ -170,103 +181,120 @@ class TransformerQA(Model):
 
         output_dict = {
             "span_start_logits": span_start_logits,
-            "span_start_probs": span_start_probs,
             "span_end_logits": span_end_logits,
-            "span_end_probs": span_end_probs,
             "best_span": best_spans,
             "best_span_scores": best_span_scores,
         }
 
         # Compute the loss.
         if answer_span is not None:
-            span_start = answer_span[:, 0]
-            span_end = answer_span[:, 1]
-            span_mask = span_start != -1
-            self._span_accuracy(
-                best_spans, answer_span, span_mask.unsqueeze(-1).expand_as(best_spans)
+            output_dict["loss"] = self._evaluate_span(
+                best_spans, span_start_logits, span_end_logits, answer_span
             )
 
-            start_loss = cross_entropy(span_start_logits, span_start, ignore_index=-1)
-            big_constant = min(torch.finfo(start_loss.dtype).max, 1e9)
-            if torch.any(start_loss > big_constant):
-                logger.critical("Start loss too high (%r)", start_loss)
-                logger.critical("span_start_logits: %r", span_start_logits)
-                logger.critical("span_start: %r", span_start)
-                assert False
-
-            end_loss = cross_entropy(span_end_logits, span_end, ignore_index=-1)
-            if torch.any(end_loss > big_constant):
-                logger.critical("End loss too high (%r)", end_loss)
-                logger.critical("span_end_logits: %r", span_end_logits)
-                logger.critical("span_end: %r", span_end)
-                assert False
-
-            loss = (start_loss + end_loss) / 2
-
-            self._span_start_accuracy(span_start_logits, span_start, span_mask)
-            self._span_end_accuracy(span_end_logits, span_end, span_mask)
-
-            output_dict["loss"] = loss
-
-        # Compute the EM and F1 on SQuAD and add the tokenized input to the output.
+        # Gather the string of the best span and compute the EM and F1 against the gold span,
+        # if given.
         if not self.training and metadata is not None:
-            best_spans = best_spans.detach().cpu().numpy()
+            output_dict["best_span_str"] = self._collect_best_span_strings(
+                best_spans, context_span, metadata, cls_index
+            )
 
-            output_dict["best_span_str"] = []
-            context_tokens = []
-            for i, (metadata_entry, best_span, cspan) in enumerate(
-                zip(metadata, best_spans, context_span)
-            ):
-                context_tokens_for_question = metadata_entry["context_tokens"]
-                context_tokens.append(context_tokens_for_question)
-
-                if cls_index is not None and best_span[0] == cls_index[i]:
-                    # Predicting [CLS] is interpreted as predicting the question as unanswerable.
-                    best_span_string = ""
-                else:
-                    best_span -= int(cspan[0])
-                    assert np.all(best_span >= 0)
-
-                    predicted_start, predicted_end = tuple(best_span)
-
-                    while (
-                        predicted_start >= 0
-                        and context_tokens_for_question[predicted_start].idx is None
-                    ):
-                        predicted_start -= 1
-                    if predicted_start < 0:
-                        logger.warning(
-                            f"Could not map the token '{context_tokens_for_question[best_span[0]].text}' at index "
-                            f"'{best_span[0]}' to an offset in the original text."
-                        )
-                        character_start = 0
-                    else:
-                        character_start = context_tokens_for_question[predicted_start].idx
-
-                    while (
-                        predicted_end < len(context_tokens_for_question)
-                        and context_tokens_for_question[predicted_end].idx is None
-                    ):
-                        predicted_end += 1
-                    if predicted_end >= len(context_tokens_for_question):
-                        logger.warning(
-                            f"Could not map the token '{context_tokens_for_question[best_span[1]].text}' at index "
-                            f"'{best_span[1]}' to an offset in the original text."
-                        )
-                        character_end = len(metadata_entry["context"])
-                    else:
-                        end_token = context_tokens_for_question[predicted_end]
-                        character_end = end_token.idx + len(sanitize_wordpiece(end_token.text))
-
-                    best_span_string = metadata_entry["context"][character_start:character_end]
-
-                output_dict["best_span_str"].append(best_span_string)
-
-                answers = metadata_entry.get("answers")
-                if len(answers) > 0:
-                    self._per_instance_metrics(best_span_string, answers)
-            output_dict["context_tokens"] = context_tokens
         return output_dict
+
+    def _evaluate_span(
+        self,
+        best_spans: torch.Tensor,
+        span_start_logits: torch.Tensor,
+        span_end_logits: torch.Tensor,
+        answer_span: torch.Tensor,
+    ) -> torch.Tensor:
+        span_start = answer_span[:, 0]
+        span_end = answer_span[:, 1]
+        span_mask = span_start != -1
+        self._span_accuracy(best_spans, answer_span, span_mask.unsqueeze(-1).expand_as(best_spans))
+
+        start_loss = cross_entropy(span_start_logits, span_start, ignore_index=-1)
+        big_constant = min(torch.finfo(start_loss.dtype).max, 1e9)
+        if torch.any(start_loss > big_constant):
+            logger.critical("Start loss too high (%r)", start_loss)
+            logger.critical("span_start_logits: %r", span_start_logits)
+            logger.critical("span_start: %r", span_start)
+            assert False
+
+        end_loss = cross_entropy(span_end_logits, span_end, ignore_index=-1)
+        if torch.any(end_loss > big_constant):
+            logger.critical("End loss too high (%r)", end_loss)
+            logger.critical("span_end_logits: %r", span_end_logits)
+            logger.critical("span_end: %r", span_end)
+            assert False
+
+        self._span_start_accuracy(span_start_logits, span_start, span_mask)
+        self._span_end_accuracy(span_end_logits, span_end, span_mask)
+
+        return (start_loss + end_loss) / 2
+
+    def _collect_best_span_strings(
+        self,
+        best_spans: torch.Tensor,
+        context_span: torch.IntTensor,
+        metadata: List[Dict[str, Any]],
+        cls_index: Optional[torch.LongTensor],
+    ) -> List[str]:
+        best_spans = best_spans.detach().cpu().numpy()
+
+        best_span_strings = []
+        for i, (metadata_entry, best_span, cspan) in enumerate(
+            zip(metadata, best_spans, context_span)
+        ):
+            context_tokens_for_question = metadata_entry["context_tokens"]
+
+            if cls_index is not None and best_span[0] == cls_index[i]:
+                # Predicting [CLS] is interpreted as predicting the question as unanswerable.
+                best_span_string = ""
+            else:
+                best_span -= int(cspan[0])
+                assert np.all(best_span >= 0)
+
+                predicted_start, predicted_end = tuple(best_span)
+
+                while (
+                    predicted_start >= 0
+                    and context_tokens_for_question[predicted_start].idx is None
+                ):
+                    predicted_start -= 1
+                if predicted_start < 0:
+                    logger.warning(
+                        f"Could not map the token '{context_tokens_for_question[best_span[0]].text}' at index "
+                        f"'{best_span[0]}' to an offset in the original text."
+                    )
+                    character_start = 0
+                else:
+                    character_start = context_tokens_for_question[predicted_start].idx
+
+                while (
+                    predicted_end < len(context_tokens_for_question)
+                    and context_tokens_for_question[predicted_end].idx is None
+                ):
+                    predicted_end += 1
+                if predicted_end >= len(context_tokens_for_question):
+                    logger.warning(
+                        f"Could not map the token '{context_tokens_for_question[best_span[1]].text}' at index "
+                        f"'{best_span[1]}' to an offset in the original text."
+                    )
+                    character_end = len(metadata_entry["context"])
+                else:
+                    end_token = context_tokens_for_question[predicted_end]
+                    character_end = end_token.idx + len(sanitize_wordpiece(end_token.text))
+
+                best_span_string = metadata_entry["context"][character_start:character_end]
+
+            best_span_strings.append(best_span_string)
+
+            answers = metadata_entry.get("answers")
+            if answers:
+                self._per_instance_metrics(best_span_string, answers)
+
+        return best_span_strings
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         output = {
