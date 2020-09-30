@@ -10,6 +10,12 @@ from tests import FIXTURES_ROOT
 
 
 class TestSquadReader:
+    def test_from_params(self):
+        squad1_reader = DatasetReader.from_params(Params({"type": "squad1"}))
+        assert squad1_reader.no_answer_token is None
+        squad2_reader = DatasetReader.from_params(Params({"type": "squad2"}))
+        assert squad2_reader.no_answer_token is not None
+
     @pytest.mark.parametrize("lazy", (True, False))
     def test_read_from_file(self, lazy):
         reader = SquadReader(lazy=lazy)

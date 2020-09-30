@@ -219,18 +219,10 @@ class TransformerQA(Model):
 
         start_loss = cross_entropy(span_start_logits, span_start, ignore_index=-1)
         big_constant = min(torch.finfo(start_loss.dtype).max, 1e9)
-        if torch.any(start_loss > big_constant):
-            logger.critical("Start loss too high (%r)", start_loss)
-            logger.critical("span_start_logits: %r", span_start_logits)
-            logger.critical("span_start: %r", span_start)
-            assert False
+        assert not torch.any(start_loss > big_constant), "Start loss too high"
 
         end_loss = cross_entropy(span_end_logits, span_end, ignore_index=-1)
-        if torch.any(end_loss > big_constant):
-            logger.critical("End loss too high (%r)", end_loss)
-            logger.critical("span_end_logits: %r", span_end_logits)
-            logger.critical("span_end: %r", span_end)
-            assert False
+        assert not torch.any(end_loss > big_constant), "End loss too high"
 
         self._span_start_accuracy(span_start_logits, span_start, span_mask)
         self._span_end_accuracy(span_end_logits, span_end, span_mask)
