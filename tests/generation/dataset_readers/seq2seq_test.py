@@ -216,3 +216,7 @@ class TestSeq2SeqDatasetReader:
                 "d",
                 "@end@",
             ]
+
+    def test_bad_start_or_end_symbol(self):
+        with pytest.raises(ValueError, match="Bad start or end symbol"):
+            Seq2SeqDatasetReader(start_symbol="BAD SYMBOL")
