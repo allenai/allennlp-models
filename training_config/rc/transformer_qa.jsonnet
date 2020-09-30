@@ -2,37 +2,37 @@ local transformer_model = 'bert-base-cased';
 
 local epochs = 3;
 local batch_size = 8;
+local length_limit = 384;
 
 {
   "dataset_reader": {
-      "type": "transformer_squad",
-      "transformer_model_name": transformer_model,
-      "skip_invalid_examples": true,
-      //"max_instances": 200  // debug setting
+    "type": "transformer_squad2",
+    "transformer_model_name": transformer_model,
+    "length_limit": length_limit,
+    // "max_instances": 1000,  // debug setting
   },
-  "validation_dataset_reader": self.dataset_reader + {
-      "skip_invalid_examples": false,
+  "train_data_path": "https://allennlp.s3.amazonaws.com/datasets/squad/squad-train-v2.0.json",
+  "validation_data_path": "https://allennlp.s3.amazonaws.com/datasets/squad/squad-dev-v2.0.json",
+  "vocabulary": {
+    "type": "empty",
   },
-  "train_data_path": std.extVar("SQUAD_TRAIN"),
-  "validation_data_path": std.extVar("SQUAD_DEV"),
-  // You can replace the above two lines with these to get the actual squad datasets.
-  // "train_data_path": "https://allennlp.s3.amazonaws.com/datasets/squad/squad-train-v1.1.json",
-  // "validation_data_path": "https://allennlp.s3.amazonaws.com/datasets/squad/squad-dev-v1.1.json",
   "model": {
-      "type": "transformer_qa",
-      "transformer_model_name": transformer_model,
+    "type": "transformer_qa",
+    "transformer_model_name": transformer_model,
   },
   "data_loader": {
     "batch_sampler": {
       "type": "bucket",
-      "batch_size": batch_size
+      "batch_size": batch_size,
     }
   },
   "trainer": {
     "optimizer": {
       "type": "huggingface_adamw",
       "weight_decay": 0.0,
-      "parameter_groups": [[["bias", "LayerNorm\\.weight", "layer_norm\\.weight"], {"weight_decay": 0}]],
+      "parameter_groups": [
+        [["bias", "LayerNorm\\.weight", "layer_norm\\.weight"], {"weight_decay": 0}],
+      ],
       "lr": 2e-5,
       "eps": 1e-8
     },
