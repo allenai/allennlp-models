@@ -1,13 +1,22 @@
-import pytest
-
-from allennlp.common import Params
+from allennlp.common.params import Params
 from allennlp.common.util import ensure_list
+from allennlp.data import DatasetReader
 
-from allennlp_models.rc import TransformerSquadReader, TransformerSquad2Reader
+from allennlp_models.rc import TransformerSquadReader
 from tests import FIXTURES_ROOT
 
 
 class TestTransformerSquadReader:
+    def test_from_params(self):
+        squad1_reader: TransformerSquadReader = DatasetReader.from_params(
+            Params({"type": "transformer_squad1"})
+        )
+        assert squad1_reader.use_cls_token_for_unanswerable is False
+        squad2_reader: TransformerSquadReader = DatasetReader.from_params(
+            Params({"type": "transformer_squad2"})
+        )
+        assert squad2_reader.use_cls_token_for_unanswerable is True
+
     def test_read_from_file(self):
         reader = TransformerSquadReader()
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "squad.json"))
@@ -93,10 +102,8 @@ class TestTransformerSquadReader:
             6476,
         ]
 
-
-class TestTransformerSquad2Reader:
-    def test_read_from_file(self):
-        reader = TransformerSquad2Reader()
+    def test_read_from_file_squad2(self):
+        reader = TransformerSquadReader.squad2()
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "squad2.json"))
         assert len(instances) == 6
 

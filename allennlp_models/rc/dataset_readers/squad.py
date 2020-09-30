@@ -16,19 +16,20 @@ logger = logging.getLogger(__name__)
 
 SQUAD2_NO_ANSWER_TOKEN = "@@<NO_ANSWER>@@"
 """
-The default `no_answer_token` for the :class:`Squad2Reader`.
+The default `no_answer_token` for the [`squad2`](#squad2) reader.
 """
 
 
-class BaseSquadReader(DatasetReader):
+@DatasetReader.register("squad")
+class SquadReader(DatasetReader):
     """
     !!! Note
-        This `DatasetReader` is not meant to be used directly. If you're training on SQuAD v1.1
-        you should use the :class:`SquadReader`, and for SQuAD v2.0 you should use the
-        :class:`Squad2Reader`.
+        If you're training on SQuAD v1.1 you should use the [`squad1()`](#squad1) classmethod
+        to instantiate this reader, and for SQuAD v2.0 you should use the
+        [`squad2()`](#squad2) classmethod.
 
-        Also, for transformer-based models you should be using one of the readers in
-        [`transformer_squad`](../transformer_squad).
+        Also, for transformer-based models you should be using the
+        [`TransformerSquadReader`](../transformer_squad#transformersquadreader).
 
     Dataset reader suitable for JSON-formatted SQuAD-like datasets.
     It will generate `Instances` with the following fields:
@@ -221,25 +222,20 @@ class BaseSquadReader(DatasetReader):
             additional_metadata,
         )
 
-
-@DatasetReader.register("squad")
-class SquadReader(BaseSquadReader):
-    """
-    Dataset reader for SQuAD v1.1-style datasets. Arguments are the same as :class:`BaseSquadReader`.
-
-    Registered as "squad".
-    """
-
-    def __init__(
-        self,
+    @classmethod
+    def squad1(
+        cls,
         tokenizer: Tokenizer = None,
         token_indexers: Dict[str, TokenIndexer] = None,
         passage_length_limit: int = None,
         question_length_limit: int = None,
         skip_invalid_examples: bool = False,
         **kwargs,
-    ) -> None:
-        super().__init__(
+    ) -> "SquadReader":
+        """
+        Gives a `SquadReader` suitable for SQuAD v1.1.
+        """
+        return cls(
             tokenizer=tokenizer,
             token_indexers=token_indexers,
             passage_length_limit=passage_length_limit,
@@ -249,21 +245,9 @@ class SquadReader(BaseSquadReader):
             **kwargs,
         )
 
-
-@DatasetReader.register("squad2")
-class Squad2Reader(BaseSquadReader):
-    """
-    Dataset reader for SQuAD v2.0-style datasets. Arguments are the same as :class:`BaseSquadReader`.
-
-    The only difference between this and :class:`Squad1Reader` is that this reader appends a
-    special `no_answer_token` to the passage field. For questions that are marked impossible,
-    the correct answer will just be the `no_answer_token`.
-
-    Registered as "squad2".
-    """
-
-    def __init__(
-        self,
+    @classmethod
+    def squad2(
+        cls,
         tokenizer: Tokenizer = None,
         token_indexers: Dict[str, TokenIndexer] = None,
         passage_length_limit: int = None,
@@ -271,8 +255,11 @@ class Squad2Reader(BaseSquadReader):
         skip_invalid_examples: bool = False,
         no_answer_token: str = SQUAD2_NO_ANSWER_TOKEN,
         **kwargs,
-    ) -> None:
-        super().__init__(
+    ) -> "SquadReader":
+        """
+        Gives a `SquadReader` suitable for SQuAD v2.0.
+        """
+        return cls(
             tokenizer=tokenizer,
             token_indexers=token_indexers,
             passage_length_limit=passage_length_limit,
@@ -281,3 +268,7 @@ class Squad2Reader(BaseSquadReader):
             no_answer_token=no_answer_token,
             **kwargs,
         )
+
+
+DatasetReader.register("squad1", constructor="squad1")(SquadReader)
+DatasetReader.register("squad2", constructor="squad2")(SquadReader)

@@ -17,12 +17,12 @@ from allennlp_models.rc.dataset_readers.utils import char_span_to_token_span
 logger = logging.getLogger(__name__)
 
 
-class BaseTransformerSquadReader(DatasetReader):
+@DatasetReader.register("transformer_squad")
+class TransformerSquadReader(DatasetReader):
     """
     !!! Note
-        This `DatasetReader` is not meant to be used directly. If you're training on SQuAD v1.1
-        you should use the :class:`TransformerSquadReader`, and for SQuAD v2.0 you should use the
-        :class:`TransformerSquad2Reader`.
+        If you're training on SQuAD v1.1 you should use the [`squad1()`](#squad1) classmethod
+        to instantiate this reader, and for SQuAD v2.0 you should use the [`squad2()`](#squad2).
 
     Dataset reader suitable for JSON-formatted SQuAD-like datasets to be used with a transformer-based
     QA model, such as [`TransformerQA`](../../models/transformer_qa#TransformerQA).
@@ -321,25 +321,22 @@ class BaseTransformerSquadReader(DatasetReader):
 
         return Instance(fields)
 
-
-@DatasetReader.register("transformer_squad")
-class TransformerSquadReader(BaseTransformerSquadReader):
-    """
-    SQuAD v1.1 dataset reader suitable for transformer models.
-
-    For an explanation of the parameters, see :class:`BaseTransformerSquadReader`.
-    """
-
-    def __init__(
-        self,
+    @classmethod
+    def squad1(
+        cls,
         transformer_model_name: str = "bert-base-cased",
         length_limit: int = 384,
         stride: int = 128,
         skip_invalid_examples: bool = False,
         max_query_length: int = 64,
         **kwargs
-    ) -> None:
-        super().__init__(
+    ) -> "TransformerSquadReader":
+        """
+        Gives a `TransformerSquadReader` suitable for SQuAD v1.1.
+
+        This classmethod is registered as `"transformer_squad1"`.
+        """
+        return cls(
             transformer_model_name=transformer_model_name,
             length_limit=length_limit,
             stride=stride,
@@ -349,29 +346,22 @@ class TransformerSquadReader(BaseTransformerSquadReader):
             **kwargs,
         )
 
-
-@DatasetReader.register("transformer_squad2")
-class TransformerSquad2Reader(BaseTransformerSquadReader):
-    """
-    SQuAD v2.0 dataset reader suitable for transformer models.
-
-    This differs from the SQuAD v1.1 dataset reader in that questions without a
-    valid answer will have an `answer_span` that just spans the `[CLS]` token,
-    and all instances will have the additional `cls_index` field.
-
-    For an explanation of the other parameters, see :class:`BaseTransformerSquadReader`.
-    """
-
-    def __init__(
-        self,
+    @classmethod
+    def squad2(
+        cls,
         transformer_model_name: str = "bert-base-cased",
         length_limit: int = 384,
         stride: int = 128,
         max_query_length: int = 64,
         cls_token: str = "[CLS]",
         **kwargs
-    ) -> None:
-        super().__init__(
+    ) -> "TransformerSquadReader":
+        """
+        Gives a `TransformerSquadReader` suitable for SQuAD v2.0.
+
+        This classmethod is registered as `"transformer_squad2"`.
+        """
+        return cls(
             transformer_model_name=transformer_model_name,
             length_limit=length_limit,
             stride=stride,
@@ -381,3 +371,7 @@ class TransformerSquad2Reader(BaseTransformerSquadReader):
             cls_token=cls_token,
             **kwargs,
         )
+
+
+DatasetReader.register("transformer_squad1", constructor="squad1")(TransformerSquadReader)
+DatasetReader.register("transformer_squad2", constructor="squad2")(TransformerSquadReader)

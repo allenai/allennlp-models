@@ -2,8 +2,9 @@ import pytest
 
 from allennlp.common import Params
 from allennlp.common.util import ensure_list
+from allennlp.data import DatasetReader
 
-from allennlp_models.rc import SquadReader, Squad2Reader
+from allennlp_models.rc import SquadReader
 from allennlp_models.rc.dataset_readers.squad import SQUAD2_NO_ANSWER_TOKEN
 from tests import FIXTURES_ROOT
 
@@ -103,7 +104,7 @@ class TestSquadReader:
 class TestSquad2Reader:
     @pytest.mark.parametrize("lazy", (True, False))
     def test_read_from_file(self, lazy):
-        reader = Squad2Reader(lazy=lazy)
+        reader = SquadReader.squad2(lazy=lazy)
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "squad2.json"))
         assert len(instances) == 6
 
@@ -178,14 +179,14 @@ class TestSquad2Reader:
         assert [t.text for t in answer_tokens] == expected_answer_tokens
 
     def test_can_build_from_params(self):
-        reader = Squad2Reader.from_params(Params({}))
+        reader = DatasetReader.from_params(Params({"type": "squad2"}))
 
-        assert reader._tokenizer.__class__.__name__ == "SpacyTokenizer"
-        assert reader._token_indexers["tokens"].__class__.__name__ == "SingleIdTokenIndexer"
+        assert reader._tokenizer.__class__.__name__ == "SpacyTokenizer"  # type: ignore
+        assert reader._token_indexers["tokens"].__class__.__name__ == "SingleIdTokenIndexer"  # type: ignore
 
     def test_length_limit_works(self):
         # We're making sure the length of the text is correct if length limit is provided.
-        reader = Squad2Reader(
+        reader = SquadReader.squad2(
             passage_length_limit=30, question_length_limit=10, skip_invalid_examples=True
         )
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "squad2.json"))
@@ -195,7 +196,7 @@ class TestSquad2Reader:
         assert len(instances) == 4
 
         # Length limit still works if we do not skip the invalid examples
-        reader = Squad2Reader(
+        reader = SquadReader.squad2(
             passage_length_limit=30, question_length_limit=10, skip_invalid_examples=False
         )
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "squad2.json"))
@@ -205,7 +206,7 @@ class TestSquad2Reader:
         assert len(instances) == 6
 
         # Make sure the answer texts does not change, so that the evaluation will not be affected
-        reader_unlimited = Squad2Reader(
+        reader_unlimited = SquadReader.squad2(
             passage_length_limit=30, question_length_limit=10, skip_invalid_examples=False
         )
         instances_unlimited = ensure_list(

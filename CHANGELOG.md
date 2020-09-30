@@ -9,10 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added dataset readers for SQuAD 2.0, the `Squad2Reader` (registered as `"squad2"`) and `TransformerSquad2Reader`
-  (registered as `"transformer_squad2"`).
+- Added dataset reader support for SQuAD 2.0: the `SquadReader` can be instantiated from the registered name `"squad2"`
+  and the `TransformerSquadReader` can be instantiated from the registered name `"transformer_squad2"`
+  for sensible SQuAD 2.0 defaults.
 - Updated the SQuAD v1.1 metric to work with SQuAD 2.0 as well.
-- Updated the `TransformerQA` model to work for SQuAD 2.0 with the `TransformerSquad2Reader`.
+- Updated the `TransformerQA` model to work for SQuAD 2.0 with the `"transformer_squad2"` dataset reader.
 - Added official support for Python 3.8.
 - Added a json template for model cards.
 

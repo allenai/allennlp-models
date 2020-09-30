@@ -32,11 +32,13 @@ class TransformerQA(Model):
 
     It predicts start tokens and end tokens with a linear layer on top of word piece embeddings.
 
-    If you want to use this model on the SQuAD v1.1 dataset, you can use it with the
-    [`transformer_squad`](../../dataset_readers/transformer_squad#transformersquadreader)
-    dataset reader, and if you want to use it the SQuAD v2.0 dataset, you can use it with
-    the  [`transformer_squad2`](../../dataset_readers/transformer_squad#transformersquad2reader)
-    dataset reader.
+    If you want to use this model on either of the SQuAD datasets, you can use it with the
+    [`TransformerSquadReader`](../../dataset_readers/transformer_squad#transformersquadreader)
+    dataset reader, registered as `"transformer_squad"` and also
+    [`"transformer_squad1"`](../../dataset_readers/transformer_squad#squad1)
+    and [`"transformer_squad2"`](../../dataset_readers/transformer_squad#squad2),
+    which will give you sensible defaults for SQuAD v1.1 and v2.0,
+    respectively.
 
     Note that the metrics that the model produces are calculated on a per-instance basis only. Since there could
     be more than one instance per question, these metrics are not the official numbers on either SQuAD task.
@@ -107,9 +109,9 @@ class TransformerQA(Model):
             This is optional because whether or not it's passed with a non-`None` value depends
             on the dataset reader.
 
-            The [`transformer_squad`](../../dataset_readers/transformer_squad#transformersquadreader)
+            The [`"transformer_squad1"`](../../dataset_readers/transformer_squad#squad1)
             reader for SQuAD v1.1 does not use this field, while the
-            [`transformer_squad2`](../../dataset_readers/transformer_squad#transformersquad2reader)
+            [`"transformer_squad2"`](../../dataset_readers/transformer_squad#squad2)
             reader for SQuAD v2.0 does.
 
         # Returns
