@@ -11,7 +11,7 @@ from allennlp.common.util import START_SYMBOL, END_SYMBOL
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.fields import TextField
 from allennlp.data.instance import Instance
-from allennlp.data.tokenizers import Tokenizer, SpacyTokenizer
+from allennlp.data.tokenizers import Tokenizer, SpacyTokenizer, Token
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
 
 logger = logging.getLogger(__name__)
@@ -78,13 +78,29 @@ class Seq2SeqDatasetReader(DatasetReader):
         self._target_tokenizer = target_tokenizer or self._source_tokenizer
         self._source_token_indexers = source_token_indexers or {"tokens": SingleIdTokenIndexer()}
         self._target_token_indexers = target_token_indexers or self._source_token_indexers
+
         self._source_add_start_token = source_add_start_token
         self._source_add_end_token = source_add_end_token
         self._target_add_start_token = target_add_start_token
         self._target_add_end_token = target_add_end_token
-        self._start_token, self._end_token = self._source_tokenizer.tokenize(
-            start_symbol + " " + end_symbol
-        )
+        self._start_token: Optional[Token] = None
+        self._end_token: Optional[Token] = None
+        if (
+            source_add_start_token
+            or source_add_end_token
+            or target_add_start_token
+            or target_add_end_token
+        ):
+            try:
+                self._start_token, self._end_token = self._source_tokenizer.tokenize(
+                    start_symbol + " " + end_symbol
+                )
+            except ValueError:
+                raise ValueError(
+                    f"Bad start or end symbol ({'start_symbol', 'end_symbol'}) "
+                    f"for tokenizer {self._source_tokenizer}"
+                )
+
         self._delimiter = delimiter
         self._source_max_tokens = source_max_tokens
         self._target_max_tokens = target_max_tokens
