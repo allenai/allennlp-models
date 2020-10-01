@@ -1,8 +1,10 @@
 local transformer_model = 'bert-base-cased';
 
-local epochs = 3;
-local batch_size = 8;
-local length_limit = 384;
+local epochs = 5;
+local batch_size = 32;
+local length_limit = 512;
+
+local seed = 41;
 
 {
   "dataset_reader": {
@@ -43,8 +45,9 @@ local length_limit = 384;
     },
     "grad_clipping": 1.0,
     "num_epochs": epochs,
+    "validation_metric": "+per_instance_f1",
   },
-  "random_seed": 42,
-  "numpy_seed": 42,
-  "pytorch_seed": 42,
+  "random_seed": seed,
+  "numpy_seed": seed,
+  "pytorch_seed": seed,
 }

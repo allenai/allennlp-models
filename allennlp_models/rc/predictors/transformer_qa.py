@@ -93,6 +93,7 @@ class TransformerQAPredictor(Predictor):
         for instance, output in zip(instances, outputs):
             qid = instance["metadata"]["id"]
             output["id"] = qid
+            output["context_tokens"] = instance["metadata"]["context_tokens"]
             output["answers"] = instance["metadata"]["answers"]
             if qid in qid_to_output:
                 old_output = qid_to_output[qid]
