@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added official support for Python 3.8.
 - Added a json template for model cards.
 
+### Changed
+
+- `rc-transformer-qa` pretrained model is now an updated version trained on SQuAD v2.0.
+
 ### Fixed
 
 - Fixed BART for latest `transformers` version.
