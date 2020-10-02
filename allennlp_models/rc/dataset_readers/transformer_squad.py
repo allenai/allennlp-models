@@ -81,9 +81,6 @@ class TransformerSquadReader(DatasetReader):
         The maximum number of wordpieces dedicated to the question. If the question is longer than this, it will be
         truncated.
 
-    cls_token : `str`, optional (default=`[CLS]`)
-        The `[CLS]` token of the tokenizer.
-
     """
 
     def __init__(
@@ -93,7 +90,6 @@ class TransformerSquadReader(DatasetReader):
         stride: int = 128,
         skip_invalid_examples: bool = False,
         max_query_length: int = 64,
-        cls_token: str = "[CLS]",
         tokenizer_kwargs: Dict[str, Any] = None,
         **kwargs
     ) -> None:
@@ -112,12 +108,7 @@ class TransformerSquadReader(DatasetReader):
         self.stride = stride
         self.skip_invalid_examples = skip_invalid_examples
         self.max_query_length = max_query_length
-        self._cls_token = cls_token
-        # Make sure the [CLS] token is valid.
-        cls_token_id = self._tokenizer.tokenizer.convert_tokens_to_ids(cls_token)
-        assert (
-            self._tokenizer.tokenizer.convert_ids_to_tokens(cls_token_id) == cls_token
-        ), "Invalid [CLS] token"
+        self._cls_token = self._tokenizer.tokenizer.cls_token
 
     @overrides
     def _read(self, file_path: str):

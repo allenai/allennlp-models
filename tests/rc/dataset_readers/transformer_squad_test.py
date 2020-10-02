@@ -101,7 +101,7 @@ class TestTransformerSquadReader:
         with the transformer model. For RoBERTa, this produces a bug, since RoBERTa tokens are different depending
         on whether they are preceded by a space, and the first round of tokenization cuts off the spaces. The
         reader has a workaround for this case. This tests that workaround."""
-        reader = TransformerSquadReader(transformer_model_name="roberta-base", cls_token="<s>")
+        reader = TransformerSquadReader(transformer_model_name="roberta-base")
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "squad.json"))
         assert instances
         assert len(instances) == 5

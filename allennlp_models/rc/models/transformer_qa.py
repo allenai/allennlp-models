@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import torch
@@ -116,18 +116,19 @@ class TransformerQA(Model):
             - span_end_logits (`torch.FloatTensor`) :
               A tensor of shape `(batch_size, passage_length)` representing unnormalized log
               probabilities of the span end position (inclusive).
-            - best_span (`torch.IntTensor`) :
-              The result of a constrained inference over `span_start_logits` and
-              `span_end_logits` to find the most probable span.  Shape is `(batch_size, 2)`
-              and each offset is a token index, unless the best span for an instance
-              was predicted to be the `[CLS]` token, in which case the span will be (-1, -1).
             - best_span_scores (`torch.FloatTensor`) :
               The score for each of the best spans.
             - loss (`torch.FloatTensor`, optional) :
               A scalar loss to be optimised, evaluated against `answer_span`.
+            - best_span (`torch.IntTensor`, optional) :
+              Provided when not in train mode and sufficient metadata given for the instance.
+              The result of a constrained inference over `span_start_logits` and
+              `span_end_logits` to find the most probable span.  Shape is `(batch_size, 2)`
+              and each offset is a token index, unless the best span for an instance
+              was predicted to be the `[CLS]` token, in which case the span will be (-1, -1).
             - best_span_str (`List[str]`, optional) :
-              If not in train mode and if sufficient metadata was provided for the instances in the batch,
-              we also return the string from the original passage that the model thinks is the best answer
+              Provided when not in train mode and sufficient metadata given for the instance.
+              This is the string from the original passage that the model thinks is the best answer
               to the question.
 
         """
@@ -177,7 +178,6 @@ class TransformerQA(Model):
         output_dict = {
             "span_start_logits": span_start_logits,
             "span_end_logits": span_end_logits,
-            "best_span": best_spans,
             "best_span_scores": best_span_scores,
         }
 
@@ -190,9 +190,10 @@ class TransformerQA(Model):
         # Gather the string of the best span and compute the EM and F1 against the gold span,
         # if given.
         if not self.training and metadata is not None:
-            output_dict["best_span_str"] = self._collect_best_span_strings(
-                best_spans, context_span, cls_index, metadata
-            )
+            (
+                output_dict["best_span_str"],
+                output_dict["best_span"],
+            ) = self._collect_best_span_strings(best_spans, context_span, cls_index, metadata)
 
         return output_dict
 
@@ -228,17 +229,17 @@ class TransformerQA(Model):
         context_span: torch.IntTensor,
         cls_index: torch.LongTensor,
         metadata: List[Dict[str, Any]],
-    ) -> List[str]:
+    ) -> Tuple[List[str], torch.Tensor]:
         """
         Collect the string of the best predicted span from the context metadata and
         update `self._per_instance_metrics`, which in the case of SQuAD v1.1 / v2.0
         includes the EM and F1 score.
         """
-        best_spans = best_spans.detach().cpu().numpy()
+        _best_spans = best_spans.detach().cpu().numpy()
 
         best_span_strings = []
         for (metadata_entry, best_span, cspan, cls_ind) in zip(
-            metadata, best_spans, context_span, cls_index
+            metadata, _best_spans, context_span, cls_index
         ):
             context_tokens_for_question = metadata_entry["context_tokens"]
 
@@ -291,7 +292,7 @@ class TransformerQA(Model):
             if answers:
                 self._per_instance_metrics(best_span_string, answers)
 
-        return best_span_strings
+        return best_span_strings, best_spans
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         output = {
