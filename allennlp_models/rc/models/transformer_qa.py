@@ -107,27 +107,28 @@ class TransformerQA(Model):
 
         # Returns
 
-        An output dictionary consisting of:
+        `Dict[str, torch.Tensor]` :
+            An output dictionary with the following fields:
 
-        - span_start_logits : `torch.FloatTensor`
-            A tensor of shape `(batch_size, passage_length)` representing unnormalized log
-            probabilities of the span start position.
-        - span_end_logits : `torch.FloatTensor`
-            A tensor of shape `(batch_size, passage_length)` representing unnormalized log
-            probabilities of the span end position (inclusive).
-        - best_span : `torch.IntTensor`
-            The result of a constrained inference over `span_start_logits` and
-            `span_end_logits` to find the most probable span.  Shape is `(batch_size, 2)`
-            and each offset is a token index, unless the best span for an instance
-            was predicted to be the `[CLS]` token, in which case the span will be (-1, -1).
-        - best_span_scores : `torch.FloatTensor`
-            The score for each of the best spans.
-        - loss : `torch.FloatTensor`, optional
-            A scalar loss to be optimised, evaluated against `answer_span`.
-        - best_span_str : `List[str]`, optional
-            If not in train mode and if sufficient metadata was provided for the instances in the batch,
-            we also return the string from the original passage that the model thinks is the best answer
-            to the question.
+            - span_start_logits (`torch.FloatTensor`) :
+              A tensor of shape `(batch_size, passage_length)` representing unnormalized log
+              probabilities of the span start position.
+            - span_end_logits (`torch.FloatTensor`) :
+              A tensor of shape `(batch_size, passage_length)` representing unnormalized log
+              probabilities of the span end position (inclusive).
+            - best_span (`torch.IntTensor`) :
+              The result of a constrained inference over `span_start_logits` and
+              `span_end_logits` to find the most probable span.  Shape is `(batch_size, 2)`
+              and each offset is a token index, unless the best span for an instance
+              was predicted to be the `[CLS]` token, in which case the span will be (-1, -1).
+            - best_span_scores (`torch.FloatTensor`) :
+              The score for each of the best spans.
+            - loss (`torch.FloatTensor`, optional) :
+              A scalar loss to be optimised, evaluated against `answer_span`.
+            - best_span_str (`List[str]`, optional) :
+              If not in train mode and if sufficient metadata was provided for the instances in the batch,
+              we also return the string from the original passage that the model thinks is the best answer
+              to the question.
 
         """
         embedded_question = self._text_field_embedder(question_with_context)

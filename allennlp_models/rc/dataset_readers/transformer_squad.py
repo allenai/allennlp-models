@@ -29,13 +29,17 @@ class TransformerSquadReader(DatasetReader):
      * `answer_span`, a `SpanField` into the `question` `TextField` denoting the answer.
      * `context_span`, a `SpanField` into the `question` `TextField` denoting the context, i.e., the part of
        the text that potential answers can come from.
+     * `cls_index`, a `IndexField` that holds the index of the `[CLS]` token within the
+       `question_with_context` field. This is needed because the `[CLS]` token is used to indicate
+       an impossible question.
      * `metadata`, a `MetadataField` that stores the instance's ID, the original question, the original
        passage text, both of these in tokenized form, and the gold answer strings, accessible as
        `metadata['id']`, `metadata['question']`, `metadata['context']`, `metadata['question_tokens']`,
        `metadata['context_tokens']`, and `metadata['answers']`. This is so that we can more easily use the
        official SQuAD evaluation script to get metrics.
-     * `cls_index`, a `IndexField` that holds the index of the `[CLS]` token within the
-       `question_with_context` field.
+
+    For SQuAD v2.0-style datasets that contain impossible questions, we set the gold answer span
+    to the span of the `[CLS]` token when there are no answers.
 
     We also support limiting the maximum length for the question. When the context+question is too long, we run a
     sliding window over the context and emit multiple instances for a single question.
@@ -164,6 +168,9 @@ class TransformerSquadReader(DatasetReader):
         first_answer_offset: Optional[int],
         always_add_answer_span: bool = False,
     ) -> Iterable[Instance]:
+        """
+        Create training instances from a SQuAD example.
+        """
         # tokenize context by spaces first, and then with the wordpiece tokenizer
         # For RoBERTa, this produces a bug where every token is marked as beginning-of-sentence. To fix it, we
         # detect whether a space comes before a word, and if so, add "a " in front of the word.
