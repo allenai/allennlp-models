@@ -94,13 +94,18 @@ class TransformerSquadReader(DatasetReader):
         skip_invalid_examples: bool = False,
         max_query_length: int = 64,
         cls_token: str = "[CLS]",
+        tokenizer_kwargs: Dict[str, Any] = None,
         **kwargs
     ) -> None:
         super().__init__(**kwargs)
         self._tokenizer = PretrainedTransformerTokenizer(
-            transformer_model_name, add_special_tokens=False
+            transformer_model_name, add_special_tokens=False, tokenizer_kwargs=tokenizer_kwargs,
         )
-        self._token_indexers = {"tokens": PretrainedTransformerIndexer(transformer_model_name)}
+        self._token_indexers = {
+            "tokens": PretrainedTransformerIndexer(
+                transformer_model_name, tokenizer_kwargs=tokenizer_kwargs
+            )
+        }
         self.length_limit = length_limit
         self.stride = stride
         self.skip_invalid_examples = skip_invalid_examples
