@@ -58,27 +58,40 @@ class TransformerSquadReader(DatasetReader):
 
     transformer_model_name : `str`, optional (default=`'bert-base-cased'`)
         This reader chooses tokenizer and token indexer according to this setting.
+
     length_limit : `int`, optional (default=`384`)
         We will make sure that the length of context+question never exceeds this many word pieces.
+
     stride : `int`, optional (default=`128`)
         When context+question are too long for the length limit, we emit multiple instances for one question,
         where the context is shifted. This parameter specifies the overlap between the shifted context window. It
         is called "stride" instead of "overlap" because that's what it's called in the original huggingface
         implementation.
+
     skip_invalid_examples: `bool`, optional (default=`False`)
         If this is true, we will skip examples where the question+context is truncated according to `length_limit`
-        such that the context no longer contains a gold answer. For SQuAD v1.1-style datasets, you should set this
-        to `True` during training, and `False` any other time.
+        such that the context no longer contains a gold answer.
+
+        For SQuAD v1.1-style datasets, you should set this to `True` during training, and `False` any other time.
+
+        For SQuAD v2.0-style datasets, leaving this as `False` (recommended) will treat invalid examples
+        the same way as impossible examples, provided that `use_cls_token_for_unanswerable`
+        is `True`.
+
     max_query_length : `int`, optional (default=`64`)
         The maximum number of wordpieces dedicated to the question. If the question is longer than this, it will be
         truncated.
+
     use_cls_token_for_unanswerable : `bool`, optional (default=`False`)
         If this is true, we'll use the `[CLS]` token as the gold answer for questions that don't have a gold
-        answer. For SQuAD v2.0-style datasets that include impossible questions, this should
-        be set to `True`.
+        answer.
+
+        For SQuAD v2.0-style datasets that include impossible questions, this should be set to `True`.
+
     cls_token : `str`, optional (default=`[CLS]`)
         The `[CLS]` token of the tokenizer. If `use_cls_token_for_unanswerable` is `False`, you don't
         need to worry about this.
+
     """
 
     def __init__(
@@ -139,8 +152,8 @@ class TransformerSquadReader(DatasetReader):
                         question_answer["question"],
                         answers,
                         context,
-                        first_answer_offset,
-                        True,
+                        first_answer_offset=first_answer_offset,
+                        always_add_answer_span=True,
                     )
                     instances_yielded = 0
                     for instance in instances:
@@ -164,7 +177,7 @@ class TransformerSquadReader(DatasetReader):
         answers: List[str],
         context: str,
         first_answer_offset: Optional[int],
-        for_training: bool = False,
+        always_add_answer_span: bool = False,
     ) -> Iterable[Instance]:
         # tokenize context by spaces first, and then with the wordpiece tokenizer
         # For RoBERTa, this produces a bug where every token is marked as beginning-of-sentence. To fix it, we
@@ -241,7 +254,7 @@ class TransformerSquadReader(DatasetReader):
                     answers=answers,
                     token_answer_span=window_token_answer_span,
                     additional_metadata=additional_metadata,
-                    for_training=for_training,
+                    always_add_answer_span=always_add_answer_span,
                 )
                 yield instance
 
@@ -260,7 +273,7 @@ class TransformerSquadReader(DatasetReader):
         answers: List[str] = None,
         token_answer_span: Optional[Tuple[int, int]] = None,
         additional_metadata: Dict[str, Any] = None,
-        for_training: bool = False,
+        always_add_answer_span: bool = False,
     ) -> Instance:
         fields = {}
 
@@ -294,10 +307,10 @@ class TransformerSquadReader(DatasetReader):
                 token_answer_span[1] + start_of_context,
                 question_field,
             )
-        elif for_training and self.use_cls_token_for_unanswerable:
+        elif always_add_answer_span and self.use_cls_token_for_unanswerable:
             cls_index = fields["cls_index"].sequence_index
             fields["answer_span"] = SpanField(cls_index, cls_index, question_field)
-        elif for_training:
+        elif always_add_answer_span:
             # We have to put in something even when we don't have an answer, so that this instance can be batched
             # together with other instances that have answers.
             fields["answer_span"] = SpanField(-1, -1, question_field)

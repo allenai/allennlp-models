@@ -213,7 +213,7 @@ class TransformerQA(Model):
         answer_span: torch.Tensor,
     ) -> torch.Tensor:
         """
-        Calculate the loss against the `answer_span` and also update the  span metrics.
+        Calculate the loss against the `answer_span` and also update the span metrics.
         """
         span_start = answer_span[:, 0]
         span_end = answer_span[:, 1]

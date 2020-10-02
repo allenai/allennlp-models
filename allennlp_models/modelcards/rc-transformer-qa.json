@@ -3,7 +3,7 @@
     "registered_model_name": "transformer_qa",
     "registered_predictor_name": null,
     "display_name": "Transformer QA",
-    "archive_file": "transformer-qa-2020-08-01.tar.gz",
+    "archive_file": "transformer-qa-2020-10-01.tar.gz",
     "model_details": {
         "description": "The model implements a reading comprehension model patterned after the proposed model in 
                         https://api.semanticscholar.org/CorpusID:52967399 (Devlin et al, 2018), with improvements 
@@ -11,7 +11,7 @@
                         tokens with a linear layer on top of word piece embeddings.",
         "developed_by": "Devlin et al",
         "contributed_by": "Dirk Groeneveld and Evan Pete Walsh",
-        "date": "2020-08-01",
+        "date": "2020-10-01",
         "version": "2",
         "model_type": "Deep Birectional Transformers (BERT)",
         "paper": "[BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding]
