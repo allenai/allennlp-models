@@ -99,7 +99,9 @@ class TransformerSquadReader(DatasetReader):
     ) -> None:
         super().__init__(**kwargs)
         self._tokenizer = PretrainedTransformerTokenizer(
-            transformer_model_name, add_special_tokens=False, tokenizer_kwargs=tokenizer_kwargs,
+            transformer_model_name,
+            add_special_tokens=False,
+            tokenizer_kwargs=tokenizer_kwargs,
         )
         self._token_indexers = {
             "tokens": PretrainedTransformerIndexer(
