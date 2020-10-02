@@ -20,10 +20,6 @@ logger = logging.getLogger(__name__)
 @DatasetReader.register("transformer_squad")
 class TransformerSquadReader(DatasetReader):
     """
-    !!! Note
-        If you're training on SQuAD v1.1 you should use the [`squad1()`](#squad1) classmethod
-        to instantiate this reader, and for SQuAD v2.0 you should use the [`squad2()`](#squad2).
-
     Dataset reader suitable for JSON-formatted SQuAD-like datasets to be used with a transformer-based
     QA model, such as [`TransformerQA`](../../models/transformer_qa#TransformerQA).
 
@@ -39,8 +35,7 @@ class TransformerSquadReader(DatasetReader):
        `metadata['context_tokens']`, and `metadata['answers']`. This is so that we can more easily use the
        official SQuAD evaluation script to get metrics.
      * `cls_index`, a `IndexField` that holds the index of the `[CLS]` token within the
-       `question_with_context` field. This is only present if `use_cls_token_for_unanswerable`
-       is set to `True`.
+       `question_with_context` field.
 
     We also support limiting the maximum length for the question. When the context+question is too long, we run a
     sliding window over the context and emit multiple instances for a single question.
@@ -75,22 +70,15 @@ class TransformerSquadReader(DatasetReader):
         For SQuAD v1.1-style datasets, you should set this to `True` during training, and `False` any other time.
 
         For SQuAD v2.0-style datasets, leaving this as `False` (recommended) will treat invalid examples
-        the same way as impossible examples, provided that `use_cls_token_for_unanswerable`
-        is `True`.
+        the same way as impossible examples, i.e. by setting the answer span to the span of the `[CLS]`
+        token.
 
     max_query_length : `int`, optional (default=`64`)
         The maximum number of wordpieces dedicated to the question. If the question is longer than this, it will be
         truncated.
 
-    use_cls_token_for_unanswerable : `bool`, optional (default=`False`)
-        If this is true, we'll use the `[CLS]` token as the gold answer for questions that don't have a gold
-        answer.
-
-        For SQuAD v2.0-style datasets that include impossible questions, this should be set to `True`.
-
     cls_token : `str`, optional (default=`[CLS]`)
-        The `[CLS]` token of the tokenizer. If `use_cls_token_for_unanswerable` is `False`, you don't
-        need to worry about this.
+        The `[CLS]` token of the tokenizer.
 
     """
 
@@ -101,7 +89,6 @@ class TransformerSquadReader(DatasetReader):
         stride: int = 128,
         skip_invalid_examples: bool = False,
         max_query_length: int = 64,
-        use_cls_token_for_unanswerable: bool = False,
         cls_token: str = "[CLS]",
         **kwargs
     ) -> None:
@@ -114,14 +101,12 @@ class TransformerSquadReader(DatasetReader):
         self.stride = stride
         self.skip_invalid_examples = skip_invalid_examples
         self.max_query_length = max_query_length
-        self.use_cls_token_for_unanswerable = use_cls_token_for_unanswerable
         self._cls_token = cls_token
-        if use_cls_token_for_unanswerable:
-            # Make sure the [CLS] token is valid.
-            cls_token_id = self._tokenizer.tokenizer.convert_tokens_to_ids(cls_token)
-            assert (
-                self._tokenizer.tokenizer.convert_ids_to_tokens(cls_token_id) == cls_token
-            ), "Invalid [CLS] token"
+        # Make sure the [CLS] token is valid.
+        cls_token_id = self._tokenizer.tokenizer.convert_tokens_to_ids(cls_token)
+        assert (
+            self._tokenizer.tokenizer.convert_ids_to_tokens(cls_token_id) == cls_token
+        ), "Invalid [CLS] token"
 
     @overrides
     def _read(self, file_path: str):
@@ -284,12 +269,11 @@ class TransformerSquadReader(DatasetReader):
         )
         fields["question_with_context"] = question_field
 
-        if self.use_cls_token_for_unanswerable:
-            # add an indicator of where the [CLS] token is
-            cls_index = next(
-                i for i, t in enumerate(question_field.tokens) if t.text == self._cls_token
-            )
-            fields["cls_index"] = IndexField(cls_index, question_field)
+        # add an indicator of where the [CLS] token is
+        cls_index = next(
+            i for i, t in enumerate(question_field.tokens) if t.text == self._cls_token
+        )
+        fields["cls_index"] = IndexField(cls_index, question_field)
 
         start_of_context = (
             len(self._tokenizer.sequence_pair_start_tokens)
@@ -307,13 +291,9 @@ class TransformerSquadReader(DatasetReader):
                 token_answer_span[1] + start_of_context,
                 question_field,
             )
-        elif always_add_answer_span and self.use_cls_token_for_unanswerable:
+        elif always_add_answer_span:
             cls_index = fields["cls_index"].sequence_index
             fields["answer_span"] = SpanField(cls_index, cls_index, question_field)
-        elif always_add_answer_span:
-            # We have to put in something even when we don't have an answer, so that this instance can be batched
-            # together with other instances that have answers.
-            fields["answer_span"] = SpanField(-1, -1, question_field)
 
         # make the context span, i.e., the span of text from which possible answers should be drawn
         fields["context_span"] = SpanField(
@@ -333,58 +313,3 @@ class TransformerSquadReader(DatasetReader):
         fields["metadata"] = MetadataField(metadata)
 
         return Instance(fields)
-
-    @classmethod
-    def squad1(
-        cls,
-        transformer_model_name: str = "bert-base-cased",
-        length_limit: int = 384,
-        stride: int = 128,
-        skip_invalid_examples: bool = False,
-        max_query_length: int = 64,
-        **kwargs
-    ) -> "TransformerSquadReader":
-        """
-        Gives a `TransformerSquadReader` suitable for SQuAD v1.1.
-
-        This classmethod is registered as `"transformer_squad1"`.
-        """
-        return cls(
-            transformer_model_name=transformer_model_name,
-            length_limit=length_limit,
-            stride=stride,
-            skip_invalid_examples=skip_invalid_examples,
-            max_query_length=max_query_length,
-            use_cls_token_for_unanswerable=False,
-            **kwargs,
-        )
-
-    @classmethod
-    def squad2(
-        cls,
-        transformer_model_name: str = "bert-base-cased",
-        length_limit: int = 384,
-        stride: int = 128,
-        max_query_length: int = 64,
-        cls_token: str = "[CLS]",
-        **kwargs
-    ) -> "TransformerSquadReader":
-        """
-        Gives a `TransformerSquadReader` suitable for SQuAD v2.0.
-
-        This classmethod is registered as `"transformer_squad2"`.
-        """
-        return cls(
-            transformer_model_name=transformer_model_name,
-            length_limit=length_limit,
-            stride=stride,
-            skip_invalid_examples=False,
-            max_query_length=max_query_length,
-            use_cls_token_for_unanswerable=True,
-            cls_token=cls_token,
-            **kwargs,
-        )
-
-
-DatasetReader.register("transformer_squad1", constructor="squad1")(TransformerSquadReader)
-DatasetReader.register("transformer_squad2", constructor="squad2")(TransformerSquadReader)

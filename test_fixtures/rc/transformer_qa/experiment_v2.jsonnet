@@ -4,7 +4,7 @@ local batch_size = 3;
 
 {
     "dataset_reader": {
-        "type": "transformer_squad2",
+        "type": "transformer_squad",
         "transformer_model_name": transformer_model,
     },
     "train_data_path": "test_fixtures/rc/squad2.json",

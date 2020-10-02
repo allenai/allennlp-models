@@ -94,7 +94,8 @@ class TransformerQAPredictor(Predictor):
             qid = instance["metadata"]["id"]
             output["id"] = qid
             output["context_tokens"] = instance["metadata"]["context_tokens"]
-            output["answers"] = instance["metadata"]["answers"]
+            if instance["metadata"]["answers"]:
+                output["answers"] = instance["metadata"]["answers"]
             if qid in qid_to_output:
                 old_output = qid_to_output[qid]
                 if old_output["best_span_scores"] < output["best_span_scores"]:

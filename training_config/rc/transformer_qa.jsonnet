@@ -8,7 +8,7 @@ local seed = 41;
 
 {
   "dataset_reader": {
-    "type": "transformer_squad2",
+    "type": "transformer_squad",
     "transformer_model_name": transformer_model,
     "length_limit": length_limit,
     // "max_instances": 1000,  // debug setting

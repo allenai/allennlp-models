@@ -32,13 +32,9 @@ class TransformerQA(Model):
 
     It predicts start tokens and end tokens with a linear layer on top of word piece embeddings.
 
-    If you want to use this model on either of the SQuAD datasets, you can use it with the
+    If you want to use this model on SQuAD datasets, you can use it with the
     [`TransformerSquadReader`](../../dataset_readers/transformer_squad#transformersquadreader)
-    dataset reader, registered as `"transformer_squad"` and also
-    [`"transformer_squad1"`](../../dataset_readers/transformer_squad#squad1)
-    and [`"transformer_squad2"`](../../dataset_readers/transformer_squad#squad2),
-    which will give you sensible defaults for SQuAD v1.1 and v2.0,
-    respectively.
+    dataset reader, registered as `"transformer_squad"`.
 
     Note that the metrics that the model produces are calculated on a per-instance basis only. Since there could
     be more than one instance per question, these metrics are not the official numbers on either SQuAD task.
@@ -76,9 +72,9 @@ class TransformerQA(Model):
         self,
         question_with_context: Dict[str, Dict[str, torch.LongTensor]],
         context_span: torch.IntTensor,
+        cls_index: torch.LongTensor,
         answer_span: Optional[torch.IntTensor] = None,
         metadata: List[Dict[str, Any]] = None,
-        cls_index: Optional[torch.LongTensor] = None,
     ) -> Dict[str, torch.Tensor]:
         """
         # Parameters
@@ -92,6 +88,13 @@ class TransformerQA(Model):
         context_span : `torch.IntTensor`
             From a `SpanField`. This marks the span of word pieces in `question` from which answers can come.
 
+        cls_index : `torch.LongTensor`
+            A tensor of shape `(batch_size,)` that provides the index of the `[CLS]` token
+            in the `question_with_context` for each instance.
+
+            This is needed because the `[CLS]` token is used to indicate that the question
+            is impossible.
+
         answer_span : `torch.IntTensor`, optional
             From a `SpanField`. This is the thing we are trying to predict - the span of text that marks the
             answer. If given, we compute a loss that gets included in the output directory.
@@ -102,42 +105,30 @@ class TransformerQA(Model):
             batch size, and each dictionary should have the keys `id`, `question`, `context`,
             `question_tokens`, `context_tokens`, and `answers`.
 
-        cls_index : `Optional[torch.LongTensor]`, optional (default = `None`)
-            A tensor of shape `(batch_size,)` that provides the index of the `[CLS]` token
-            in the `question_with_context` for each instance.
-
-            This is optional because whether or not it's passed with a non-`None` value depends
-            on the dataset reader.
-
-            The [`"transformer_squad1"`](../../dataset_readers/transformer_squad#squad1)
-            reader for SQuAD v1.1 does not use this field, while the
-            [`"transformer_squad2"`](../../dataset_readers/transformer_squad#squad2)
-            reader for SQuAD v2.0 does.
-
         # Returns
 
         An output dictionary consisting of:
 
-        span_start_logits : `torch.FloatTensor`
+        - span_start_logits : `torch.FloatTensor`
             A tensor of shape `(batch_size, passage_length)` representing unnormalized log
             probabilities of the span start position.
-        span_end_logits : `torch.FloatTensor`
+        - span_end_logits : `torch.FloatTensor`
             A tensor of shape `(batch_size, passage_length)` representing unnormalized log
             probabilities of the span end position (inclusive).
-        best_span : `torch.IntTensor`
+        - best_span : `torch.IntTensor`
             The result of a constrained inference over `span_start_logits` and
             `span_end_logits` to find the most probable span.  Shape is `(batch_size, 2)`
             and each offset is a token index, unless the best span for an instance
             was predicted to be the `[CLS]` token, in which case the span will be (-1, -1).
-            Note that that is only possible if the `cls_index` parameter is non-`None`.
-        best_span_scores : `torch.FloatTensor`
+        - best_span_scores : `torch.FloatTensor`
             The score for each of the best spans.
-        loss : `torch.FloatTensor`, optional
+        - loss : `torch.FloatTensor`, optional
             A scalar loss to be optimised, evaluated against `answer_span`.
-        best_span_str : `List[str]`, optional
+        - best_span_str : `List[str]`, optional
             If not in train mode and if sufficient metadata was provided for the instances in the batch,
             we also return the string from the original passage that the model thinks is the best answer
             to the question.
+
         """
         embedded_question = self._text_field_embedder(question_with_context)
         # shape: (batch_size, sequence_length, 2)
@@ -157,10 +148,9 @@ class TransformerQA(Model):
         )
         for i, (start, end) in enumerate(context_span):
             possible_answer_mask[i, start : end + 1] = True
-            # If `cls_index` is not `None`, we also unmask the [CLS] token since that token
-            # is used to indicate that the question is impossible.
-            if cls_index is not None:
-                possible_answer_mask[i, cls_index[i]] = True
+            # Also unmask the [CLS] token since that token is used to indicate that
+            # the question is impossible.
+            possible_answer_mask[i, cls_index[i]] = True
 
         # Replace the masked values with a very negative constant since we're in log-space.
         # shape: (batch_size, sequence_length)
@@ -200,7 +190,7 @@ class TransformerQA(Model):
         # if given.
         if not self.training and metadata is not None:
             output_dict["best_span_str"] = self._collect_best_span_strings(
-                best_spans, context_span, metadata, cls_index
+                best_spans, context_span, cls_index, metadata
             )
 
         return output_dict
@@ -217,8 +207,7 @@ class TransformerQA(Model):
         """
         span_start = answer_span[:, 0]
         span_end = answer_span[:, 1]
-        span_mask = span_start != -1
-        self._span_accuracy(best_spans, answer_span, span_mask.unsqueeze(-1).expand_as(best_spans))
+        self._span_accuracy(best_spans, answer_span)
 
         start_loss = cross_entropy(span_start_logits, span_start, ignore_index=-1)
         big_constant = min(torch.finfo(start_loss.dtype).max, 1e9)
@@ -227,8 +216,8 @@ class TransformerQA(Model):
         end_loss = cross_entropy(span_end_logits, span_end, ignore_index=-1)
         assert not torch.any(end_loss > big_constant), "End loss too high"
 
-        self._span_start_accuracy(span_start_logits, span_start, span_mask)
-        self._span_end_accuracy(span_end_logits, span_end, span_mask)
+        self._span_start_accuracy(span_start_logits, span_start)
+        self._span_end_accuracy(span_end_logits, span_end)
 
         return (start_loss + end_loss) / 2
 
@@ -236,8 +225,8 @@ class TransformerQA(Model):
         self,
         best_spans: torch.Tensor,
         context_span: torch.IntTensor,
+        cls_index: torch.LongTensor,
         metadata: List[Dict[str, Any]],
-        cls_index: Optional[torch.LongTensor],
     ) -> List[str]:
         """
         Collect the string of the best predicted span from the context metadata and
@@ -247,12 +236,12 @@ class TransformerQA(Model):
         best_spans = best_spans.detach().cpu().numpy()
 
         best_span_strings = []
-        for i, (metadata_entry, best_span, cspan) in enumerate(
-            zip(metadata, best_spans, context_span)
+        for (metadata_entry, best_span, cspan, cls_ind) in zip(
+            metadata, best_spans, context_span, cls_index
         ):
             context_tokens_for_question = metadata_entry["context_tokens"]
 
-            if cls_index is not None and best_span[0] == cls_index[i]:
+            if best_span[0] == cls_ind:
                 # Predicting [CLS] is interpreted as predicting the question as unanswerable.
                 best_span_string = ""
                 # NOTE: even though we've "detached" 'best_spans' above, this still
