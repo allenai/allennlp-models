@@ -73,7 +73,7 @@ class TransformerQA(Model):
         question_with_context: Dict[str, Dict[str, torch.LongTensor]],
         context_span: torch.IntTensor,
         cls_index: torch.LongTensor = None,
-        answer_span: Optional[torch.IntTensor] = None,
+        answer_span: torch.IntTensor = None,
         metadata: List[Dict[str, Any]] = None,
     ) -> Dict[str, torch.Tensor]:
         """
