@@ -72,7 +72,7 @@ class TransformerQA(Model):
         self,
         question_with_context: Dict[str, Dict[str, torch.LongTensor]],
         context_span: torch.IntTensor,
-        cls_index: torch.LongTensor,
+        cls_index: torch.LongTensor = None,
         answer_span: Optional[torch.IntTensor] = None,
         metadata: List[Dict[str, Any]] = None,
     ) -> Dict[str, torch.Tensor]:
@@ -88,12 +88,15 @@ class TransformerQA(Model):
         context_span : `torch.IntTensor`
             From a `SpanField`. This marks the span of word pieces in `question` from which answers can come.
 
-        cls_index : `torch.LongTensor`
+        cls_index : `torch.LongTensor`, optional
             A tensor of shape `(batch_size,)` that provides the index of the `[CLS]` token
             in the `question_with_context` for each instance.
 
             This is needed because the `[CLS]` token is used to indicate that the question
             is impossible.
+
+            If this is `None`, it's assumed that the `[CLS]` token is at index 0 for each instance
+            in the batch.
 
         answer_span : `torch.IntTensor`, optional
             From a `SpanField`. This is the thing we are trying to predict - the span of text that marks the
@@ -152,7 +155,7 @@ class TransformerQA(Model):
             possible_answer_mask[i, start : end + 1] = True
             # Also unmask the [CLS] token since that token is used to indicate that
             # the question is impossible.
-            possible_answer_mask[i, cls_index[i]] = True
+            possible_answer_mask[i, 0 if cls_index is None else cls_index[i]] = True
 
         # Replace the masked values with a very negative constant since we're in log-space.
         # shape: (batch_size, sequence_length)
@@ -193,7 +196,7 @@ class TransformerQA(Model):
             (
                 output_dict["best_span_str"],
                 output_dict["best_span"],
-            ) = self._collect_best_span_strings(best_spans, context_span, cls_index, metadata)
+            ) = self._collect_best_span_strings(best_spans, context_span, metadata, cls_index)
 
         return output_dict
 
@@ -227,19 +230,26 @@ class TransformerQA(Model):
         self,
         best_spans: torch.Tensor,
         context_span: torch.IntTensor,
-        cls_index: torch.LongTensor,
         metadata: List[Dict[str, Any]],
+        cls_index: Optional[torch.LongTensor],
     ) -> Tuple[List[str], torch.Tensor]:
         """
         Collect the string of the best predicted span from the context metadata and
         update `self._per_instance_metrics`, which in the case of SQuAD v1.1 / v2.0
         includes the EM and F1 score.
+
+        This returns a `Tuple[List[str], torch.Tensor]`, where the `List[str]` is the
+        predicted answer for each instance in the batch, and the tensor is just the input
+        tensor `best_spans` after adjustments so that each answer span corresponds to the
+        context tokens only, and not the question tokens. Spans that correspond to the
+        `[CLS]` token, i.e. the question was predicted to be impossible, will be set
+        to `(-1, -1)`.
         """
         _best_spans = best_spans.detach().cpu().numpy()
 
         best_span_strings = []
         for (metadata_entry, best_span, cspan, cls_ind) in zip(
-            metadata, _best_spans, context_span, cls_index
+            metadata, _best_spans, context_span, cls_index or (0 for _ in range(len(metadata)))
         ):
             context_tokens_for_question = metadata_entry["context_tokens"]
 

@@ -1,6 +1,7 @@
 from allennlp.common.params import Params
 from allennlp.common.util import ensure_list
 from allennlp.data import DatasetReader
+import pytest
 
 from allennlp_models.rc import TransformerSquadReader
 from tests import FIXTURES_ROOT
@@ -45,8 +46,15 @@ class TestTransformerSquadReader:
             assert all(id == 0 for id in token_type_ids[:context_start])
             assert all(id == 1 for id in token_type_ids[context_start:context_end])
 
-    def test_read_from_file_squad2(self):
+    @pytest.mark.parametrize("include_cls_index", [True, False])
+    def test_read_from_file_squad2(self, include_cls_index: bool):
         reader = TransformerSquadReader()
+
+        # This should be `False` to begin with since the `[CLS]` token is the first
+        # token with BERT.
+        assert reader._include_cls_index is False
+        reader._include_cls_index = include_cls_index
+
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "squad2.json"))
         assert len(instances) == 6
 
@@ -66,7 +74,8 @@ class TestTransformerSquadReader:
             context_end = instance.fields["context_span"].span_end + 1
             assert all(id == 0 for id in token_type_ids[:context_start])
             assert all(id == 1 for id in token_type_ids[context_start:context_end])
-            assert tokens[instance.fields["cls_index"].sequence_index].text == "[CLS]"
+            if include_cls_index:
+                assert tokens[instance.fields["cls_index"].sequence_index].text == "[CLS]"
 
     def test_length_limit_works(self):
         max_query_length = 10

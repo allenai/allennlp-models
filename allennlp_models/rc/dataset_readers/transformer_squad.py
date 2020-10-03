@@ -29,9 +29,10 @@ class TransformerSquadReader(DatasetReader):
      * `answer_span`, a `SpanField` into the `question` `TextField` denoting the answer.
      * `context_span`, a `SpanField` into the `question` `TextField` denoting the context, i.e., the part of
        the text that potential answers can come from.
-     * `cls_index`, a `IndexField` that holds the index of the `[CLS]` token within the
+     * `cls_index` (optional), an `IndexField` that holds the index of the `[CLS]` token within the
        `question_with_context` field. This is needed because the `[CLS]` token is used to indicate
-       an impossible question.
+       an impossible question. Since most tokenizers/models have the `[CLS]` token as the first
+       token, this will only be included in the instance if the `[CLS]` token is NOT the first token.
      * `metadata`, a `MetadataField` that stores the instance's ID, the original question, the original
        passage text, both of these in tokenized form, and the gold answer strings, accessible as
        `metadata['id']`, `metadata['question']`, `metadata['context']`, `metadata['question_tokens']`,
@@ -109,6 +110,16 @@ class TransformerSquadReader(DatasetReader):
         self.skip_invalid_examples = skip_invalid_examples
         self.max_query_length = max_query_length
         self._cls_token = self._tokenizer.tokenizer.cls_token
+        # We'll include the `cls_index` IndexField in instances if the CLS token is
+        # not always the first token.
+        self._include_cls_index = (
+            self._find_cls_index(
+                self._tokenizer.add_special_tokens(
+                    self._tokenizer.tokenize("a"), self._tokenizer.tokenize("a")
+                )
+            )
+            != 0
+        )
 
     @overrides
     def _read(self, file_path: str):
@@ -274,11 +285,9 @@ class TransformerSquadReader(DatasetReader):
         )
         fields["question_with_context"] = question_field
 
-        # add an indicator of where the [CLS] token is
-        cls_index = next(
-            i for i, t in enumerate(question_field.tokens) if t.text == self._cls_token
-        )
-        fields["cls_index"] = IndexField(cls_index, question_field)
+        cls_index = self._find_cls_index(question_field.tokens)
+        if self._include_cls_index:
+            fields["cls_index"] = IndexField(cls_index, question_field)
 
         start_of_context = (
             len(self._tokenizer.sequence_pair_start_tokens)
@@ -297,7 +306,6 @@ class TransformerSquadReader(DatasetReader):
                 question_field,
             )
         elif always_add_answer_span:
-            cls_index = fields["cls_index"].sequence_index
             fields["answer_span"] = SpanField(cls_index, cls_index, question_field)
 
         # make the context span, i.e., the span of text from which possible answers should be drawn
@@ -318,3 +326,6 @@ class TransformerSquadReader(DatasetReader):
         fields["metadata"] = MetadataField(metadata)
 
         return Instance(fields)
+
+    def _find_cls_index(self, tokens: List[Token]) -> int:
+        return next(i for i, t in enumerate(tokens) if t.text == self._cls_token)
