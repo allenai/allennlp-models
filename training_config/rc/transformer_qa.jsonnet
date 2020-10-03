@@ -1,10 +1,10 @@
-local transformer_model = 'bert-base-cased';
+local transformer_model = "roberta-large";
 
 local epochs = 5;
-local batch_size = 32;
+local batch_size = 16;
 local length_limit = 512;
 
-local seed = 41;
+local seed = 0;
 
 {
   "dataset_reader": {
