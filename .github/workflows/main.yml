@@ -97,7 +97,7 @@ jobs:
 
     - name: Set Docker tag
       run: |
-        echo "::set-env name=DOCKER_TAG::$GITHUB_SHA";
+        echo "DOCKER_TAG=$GITHUB_SHA" >> $GITHUB_ENV
 
     - name: Build test image
       run: |
@@ -117,7 +117,7 @@ jobs:
 
     - name: Set Docker tag
       run: |
-        echo "::set-env name=DOCKER_TAG::$GITHUB_SHA";
+        echo "DOCKER_TAG=$GITHUB_SHA" >> $GITHUB_ENV
 
     - name: Build test image
       run: |
@@ -138,7 +138,7 @@ jobs:
 
     - name: Set Docker tag
       run: |
-        echo "::set-env name=DOCKER_TAG::$GITHUB_SHA";
+        echo "DOCKER_TAG=$GITHUB_SHA" >> $GITHUB_ENV
 
     - name: Build test image
       run: |
@@ -201,9 +201,9 @@ jobs:
       if: github.repository == 'allenai/allennlp-models' && github.event_name == 'push'
       run: |
         if [[ $GITHUB_EVENT_NAME == 'release' ]]; then
-            echo "::set-env name=DOCS_FOLDER::models/${GITHUB_REF#refs/tags/}";
+            echo "DOCS_FOLDER=models/${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV;
         else
-            echo "::set-env name=DOCS_FOLDER::models/master";
+            echo "DOCS_FOLDER=models/master" >> $GITHUB_ENV;
         fi
 
     - name: Stage docs
