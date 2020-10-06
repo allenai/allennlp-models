@@ -1,4 +1,4 @@
-local transformer_model = "robert-large";
+local transformer_model = "roberta-large";
 
 local epochs = 5;
 local batch_size = 16;
