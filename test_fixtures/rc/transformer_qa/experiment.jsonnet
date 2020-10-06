@@ -1,4 +1,4 @@
-local transformer_model = "albert-base-v2";
+local transformer_model = "test_fixtures/bert-xsmall-dummy";
 local epochs = 2;
 local batch_size = 3;
 

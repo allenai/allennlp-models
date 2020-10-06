@@ -23,8 +23,8 @@ class TransformerQaTest(ModelTestCase):
         self.ensure_model_can_train_save_and_load(
             self.param_file,
             gradients_to_ignore={
-                "_text_field_embedder.token_embedder_tokens.transformer_model.pooler.weight",
-                "_text_field_embedder.token_embedder_tokens.transformer_model.pooler.bias",
+                "_text_field_embedder.token_embedder_tokens.transformer_model.pooler.dense.weight",
+                "_text_field_embedder.token_embedder_tokens.transformer_model.pooler.dense.bias",
             },
         )
 
@@ -72,8 +72,8 @@ class TransformerQaV2Test(ModelTestCase):
         self.ensure_model_can_train_save_and_load(
             self.param_file,
             gradients_to_ignore={
-                "_text_field_embedder.token_embedder_tokens.transformer_model.pooler.weight",
-                "_text_field_embedder.token_embedder_tokens.transformer_model.pooler.bias",
+                "_text_field_embedder.token_embedder_tokens.transformer_model.pooler.dense.weight",
+                "_text_field_embedder.token_embedder_tokens.transformer_model.pooler.dense.bias",
             },
         )
 
