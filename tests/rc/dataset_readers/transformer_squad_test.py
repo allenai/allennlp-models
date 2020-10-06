@@ -8,6 +8,19 @@ from tests import FIXTURES_ROOT
 
 
 class TestTransformerSquadReader:
+    def test_from_params(self):
+        with pytest.warns(DeprecationWarning):
+            squad_reader = DatasetReader.from_params(
+                Params(
+                    {
+                        "type": "transformer_squad",
+                        "skip_invalid_examples": True,
+                        "transformer_model_name": "test_fixtures/bert-xsmall-dummy",
+                    }
+                )
+            )
+            assert squad_reader.skip_impossible_questions is True
+
     def test_read_from_file_squad1(self):
         reader = TransformerSquadReader()
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "squad.json"))
@@ -85,7 +98,7 @@ class TestTransformerSquadReader:
             length_limit=100,
             max_query_length=max_query_length,
             stride=stride,
-            skip_invalid_examples=False,
+            skip_impossible_questions=False,
         )
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "squad.json"))
 

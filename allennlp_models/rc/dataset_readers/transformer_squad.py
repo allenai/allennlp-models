@@ -44,7 +44,7 @@ class TransformerSquadReader(DatasetReader):
 
     We also support limiting the maximum length for the question. When the context+question is too long, we run a
     sliding window over the context and emit multiple instances for a single question.
-    If `skip_invalid_examples` is `True`, then we only emit instances that contain a gold answer.
+    If `skip_impossible_questions` is `True`, then we only emit instances that contain a gold answer.
     As a result, the per-instance metrics you get during training and evaluation might not correspond
     100% to the SQuAD task.
 
@@ -68,15 +68,14 @@ class TransformerSquadReader(DatasetReader):
         is called "stride" instead of "overlap" because that's what it's called in the original huggingface
         implementation.
 
-    skip_invalid_examples: `bool`, optional (default=`False`)
-        If this is true, we will skip examples where the question+context is truncated according to `length_limit`
+    skip_impossible_questions : `bool`, optional (default=`False`)
+        If this is true, we will skip examples that don't have an answer. This could happen if the question
+        is marked impossible in the dataset, or if the question+context is truncated according to `length_limit`
         such that the context no longer contains a gold answer.
 
         For SQuAD v1.1-style datasets, you should set this to `True` during training, and `False` any other time.
 
-        For SQuAD v2.0-style datasets, leaving this as `False` (recommended) will treat invalid examples
-        the same way as impossible examples, i.e. by setting the answer span to the span of the `[CLS]`
-        token.
+        For SQuAD v2.0-style datasets you should leave this as `False`.
 
     max_query_length : `int`, optional (default=`64`)
         The maximum number of wordpieces dedicated to the question. If the question is longer than this, it will be
@@ -89,11 +88,20 @@ class TransformerSquadReader(DatasetReader):
         transformer_model_name: str = "bert-base-cased",
         length_limit: int = 384,
         stride: int = 128,
-        skip_invalid_examples: bool = False,
+        skip_impossible_questions: bool = False,
         max_query_length: int = 64,
         tokenizer_kwargs: Dict[str, Any] = None,
         **kwargs
     ) -> None:
+        if "skip_invalid_examples" in kwargs:
+            import warnings
+
+            warnings.warn(
+                "'skip_invalid_examples' is deprecated, please use 'skip_impossible_questions' instead",
+                DeprecationWarning,
+            )
+            skip_impossible_questions = kwargs.pop("skip_invalid_examples")
+
         super().__init__(**kwargs)
         self._tokenizer = PretrainedTransformerTokenizer(
             transformer_model_name,
@@ -107,7 +115,7 @@ class TransformerSquadReader(DatasetReader):
         }
         self.length_limit = length_limit
         self.stride = stride
-        self.skip_invalid_examples = skip_invalid_examples
+        self.skip_impossible_questions = skip_impossible_questions
         self.max_query_length = max_query_length
         self._cls_token = self._tokenizer.tokenizer.cls_token
         # We'll include the `cls_index` IndexField in instances if the CLS token is
@@ -245,7 +253,7 @@ class TransformerSquadReader(DatasetReader):
                 # The answer is not contained in the window.
                 window_token_answer_span = None
 
-            if not self.skip_invalid_examples or window_token_answer_span is not None:
+            if not self.skip_impossible_questions or window_token_answer_span is not None:
                 additional_metadata = {"id": qid}
                 instance = self.text_to_instance(
                     question,

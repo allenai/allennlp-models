@@ -63,8 +63,8 @@ class SquadReader(DatasetReader):
         If specified, we will cut the passage if the length of passage exceeds this limit.
     question_length_limit : `int`, optional (default=`None`)
         If specified, we will cut the question if the length of question exceeds this limit.
-    skip_invalid_examples: `bool`, optional (default=`False`)
-        If this is true, we will skip invalid examples that don't contain the answer spans.
+    skip_impossible_questions: `bool`, optional (default=`False`)
+        If this is true, we will skip examples with questions that don't contain the answer spans.
     no_answer_token: `Optional[str]`, optional (default=`None`)
         A special token to append to each context. If using a SQuAD 2.0-style dataset, this
         should be set, otherwise an exception will be raised if an impossible question is
@@ -77,16 +77,25 @@ class SquadReader(DatasetReader):
         token_indexers: Dict[str, TokenIndexer] = None,
         passage_length_limit: int = None,
         question_length_limit: int = None,
-        skip_invalid_examples: bool = False,
+        skip_impossible_questions: bool = False,
         no_answer_token: Optional[str] = None,
         **kwargs,
     ) -> None:
+        if "skip_invalid_examples" in kwargs:
+            import warnings
+
+            warnings.warn(
+                "'skip_invalid_examples' is deprecated, please use 'skip_impossible_questions' instead",
+                DeprecationWarning,
+            )
+            skip_impossible_questions = kwargs.pop("skip_invalid_examples")
+
         super().__init__(**kwargs)
         self._tokenizer = tokenizer or SpacyTokenizer()
         self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
         self.passage_length_limit = passage_length_limit
         self.question_length_limit = question_length_limit
-        self.skip_invalid_examples = skip_invalid_examples
+        self.skip_impossible_questions = skip_impossible_questions
         self.no_answer_token = no_answer_token
 
     @overrides
@@ -201,7 +210,7 @@ class SquadReader(DatasetReader):
                 token_spans.append((span_start, span_end))
             # The original answer is filtered out
             if char_spans and not token_spans:
-                if self.skip_invalid_examples:
+                if self.skip_impossible_questions:
                     return None
                 else:
                     if self.no_answer_token is not None:
@@ -229,7 +238,7 @@ class SquadReader(DatasetReader):
         token_indexers: Dict[str, TokenIndexer] = None,
         passage_length_limit: int = None,
         question_length_limit: int = None,
-        skip_invalid_examples: bool = False,
+        skip_impossible_questions: bool = False,
         **kwargs,
     ) -> "SquadReader":
         """
@@ -240,7 +249,7 @@ class SquadReader(DatasetReader):
             token_indexers=token_indexers,
             passage_length_limit=passage_length_limit,
             question_length_limit=question_length_limit,
-            skip_invalid_examples=skip_invalid_examples,
+            skip_impossible_questions=skip_impossible_questions,
             no_answer_token=None,
             **kwargs,
         )
@@ -252,7 +261,7 @@ class SquadReader(DatasetReader):
         token_indexers: Dict[str, TokenIndexer] = None,
         passage_length_limit: int = None,
         question_length_limit: int = None,
-        skip_invalid_examples: bool = False,
+        skip_impossible_questions: bool = False,
         no_answer_token: str = SQUAD2_NO_ANSWER_TOKEN,
         **kwargs,
     ) -> "SquadReader":
@@ -264,7 +273,7 @@ class SquadReader(DatasetReader):
             token_indexers=token_indexers,
             passage_length_limit=passage_length_limit,
             question_length_limit=question_length_limit,
-            skip_invalid_examples=skip_invalid_examples,
+            skip_impossible_questions=skip_impossible_questions,
             no_answer_token=no_answer_token,
             **kwargs,
         )

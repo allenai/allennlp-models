@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `rc-transformer-qa` pretrained model is now an updated version trained on SQuAD v2.0.
+- `skip_invalid_examples` parameter in SQuAD dataset readers has been deprecated. Please use
+  `skip_impossible_questions` instead.
 
 ### Fixed
 
