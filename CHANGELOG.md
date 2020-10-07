@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added official support for Python 3.8.
+- Added a json template for model cards.
+
 ### Fixed
 
 - Fixed BART for latest `transformers` version.
+- Fixed a bug with `Seq2SeqDatasetReader` that would cause an exception when
+  the desired behavior is to not add start or end symbols to either the source or the target
+  and the default `start_symbol` or `end_symbol` are not part of the tokenizer's vocabulary.
 
 ## [v1.1.0](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0) - 2020-09-08
 
