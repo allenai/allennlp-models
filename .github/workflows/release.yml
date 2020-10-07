@@ -237,7 +237,7 @@ jobs:
 
     - name: Run GPU tests
       run: |
-        make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='gpu-test'
+        make docker-test-run-with-gpus DOCKER_TAG=$DOCKER_TAG ARGS='gpu-test'
 
   configs:
     name: Training Configs 
