@@ -110,7 +110,7 @@ jobs:
   configs:
     name: Training Configs 
     if: github.repository == 'allenai/allennlp-models'
-    runs-on: [self-hosted]
+    runs-on: [self-hosted, CPU-only]
 
     steps:
     - uses: actions/checkout@v2
