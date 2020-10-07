@@ -2,7 +2,6 @@
 
 from allennlp_models.rc.tools.squad import normalize_answer as _normalize_answer_squad
 from allennlp_models.rc.tools.orb_utils import get_metric_squad, get_metric_drop
-from allennlp_models.rc.tools.squad2 import get_metric_score as get_metric_squad2
 from allennlp_models.rc.tools.narrativeqa import get_metric_score as get_metric_narrativeqa
 from tests import FIXTURES_ROOT
 import os
@@ -169,12 +168,12 @@ class TestQuoREF:
 
 class TestSQUAD2:
     def test_impossible_answer(self):
-        assert get_metric_squad2("", ["news"]) == (0.0, 0.0)
-        assert get_metric_squad2("news", [""]) == (0.0, 0.0)
-        assert get_metric_squad2("", [""]) == (1.0, 1.0)
+        assert get_metric_squad("", ["news"]) == (0.0, 0.0)
+        assert get_metric_squad("news", [""]) == (0.0, 0.0)
+        assert get_metric_squad("", [""]) == (1.0, 1.0)
 
     def test_functional_case(self):
-        assert get_metric_squad2("This was a triumph", ["a triumph"]) == (0.0, 0.5)
+        assert get_metric_squad("This was a triumph", ["a triumph"]) == (0.0, 0.5)
 
 
 class TestIntegration:
