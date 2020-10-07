@@ -193,7 +193,7 @@ jobs:
     name: Pretrained Models
     # Don't run for forks.
     if: github.repository == 'allenai/allennlp-models'
-    runs-on: [self-hosted]
+    runs-on: [self-hosted, CPU-only]
 
     steps:
     - uses: actions/checkout@v2
@@ -237,12 +237,12 @@ jobs:
 
     - name: Run GPU tests
       run: |
-        make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='gpu-test'
+        make docker-test-run-with-gpus DOCKER_TAG=$DOCKER_TAG ARGS='gpu-test'
 
   configs:
     name: Training Configs 
     if: github.repository == 'allenai/allennlp-models'
-    runs-on: [self-hosted]
+    runs-on: [self-hosted, CPU-only]
 
     steps:
     - uses: actions/checkout@v2
