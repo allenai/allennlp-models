@@ -9,11 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added dataset reader support for SQuAD 2.0 with both the `SquadReader` and `TransformerSquadReader`.
+- Updated the SQuAD v1.1 metric to work with SQuAD 2.0 as well.
+- Updated the `TransformerQA` model to work for SQuAD 2.0.
 - Added official support for Python 3.8.
 - Added a json template for model cards.
 
+### Changed
+
+- `rc-transformer-qa` pretrained model is now an updated version trained on SQuAD v2.0.
+- `skip_invalid_examples` parameter in SQuAD dataset readers has been deprecated. Please use
+  `skip_impossible_questions` instead.
+
 ### Fixed
 
+- Fixed `lm-masked-language-model` pretrained model.
 - Fixed BART for latest `transformers` version.
 - Fixed a bug with `Seq2SeqDatasetReader` that would cause an exception when
   the desired behavior is to not add start or end symbols to either the source or the target
@@ -86,7 +96,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added two models for fine-grained NER
 - Added a category for multiple choice models, including a few reference implementations
 - Implemented manual distributed sharding for SNLI dataset reader.
-
 
 ## [v1.0.0](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0) - 2020-06-16
 

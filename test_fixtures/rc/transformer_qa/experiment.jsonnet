@@ -1,4 +1,4 @@
-local transformer_model = "albert-base-v2";
+local transformer_model = "test_fixtures/bert-xsmall-dummy";
 local epochs = 2;
 local batch_size = 3;
 
@@ -11,10 +11,10 @@ local number_of_dev_instances = 5;
     "dataset_reader": {
         "type": "transformer_squad",
         "transformer_model_name": transformer_model,
-        "skip_invalid_examples": true,
+        "skip_impossible_questions": true,
     },
     "validation_dataset_reader": self.dataset_reader + {
-        "skip_invalid_examples": false,
+        "skip_impossible_questions": false,
     },
     "train_data_path": "test_fixtures/rc/squad.json",
     "validation_data_path": "test_fixtures/rc/squad.json",

@@ -11,8 +11,8 @@ from allennlp.predictors.predictor import Predictor
 @Predictor.register("transformer_qa")
 class TransformerQAPredictor(Predictor):
     """
-    Predictor for the :class:`~allennlp_rc.models.TransformerQA` model, and any
-    other model that takes a question and passage as input.
+    Predictor for the [`TransformerQA`](/models/rc/models/transformer_qa#transformer_qa) model,
+    and any other model that takes a question and passage as input.
     """
 
     def __init__(self, model: Model, dataset_reader: DatasetReader) -> None:
@@ -22,20 +22,23 @@ class TransformerQAPredictor(Predictor):
     def predict(self, question: str, passage: str) -> JsonDict:
         """
         Make a machine comprehension prediction on the supplied input.
-        See https://rajpurkar.github.io/SQuAD-explorer/ for more information about the machine comprehension task.
+        See [https://rajpurkar.github.io/SQuAD-explorer/](https://rajpurkar.github.io/SQuAD-explorer/)
+        for more information about the machine comprehension task.
 
-        Parameters
-        ----------
-        question : ``str``
-            A question about the content in the supplied paragraph.  The question must be answerable by a
-            span in the paragraph.
-        passage : ``str``
+        # Parameters
+
+        question : `str`
+            A question about the content in the supplied paragraph.
+
+        passage : `str`
             A paragraph of information relevant to the question.
 
-        Returns
-        -------
-        A dictionary that represents the prediction made by the system.  The answer string will be under the
-        "best_span_str" key.
+        # Returns
+
+        `JsonDict`
+            A dictionary that represents the prediction made by the system.
+            The answer string will be under the `"best_span_str"` key.
+
         """
         return self.predict_json({"context": passage, "question": question})
 
@@ -94,7 +97,9 @@ class TransformerQAPredictor(Predictor):
         for instance, output in zip(instances, outputs):
             qid = instance["metadata"]["id"]
             output["id"] = qid
-            output["answers"] = instance["metadata"]["answers"]
+            output["context_tokens"] = instance["metadata"]["context_tokens"]
+            if instance["metadata"]["answers"]:
+                output["answers"] = instance["metadata"]["answers"]
             if qid in qid_to_output:
                 old_output = qid_to_output[qid]
                 if old_output["best_span_scores"] < output["best_span_scores"]:

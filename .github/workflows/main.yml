@@ -92,14 +92,14 @@ jobs:
     name: Pretrained Models
     # Don't run for forks.
     if: github.repository == 'allenai/allennlp-models'
-    runs-on: [self-hosted]
+    runs-on: [self-hosted, CPU-only]
 
     steps:
     - uses: actions/checkout@v2
 
     - name: Set Docker tag
       run: |
-        echo "::set-env name=DOCKER_TAG::$GITHUB_SHA";
+        echo "DOCKER_TAG=$GITHUB_SHA" >> $GITHUB_ENV
 
     - name: Build test image
       run: |
@@ -112,14 +112,14 @@ jobs:
   configs:
     name: Training Configs 
     if: github.repository == 'allenai/allennlp-models'
-    runs-on: [self-hosted]
+    runs-on: [self-hosted, CPU-only]
 
     steps:
     - uses: actions/checkout@v2
 
     - name: Set Docker tag
       run: |
-        echo "::set-env name=DOCKER_TAG::$GITHUB_SHA";
+        echo "DOCKER_TAG=$GITHUB_SHA" >> $GITHUB_ENV
 
     - name: Build test image
       run: |
@@ -140,7 +140,7 @@ jobs:
 
     - name: Set Docker tag
       run: |
-        echo "::set-env name=DOCKER_TAG::$GITHUB_SHA";
+        echo "DOCKER_TAG=$GITHUB_SHA" >> $GITHUB_ENV
 
     - name: Build test image
       run: |
@@ -148,7 +148,7 @@ jobs:
 
     - name: Run GPU tests
       run: |
-        make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='gpu-test'
+        make docker-test-run-with-gpus DOCKER_TAG=$DOCKER_TAG ARGS='gpu-test'
 
   # Builds the API documentation and pushes it to the appropriate folder in the
   # allennlp-docs repo.
@@ -203,9 +203,9 @@ jobs:
       if: github.repository == 'allenai/allennlp-models' && github.event_name == 'push'
       run: |
         if [[ $GITHUB_EVENT_NAME == 'release' ]]; then
-            echo "::set-env name=DOCS_FOLDER::models/${GITHUB_REF#refs/tags/}";
+            echo "DOCS_FOLDER=models/${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV;
         else
-            echo "::set-env name=DOCS_FOLDER::models/master";
+            echo "DOCS_FOLDER=models/master" >> $GITHUB_ENV;
         fi
 
     - name: Stage docs

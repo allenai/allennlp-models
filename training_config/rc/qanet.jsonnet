@@ -16,7 +16,7 @@
         },
         "passage_length_limit": 400,
         "question_length_limit": 50,
-        "skip_invalid_examples": true
+        "skip_impossible_questions": true
     },
     "validation_dataset_reader": {
         "type": "squad",
@@ -32,7 +32,7 @@
         },
         "passage_length_limit": 1000,
         "question_length_limit": 100,
-        "skip_invalid_examples": false
+        "skip_impossible_questions": false
     },
     "vocabulary": {
         "min_count": {
