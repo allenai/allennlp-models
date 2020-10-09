@@ -72,6 +72,13 @@ class CrfTagger(Model):
         If True, we compute the loss only for actual spans in `tags`, and not on `O` tokens.
         This is useful for computing gradients of the loss on a _single span_, for
         interpretation / attacking.
+    label_weights : `Dict[str, float]`, optional (default=`None`)
+        An optional mapping {label -> weight} to be used in the loss function in order to
+        give different weights for each token depending on its label. This is useful to
+        deal with highly unbalanced datasets. The method implemented here was based on
+        the paper *Weighted conditional random fields for supervised interpatient heartbeat
+        classification* proposed by De Lannoy et. al (2019).
+        See https://perso.uclouvain.be/michel.verleysen/papers/ieeetbe12gdl.pdf
     """
 
     def __init__(
@@ -90,6 +97,7 @@ class CrfTagger(Model):
         initializer: InitializerApplicator = InitializerApplicator(),
         top_k: int = 1,
         ignore_loss_on_o_tags: bool = False,
+        label_weights: Optional[Dict[str, float]] = None,
         **kwargs,
     ) -> None:
         super().__init__(vocab, **kwargs)
@@ -136,6 +144,18 @@ class CrfTagger(Model):
         self.crf = ConditionalRandomField(
             self.num_tags, constraints, include_start_end_transitions=include_start_end_transitions
         )
+
+        # Label weights are given as a mapping {label -> weight}
+        # We convert it to a list of weights for each label.
+        # Weights for ommited labels are set to 1.
+        if label_weights is not None:
+            label_to_index = vocab.get_token_to_index_vocabulary(label_namespace)
+            self.label_weights = [1.0]*len(label_to_index)
+            for label, weight in label_weights.items():
+                try:
+                    self.label_weights[label_to_index[label]] = weight
+                except KeyError:
+                    raise KeyError(f"'{label}' not found in vocab namespace '{label_namespace}')")
 
         self.metrics = {
             "accuracy": CategoricalAccuracy(),
