@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated the `TransformerQA` model to work for SQuAD 2.0.
 - Added official support for Python 3.8.
 - Added a json template for model cards.
+- Added `training_config` as a field in model cards.
 
 ### Changed
 
