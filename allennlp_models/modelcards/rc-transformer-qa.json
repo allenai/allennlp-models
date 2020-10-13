@@ -38,7 +38,9 @@
         "model_performance_measures": "F1-score, Span Accuracy, Exact Match. Note that the metrics 
                                        that the model produces are calculated on a per-instance basis only.
                                        Since there could be more than one instance per question, these
-                                       metrics are not the official numbers on the SQuAD task.",
+                                       metrics are not the official numbers on the SQuAD task. To get
+                                       official numbers, run the evaluation script v2.0 at
+                                       https://rajpurkar.github.io/SQuAD-explorer/",
         "decision_thresholds": null,
         "variation_approaches": null
     },
