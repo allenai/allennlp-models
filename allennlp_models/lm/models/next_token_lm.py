@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Tuple
 
 from overrides import overrides
 import torch
@@ -10,6 +10,7 @@ from allennlp.modules import Seq2SeqEncoder, TextFieldEmbedder
 from allennlp.nn import util, InitializerApplicator
 from allennlp.training.metrics import Perplexity
 from allennlp_models.lm.modules.language_model_heads import LanguageModelHead
+from allennlp_models.lm.util import BeamSearchGenerator
 
 
 @Model.register("next_token_lm")
@@ -18,13 +19,14 @@ class NextTokenLM(Model):
     The `NextTokenLM` embeds some input tokens, contextualizes them, then predicts the next word,
     computing a loss against known target.
 
-    NOTE: This was developed for use in a demo, not for training.  You `definitely` don't want to
-    train a language model using this code; it would be incredibly inefficient.  This `does`
-    compute correct gradients of the loss, however, so you can use it for interesting visualization
-    of the gradients of a pretrained model, and it appears to be fast enough to sample from, at
-    least for one word at a time.  If you want to sample many tokens at a time, you'd want to
-    re-use some intermediate computation, so you would either need to modify this code or use
-    something else.
+    If `BeamSearch` is given, this model will predict a sequence of next tokens.
+
+    !!! NOTE
+        This was developed for use in a demo, not for training.  You *definitely* don't want to
+        train a language model using this code; it would be incredibly inefficient. But it does
+        compute correct gradients of the loss, however, so you can use it for interesting visualization
+        of the gradients of a pretrained model, and it appears to be fast enough to sample from, at
+        least for one word at a time.
 
     # Parameters
 
@@ -43,6 +45,11 @@ class NextTokenLM(Model):
     dropout : `float`, optional (default=`0.0`)
         If specified, dropout is applied to the contextualized embeddings before computation of
         the softmax. The contextualized embeddings themselves are returned without dropout.
+    n_best : `int`, optional (default = `5`)
+        The number of best tokens to predict. If `beam_search` is given, this option is ignored.
+    beam_search_generator : `BeamSearchGenerator`, optional (default = `None`)
+        An optional `BeamSearchGenerator`. If given, the model will predict sequences of next
+        tokens instead of just a single next token.
     """
 
     def __init__(
@@ -54,6 +61,8 @@ class NextTokenLM(Model):
         target_namespace: str = "bert",
         dropout: float = 0.0,
         initializer: InitializerApplicator = None,
+        n_best: int = 5,
+        beam_search_generator: BeamSearchGenerator = None,
         **kwargs,
     ) -> None:
         super().__init__(vocab, **kwargs)
@@ -70,6 +79,8 @@ class NextTokenLM(Model):
         self._target_namespace = target_namespace
         self._perplexity = Perplexity()
         self._dropout = torch.nn.Dropout(dropout)
+        self._n_best = n_best
+        self._beam_search_generator = beam_search_generator
 
         if initializer is not None:
             initializer(self)
@@ -77,10 +88,78 @@ class NextTokenLM(Model):
     def forward(  # type: ignore
         self, tokens: TextFieldTensors, target_ids: TextFieldTensors = None
     ) -> Dict[str, torch.Tensor]:
+        """
+        Run a forward pass of the model, returning an output tensor dictionary with
+        the following fields:
 
+        - `"probabilities"`: a tensor of shape `(batch_size, n_best)` representing
+          the probabilities of the predicted tokens, where `n_best`
+          is either `self._n_best` or `beam_size` if using beam search.
+        - `"top_indices"`: a tensor of shape `(batch_size, n_best, num_predicted_tokens)`
+          containing the IDs of the predicted tokens, where `num_predicted_tokens` is just
+          1 unless using beam search, in which case it depends on the parameters of the beam search.
+        - `"token_ids"`: a tensor of shape `(batch_size, num_input_tokens)` containing the IDs
+          of the input tokens.
+        - `"loss"` (optional): the loss of the batch, only given if `target_ids` is not `None`.
+
+        """
+        output_dict = {
+            "token_ids": util.get_token_ids_from_text_field_tensors(tokens),
+        }
+
+        # Shape: (batch_size, vocab_size)
+        target_logits = self._next_token_scores(tokens)
+
+        # Compute loss.
+        if target_ids is not None:
+            batch_size, vocab_size = target_logits.size()
+            targets = util.get_token_ids_from_text_field_tensors(target_ids).view(batch_size)
+            loss = torch.nn.functional.cross_entropy(target_logits, targets)
+            self._perplexity(loss)
+            output_dict["loss"] = loss
+
+        if self._beam_search_generator is not None:
+            # Dummy start predictions.
+            # Shape: (batch_size,)
+            start_predictions = torch.zeros(
+                target_logits.size()[0], device=target_logits.device, dtype=torch.int
+            )
+
+            state = self._beam_search_generator.get_start_state(tokens)
+
+            # Put this in here to avoid having to re-compute on the first step of beam search.
+            state["start_target_logits"] = target_logits
+
+            # Shape (top_indices): (batch_size, beam_size, num_predicted_tokens)
+            # Shape (top_log_probs): (batch_size, beam_size)
+            top_indices, top_log_probs = self._beam_search_generator.search(
+                start_predictions, state, self._beam_search_step
+            )
+
+            # Shape: (batch_size, beam_size)
+            top_probs = top_log_probs.exp()
+        else:
+            # Shape: (batch_size, vocab_size)
+            probs = torch.nn.functional.softmax(target_logits, dim=-1)
+
+            # Shape (both): (batch_size, n_best)
+            # min here largely because tests use small vocab
+            top_probs, top_indices = probs.topk(k=min(target_logits.size(-1), self._n_best), dim=-1)
+
+            # Shape: (batch_size, n_best, 1)
+            top_indices = top_indices.unsqueeze(-1)
+
+        output_dict["top_indices"] = top_indices
+        output_dict["probabilities"] = top_probs
+
+        return output_dict
+
+    def _next_token_scores(self, tokens: TextFieldTensors) -> torch.Tensor:
+        """
+        Get the unnormalized log probabilities of the potential next token.
+        """
         # Shape: (batch_size, num_tokens, embedding_dim)
         embeddings = self._text_field_embedder(tokens)
-        batch_size = embeddings.size(0)
 
         # Shape: (batch_size, num_tokens, encoding_dim)
         if self._contextualizer:
@@ -90,25 +169,42 @@ class NextTokenLM(Model):
         else:
             final_embeddings = embeddings[:, -1]
 
-        target_logits = self._language_model_head(self._dropout(final_embeddings))
+        # Shape: (batch_size, vocab_size)
+        return self._language_model_head(self._dropout(final_embeddings))
 
-        vocab_size = target_logits.size(-1)
-        probs = torch.nn.functional.softmax(target_logits, dim=-1)
-        k = min(vocab_size, 5)  # min here largely because tests use small vocab
-        top_probs, top_indices = probs.topk(k=k, dim=-1)
+    def _beam_search_step(
+        self, predicted_tokens: torch.Tensor, state: Dict[str, torch.Tensor], step: int
+    ) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
+        """
+        Step function to use with `BeamSearch`.
 
-        output_dict = {"probabilities": top_probs, "top_indices": top_indices}
+        `predicted_tokens` is a tensor of shape `(group_size,)` and
+        `state` is a dictionary of tensors with the following fields:
+        - "token_ids": shape `(group_size, num_tokens)`
+        - "mask": shape `(group_size, num_tokens)`
+        - "type_ids": shape `(group_size, num_tokens)`
+        """
+        assert self._beam_search_generator is not None
 
-        output_dict["token_ids"] = util.get_token_ids_from_text_field_tensors(tokens)
+        if step == 0:
+            # Shape: (group_size, vocab_size)
+            start_target_logits = state.pop("start_target_logits")
 
-        if target_ids is not None:
-            targets = util.get_token_ids_from_text_field_tensors(target_ids).view(batch_size)
-            target_logits = target_logits.view(batch_size, vocab_size)
-            loss = torch.nn.functional.cross_entropy(target_logits, targets)
-            self._perplexity(loss)
-            output_dict["loss"] = loss
+            # Shape: (group_size, vocab_size)
+            start_target_log_probs = torch.nn.functional.log_softmax(start_target_logits, dim=-1)
 
-        return output_dict
+            return start_target_log_probs, state
+
+        inputs = self._beam_search_generator.prepare_step_input(predicted_tokens, state)
+        state = self._beam_search_generator.get_step_state(inputs)
+
+        # Shape: (group_size, vocab_size)
+        next_token_scores = self._next_token_scores(inputs)
+
+        # Shape: (group_size, vocab_size)
+        log_probs = torch.nn.functional.log_softmax(next_token_scores, dim=-1)
+
+        return log_probs, state
 
     def get_metrics(self, reset: bool = False):
         return {"perplexity": self._perplexity.get_metric(reset=reset)}
@@ -117,19 +213,33 @@ class NextTokenLM(Model):
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:
-        top_words = []
-        for instance_indices in output_dict["top_indices"]:
-            top_words.append(
-                [
+        """
+        Collects token strings from indices, adding two fields to the `output_dict`:
+
+        - `"top_tokens"`: a list (for each instance in the batch) of lists (for each of
+          the `n` best predictions) of lists of strings (for each token in each prediction).
+        - `"tokens"`: a list of list (for each instance in the batch) of strings (for each
+          input token in the instance).
+        """
+        # Gather predicted words.
+        top_tokens = []
+        # shape (output_dict["top_indices"]): (batch_size, n_best, num_predicted_tokens)
+        for instance in output_dict["top_indices"]:
+            # shape (instance): (n_best, num_predicted_tokens)
+            instance_top_words = []
+            for indices in instance:
+                # shape (indices): (num_predicted_tokens,)
+                instance_top_words.append(
                     [
                         self.vocab.get_token_from_index(
                             index.item(), namespace=self._target_namespace
                         )
-                        for index in instance_indices
+                        for index in indices
                     ]
-                ]
-            )
-            output_dict["words"] = top_words
+                )
+            top_tokens.append(instance_top_words)
+
+        # Gather input tokens.
         tokens = []
         for instance_tokens in output_dict["token_ids"]:
             tokens.append(
@@ -140,8 +250,9 @@ class NextTokenLM(Model):
                     for token_id in instance_tokens
                 ]
             )
-        output_dict["tokens"] = tokens
 
+        output_dict["top_tokens"] = top_tokens  # type: ignore
+        output_dict["tokens"] = tokens  # type: ignore
         return output_dict
 
     default_predictor = "next_token_lm"

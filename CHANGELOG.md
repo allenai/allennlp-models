@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added official support for Python 3.8.
 - Added a json template for model cards.
 - Added `training_config` as a field in model cards.
+- Added a `BeamSearchGenerator` registrable class which can be provided to a `NextTokenLM` model
+  to utilize beam search for predicting a sequence of tokens, instead of a single next token.
+  `BeamSearchGenerator` is an abstract class, so a concrete registered implementation needs to be used.
+  One implementation is provided so far: `TransformerBeamSearchGenerator`, registered as `transformer`,
+  which will work with any `NextTokenLM` that uses a `PretrainedTransformerEmbedder`.
+- Added an `overrides` parameter to `pretrained.load_predictor()`.
 
 ### Changed
 

@@ -1,0 +1,53 @@
+{
+  "dataset_reader": {
+    "type": "next_token_lm",
+    "tokenizer": {
+      "type": "pretrained_transformer",
+      "model_name": "test_fixtures/bert-xsmall-dummy"
+    },
+    "token_indexers": {
+      "tokens": {
+        "type": "pretrained_transformer",
+        "model_name": "test_fixtures/bert-xsmall-dummy"
+      }
+    }
+  },
+  "train_data_path": "test_fixtures/lm/language_model/sentences.txt",
+  "validation_data_path": "test_fixtures/lm/language_model/sentences.txt",
+  "model": {
+    "type": "next_token_lm",
+    "target_namespace": "tokens",
+    "text_field_embedder": {
+      "token_embedders": {
+        "tokens": {
+          "type": "pretrained_transformer",
+          "model_name": "test_fixtures/bert-xsmall-dummy"
+        }
+      }
+    },
+    "language_model_head": {
+      "type": "bert",
+      "model_name": "test_fixtures/bert-xsmall-dummy"
+    },
+    "beam_search_generator": {
+      "type": "transformer",
+      "namespace": "tokens",
+      "beam_search": {
+        "end_index": 3,
+        "beam_size": 2,
+        "max_steps": 5,
+      }
+    }
+  },
+  "data_loader": {
+    "batch_size": 32
+  },
+  "trainer": {
+    "num_epochs": 1,
+    "cuda_device" : -1,
+    "optimizer": {
+      "type": "sgd",
+      "lr": 0.01
+    }
+  }
+}
