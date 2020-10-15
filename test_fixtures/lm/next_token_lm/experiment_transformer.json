@@ -31,7 +31,6 @@
     },
     "beam_search_generator": {
       "type": "transformer",
-      "namespace": "tokens",
       "beam_search": {
         "end_index": 3,
         "beam_size": 2,

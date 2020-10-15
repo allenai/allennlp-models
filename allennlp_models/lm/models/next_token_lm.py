@@ -82,6 +82,10 @@ class NextTokenLM(Model):
         self._n_best = n_best
         self._beam_search_generator = beam_search_generator
 
+        # Ensure beam_search_generator is compatable with text_field_embedder.
+        if self._beam_search_generator is not None:
+            self._beam_search_generator.validate_text_field_embedder(self._text_field_embedder)
+
         if initializer is not None:
             initializer(self)
 
@@ -125,7 +129,7 @@ class NextTokenLM(Model):
                 target_logits.size()[0], device=target_logits.device, dtype=torch.int
             )
 
-            state = self._beam_search_generator.get_start_state(tokens)
+            state = self._beam_search_generator.get_step_state(tokens)
 
             # Put this in here to avoid having to re-compute on the first step of beam search.
             state["start_target_logits"] = target_logits
