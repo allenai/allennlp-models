@@ -90,7 +90,7 @@ jobs:
     name: Pretrained Models
     # Don't run for forks.
     if: github.repository == 'allenai/allennlp-models'
-    runs-on: [self-hosted]
+    runs-on: [self-hosted, Linux, X64, CPU-only, AllenNLP]
 
     steps:
     - uses: actions/checkout@v2
