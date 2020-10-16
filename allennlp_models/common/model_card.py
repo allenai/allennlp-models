@@ -59,9 +59,9 @@ class ModelDetails(ModelCardInfo):
     """
     This provides the basic information about the model.
 
-    # Parameters:
+    # Parameters
 
-    description: `str`
+    description : `str`
         A high-level overview of the model.
         Eg. The model implements a reading comprehension model patterned
             after the proposed model in [Devlin et al, 2018]
@@ -70,50 +70,50 @@ class ModelDetails(ModelCardInfo):
             It predicts start tokens and end tokens with a linear layer on top of
             word piece embeddings.
 
-    developed_by: `str`
+    developed_by : `str`
         Person/organization that developed the model. This can be used by all
         stakeholders to infer details pertaining to model development and
         potential conflicts of interest.
 
-    contributed_by: `str`
+    contributed_by : `str`
         Person that contributed the model to the repository.
 
-    date: `str`
+    date : `str`
         The date on which the model was contributed. This is useful for all
         stakeholders to become further informed on what techniques and
         data sources were likely to be available during model development.
         Format example: 2020-09-23
 
-    version: `str`
+    version : `str`
         The version of the model, and how it differs from previous versions.
         This is useful for all stakeholders to track whether the model is the
         latest version, associate known bugs to the correct model versions,
         and aid in model comparisons.
 
-    model_type: `str`
+    model_type : `str`
         The type of the model; the basic architecture. This is likely to be
         particularly relevant for software and model developers, as well as
         individuals knowledgeable about machine learning, to highlight what
         kinds of assumptions are encoded in the system.
         Eg. Naive Bayes Classifier.
 
-    paper: `str`
+    paper : `str`
         The paper on which the model is based.
         Format example:
         [Model Cards for Model Reporting (Mitchell et al, 2019)]
         (https://api.semanticscholar.org/CorpusID:52946140)
 
-    citation: `str`
+    citation : `str`
         The BibTex for the paper.
 
-    license: `str`
+    license : `str`
         License information for the model.
 
-    contact: `str`
+    contact : `str`
         The email address to reach out to the relevant developers/contributors
         for questions/feedback about the model.
 
-    training_config: `str`
+    training_config : `str`
         Link to training configuration.
     """
 
@@ -135,22 +135,22 @@ class IntendedUse(ModelCardInfo):
     """
     This determines what the model should and should not be used for.
 
-    # Parameters:
+    # Parameters
 
-    primary_uses: `str`
+    primary_uses : `str`
         Details the primary intended uses of the model; whether it was developed
         for general or specific tasks.
         Eg. The toxic text identifier model was developed to identify
             toxic comments on online platforms. An example use case is
             to provide feedback to comment authors.
 
-    primary_users: `str`
+    primary_users : `str`
         The primary intended users. For example, was the model developed
         for entertainment purposes, for hobbyists, or enterprise solutions?
         This helps users gain insight into how robust the model may be to
         different kinds of inputs.
 
-    out_of_scope_use_cases: `str`
+    out_of_scope_use_cases : `str`
         Highlights the technology that the model might easily be confused with,
         or related contexts that users could try to apply the model to.
         Eg. the toxic text identifier model is not intended for fully automated
@@ -174,14 +174,14 @@ class Factors(ModelCardInfo):
     demographics, instrumentation used, etc. for which the
     model performance may vary.
 
-    # Parameters:
+    # Parameters
 
-    relevant_factors: `str`
+    relevant_factors : `str`
          The foreseeable salient factors for which model performance may vary,
          and how these were determined.
          Eg. the model performance may vary for variations in dialects of English.
 
-    evaluation_factors: `str`
+    evaluation_factors : `str`
         Mentions the factors that are being reported, and the reasons for why
         they were chosen. Also includes the reasons for choosing different
         evaluation factors than relevant factors.
@@ -201,15 +201,15 @@ class Metrics(ModelCardInfo):
     This lists the reported metrics and the reasons
     for choosing them.
 
-    # Parameters:
+    # Parameters
 
-    model_performance_measures: `str`
+    model_performance_measures : `str`
         Which model performance measures were selected and the reasons for
         selecting them.
-    decision_thresholds: `str`
+    decision_thresholds : `str`
         If decision thresholds are used, what are they, and the reasons for
         choosing them.
-    variation_approaches: `str`
+    variation_approaches : `str`
         How are the measurements and estimations of these metrics calculated?
         Eg. standard deviation, variance, confidence intervals, KL divergence.
         Details of how these values are approximated should also be included.
@@ -226,16 +226,16 @@ class EvaluationData(ModelCardInfo):
     """
     This provides information about the evaluation data.
 
-    # Parameters:
+    # Parameters
 
-    dataset: `str`
+    dataset : `str`
         The name(s) (and link(s), if available) of the dataset(s) used to evaluate
         the model. Optionally, provide a link to the relevant datasheet(s) as well.
-    motivation: `str`
+    motivation : `str`
         The reasons for selecting the dataset(s).
         Eg. For the BERT model, document-level corpora were used rather than a
             shuffled sentence-level corpus in order to extract long contiguous sequences.
-    preprocessing: `str`
+    preprocessing : `str`
         How was the data preprocessed for evaluation?
         Eg. tokenization of sentences, filtering of paragraphs by length, etc.
     """
@@ -260,9 +260,9 @@ class TrainingData(ModelCardInfo):
     data can additionally be provided, if available. Any relevant definitions should
     also be included.
 
-    # Parameters:
+    # Parameters
 
-    dataset: `str`
+    dataset : `str`
         The name(s) (and link(s), if available) of the dataset(s) used to train
         the model. Optionally, provide a link to the relevant datasheet(s) as well.
         Eg. * Proprietary data from Perspective API; includes comments from online
@@ -270,11 +270,11 @@ class TrainingData(ModelCardInfo):
               whether the comment is "toxic".
             * "Toxic" is defined as "a rude, disrespectful, or unreasonable comment
               that is likely to make you leave a discussion."
-    motivation: `str`
+    motivation : `str`
         The reasons for selecting the dataset(s).
         Eg. For the BERT model, document-level corpora were used rather than a
             shuffled sentence-level corpus in order to extract long contiguous sequences.
-    preprocessing: `str`
+    preprocessing : `str`
         Eg. Only the text passages were extracted from English Wikipedia;  lists, tables,
             and headers were ignored.
     """
@@ -299,12 +299,12 @@ class QuantitativeAnalyses(ModelCardInfo):
     intervals, if possible. Links to plots/figures showing
     the metrics can also be provided.
 
-    # Parameters:
+    # Parameters
 
-    unitary_results: `str`
+    unitary_results : `str`
         The performance of the model with respect to each chosen
         factor.
-    intersectional_results: `str`
+    intersectional_results : `str`
         The performance of the model with respect to the intersection
         of the evaluated factors.
     """
@@ -349,30 +349,30 @@ class ModelCard(ModelCardInfo):
 
     # Parameters
 
-    id: `str`
+    id : `str`
         Model's id, following the convention of task-model-relevant-details.
         Example: rc-bidaf-elmo for a reading comprehension BiDAF model using ELMo embeddings.
-    registered_model_name: `str`, optional
+    registered_model_name : `str`, optional
         The model's registered name. If `model_class` is not given, this will be used
         to find any available `Model` registered with this name.
-    model_class: `type`, optional
+    model_class : `type`, optional
         If given, the `ModelCard` will pull some default information from the class.
-    registered_predictor_name: `str`, optional
+    registered_predictor_name : `str`, optional
         The registered name of the corresponding predictor.
-    display_name: `str`, optional
+    display_name : `str`, optional
         The pretrained model's display name.
-    archive_file: `str`, optional
+    archive_file : `str`, optional
         The location of model's pretrained weights.
-    overrides: `Dict`, optional
+    overrides : `Dict`, optional
         Optional overrides for the model's architecture.
-    model_details: `Union[ModelDetails, str]`, optional
-    intended_use: `Union[IntendedUse, str]`, optional
-    factors: `Union[Factors, str]`, optional
-    metrics: `Union[Metrics, str]`, optional
-    evaluation_data: `Union[EvaluationData, str]`, optional
-    quantitative_analyses: `Union[QuantitativeAnalyses, str]`, optional
-    ethical_considerations: `Union[EthicalConsiderations, str]`, optional
-    caveats_and_recommendations: `Union[CaveatsAndRecommendations, str]`, optional
+    model_details : `Union[ModelDetails, str]`, optional
+    intended_use : `Union[IntendedUse, str]`, optional
+    factors : `Union[Factors, str]`, optional
+    metrics : `Union[Metrics, str]`, optional
+    evaluation_data : `Union[EvaluationData, str]`, optional
+    quantitative_analyses : `Union[QuantitativeAnalyses, str]`, optional
+    ethical_considerations : `Union[EthicalConsiderations, str]`, optional
+    caveats_and_recommendations : `Union[CaveatsAndRecommendations, str]`, optional
 
     !!! Note
         For all the fields that are `Union[ModelCardInfo, str]`, a `str` input will be
