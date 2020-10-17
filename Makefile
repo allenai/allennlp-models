@@ -125,6 +125,10 @@ docker-image :
 docker-test-image :
 	docker build --pull -f Dockerfile.test --build-arg ALLENNLP_COMMIT_SHA=$(ALLENNLP_COMMIT_SHA) -t allennlp-models/test:$(DOCKER_TAG) .
 
+.PHONY : docker-test-run-with-gpus
+docker-test-run-with-gpus :
+	$(DOCKER_RUN_CMD) --gpus 2 allennlp-models/test:$(DOCKER_TAG) $(ARGS)
+
 .PHONY : docker-test-run
 docker-test-run :
-	$(DOCKER_RUN_CMD) --gpus 2 allennlp-models/test:$(DOCKER_TAG) $(ARGS)
+	$(DOCKER_RUN_CMD) allennlp-models/test:$(DOCKER_TAG) $(ARGS)

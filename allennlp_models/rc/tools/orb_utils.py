@@ -1,19 +1,7 @@
 from typing import List, Tuple
-from allennlp_models.rc.tools.squad import exact_match_score, f1_score
+from allennlp_models.rc.tools.squad import get_metric_score as get_metric_squad
 from allennlp_models.rc.tools.drop import get_metrics as drop_metrics
 from allennlp_models.rc.tools.narrativeqa import get_metric_score as get_metric_narrativeqa
-from allennlp_models.rc.tools.squad2 import get_metric_score as get_metric_squad2
-
-
-def get_metric_squad(prediction, ground_truths):
-    em_scores = []
-    f1_scores = []
-    for ground_truth in ground_truths:
-        em = exact_match_score(prediction, ground_truth)
-        f1 = f1_score(prediction, ground_truth)
-        em_scores.append(em)
-        f1_scores.append(f1)
-    return max(em_scores), max(f1_scores)
 
 
 def get_metric_drop(predicted: str, ground_truths: List[str]) -> Tuple[float, float]:
@@ -84,6 +72,7 @@ def evaluate_dataset(dataset_name, prediction, ground_truths, metrics):
     prediction = prediction[0] if isinstance(prediction, list) else prediction
     if dataset_name in [
         "squad1",
+        "squad2",
         "ropes",
         "newsqa",
         "duorc",
@@ -93,9 +82,6 @@ def evaluate_dataset(dataset_name, prediction, ground_truths, metrics):
         "duorc_syn",
     ]:
         exact_match, f1 = get_metric_squad(prediction, [truth[0] for truth in ground_truths])
-        metrics = update_extractive_metrics(metrics, dataset_name, exact_match, f1)
-    elif dataset_name in ["squad2"]:
-        exact_match, f1 = get_metric_squad2(prediction, [truth[0] for truth in ground_truths])
         metrics = update_extractive_metrics(metrics, dataset_name, exact_match, f1)
     elif dataset_name in ["drop", "quoref", "drop_syn", "quoref_syn"]:
         exact_match, f1 = get_metric_drop(prediction, [truth[0] for truth in ground_truths])

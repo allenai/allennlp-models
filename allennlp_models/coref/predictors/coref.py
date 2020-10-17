@@ -25,7 +25,7 @@ class CorefPredictor(Predictor):
     ) -> None:
         super().__init__(model, dataset_reader)
 
-        # We have to use spacy to tokenise our document here, because we need
+        # We have to use spacy to tokenize our document here, because we need
         # to also know sentence boundaries to propose valid mentions.
         self._spacy = get_spacy_model(language, pos_tags=True, parse=True, ner=False)
 
@@ -35,7 +35,7 @@ class CorefPredictor(Predictor):
 
         ```
         {
-        "document": [tokenised document text]
+        "document": [tokenized document text]
         "clusters":
           [
             [
@@ -135,7 +135,7 @@ class CorefPredictor(Predictor):
                 final_token = document[coref[1]]
                 # In both of the following cases, the first token in the coreference
                 # is replaced with the main mention, while all subsequent tokens
-                # are masked out with "", so that they can be elimated from
+                # are masked out with "", so that they can be eliminated from
                 # the returned document during "".join(resolved).
 
                 # The first case attempts to correctly handle possessive coreferences
@@ -159,7 +159,7 @@ class CorefPredictor(Predictor):
 
     def coref_resolved(self, document: str) -> str:
         """
-        Produce a document where each coreference is replaced by the its main mention
+        Produce a document where each coreference is replaced by its main mention
 
         # Parameters
 
@@ -168,7 +168,7 @@ class CorefPredictor(Predictor):
 
         # Returns
 
-        A string with each coference replaced by its main mention
+        A string with each coreference replaced by its main mention
         """
 
         spacy_document = self._spacy(document)

@@ -112,6 +112,9 @@ class ModelDetails(ModelCardInfo):
     contact: `str`
         The email address to reach out to the relevant developers/contributors
         for questions/feedback about the model.
+
+    training_config: `str`
+        Link to training configuration.
     """
 
     description: Optional[str] = None
@@ -124,6 +127,7 @@ class ModelDetails(ModelCardInfo):
     citation: Optional[str] = None
     license: Optional[str] = None
     contact: Optional[str] = None
+    training_config: Optional[str] = None
 
 
 @dataclass(frozen=True)
