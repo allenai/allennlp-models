@@ -12,13 +12,9 @@ local gradient_accumulation_steps = batch_size / gpu_batch_size;
       "transformer_model_name": transformer_model,
       //"max_instances": 200  // debug setting
   },
-  "train_data_path": std.extVar("SWAG_TRAIN"),
-  "validation_data_path": std.extVar("SWAG_DEV"),
-  //"test_data_path": std.extVar("SWAG_TEST")
-  // Replace the above few lines with these if you are Dirk:
-  //"train_data_path": "/net/nfs.corp/allennlp/dirkg/data/swag/train.csv"
-  //"validation_data_path": "/net/nfs.corp/allennlp/dirkg/data/swag/val.csv"
-  //"test_data_path": "/net/nfs.corp/allennlp/dirkg/data/swag/test.csv"
+  "train_data_path": "https://raw.githubusercontent.com/rowanz/swagaf/master/data/train.csv",
+  "validation_data_path": "https://raw.githubusercontent.com/rowanz/swagaf/master/data/val.csv",
+  "test_data_path": "https://raw.githubusercontent.com/rowanz/swagaf/master/data/test.csv",
   "model": {
       "type": "transformer_mc",
       "transformer_model": transformer_model,

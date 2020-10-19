@@ -42,8 +42,8 @@
         },
         "only_include_pretrained_words": true
     },
-    "train_data_path": std.extVar("DROP_TRAIN"),
-    "validation_data_path": std.extVar("DROP_DEV"),
+    "train_data_path": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/drop/drop_dataset.zip!drop_dataset_train.json",
+    "validation_data_path": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/drop/drop_dataset.zip!drop_dataset_dev.json",
     "model": {
         "type": "naqanet",
         "text_field_embedder": {
