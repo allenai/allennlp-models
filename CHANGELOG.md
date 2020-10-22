@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [v1.2.0rc1](https://github.com/allenai/allennlp-models/releases/tag/v1.2.0rc1) - 2020-10-22
+
 ### Added
 
 - Added dataset reader support for SQuAD 2.0 with both the `SquadReader` and `TransformerSquadReader`.
