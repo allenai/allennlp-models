@@ -62,8 +62,12 @@ class ReadingComprehensionPredictor(Predictor):
             span_start_label = outputs["best_span"][0]
             span_end_label = outputs["best_span"][1]
             passage_field: SequenceField = new_instance["passage"]  # type: ignore
-            new_instance.add_field("span_start", IndexField(int(span_start_label), passage_field))
-            new_instance.add_field("span_end", IndexField(int(span_end_label), passage_field))
+            new_instance.add_field(
+                "span_start", IndexField(int(span_start_label), passage_field), self._model.vocab
+            )
+            new_instance.add_field(
+                "span_end", IndexField(int(span_end_label), passage_field), self._model.vocab
+            )
 
         # For NAQANet model. It has the fields: answer_as_passage_spans, answer_as_question_spans,
         # answer_as_add_sub_expressions, answer_as_counts. We need labels for all.
@@ -73,7 +77,7 @@ class ReadingComprehensionPredictor(Predictor):
             # When the problem is a counting problem
             if answer_type == "count":
                 field = ListField([LabelField(int(outputs["answer"]["count"]), skip_indexing=True)])
-                new_instance.add_field("answer_as_counts", field)
+                new_instance.add_field("answer_as_counts", field, self._model.vocab)
 
             # When the answer is in the passage
             elif answer_type == "passage_span":
@@ -92,7 +96,7 @@ class ReadingComprehensionPredictor(Predictor):
 
                 passage_field: SequenceField = new_instance["passage"]  # type: ignore
                 field = ListField([SpanField(word_span_start, word_span_end, passage_field)])
-                new_instance.add_field("answer_as_passage_spans", field)
+                new_instance.add_field("answer_as_passage_spans", field, self._model.vocab)
 
             # When the answer is an arithmetic calculation
             elif answer_type == "arithmetic":
@@ -115,7 +119,7 @@ class ReadingComprehensionPredictor(Predictor):
                 labels.append(0)
 
                 field = ListField([SequenceLabelField(labels, numbers_field)])
-                new_instance.add_field("answer_as_add_sub_expressions", field)
+                new_instance.add_field("answer_as_add_sub_expressions", field, self._model.vocab)
 
             # When the answer is in the question
             elif answer_type == "question_span":
@@ -135,6 +139,6 @@ class ReadingComprehensionPredictor(Predictor):
 
                 question_field: SequenceField = new_instance["question"]  # type: ignore
                 field = ListField([SpanField(word_span_start, word_span_end, question_field)])
-                new_instance.add_field("answer_as_question_spans", field)
+                new_instance.add_field("answer_as_question_spans", field, self._model.vocab)
 
         return [new_instance]
