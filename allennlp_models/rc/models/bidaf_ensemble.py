@@ -5,7 +5,7 @@ import torch
 
 from allennlp.common.checks import ConfigurationError
 from allennlp.models.archival import load_archive
-from allennlp.models.model import Model, remove_pretrained_embedding_params
+from allennlp.models.model import Model, remove_weights_related_keys_from_params
 from allennlp.common import Params
 from allennlp.data import Vocabulary
 
@@ -150,7 +150,7 @@ class BidafEnsemble(Model):
         # embeddings from.  We're now _loading_ the model, so those embeddings will already be
         # stored in our weights.  We don't need any pretrained weight file anymore, and we don't
         # want the code to look for it, so we remove it from the parameters here.
-        remove_pretrained_embedding_params(model_params)
+        remove_weights_related_keys_from_params(model_params)
         model = Model.from_params(vocab=None, params=model_params)
 
         # Force model to cpu or gpu, as appropriate, to make sure that the embeddings are
