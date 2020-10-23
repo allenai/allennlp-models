@@ -14,7 +14,7 @@ local gradient_accumulation_steps = batch_size / gpu_batch_size;
   },
   "train_data_path": "https://raw.githubusercontent.com/rowanz/swagaf/master/data/train.csv",
   "validation_data_path": "https://raw.githubusercontent.com/rowanz/swagaf/master/data/val.csv",
-  "test_data_path": "https://raw.githubusercontent.com/rowanz/swagaf/master/data/test.csv",
+  // "test_data_path": "https://raw.githubusercontent.com/rowanz/swagaf/master/data/test.csv",
   "model": {
       "type": "transformer_mc",
       "transformer_model": transformer_model,
