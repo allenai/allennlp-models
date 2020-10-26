@@ -74,10 +74,7 @@ DATASET_PATCHES: Dict[Path, Tuple[str, ...]] = {
     / "semantic_dependencies"
     / "dm.sdp": ("SEMEVAL_TRAIN", "SEMEVAL_DEV", "SEMEVAL_TEST"),
     FIXTURES_ROOT / "tagging" / "conll2003.txt": ("NER_TRAIN_DATA_PATH", "NER_TEST_DATA_PATH"),
-    FIXTURES_ROOT / "mc" / "swag.csv": ("SWAG_TRAIN", "SWAG_DEV", "SWAG_TEST"),
-    FIXTURES_ROOT / "rc" / "drop.json": ("DROP_TRAIN", "DROP_DEV"),
     FIXTURES_ROOT / "lm" / "language_model" / "sentences.txt": ("BIDIRECTIONAL_LM_TRAIN_PATH",),
-    FIXTURES_ROOT / "rc" / "squad.json": ("SQUAD_TRAIN", "SQUAD_DEV"),
     FIXTURES_ROOT
     / "coref"
     / "coref.gold_conll": (
@@ -97,15 +94,6 @@ DATASET_PATCHES: Dict[Path, Tuple[str, ...]] = {
         "NER_TEST_DATA_PATH",
         "NER_TEST_A_PATH",
         "NER_TEST_B_PATH",
-    ),
-    FIXTURES_ROOT
-    / "generation"
-    / "bart"
-    / "data"
-    / "url_lists"
-    / "all_train.txt": (
-        "CNNDM_TRAIN",
-        "CNNDM_DEV",
     ),
 }
 
