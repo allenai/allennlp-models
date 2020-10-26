@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Updated docstring for Transformer MC.
+- Added more information to model cards for multiple choice models (`mc-roberta-commonsenseqa`,
+`mc-roberta-piqa`, and `mc-roberta-swag`).
+
 ### Fixed
 
 - Fixed many training configs to work out-of-the box. These include the configs for `bart_cnn_dm`, `swag`, `bidaf`, `bidaf_elmo`,
