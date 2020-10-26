@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Updated docstring for Transformer MC.
+- Added more information to model cards for multiple choice models (`mc-roberta-commonsenseqa`,
+`mc-roberta-piqa`, and `mc-roberta-swag`).
+
 ## [v1.2.0rc1](https://github.com/allenai/allennlp-models/releases/tag/v1.2.0rc1) - 2020-10-22
 
 ### Added
