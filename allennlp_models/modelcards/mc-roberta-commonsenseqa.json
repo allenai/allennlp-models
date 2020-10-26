@@ -1,7 +1,7 @@
 {
     "id": "mc-roberta-commonsenseqa",
     "registered_model_name": "transformer_mc",
-    "registered_predictor_name": null,
+    "registered_predictor_name": "transformer_mc",
     "display_name": "RoBERTa Common Sense QA",
     "archive_file": "commonsenseqa.2020-07-08.tar.gz",
     "model_details": {
