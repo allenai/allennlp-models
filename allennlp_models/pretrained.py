@@ -1,6 +1,6 @@
 import os
 import glob
-from typing import Dict
+from typing import Dict, Union, Any
 
 from allennlp.common import Params
 from allennlp.predictors import Predictor
@@ -38,7 +38,11 @@ def get_pretrained_models() -> Dict[str, ModelCard]:
     return pretrained_models
 
 
-def load_predictor(model_id: str, pretrained_models: Dict[str, ModelCard] = None) -> Predictor:
+def load_predictor(
+    model_id: str,
+    pretrained_models: Dict[str, ModelCard] = None,
+    overrides: Union[str, Dict[str, Any]] = None,
+) -> Predictor:
     """
     Returns the `Predictor` corresponding to the given `model_id`.
 
@@ -50,5 +54,7 @@ def load_predictor(model_id: str, pretrained_models: Dict[str, ModelCard] = None
     if model_card.archive_file is None:
         raise ValueError(f"archive_file is required in the {model_card}")
     return Predictor.from_path(
-        model_card.archive_file, predictor_name=model_card.registered_predictor_name
+        model_card.archive_file,
+        predictor_name=model_card.registered_predictor_name,
+        overrides=overrides,
     )

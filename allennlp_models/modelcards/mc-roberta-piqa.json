@@ -1,6 +1,62 @@
 {
     "id": "mc-roberta-piqa",
     "registered_model_name": "transformer_mc",
+    "registered_predictor_name": "transformer_mc",
     "display_name": "Physical Interaction Question Answering",
-    "archive_file": "piqa.2020-07-08.tar.gz"
+    "archive_file": "piqa.2020-07-08.tar.gz",
+    "model_details": {
+        "description": "This is a multiple choice model patterned after the BERT architecture.
+                        It calculates a score for each sequence on top of the CLS token, and then chooses the alternative
+                        with the highest score.",
+        "developed_by": "Devlin et al",
+        "contributed_by": "Dirk Groeneveld",
+        "date": "2020-07-08",
+        "version": "1",
+        "model_type": "RoBERTa large",
+        "paper": "[RoBERTa: A Robustly Optimized BERT Pretraining Approach (Liu et al)]
+                  (https://api.semanticscholar.org/CorpusID:198953378)",
+        "citation": "@article{Liu2019RoBERTaAR,
+                     title={RoBERTa: A Robustly Optimized BERT Pretraining Approach},
+                     author={Y. Liu and Myle Ott and Naman Goyal and Jingfei Du and Mandar Joshi and Danqi Chen and Omer Levy and M. Lewis and Luke Zettlemoyer and Veselin Stoyanov},
+                     journal={ArXiv},
+                     year={2019},
+                     volume={abs/1907.11692}}",
+        "license": null,
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": null,
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "The chosen metric is accuracy, since it is a multiple choice model.",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": "[PIQA](https://yonatanbisk.com/piqa/) validation set",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": "[PIQA](https://yonatanbisk.com/piqa/) train set",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    }
 }

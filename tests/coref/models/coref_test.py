@@ -29,7 +29,11 @@ class CorefTest(ModelTestCase):
             + "}"
         )
         # fmt: on
-        self.ensure_model_can_train_save_and_load(self.param_file, overrides=overrides)
+        self.ensure_model_can_train_save_and_load(
+            self.param_file,
+            overrides=overrides,
+            gradients_to_ignore={"_attentive_span_extractor._global_attention._module.bias"},
+        )
         self.teardown_method()
         self.setup_method()
 
@@ -45,6 +49,7 @@ class CorefTest(ModelTestCase):
                 ".transformer_model.pooler.weight",
                 "_text_field_embedder.token_embedder_tokens._matched_embedder"
                 ".transformer_model.pooler.bias",
+                "_attentive_span_extractor._global_attention._module.bias",
             },
         )
 

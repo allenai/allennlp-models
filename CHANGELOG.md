@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Updated docstring for Transformer MC.
+- Added more information to model cards for multiple choice models (`mc-roberta-commonsenseqa`,
+`mc-roberta-piqa`, and `mc-roberta-swag`).
+
+### Fixed
+
+- Fixed many training configs to work out-of-the box. These include the configs for `bart_cnn_dm`, `swag`, `bidaf`, `bidaf_elmo`,
+  `naqanet`, and `qanet`.
+
+## [v1.2.0rc1](https://github.com/allenai/allennlp-models/releases/tag/v1.2.0rc1) - 2020-10-22
+
 ### Added
 
 - Added dataset reader support for SQuAD 2.0 with both the `SquadReader` and `TransformerSquadReader`.
@@ -14,6 +27,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated the `TransformerQA` model to work for SQuAD 2.0.
 - Added official support for Python 3.8.
 - Added a json template for model cards.
+- Added `training_config` as a field in model cards.
+- Added a `BeamSearchGenerator` registrable class which can be provided to a `NextTokenLM` model
+  to utilize beam search for predicting a sequence of tokens, instead of a single next token.
+  `BeamSearchGenerator` is an abstract class, so a concrete registered implementation needs to be used.
+  One implementation is provided so far: `TransformerBeamSearchGenerator`, registered as `transformer`,
+  which will work with any `NextTokenLM` that uses a `PretrainedTransformerEmbedder`.
+- Added an `overrides` parameter to `pretrained.load_predictor()`.
 
 ### Changed
 
@@ -25,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed `lm-masked-language-model` pretrained model.
 - Fixed BART for latest `transformers` version.
+- Fixed BiDAF predictor and BiDAF predictor tests.
 - Fixed a bug with `Seq2SeqDatasetReader` that would cause an exception when
   the desired behavior is to not add start or end symbols to either the source or the target
   and the default `start_symbol` or `end_symbol` are not part of the tokenizer's vocabulary.

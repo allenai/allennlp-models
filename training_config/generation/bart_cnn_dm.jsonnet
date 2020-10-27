@@ -1,11 +1,7 @@
 local model_name = "facebook/bart-large";
-
-local train_data = std.extVar("CNNDM_TRAIN");
-local dev_data = std.extVar("CNNDM_DEV");
-// Use these lines below to get the actual dataset.
-// local data_base_url = "https://storage.googleapis.com/allennlp-public-data/cnndm-combined-data-2020.07.13.tar.gz";
-// local train_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_train.txt";
-// local dev_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_val.txt";
+local data_base_url = "https://storage.googleapis.com/allennlp-public-data/cnndm-combined-data-2020.07.13.tar.gz";
+local train_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_train.txt";
+local dev_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_val.txt";
 
 {
     "train_data_path": train_data,
