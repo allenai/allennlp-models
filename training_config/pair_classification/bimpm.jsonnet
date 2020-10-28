@@ -111,7 +111,6 @@
     }
   },
   "data_loader": {
-    "lazy": false,
     "batch_sampler": {
       "type": "bucket",
       "padding_noise": 0.1,
