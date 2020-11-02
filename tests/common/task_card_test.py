@@ -14,7 +14,6 @@ class TestTaskCard(AllenNlpTestCase):
                 {
                     "premise": "A handmade djembe was on display at the Smithsonian.",
                     "hypothesis": "Visitors could see the djembe.",
-                    "entails": "Yes",
                 }
             ],
         )

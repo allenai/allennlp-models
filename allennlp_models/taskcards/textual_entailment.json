@@ -1,0 +1,30 @@
+{
+    "id": "textual_entailment",
+    "name": "Textual Entailment",
+    "description": "Textual Entailment (TE) is the task of predicting whether, for a pair of sentences, the facts in the first sentence necessarily imply the facts in the second.",
+    "expected_inputs": "The task expects a `premise` sentence and a `hypothesis` sentence.",
+    "expected_outputs": "The expected output is whether the `premise` entails/contradicts/is neutral towards the `hypothesis`.",
+    "scope_and_limitations": "This task is in some sense \"NLP-complete\", and you should not expect any current model to cover every possible aspect of entailment. Instead, you should think about what the model was trained on to see whether it could reasonably capture the phenomena that you are querying it with.",
+    "examples": [
+                    {
+                        "premise" : "If you help the needy, God will reward you.",
+                        "hypothesis" : "Giving money to the poor has good consequences.",
+                    },
+                    {
+                        "premise" : "Two women are wandering along the shore drinking iced tea.",
+                        "hypothesis" : "Two women are sitting on a blanket near some rocks talking about politics.",
+                    },
+                    {
+                        "premise" : "An interplanetary spacecraft is in orbit around a gas giant's icy moon.",
+                        "hypothesis" : "The spacecraft has the ability to travel between planets.",
+                    },
+                    {
+                        "premise" : "A large, gray elephant walked beside a herd of zebras.",
+                        "hypothesis" : "The elephant was lost.",
+                    },
+                    {
+                        "premise" : "A handmade djembe was on display at the Smithsonian.",
+                        "hypothesis" : "Visitors could see the djembe.",
+                    },
+                ],
+}

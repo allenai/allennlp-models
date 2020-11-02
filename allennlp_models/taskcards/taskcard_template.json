@@ -1,8 +1,9 @@
 {
     "id": "task-id",
-    "name": "Task Name",
-    "description": "Task description",
-    "expected_inputs": "All expected inputs and their format",
-    "expected_outputs": "All expected outputs and their format",
-    "examples": [{"input1": "Sample input1", "output1": "Sample output1"}]
+    "name": null,
+    "description": null,
+    "expected_inputs": null,
+    "expected_outputs": null,
+    "scope_and_limitations": null,
+    "examples": null,
 }

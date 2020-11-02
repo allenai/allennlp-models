@@ -1,0 +1,15 @@
+{
+    "id": "srl",
+    "name": "Semantic Role Labeling",
+    "description": "Semantic Role Labeling (SRL) is the task of determining the latent predicate argument structure of a sentence and providing representations that can answer basic questions about sentence meaning, including who did what to whom, etc.",
+    "expected_inputs": "The task expects an input sentence.",
+    "expected_outputs": null,
+    "scope_and_limitations": null,
+    "examples": [
+                    {"sentence" : "The keys, which were needed to access the building, were locked in the car."},
+                    {"sentence" : "However, voters decided that if the stadium was such a good idea someone would build it himself, and rejected it 59% to 41%."},
+                    {"sentence" : "Did Uriah honestly think he could beat the game in under three hours?"},
+                    {"sentence" : "If you liked the music we were playing last night, you will absolutely love what we're playing tomorrow!"},
+                    {"sentence" : "More than a few CEOs say the red-carpet treatment tempts them to return to a heartland city for future meetings."},
+            ],
+}

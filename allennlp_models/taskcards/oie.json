@@ -1,0 +1,16 @@
+{
+    "id": "oie",
+    "name": "Open Information Extraction",
+    "description": "Given an input sentence, Open Information Extraction (Open IE) extracts a list of propositions, each composed of a single predicate and an arbitrary number of arguments. These extractions break syntactically complex sentences into the relationships they express, which can then be used for various downstream tasks.",
+    "expected_inputs": "The task expects an input sentence.",
+    "expected_outputs": "A list of propositions.",
+    "scope_and_limitations": null,
+    "examples": [
+                    {"sentence" : "In December, John decided to join the party."},
+                    {"sentence" : "Bob agreed to take out the trash"},
+                    {"sentence" : "Alex Honnold climbed up a New Jersey skyscraper."},
+                    {"sentence" : "Albert Einstein, a German theoretical physicist, published the theory of relativity in 1915."},
+                    {"sentence" : "Chair umpire Ramos managed to rob two players in the U.S. Open final."},
+                    {"sentence" : "The CEO of a multi-million dollar company doesn't have much free time."}
+                ],
+}

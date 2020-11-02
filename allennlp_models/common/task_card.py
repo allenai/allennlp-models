@@ -1,8 +1,11 @@
 """
 A specification for defining task cards (derived from model cards).
+Motivation: A model's capabilities and limitations are dependent on
+the task definition. Thus, it is helpful to separate the information
+in the model card that comes from specifically the task itself.
 """
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 from dataclasses import dataclass
 
 from allennlp.common.from_params import FromParams
@@ -34,17 +37,19 @@ class TaskCard(FromParams):
         All expected outputs and their format.
         Example: (For a reading comprehension task)
                  Answer span (start token position and end token position).
-    examples : `List[Dict[str, str]]`, optional
-        List of examples for the task. Each dict should contain as keys the `expected_inputs`
-        and `expected_outputs`.
+    examples : `Union[List[Dict[str, str]], Dict[str, List[Dict[str, str]]]]`, optional
+        List of examples for the task. Each example dict should contain as keys the
+        `expected_inputs`.
         Example: (For textual entailment)
                  [{"premise": "A handmade djembe was on display at the Smithsonian.",
-                   "hypothesis": "Visitors could see the djembe.",
-                   "entails": "Yes"}]
-                !!! Note
-                    A model that attempts to solve the task may not produce the output
-                    in exactly the same form as in the example. For instance, a model
-                    may return probabilities instead of absolute booleans.
+                   "hypothesis": "Visitors could see the djembe."}]
+    scope_and_limitations: `str`, optional
+        This discusses the scope of the task based on how it is defined, and any limitations.
+        Example: "The Textual Entailment task is in some sense "NLP-complete", and you
+                  should not expect any current model to cover every possible aspect of
+                  entailment. Instead, you should think about what the model was trained
+                  on to see whether it could reasonably capture the phenomena that you
+                  are querying it with."
     """
 
     id: str
@@ -52,5 +57,6 @@ class TaskCard(FromParams):
     description: Optional[str] = None
     expected_inputs: Optional[str] = None
     expected_outputs: Optional[str] = None
-    examples: Optional[List[Dict[str, str]]] = None
+    scope_and_limitations: Optional[str] = None
+    examples: Optional[Union[List[Dict[str, str]], Dict[str, List[Dict[str, str]]]]] = None
     # TODO: Add this to model cards.

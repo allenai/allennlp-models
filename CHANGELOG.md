@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added the `TaskCard` class and task cards for common tasks.
+
 ## [v1.2.0](https://github.com/allenai/allennlp-models/releases/tag/v1.2.0) - 2020-10-29
 
 ### Changed
