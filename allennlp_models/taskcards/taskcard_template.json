@@ -1,0 +1,8 @@
+{
+    "id": "task-id",
+    "name": "Task Name",
+    "description": "Task description",
+    "expected_inputs": "All expected inputs and their format",
+    "expected_outputs": "All expected outputs and their format",
+    "examples": [{"input1": "Sample input1", "output1": "Sample output1"}]
+}
