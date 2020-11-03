@@ -22,8 +22,7 @@ from allennlp.training.metrics import CategoricalAccuracy
 class ESIM(Model):
     """
     This `Model` implements the ESIM sequence model described in [Enhanced LSTM for Natural Language Inference]
-    (https://www.semanticscholar.org/paper/Enhanced-LSTM-for-Natural-Language-Inference-Chen-Zhu/83e7654d545fbbaaf2328df365a781fb67b841b4)
-    by Chen et al., 2017.
+    (https://api.semanticscholar.org/CorpusID:34032948) by Chen et al., 2017.
 
     Registered as a `Model` with name "esim".
 

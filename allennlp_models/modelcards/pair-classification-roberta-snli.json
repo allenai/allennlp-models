@@ -5,6 +5,58 @@
     "display_name": "RoBERTa SNLI",
     "archive_file": "snli-roberta-2020-07-29.tar.gz",
     "model_details": {
-        "paper": "https://www.semanticscholar.org/paper/RoBERTa%3A-A-Robustly-Optimized-BERT-Pretraining-Liu-Ott/077f8329a7b6fa3b7c877a57b81eb6c18b5f87de#paper-header"
+        "description": "This `Model` implements a basic text classifier. The text is embedded into a text field
+                        using a RoBERTa-large model. The resulting sequence is pooled using a cls_pooler
+                        `Seq2VecEncoder` and then passed to a linear classification layer, which projects
+                        into the label space.",
+        "developed_by": "Liu et al",
+        "contributed_by": "Dirk Groeneveld",
+        "date": "2020-07-29",
+        "version": "1",
+        "model_type": "RoBERTa",
+        "paper": "[RoBERTa: A Robustly Optimized BERT Pretraining Approach](https://api.semanticscholar.org/CorpusID:198953378)",
+        "citation": "@article{Liu2019RoBERTaAR,
+                     title={RoBERTa: A Robustly Optimized BERT Pretraining Approach},
+                     author={Y. Liu and Myle Ott and Naman Goyal and Jingfei Du and Mandar Joshi and Danqi Chen and Omer Levy and M. Lewis and Luke Zettlemoyer and Veselin Stoyanov},
+                     journal={ArXiv},
+                     year={2019},
+                     volume={abs/1907.11692}}",
+        "license": null,
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": "snli_roberta.jsonnet",
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "Accuracy",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": "[Stanford Natural Language Inference (SNLI)](https://nlp.stanford.edu/projects/snli/) dev set",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": "[Stanford Natural Language Inference (SNLI)](https://nlp.stanford.edu/projects/snli/) train set",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "caveats_and_recommendations": {
+        "caveats_and_recommendations": null
     }
 }
