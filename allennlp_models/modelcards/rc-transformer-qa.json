@@ -3,6 +3,7 @@
     "registered_model_name": "transformer_qa",
     "registered_predictor_name": null,
     "display_name": "Transformer QA",
+    "task_id": "rc",
     "archive_file": "transformer-qa-2020-10-03.tar.gz",
     "model_details": {
         "description": "The model implements a reading comprehension model patterned after the proposed model in 
