@@ -3,7 +3,7 @@
     "registered_model_name": "esim",
     "registered_predictor_name": "textual_entailment",
     "display_name": "Enhanced LSTM for Natural Language Inference",
-    "archive_file": "decomposable-attention-elmo-2020.04.09.tar.gz", //FIX: this file is the same as one for decomposable...
+    "archive_file": "esim-elmo-2020.02.10.tar.gz",
     "model_details": {
         "description": "This `Model` implements the ESIM model, which is a sequential neural inference model
                         based on chain LSTMs.",
