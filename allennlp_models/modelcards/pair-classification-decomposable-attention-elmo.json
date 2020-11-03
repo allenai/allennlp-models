@@ -3,6 +3,7 @@
     "registered_model_name": "decomposable_attention",
     "registered_predictor_name": "textual_entailment",
     "display_name": "ELMo-based Decomposable Attention",
+    "task_id": "textual_entailment",
     "archive_file": "decomposable-attention-elmo-2020.04.09.tar.gz",
     "model_details": {
         "description": "This `Model` implements the Decomposable Attention model described in [A Decomposable

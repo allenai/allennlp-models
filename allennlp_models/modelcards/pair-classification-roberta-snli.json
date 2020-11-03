@@ -3,6 +3,7 @@
     "registered_model_name": "basic_classifier",
     "registered_predictor_name": "textual_entailment",
     "display_name": "RoBERTa SNLI",
+    "task_id": "textual_entailment",
     "archive_file": "snli-roberta-2020-07-29.tar.gz",
     "model_details": {
         "description": "This `Model` implements a basic text classifier. The text is embedded into a text field
