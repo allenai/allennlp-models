@@ -1,6 +1,72 @@
 {
     "id": "pair-classification-decomposable-attention-elmo",
     "registered_model_name": "decomposable_attention",
+    "registered_predictor_name": "textual_entailment",
     "display_name": "ELMo-based Decomposable Attention",
-    "archive_file": "decomposable-attention-elmo-2020.04.09.tar.gz"
+    "archive_file": "decomposable-attention-elmo-2020.04.09.tar.gz",
+    "model_details": {
+        "description": "This `Model` implements the Decomposable Attention model described in [A Decomposable
+                        Attention Model for Natural Language Inference](https://api.semanticscholar.org/CorpusID:8495258)
+                        by Parikh et al., 2016, with some optional enhancements before the decomposable attention
+                        actually happens.  Parikh's original model allowed for computing an \"intra-sentence\" attention
+                        before doing the decomposable entailment step.  We generalize this to any
+                        [`Seq2SeqEncoder`](../modules/seq2seq_encoders/seq2seq_encoder.md) that can be applied to
+                        the premise and/or the hypothesis before computing entailment.
+
+                        The basic outline of this model is to get an embedded representation of each word in the
+                        premise and hypothesis, align words between the two, compare the aligned phrases, and make a
+                        final entailment decision based on this aggregated comparison.  Each step in this process uses
+                        a feedforward network to modify the representation.
+
+                        This model uses ELMo embeddings.",
+        "developed_by": "Parikh et al",
+        "contributed_by": "Dirk Groeneveld",
+        "date": "2020-04-09",
+        "version": "1",
+        "model_type": "Seq2Seq",
+        "paper": "[A Decomposable Attention Model for Natural Language Inference](https://api.semanticscholar.org/CorpusID:8495258)",
+        "citation": "@article{Parikh2016ADA,
+                     title={A Decomposable Attention Model for Natural Language Inference},
+                     author={Ankur P. Parikh and Oscar T{\"a}ckstr{\"o}m and Dipanjan Das and Jakob Uszkoreit},
+                     journal={ArXiv},
+                     year={2016},
+                     volume={abs/1606.01933}}",
+        "license": null,
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": "decomposable_attention_elmo.jsonnet",
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "Accuracy",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": "[Stanford Natural Language Inference (SNLI)](https://nlp.stanford.edu/projects/snli/) dev set",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": "[Stanford Natural Language Inference (SNLI)](https://nlp.stanford.edu/projects/snli/) train set",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    }
 }
