@@ -59,4 +59,3 @@ class TaskCard(FromParams):
     expected_outputs: Optional[str] = None
     scope_and_limitations: Optional[str] = None
     examples: Optional[Union[List[Dict[str, str]], Dict[str, List[Dict[str, str]]]]] = None
-    # TODO: Add this to model cards.
