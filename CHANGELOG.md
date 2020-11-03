@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added the `TaskCard` class and task cards for common tasks.
+
 ### Changed
 
 - Added more information to model cards for pair classification models (`pair-classification-decomposable-attention-elmo`, `pair-classification-roberta-snli`, `pair-classification-roberta-mnli`, `pair-classification-esim`).

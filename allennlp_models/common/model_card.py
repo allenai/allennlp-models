@@ -389,6 +389,7 @@ class ModelCard(ModelCardInfo):
         model_class: Optional[type] = None,
         registered_predictor_name: Optional[str] = None,
         display_name: Optional[str] = None,
+        task_id: Optional[str] = None,
         archive_file: Optional[str] = None,
         overrides: Optional[Dict] = None,
         model_details: Optional[Union[str, ModelDetails]] = None,
@@ -441,6 +442,7 @@ class ModelCard(ModelCardInfo):
         self.registered_model_name = registered_model_name
         self.registered_predictor_name = registered_predictor_name
         self.display_name = display_name
+        self.task_id = task_id
         self.archive_file = archive_file
         self.model_details = model_details
         self.intended_use = intended_use

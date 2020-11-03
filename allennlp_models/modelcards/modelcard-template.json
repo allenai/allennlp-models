@@ -3,6 +3,7 @@
     "registered_model_name": null,
     "registered_predictor_name": null,
     "display_name": null,
+    "task_id": null,
     "archive_file": null,
     "model_details": {
         "description": null,
