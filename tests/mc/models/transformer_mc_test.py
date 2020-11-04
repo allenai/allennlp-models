@@ -23,8 +23,8 @@ class TransformerMcTest(ModelTestCase):
             gradients_to_ignore={
                 "_text_field_embedder.token_embedder_tokens.transformer_model.pooler.dense.weight",
                 "_text_field_embedder.token_embedder_tokens.transformer_model.pooler.dense.bias",
-                "_linear_layer.bias",
             },
+            seed=2,
         )
 
     @flaky(max_runs=3)

@@ -29,11 +29,7 @@ class CorefTest(ModelTestCase):
             + "}"
         )
         # fmt: on
-        self.ensure_model_can_train_save_and_load(
-            self.param_file,
-            overrides=overrides,
-            gradients_to_ignore={"_attentive_span_extractor._global_attention._module.bias"},
-        )
+        self.ensure_model_can_train_save_and_load(self.param_file, overrides=overrides, seed=3)
         self.teardown_method()
         self.setup_method()
 
