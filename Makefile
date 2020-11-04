@@ -50,7 +50,7 @@ lint :
 
 .PHONY : format
 format :
-	black --exclude training_config_test.py --check .
+	black --check .
 
 .PHONY : typecheck
 typecheck :
