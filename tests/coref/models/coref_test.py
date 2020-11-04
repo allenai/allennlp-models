@@ -32,6 +32,8 @@ class CorefTest(ModelTestCase):
         self.ensure_model_can_train_save_and_load(
             self.param_file,
             overrides=overrides,
+            # Due to numerical instability, this scalar tensor might sometimes
+            # have zero gradient.
             gradients_to_ignore={"_attentive_span_extractor._global_attention._module.bias"},
         )
         self.teardown_method()
