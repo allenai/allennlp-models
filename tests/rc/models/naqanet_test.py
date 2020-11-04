@@ -11,8 +11,15 @@ class NumericallyAugmentedQaNetTest(ModelTestCase):
         self.set_up_model(
             FIXTURES_ROOT / "rc" / "naqanet" / "experiment.json",
             FIXTURES_ROOT / "rc" / "drop.json",
-            seed=15,
         )
 
     def test_model_can_train_save_and_load(self):
-        self.ensure_model_can_train_save_and_load(self.param_file)
+        self.ensure_model_can_train_save_and_load(
+            self.param_file,
+            # Due to numerical instability, these scalar tensors might sometimes
+            # have zero gradients.
+            gradients_to_ignore={
+                "_passage_span_end_predictor._linear_layers.1.bias",
+                "_question_span_end_predictor._linear_layers.1.bias",
+            },
+        )
