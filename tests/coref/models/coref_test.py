@@ -11,6 +11,7 @@ class CorefTest(ModelTestCase):
         self.set_up_model(
             FIXTURES_ROOT / "coref" / "experiment.json",
             FIXTURES_ROOT / "coref" / "coref.gold_conll",
+            seed=3,
         )
 
     def test_coref_model_can_train_save_and_load(self):
@@ -29,7 +30,7 @@ class CorefTest(ModelTestCase):
             + "}"
         )
         # fmt: on
-        self.ensure_model_can_train_save_and_load(self.param_file, overrides=overrides, seed=3)
+        self.ensure_model_can_train_save_and_load(self.param_file, overrides=overrides)
         self.teardown_method()
         self.setup_method()
 

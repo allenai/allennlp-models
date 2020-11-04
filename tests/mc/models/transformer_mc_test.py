@@ -14,6 +14,7 @@ class TransformerMcTest(ModelTestCase):
         self.set_up_model(
             FIXTURES_ROOT / "mc" / "transformer_mc" / "experiment.jsonnet",
             FIXTURES_ROOT / "mc" / "piqa.jsonl",
+            seed=2,
         )
 
     def test_model_can_train_save_and_load(self):
@@ -24,7 +25,6 @@ class TransformerMcTest(ModelTestCase):
                 "_text_field_embedder.token_embedder_tokens.transformer_model.pooler.dense.weight",
                 "_text_field_embedder.token_embedder_tokens.transformer_model.pooler.dense.bias",
             },
-            seed=2,
         )
 
     @flaky(max_runs=3)
