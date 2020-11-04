@@ -1,8 +1,9 @@
+from typing import Dict, List
 import pytest
 import spacy
 
 from allennlp.common.testing import AllenNlpTestCase
-from allennlp_models.pretrained import get_pretrained_models, load_predictor
+from allennlp_models.pretrained import get_pretrained_models, get_tasks, load_predictor
 
 
 # But default we don't run these tests
@@ -407,3 +408,7 @@ class TestAllenNlpPretrainedModels(AllenNlpTestCase):
     def test_pretrained_models(self, model_id, model_card):
         # Each model in pretrained_models should have an archive and registered_predictor_name.
         assert model_card.archive_file is not None
+
+    @pytest.mark.parametrize("task_id, task_card", get_tasks().items())
+    def test_tasks(self, task_id, task_card):
+        assert isinstance(task_card.examples, List) or isinstance(task_card.examples, Dict)
