@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, cast
 import logging
 import copy
 
@@ -38,12 +38,16 @@ class NextTokenLMReader(DatasetReader):
     token_indexers : `Dict[str, TokenIndexer]`, optional (default=`{"tokens": SingleIdTokenIndexer()}`)
         We use this to define the input representation for the text, and to get ids for the mask
         targets.  See :class:`TokenIndexer`.
+    max_tokens : `int`, optional (default = `None`)
+        If you don't handle truncation at the `tokenizer` level, you can specify `max_tokens`
+        here, and the only the last `max_tokens` will be used.
     """
 
     def __init__(
         self,
         tokenizer: Tokenizer = None,
         token_indexers: Dict[str, TokenIndexer] = None,
+        max_tokens: int = None,
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
@@ -55,6 +59,7 @@ class NextTokenLMReader(DatasetReader):
         else:
             self._targets_tokenizer = self._tokenizer
         self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
+        self._max_tokens = max_tokens
 
     @overrides
     def _read(self, file_path: str):
@@ -79,9 +84,16 @@ class NextTokenLMReader(DatasetReader):
         tokens: List[Token] = None,
         target: str = None,
     ) -> Instance:
-
-        if not tokens:
+        if tokens is None and sentence is not None:
             tokens = self._tokenizer.tokenize(sentence)
+        elif sentence is None:
+            raise ValueError("expected either 'sentence' or 'tokens' to not be null")
+
+        tokens = cast(List[Token], tokens)
+
+        if self._max_tokens is not None:
+            tokens = tokens[-self._max_tokens :]
+
         input_field = TextField(tokens, self._token_indexers)
         fields: Dict[str, Field] = {"tokens": input_field}
         # TODO: if we index word that was not split into wordpieces with
@@ -92,4 +104,5 @@ class NextTokenLMReader(DatasetReader):
             wordpiece = self._targets_tokenizer.tokenize(target)[0]
             target_token = Token(text=target, text_id=wordpiece.text_id, type_id=wordpiece.type_id)
             fields["target_ids"] = TextField([target_token], self._token_indexers)
+
         return Instance(fields)

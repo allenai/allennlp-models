@@ -1,8 +1,9 @@
+from typing import Dict, List
 import pytest
 import spacy
 
 from allennlp.common.testing import AllenNlpTestCase
-from allennlp_models.pretrained import get_pretrained_models, load_predictor
+from allennlp_models.pretrained import get_pretrained_models, get_tasks, load_predictor
 
 
 # But default we don't run these tests
@@ -381,7 +382,33 @@ class TestAllenNlpPretrainedModels(AllenNlpTestCase):
         # Just assert that we predicted something better than all-O.
         assert len(frozenset(result["tags"])) > 1
 
+    def test_transformer_qa(self):
+        predictor = load_predictor("rc-transformer-qa")
+
+        passage = (
+            "The Normans (Norman: Nourmands; French: Normands; Latin: Normanni) were "
+            "the people who in the 10th and 11th centuries gave their name to Normandy, a region in France. "
+            'They were descended from Norse ("Norman" comes from "Norseman") raiders and pirates from Denmark, '
+            "Iceland and Norway who, under their leader Rollo, agreed to swear fealty to King Charles III of West Francia. "
+            "Through generations of assimilation and mixing with the native Frankish and Roman-Gaulish populations, "
+            "their descendants would gradually merge with the Carolingian-based cultures of West Francia. "
+            "The distinct cultural and ethnic identity of the Normans emerged initially in the first half "
+            "of the 10th century, and it continued to evolve over the succeeding centuries."
+        )
+
+        question = "In what country is Normandy located?"
+        result = predictor.predict(question, passage)
+        assert result["best_span_str"] == "France"
+
+        question = "Who gave their name to Normandy in the 1000's and 1100's"
+        result = predictor.predict(question, passage)
+        assert result["best_span_str"] == ""
+
     @pytest.mark.parametrize("model_id, model_card", get_pretrained_models().items())
     def test_pretrained_models(self, model_id, model_card):
         # Each model in pretrained_models should have an archive and registered_predictor_name.
         assert model_card.archive_file is not None
+
+    @pytest.mark.parametrize("task_id, task_card", get_tasks().items())
+    def test_tasks(self, task_id, task_card):
+        assert isinstance(task_card.examples, List) or isinstance(task_card.examples, Dict)

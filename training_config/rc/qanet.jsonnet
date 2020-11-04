@@ -16,7 +16,7 @@
         },
         "passage_length_limit": 400,
         "question_length_limit": 50,
-        "skip_invalid_examples": true
+        "skip_impossible_questions": true
     },
     "validation_dataset_reader": {
         "type": "squad",
@@ -32,7 +32,7 @@
         },
         "passage_length_limit": 1000,
         "question_length_limit": 100,
-        "skip_invalid_examples": false
+        "skip_impossible_questions": false
     },
     "vocabulary": {
         "min_count": {
@@ -47,11 +47,8 @@
         },
         "only_include_pretrained_words": true
     },
-    "train_data_path": std.extVar("SQUAD_TRAIN"),
-    "validation_data_path": std.extVar("SQUAD_DEV"),
-    // You can replace the above two lines with these to get the actual squad datasets.
-    // "train_data_path": "https://allennlp.s3.amazonaws.com/datasets/squad/squad-train-v1.1.json",
-    // "validation_data_path": "https://allennlp.s3.amazonaws.com/datasets/squad/squad-dev-v1.1.json",
+    "train_data_path": "https://allennlp.s3.amazonaws.com/datasets/squad/squad-train-v1.1.json",
+    "validation_data_path": "https://allennlp.s3.amazonaws.com/datasets/squad/squad-dev-v1.1.json",
     "model": {
         "type": "qanet",
         "text_field_embedder": {

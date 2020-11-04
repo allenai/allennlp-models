@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import torch
@@ -26,15 +26,24 @@ logger = logging.getLogger(__name__)
 @Model.register("transformer_qa")
 class TransformerQA(Model):
     """
-    This class implements a reading comprehension model patterned after the proposed model in
-    https://arxiv.org/abs/1810.04805 (Devlin et al), with improvements borrowed from the SQuAD model in the
-    transformers project.
+    Registered as `"transformer_qa"`, this class implements a reading comprehension model patterned
+    after the proposed model in [Devlin et al](git@github.com:huggingface/transformers.git),
+    with improvements borrowed from the SQuAD model in the transformers project.
 
     It predicts start tokens and end tokens with a linear layer on top of word piece embeddings.
 
+    If you want to use this model on SQuAD datasets, you can use it with the
+    [`TransformerSquadReader`](../../dataset_readers/transformer_squad#transformersquadreader)
+    dataset reader, registered as `"transformer_squad"`.
+
     Note that the metrics that the model produces are calculated on a per-instance basis only. Since there could
-    be more than one instance per question, these metrics are not the official numbers on the SQuAD task. To get
-    official numbers, run the script in scripts/transformer_qa_eval.py.
+    be more than one instance per question, these metrics are not the official numbers on either SQuAD task.
+
+    To get official numbers for SQuAD v1.1, for example, you can run
+
+    ```
+    python -m allennlp_models.rc.tools.transformer_qa_eval
+    ```
 
     # Parameters
 
@@ -63,78 +72,107 @@ class TransformerQA(Model):
         self,
         question_with_context: Dict[str, Dict[str, torch.LongTensor]],
         context_span: torch.IntTensor,
-        answer_span: Optional[torch.IntTensor] = None,
+        cls_index: torch.LongTensor = None,
+        answer_span: torch.IntTensor = None,
         metadata: List[Dict[str, Any]] = None,
     ) -> Dict[str, torch.Tensor]:
-
         """
         # Parameters
 
         question_with_context : `Dict[str, torch.LongTensor]`
-            From a ``TextField``. The model assumes that this text field contains the context followed by the
+            From a `TextField`. The model assumes that this text field contains the context followed by the
             question. It further assumes that the tokens have type ids set such that any token that can be part of
-            the answer (i.e., tokens from the context) has type id 0, and any other token (including [CLS] and
-            [SEP]) has type id 1.
+            the answer (i.e., tokens from the context) has type id 0, and any other token (including
+            `[CLS]` and `[SEP]`) has type id 1.
+
         context_span : `torch.IntTensor`
-            From a ``SpanField``. This marks the span of word pieces in ``question`` from which answers can come.
+            From a `SpanField`. This marks the span of word pieces in `question` from which answers can come.
+
+        cls_index : `torch.LongTensor`, optional
+            A tensor of shape `(batch_size,)` that provides the index of the `[CLS]` token
+            in the `question_with_context` for each instance.
+
+            This is needed because the `[CLS]` token is used to indicate that the question
+            is impossible.
+
+            If this is `None`, it's assumed that the `[CLS]` token is at index 0 for each instance
+            in the batch.
+
         answer_span : `torch.IntTensor`, optional
-            From a ``SpanField``. This is the thing we are trying to predict - the span of text that marks the
+            From a `SpanField`. This is the thing we are trying to predict - the span of text that marks the
             answer. If given, we compute a loss that gets included in the output directory.
+
         metadata : `List[Dict[str, Any]]`, optional
             If present, this should contain the question id, and the original texts of context, question, tokenized
-            version of both, and a list of possible answers. The length of the ``metadata`` list should be the
-            batch size, and each dictionary should have the keys ``id``, ``question``, ``context``,
-            ``question_tokens``, ``context_tokens``, and ``answers``.
+            version of both, and a list of possible answers. The length of the `metadata` list should be the
+            batch size, and each dictionary should have the keys `id`, `question`, `context`,
+            `question_tokens`, `context_tokens`, and `answers`.
 
         # Returns
 
-        An output dictionary consisting of:
+        `Dict[str, torch.Tensor]` :
+            An output dictionary with the following fields:
 
-        span_start_logits : `torch.FloatTensor`
-            A tensor of shape ``(batch_size, passage_length)`` representing unnormalized log
-            probabilities of the span start position.
-        span_start_probs : `torch.FloatTensor`
-            The result of `softmax(span_start_logits)`.
-        span_end_logits : `torch.FloatTensor`
-            A tensor of shape ``(batch_size, passage_length)`` representing unnormalized log
-            probabilities of the span end position (inclusive).
-        span_end_probs : `torch.FloatTensor`
-            The result of ``softmax(span_end_logits)``.
-        best_span : `torch.IntTensor`
-            The result of a constrained inference over ``span_start_logits`` and
-            ``span_end_logits`` to find the most probable span.  Shape is ``(batch_size, 2)``
-            and each offset is a token index.
-        best_span_scores : `torch.FloatTensor`
-            The score for each of the best spans.
-        loss : `torch.FloatTensor`, optional
-            A scalar loss to be optimised.
-        best_span_str : `List[str]`
-            If sufficient metadata was provided for the instances in the batch, we also return the
-            string from the original passage that the model thinks is the best answer to the
-            question.
+            - span_start_logits (`torch.FloatTensor`) :
+              A tensor of shape `(batch_size, passage_length)` representing unnormalized log
+              probabilities of the span start position.
+            - span_end_logits (`torch.FloatTensor`) :
+              A tensor of shape `(batch_size, passage_length)` representing unnormalized log
+              probabilities of the span end position (inclusive).
+            - best_span_scores (`torch.FloatTensor`) :
+              The score for each of the best spans.
+            - loss (`torch.FloatTensor`, optional) :
+              A scalar loss to be optimised, evaluated against `answer_span`.
+            - best_span (`torch.IntTensor`, optional) :
+              Provided when not in train mode and sufficient metadata given for the instance.
+              The result of a constrained inference over `span_start_logits` and
+              `span_end_logits` to find the most probable span.  Shape is `(batch_size, 2)`
+              and each offset is a token index, unless the best span for an instance
+              was predicted to be the `[CLS]` token, in which case the span will be (-1, -1).
+            - best_span_str (`List[str]`, optional) :
+              Provided when not in train mode and sufficient metadata given for the instance.
+              This is the string from the original passage that the model thinks is the best answer
+              to the question.
+
         """
         embedded_question = self._text_field_embedder(question_with_context)
+        # shape: (batch_size, sequence_length, 2)
         logits = self._linear_layer(embedded_question)
+        # shape: (batch_size, sequence_length, 1)
         span_start_logits, span_end_logits = logits.split(1, dim=-1)
+        # shape: (batch_size, sequence_length)
         span_start_logits = span_start_logits.squeeze(-1)
+        # shape: (batch_size, sequence_length)
         span_end_logits = span_end_logits.squeeze(-1)
 
+        # Create a mask for `question_with_context` to mask out tokens that are not part
+        # of the context.
+        # shape: (batch_size, sequence_length)
         possible_answer_mask = torch.zeros_like(
             get_token_ids_from_text_field_tensors(question_with_context), dtype=torch.bool
         )
         for i, (start, end) in enumerate(context_span):
             possible_answer_mask[i, start : end + 1] = True
+            # Also unmask the [CLS] token since that token is used to indicate that
+            # the question is impossible.
+            possible_answer_mask[i, 0 if cls_index is None else cls_index[i]] = True
 
-        # Replace the masked values with a very negative constant.
+        # Replace the masked values with a very negative constant since we're in log-space.
+        # shape: (batch_size, sequence_length)
         span_start_logits = replace_masked_values_with_big_negative_number(
             span_start_logits, possible_answer_mask
         )
+        # shape: (batch_size, sequence_length)
         span_end_logits = replace_masked_values_with_big_negative_number(
             span_end_logits, possible_answer_mask
         )
-        span_start_probs = torch.nn.functional.softmax(span_start_logits, dim=-1)
-        span_end_probs = torch.nn.functional.softmax(span_end_logits, dim=-1)
+
+        # Now calculate the best span.
+        # shape: (batch_size, 2)
         best_spans = get_best_span(span_start_logits, span_end_logits)
+
+        # Sum the span start score with the span end score to get an overall score for the span.
+        # shape: (batch_size,)
         best_span_scores = torch.gather(
             span_start_logits, 1, best_spans[:, 0].unsqueeze(1)
         ) + torch.gather(span_end_logits, 1, best_spans[:, 1].unsqueeze(1))
@@ -142,54 +180,86 @@ class TransformerQA(Model):
 
         output_dict = {
             "span_start_logits": span_start_logits,
-            "span_start_probs": span_start_probs,
             "span_end_logits": span_end_logits,
-            "span_end_probs": span_end_probs,
-            "best_span": best_spans,
             "best_span_scores": best_span_scores,
         }
 
-        # Compute the loss for training.
+        # Compute the loss.
         if answer_span is not None:
-            span_start = answer_span[:, 0]
-            span_end = answer_span[:, 1]
-            span_mask = span_start != -1
-            self._span_accuracy(
-                best_spans, answer_span, span_mask.unsqueeze(-1).expand_as(best_spans)
+            output_dict["loss"] = self._evaluate_span(
+                best_spans, span_start_logits, span_end_logits, answer_span
             )
 
-            start_loss = cross_entropy(span_start_logits, span_start, ignore_index=-1)
-            big_constant = min(torch.finfo(start_loss.dtype).max, 1e9)
-            if torch.any(start_loss > big_constant):
-                logger.critical("Start loss too high (%r)", start_loss)
-                logger.critical("span_start_logits: %r", span_start_logits)
-                logger.critical("span_start: %r", span_start)
-                assert False
+        # Gather the string of the best span and compute the EM and F1 against the gold span,
+        # if given.
+        if not self.training and metadata is not None:
+            (
+                output_dict["best_span_str"],
+                output_dict["best_span"],
+            ) = self._collect_best_span_strings(best_spans, context_span, metadata, cls_index)
 
-            end_loss = cross_entropy(span_end_logits, span_end, ignore_index=-1)
-            if torch.any(end_loss > big_constant):
-                logger.critical("End loss too high (%r)", end_loss)
-                logger.critical("span_end_logits: %r", span_end_logits)
-                logger.critical("span_end: %r", span_end)
-                assert False
+        return output_dict
 
-            loss = (start_loss + end_loss) / 2
+    def _evaluate_span(
+        self,
+        best_spans: torch.Tensor,
+        span_start_logits: torch.Tensor,
+        span_end_logits: torch.Tensor,
+        answer_span: torch.Tensor,
+    ) -> torch.Tensor:
+        """
+        Calculate the loss against the `answer_span` and also update the span metrics.
+        """
+        span_start = answer_span[:, 0]
+        span_end = answer_span[:, 1]
+        self._span_accuracy(best_spans, answer_span)
 
-            self._span_start_accuracy(span_start_logits, span_start, span_mask)
-            self._span_end_accuracy(span_end_logits, span_end, span_mask)
+        start_loss = cross_entropy(span_start_logits, span_start, ignore_index=-1)
+        big_constant = min(torch.finfo(start_loss.dtype).max, 1e9)
+        assert not torch.any(start_loss > big_constant), "Start loss too high"
 
-            output_dict["loss"] = loss
+        end_loss = cross_entropy(span_end_logits, span_end, ignore_index=-1)
+        assert not torch.any(end_loss > big_constant), "End loss too high"
 
-        # Compute the EM and F1 on SQuAD and add the tokenized input to the output.
-        if metadata is not None:
-            best_spans = best_spans.detach().cpu().numpy()
+        self._span_start_accuracy(span_start_logits, span_start)
+        self._span_end_accuracy(span_end_logits, span_end)
 
-            output_dict["best_span_str"] = []
-            context_tokens = []
-            for metadata_entry, best_span, cspan in zip(metadata, best_spans, context_span):
-                context_tokens_for_question = metadata_entry["context_tokens"]
-                context_tokens.append(context_tokens_for_question)
+        return (start_loss + end_loss) / 2
 
+    def _collect_best_span_strings(
+        self,
+        best_spans: torch.Tensor,
+        context_span: torch.IntTensor,
+        metadata: List[Dict[str, Any]],
+        cls_index: Optional[torch.LongTensor],
+    ) -> Tuple[List[str], torch.Tensor]:
+        """
+        Collect the string of the best predicted span from the context metadata and
+        update `self._per_instance_metrics`, which in the case of SQuAD v1.1 / v2.0
+        includes the EM and F1 score.
+
+        This returns a `Tuple[List[str], torch.Tensor]`, where the `List[str]` is the
+        predicted answer for each instance in the batch, and the tensor is just the input
+        tensor `best_spans` after adjustments so that each answer span corresponds to the
+        context tokens only, and not the question tokens. Spans that correspond to the
+        `[CLS]` token, i.e. the question was predicted to be impossible, will be set
+        to `(-1, -1)`.
+        """
+        _best_spans = best_spans.detach().cpu().numpy()
+
+        best_span_strings = []
+        for (metadata_entry, best_span, cspan, cls_ind) in zip(
+            metadata, _best_spans, context_span, cls_index or (0 for _ in range(len(metadata)))
+        ):
+            context_tokens_for_question = metadata_entry["context_tokens"]
+
+            if best_span[0] == cls_ind:
+                # Predicting [CLS] is interpreted as predicting the question as unanswerable.
+                best_span_string = ""
+                # NOTE: even though we've "detached" 'best_spans' above, this still
+                # modifies the original tensor in-place.
+                best_span[0], best_span[1] = -1, -1
+            else:
                 best_span -= int(cspan[0])
                 assert np.all(best_span >= 0)
 
@@ -225,22 +295,25 @@ class TransformerQA(Model):
                     character_end = end_token.idx + len(sanitize_wordpiece(end_token.text))
 
                 best_span_string = metadata_entry["context"][character_start:character_end]
-                output_dict["best_span_str"].append(best_span_string)
 
-                answers = metadata_entry.get("answers")
-                if len(answers) > 0:
-                    self._per_instance_metrics(best_span_string, answers)
-            output_dict["context_tokens"] = context_tokens
-        return output_dict
+            best_span_strings.append(best_span_string)
+
+            answers = metadata_entry.get("answers")
+            if answers:
+                self._per_instance_metrics(best_span_string, answers)
+
+        return best_span_strings, best_spans
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
-        exact_match, f1_score = self._per_instance_metrics.get_metric(reset)
-        return {
+        output = {
             "start_acc": self._span_start_accuracy.get_metric(reset),
             "end_acc": self._span_end_accuracy.get_metric(reset),
             "span_acc": self._span_accuracy.get_metric(reset),
-            "per_instance_em": exact_match,
-            "per_instance_f1": f1_score,
         }
+        if not self.training:
+            exact_match, f1_score = self._per_instance_metrics.get_metric(reset)
+            output["per_instance_em"] = exact_match
+            output["per_instance_f1"] = f1_score
+        return output
 
     default_predictor = "transformer_qa"

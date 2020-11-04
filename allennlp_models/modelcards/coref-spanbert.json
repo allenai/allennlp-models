@@ -1,5 +1,63 @@
 {
-"id": "coref-spanbert", 
-"registered_model_name": "coref",
-"archive_file": "coref-spanbert-large-2020.02.27.tar.gz"
+    "id": "coref-spanbert",
+    "registered_model_name": "coref",
+    "registered_predictor_name": null,
+    "display_name": "Coreference Resolution",
+    "task_id": "coref",
+    "archive_file": "coref-spanbert-large-2020.02.27.tar.gz",
+    "model_details": {
+        "description": "The basic outline of this model is to get an embedded representation
+                        of each span in the document. These span representations are scored 
+                        and used to prune away spans that are unlikely to occur in a coreference 
+                        cluster. For the remaining spans, the model decides which antecedent
+                        span (if any) they are coreferent with. The resulting coreference links, after applying
+                        transitivity, imply a clustering of the spans in the document.",
+        "developed_by": "Lee et al",
+        "contributed_by": "Zhaofeng Wu",
+        "date": "2020-02-27",
+        "version": "2",
+        "model_type": "SpanBERT",
+        "paper": "[Higher-order Coreference Resolution with Coarse-to-fine Inference](https://api.semanticscholar.org/CorpusID:4891749)",
+        "citation": "@inproceedings{Lee2018HigherorderCR,
+                     title={Higher-order Coreference Resolution with Coarse-to-fine Inference},
+                     author={Kenton Lee and Luheng He and L. Zettlemoyer},
+                     booktitle={NAACL-HLT},
+                     year={2018}}",
+        "license": null,
+        "contact": "allennlp-contact@allenai.org"
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "CoNLL coref scores and Mention Recall",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": null,
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": null,
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    }
 }

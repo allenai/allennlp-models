@@ -61,10 +61,10 @@ DATASET_PATCHES: Dict[Path, Tuple[str, ...]] = {
     FIXTURES_ROOT / "structured_prediction" / "dependencies.conllu": ("PTB_DEPENDENCIES_TRAIN", "PTB_DEPENDENCIES_VAL"),
     FIXTURES_ROOT / "structured_prediction" / "semantic_dependencies" / "dm.sdp": ("SEMEVAL_TRAIN", "SEMEVAL_DEV", "SEMEVAL_TEST"),
     FIXTURES_ROOT / "tagging" / "conll2003.txt": ("NER_TRAIN_DATA_PATH", "NER_TEST_DATA_PATH"),
-    FIXTURES_ROOT / "mc" / "swag.csv": ("SWAG_TRAIN", "SWAG_DEV", "SWAG_TEST"),
-    FIXTURES_ROOT / "rc" / "drop.json": ("DROP_TRAIN", "DROP_DEV"),
-    FIXTURES_ROOT / "rc" / "squad.json": ("SQUAD_TRAIN", "SQUAD_DEV"),
-    FIXTURES_ROOT / "coref" / "coref.gold_conll": (
+    FIXTURES_ROOT / "lm" / "language_model" / "sentences.txt": ("BIDIRECTIONAL_LM_TRAIN_PATH",),
+    FIXTURES_ROOT
+    / "coref"
+    / "coref.gold_conll": (
         "COREF_TRAIN_DATA_PATH",
         "COREF_DEV_DATA_PATH",
         "COREF_TEST_DATA_PATH",
@@ -75,10 +75,6 @@ DATASET_PATCHES: Dict[Path, Tuple[str, ...]] = {
         "NER_TEST_DATA_PATH",
         "NER_TEST_A_PATH",
         "NER_TEST_B_PATH",
-    ),
-    FIXTURES_ROOT / "generation" / "bart" / "data" / "url_lists" / "all_train.txt": (
-        "CNNDM_TRAIN",
-        "CNNDM_DEV",
     ),
     FIXTURES_ROOT / "lm" / "bidirectional_language_model" / "vocab": ("BIDIRECTIONAL_LM_VOCAB_PATH",),
     FIXTURES_ROOT / "lm" / "bidirectional_language_model" / "training_data" / "*": ("BIDIRECTIONAL_LM_TRAIN_PATH",),

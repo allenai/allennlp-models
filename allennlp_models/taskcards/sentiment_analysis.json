@@ -1,0 +1,14 @@
+{
+    "id": "sentiment-analysis",
+    "name": "Sentiment Analysis",
+    "description": "Sentiment Analysis is the task of interpreting and classifying emotions (positive or negative) in the input text.",
+    "expected_inputs": "The task expects an input sentence.",
+    "expected_outputs": "The probability of the sentiment being positive/negative.",
+    "scope_and_limitations": null,
+    "examples": [
+                    {"sentence" : "a very well-made, funny and entertaining picture." },
+                    {"sentence" : "so unremittingly awful that labeling it a dog probably constitutes cruelty to canines" },
+                    {"sentence" : "all the amped up tony hawk style stunts and thrashing rap-metal can't disguise the fact that, really, we've been here, done that."},
+                    {"sentence" : "visually imaginative, thematically instructive and thoroughly delightful, it takes us on a roller-coaster ride from innocence to experience without even a hint of that typical kiddie-flick sentimentality."}
+                ],
+}
