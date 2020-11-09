@@ -1,0 +1,14 @@
+{
+    "id": "dependency-parsing",
+    "name": "Dependency Parsing",
+    "description": "Dependency parsing is the task of analyzing the grammatical structure of a sentence and establishing the relationships between \"head\" words and the words which modify those heads.",
+    "expected_inputs": "The task expects an input sentence.",
+    "expected_outputs": null,
+    "scope_and_limitations": null,
+    "examples": [
+                    {"sentence" : "James ate some cheese whilst thinking about the play."},
+                    {"sentence" : "She decided not to take the house she'd viewed yesterday."},
+                    {"sentence" : "The proportion of PepsiCo’s revenue coming from healthier food and beverages has risen from 38% in 2006 to 50%."},
+                    {"sentence" : "CRISPR-Cas9 is a versatile genome editing technology for studying the functions of genetic elements."}
+    ],
+}

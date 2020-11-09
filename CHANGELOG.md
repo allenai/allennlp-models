@@ -14,6 +14,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased (1.x branch)
 
+### Added
+
+- Added the `TaskCard` class and task cards for common tasks.
+
+### Changed
+
+- Added more information to model cards for pair classification models (`pair-classification-decomposable-attention-elmo`, `pair-classification-roberta-snli`, `pair-classification-roberta-mnli`, `pair-classification-esim`).
+
+### Fixed
+
+- Fixed TransformerElmo config to work with the new AllenNLP
+
+
+## [v1.2.0](https://github.com/allenai/allennlp-models/releases/tag/v1.2.0) - 2020-10-29
+
 ### Changed
 
 - Updated docstring for Transformer MC.
@@ -24,6 +39,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed many training configs to work out-of-the box. These include the configs for `bart_cnn_dm`, `swag`, `bidaf`, `bidaf_elmo`,
   `naqanet`, and `qanet`.
+- Fixed minor bug in MaskedLanguageModel, where getting token ids used hard-coded assumptions (that
+  could be wrong) instead of our standard utility function.
+
 
 ## [v1.2.0rc1](https://github.com/allenai/allennlp-models/releases/tag/v1.2.0rc1) - 2020-10-22
 
@@ -57,6 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the desired behavior is to not add start or end symbols to either the source or the target
   and the default `start_symbol` or `end_symbol` are not part of the tokenizer's vocabulary.
 
+
 ## [v1.1.0](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0) - 2020-09-08
 
 ### Fixed
@@ -64,6 +83,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `LanguageModelTokenEmbedder` to allow allow multiple token embedders, but only use first with non-empty type
 - Fixed evaluation of metrics when using distributed setting.
 - Fixed a bug introduced in 1.0 where the SRL model did not reproduce the original result.
+
 
 ## [v1.1.0rc4](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc4) - 2020-08-21
 
@@ -73,6 +93,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a test for the pretrained sentiment analysis model.
 - Added way for questions from quora dataset to be concatenated like the sequences in the SNLI dataset.
 
+
 ## [v1.1.0rc3](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc3) - 2020-08-12
 
 ### Fixed
@@ -80,6 +101,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed `GraphParser.get_metrics` so that it expects a dict from `F1Measure.get_metric`.
 - `CopyNet` and `SimpleSeq2Seq` models now work with AMP.
 - Made the SST reader a little more strict in the kinds of input it accepts.
+
 
 ## [v1.1.0rc2](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc2) - 2020-07-31
 
@@ -103,7 +125,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v1.1.0rc1](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc1) - 2020-07-14
 
-
 ### Fixed
 
 - Updated the BERT SRL model to be compatible with the new huggingface tokenizers.
@@ -125,9 +146,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a category for multiple choice models, including a few reference implementations
 - Implemented manual distributed sharding for SNLI dataset reader.
 
+
 ## [v1.0.0](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0) - 2020-06-16
 
 No additional note-worthy changes since rc6.
+
 
 ## [v1.0.0rc6](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0rc6) - 2020-06-11
 
@@ -150,6 +173,7 @@ No additional note-worthy changes since rc6.
 - Added sentiment analysis models to pretrained.py
 - Added NLI models to pretrained.py
 
+
 ## [v1.0.0rc5](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0rc5) - 2020-05-14
 
 ### Changed
@@ -163,6 +187,7 @@ No additional note-worthy changes since rc6.
 ### Added
 
 - `conllu` dependency (previously part of `allennlp`'s dependencies)
+
 
 ## [v1.0.0rc4](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0rc4) - 2020-05-14
 

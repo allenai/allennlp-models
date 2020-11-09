@@ -6,6 +6,7 @@ from allennlp.common import Params
 from allennlp.predictors import Predictor
 
 from allennlp_models.common.model_card import ModelCard
+from allennlp_models.common.task_card import TaskCard
 
 # These imports are included so that the model cards can be filled with default information
 # obtained from the registered model classes.
@@ -18,6 +19,24 @@ from allennlp_models.pair_classification.models import *  # noqa: F401, F403
 from allennlp_models.rc.models import *  # noqa: F401, F403
 from allennlp_models.structured_prediction.models import *  # noqa: F401, F403
 from allennlp_models.tagging.models import *  # noqa: F401, F403
+
+
+def get_tasks() -> Dict[str, TaskCard]:
+    """
+    Returns a mapping of [`TaskCard`](/models/common/task_card#taskcard)s for all
+    tasks.
+    """
+
+    tasks = {}
+    task_card_paths = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "taskcards", "*.json"
+    )
+
+    for task_card_path in glob.glob(task_card_paths):
+        if "template" not in task_card_path:
+            task_card = TaskCard.from_params(params=Params.from_file(task_card_path))
+            tasks[task_card.id] = task_card
+    return tasks
 
 
 def get_pretrained_models() -> Dict[str, ModelCard]:

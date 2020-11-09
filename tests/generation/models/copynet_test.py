@@ -29,24 +29,6 @@ class CopyNetTest(ModelTestCase):
             overrides="{'trainer.use_amp':true,'trainer.cuda_device':0}",
         )
 
-        # NOTE: as of writing this test, AMP does not work with RNNs and LSTMCells. Hence we had
-        # to wrap the call to LSTMCell() in CopyNet (and other models) within an autocast(False) context.
-        # But if this part of the test fails, i.e. a RuntimeError is never raised,
-        # that means AMP may be working now with RNNs, in which case we can remove
-        # any calls to `autocast(False)` around RNNs like we do in CopyNet.
-        # So just do a grep search for uses of 'autocast(False)' or 'autocast(enabled=False)'
-        # in the library.
-        # If you're still confused, contact @epwalsh.
-        with pytest.raises(RuntimeError, match="expected scalar type Half but found Float"):
-            rnn = torch.nn.LSTMCell(10, 20).cuda()
-
-            hx = torch.rand((3, 20), device="cuda")
-            cx = torch.rand((3, 20), device="cuda")
-            inp = torch.rand((3, 10), device="cuda")
-
-            with torch.cuda.amp.autocast(True):
-                hx, cx = rnn(inp, (hx, cx))
-
     def test_vocab(self):
         vocab = self.model.vocab
         assert vocab.get_vocab_size(self.model._target_namespace) == 8

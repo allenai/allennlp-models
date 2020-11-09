@@ -1,6 +1,60 @@
 {
     "id": "pair-classification-esim",
     "registered_model_name": "esim",
+    "registered_predictor_name": "textual_entailment",
     "display_name": "Enhanced LSTM for Natural Language Inference",
-    "archive_file": "decomposable-attention-elmo-2020.04.09.tar.gz"
+    "task_id": "textual_entailment",
+    "archive_file": "esim-elmo-2020.02.10.tar.gz",
+    "model_details": {
+        "description": "This `Model` implements the ESIM model, which is a sequential neural inference model
+                        based on chain LSTMs.",
+        "developed_by": "Chen et al",
+        "contributed_by": "Dirk Groeneveld",
+        "date": "2020-04-09",
+        "version": "1",
+        "model_type": "LSTM",
+        "paper": "[Enhanced LSTM for Natural Language Inference](https://api.semanticscholar.org/CorpusID:34032948)",
+        "citation": "@inproceedings{Chen2017EnhancedLF,
+                     title={Enhanced LSTM for Natural Language Inference},
+                     author={Qian Chen and Xiao-Dan Zhu and Z. Ling and Si Wei and Hui Jiang and Diana Inkpen},
+                     booktitle={ACL},
+                     year={2017}}",
+        "license": null,
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": "esim.jsonnet",
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "Accuracy",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": "[Stanford Natural Language Inference (SNLI)](https://nlp.stanford.edu/projects/snli/) dev set",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": "[Stanford Natural Language Inference (SNLI)](https://nlp.stanford.edu/projects/snli/) train set",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    }
 }

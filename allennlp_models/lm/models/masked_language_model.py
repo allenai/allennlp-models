@@ -97,11 +97,7 @@ class MaskedLanguageModel(Model):
 
         targets = None
         if target_ids is not None:
-            # A bit of a hack to get the right targets out of the TextField output...
-            if len(target_ids) != 1:
-                targets = target_ids["bert"]["token_ids"]
-            else:
-                targets = list(target_ids.values())[0]["tokens"]
+            targets = util.get_token_ids_from_text_field_tensors(target_ids)
         mask_positions = mask_positions.squeeze(-1)
         batch_size, num_masks = mask_positions.size()
         if targets is not None and targets.size() != mask_positions.size():

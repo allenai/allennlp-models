@@ -23,6 +23,8 @@ class TransformerMcTest(ModelTestCase):
             gradients_to_ignore={
                 "_text_field_embedder.token_embedder_tokens.transformer_model.pooler.dense.weight",
                 "_text_field_embedder.token_embedder_tokens.transformer_model.pooler.dense.bias",
+                # Due to numerical instability, this scalar tensor might sometimes
+                # have zero gradient.
                 "_linear_layer.bias",
             },
         )

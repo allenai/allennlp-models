@@ -1,4 +1,6 @@
 local NUM_GPUS = 2;
+local NUM_GRAD_ACC = 4;
+local BATCH_SIZE = 512 / NUM_GPUS / NUM_GRAD_ACC;
 
 local BASE_READER = {
         "type": "simple_language_modeling",
@@ -19,20 +21,15 @@ local BASE_READER = {
         },
         "max_sequence_length": 400,
         "start_tokens": ["<S>"],
-        "end_tokens": ["</S>"]
+        "end_tokens": ["</S>"],
 };
 
-local BASE_ITERATOR = {
-  "type": "bucket",
-  "max_instances_in_memory": 16384,
-  // Larger than we really desire for a batch. Since we set
-  // maximum_samples_per_batch below we will pack approximately that many
-  // samples in every batch.
-  "batch_size": 512,
-  "sorting_keys": [["source", "tokens___tokens"]],
-  # Smaller as we have to use dense embeddings now.
-  # TODO: Use either an adaptive softmax or switch to wordpieces to reduce the vocab size.
-  "maximum_samples_per_batch": ["tokens___tokens", 1000]
+local BASE_LOADER = {
+  "batch_sampler": {
+    "type": "bucket",
+    "batch_size": BATCH_SIZE,
+    "max_instances_in_memory": BATCH_SIZE * 100,
+  }
 };
 
 {
@@ -109,7 +106,7 @@ local BASE_ITERATOR = {
         "input_dropout": 0.1
     }
   },
-  "iterator": BASE_ITERATOR,
+  "data_loader": BASE_LOADER,
   "distributed": {
     "cuda_devices": if NUM_GPUS > 1 then std.range(0, NUM_GPUS - 1) else 0,
   },
@@ -131,5 +128,7 @@ local BASE_ITERATOR = {
       // Adjusted based on our sample size relative to Calypso's.
       "warmup_steps": 6000
     },
+    "num_gradient_accumulation_steps": NUM_GRAD_ACC,
+    "use_amp": true
   }
 }
