@@ -144,5 +144,5 @@ class BidirectionalAttentionFlowMixedPrecisionTest(AllenNlpTestCase):
         train_model_from_file(
             FIXTURES_ROOT / "rc" / "bidaf" / "experiment.json",
             self.TEST_DIR,
-            overrides=f"{'trainer.use_amp':true,'trainer.cuda_device':0,'random_seed':{seed},'numpy_seed':{seed},'pytorch_seed':{seed}}",
+            overrides=f"{{'trainer.use_amp':true,'trainer.cuda_device':0,'random_seed':{seed},'numpy_seed':{seed},'pytorch_seed':{seed}}}",
         )
