@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added the `TaskCard` class and task cards for common tasks.
+- Added a test for the interpret functionality
 
 ### Changed
 
@@ -18,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed TransformerElmo config to work with the new AllenNLP
+- Pinned the version of torch more tightly to make AMP work
+- Fixed the somewhat fragile Bidaf test
 
 
 ## [v1.2.0](https://github.com/allenai/allennlp-models/releases/tag/v1.2.0) - 2020-10-29
