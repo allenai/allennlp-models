@@ -72,7 +72,7 @@
     "type": "bucket",
     "padding_noise": 0.0,
     "batch_size": 40
-    },
+    }
   },
   "trainer": {
     "num_epochs": 1,
