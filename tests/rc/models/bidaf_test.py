@@ -139,8 +139,9 @@ class BidirectionalAttentionFlowTest(ModelTestCase):
 class BidirectionalAttentionFlowMixedPrecisionTest(AllenNlpTestCase):
     @flaky(max_runs=5)
     def test_model_can_train_save_and_load_with_mixed_precision(self):
+        seed = 0  # This test is very sensitive to the seed.
         train_model_from_file(
             FIXTURES_ROOT / "rc" / "bidaf" / "experiment.json",
             self.TEST_DIR,
-            overrides="{'trainer.use_amp':true,'trainer.cuda_device':0}",
+            overrides=f"{{'trainer.use_amp':true,'trainer.cuda_device':0,'random_seed':{seed},'numpy_seed':{seed},'pytorch_seed':{seed}}}",
         )
