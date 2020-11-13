@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed AllenNLP dependency for releases to allow for a range of versions, instead
   of being pinned to an exact version.
 
+### Fixed
+
+- Fixed `pair-classification-esim` pretrained model.
+
 
 ## [v1.2.1](https://github.com/allenai/allennlp-models/releases/tag/v1.2.1) - 2020-11-10
 
