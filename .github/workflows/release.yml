@@ -54,8 +54,7 @@ jobs:
 
     - name: Set AllenNLP version override
       run: |
-        VERSION=$(./scripts/get_version.py current --minimal)
-        ALLENNLP_VERSION_OVERRIDE="allennlp==$VERSION"
+        ALLENNLP_VERSION_OVERRIDE="allennlp$(./scripts/get_version.py current --as-range)"
         echo "Setting ALLENNLP_VERSION_OVERRIDE to $ALLENNLP_VERSION_OVERRIDE"
         echo "ALLENNLP_VERSION_OVERRIDE=$ALLENNLP_VERSION_OVERRIDE" >> $GITHUB_ENV
 
