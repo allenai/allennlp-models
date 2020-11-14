@@ -5,5 +5,7 @@
     "expected_inputs": "Text string with one or more [MASK] tokens.",
     "expected_outputs": "Most likely word subsitutions for each [MASK] token.",
     "scope_and_limitations": null,
-    "examples": null,
+    "examples": [
+    	{"text": "The doctor ran to the emergency room to see [MASK] patient."}
+    ],
 }
