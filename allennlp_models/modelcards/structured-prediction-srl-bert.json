@@ -39,12 +39,12 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "Ontonotes 5.0",
+        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": null,
+        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
         "motivation": null,
         "preprocessing": null
     },

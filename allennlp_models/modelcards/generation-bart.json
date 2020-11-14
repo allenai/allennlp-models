@@ -42,7 +42,7 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": null,
+        "dataset": "[CNN/DailyMail](https://github.com/abisee/cnn-dailymail)",
         "motivation": null,
         "preprocessing": null
     },
