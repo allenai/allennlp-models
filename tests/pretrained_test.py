@@ -406,8 +406,11 @@ class TestAllenNlpPretrainedModels(AllenNlpTestCase):
 
     @pytest.mark.parametrize("model_id, model_card", get_pretrained_models().items())
     def test_pretrained_models(self, model_id, model_card):
-        # Each model in pretrained_models should have an archive and registered_predictor_name.
+        # Each model in pretrained_models should have an archive and a description.
         assert model_card.archive_file is not None
+        assert model_card.display_name is not None
+        assert model_card.model_details.description is not None
+        assert model_card.model_details.short_description is not None
 
     @pytest.mark.parametrize("task_id, task_card", get_tasks().items())
     def test_tasks(self, task_id, task_card):

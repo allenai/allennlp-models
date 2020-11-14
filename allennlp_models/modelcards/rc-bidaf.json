@@ -1,7 +1,66 @@
 {
     "id": "rc-bidaf",
     "registered_model_name": "bidaf",
+    "registered_predictor_name": null,
     "display_name": "BiDAF",
+    "task_id": "rc",
     "archive_file": "bidaf-model-2020.03.19.tar.gz",
-    "training_data": "SQuAD"
+    "model_details": {
+        "description": "This is an implementation of the BiDAF model with GloVe embeddings. The basic layout is pretty simple:
+                        encode words as a combination of word embeddings and a character-level encoder, pass the
+                        word representations through a bi-LSTM/GRU, use a matrix of
+                        attentions to put question information into the passage word representations (this is the only
+                        part that is at all non-standard), pass this through another few layers of bi-LSTMs/GRUs, and
+                        do a softmax over span start and span end.",
+        "short_description": "BiDAF model with GloVe embeddings.",
+        "developed_by": "Seo et al",
+        "contributed_by": null,
+        "date": "2020-03-19",
+        "version": "1",
+        "model_type": "BiDAF",
+        "paper": "[Bidirectional Attention Flow for Machine Comprehension](https://api.semanticscholar.org/CorpusID:8535316)",
+        "citation": "@article{Seo2017BidirectionalAF,
+                     title={Bidirectional Attention Flow for Machine Comprehension},
+                     author={Minjoon Seo and Aniruddha Kembhavi and Ali Farhadi and Hannaneh Hajishirzi},
+                     journal={ArXiv},
+                     year={2017},
+                     volume={abs/1611.01603}}",
+        "license": null,
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": null,
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "Start, end and overall span accuracy, Exact Match, F1 score",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": "SQuAD dev set",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": "SQuAD training set",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    }
 }

@@ -10,6 +10,7 @@
                         https://api.semanticscholar.org/CorpusID:52967399 (Devlin et al, 2018), with improvements 
                         borrowed from the SQuAD model in the transformers project. It predicts start tokens and end
                         tokens with a linear layer on top of word piece embeddings.",
+        "short_description": "A reading comprehension model patterned after the proposed model in Devlin et al, with improvements borrowed from the SQuAD model in the transformers project",
         "developed_by": "Devlin et al",
         "contributed_by": "Dirk Groeneveld and Evan Pete Walsh",
         "date": "2020-10-03",

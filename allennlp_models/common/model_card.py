@@ -70,6 +70,11 @@ class ModelDetails(ModelCardInfo):
             It predicts start tokens and end tokens with a linear layer on top of
             word piece embeddings.
 
+    short_description : `str`
+        A one-line description of the model.
+        Eg. A reading comprehension model patterned after RoBERTa,
+            with improvements borrowed from the SQuAD model in the transformers project.
+
     developed_by : `str`
         Person/organization that developed the model. This can be used by all
         stakeholders to infer details pertaining to model development and
@@ -118,6 +123,7 @@ class ModelDetails(ModelCardInfo):
     """
 
     description: Optional[str] = None
+    short_description: Optional[str] = None
     developed_by: Optional[str] = None
     contributed_by: Optional[str] = None
     date: Optional[str] = None

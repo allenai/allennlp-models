@@ -10,6 +10,7 @@
                         using a RoBERTa-large model. The resulting sequence is pooled using a cls_pooler
                         `Seq2VecEncoder` and then passed to a linear classification layer, which projects
                         into the label space.",
+        "short_description": "RoBERTa finetuned on MNLI.",
         "developed_by": "Liu et al",
         "contributed_by": "Dirk Groeneveld",
         "date": "2020-07-29",

@@ -1,6 +1,66 @@
 {
     "id": "lm-masked-language-model",
     "registered_model_name": "masked_language_model",
+    "registered_predictor_name": null,
     "display_name": "BERT-based Masked Language Model",
-    "archive_file": "bert-masked-lm-2020-10-07.tar.gz"
+    "task_id": "masked-language-modeling",
+    "archive_file": "bert-masked-lm-2020-10-07.tar.gz",
+    "model_details": {
+        "description": "The `MaskedLanguageModel` embeds some input tokens (including some which are masked),
+                        contextualizes them, then predicts targets for the masked tokens, computing a loss against
+                        known targets.",
+        "short_description": "BERT-based masked language model",
+        "developed_by": null,
+        "contributed_by": null,
+        "date": "2020-10-07",
+        "version": "1",
+        "model_type": "BERT",
+        "paper": "[BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding](https://api.semanticscholar.org/CorpusID:52967399)",
+        "citation": "@inproceedings{Devlin2019BERTPO,
+                     title={BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding},
+                     author={J. Devlin and Ming-Wei Chang and Kenton Lee and Kristina Toutanova},
+                     booktitle={NAACL-HLT},
+                     year={2019}}",
+        "license": null,
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": null,
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": null,
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": null,
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": null,
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "ethical_considerations": {
+        "ethical_considerations": "BERT demonstrates gender bias in that it thinks the doctor is more likely a man ('his') than a woman ('her'). An important issue in NLP is how to understand and address such biases in our linguistic models."
+    },
+    "caveats_and_recommendations": {
+        "caveats_and_recommendations": "NOTE: This was developed for use in a demo, not for training.  It's possible that it will still
+                                        work for training a masked LM, but it is very likely that some other code would be much more
+                                        efficient for that.  This `does` compute correct gradients of the loss, because we use that in
+                                        our demo, so in principle it should be able to train a model, we just don't necessarily endorse
+                                        that use."
+    }
 }
