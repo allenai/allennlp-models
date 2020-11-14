@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed `pair-classification-esim` pretrained model.
 
+### Added
+
+- Added `short_description` field to `ModelCard`. 
+- Information updates for all model cards.
+
 
 ## [v1.2.1](https://github.com/allenai/allennlp-models/releases/tag/v1.2.1) - 2020-11-10
 
