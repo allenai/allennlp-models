@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed `pair-classification-esim` pretrained model.
+- Fixed `ValueError` error message in `Seq2SeqDatasetReader`.
 
 ### Added
 
