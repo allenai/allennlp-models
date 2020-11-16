@@ -1,4 +1,62 @@
 {
-	"id": "roberta-sst",
-	"archive_file": "sst-roberta-large-2020.06.08.tar.gz"
+    "id": "roberta-sst",
+    "registered_model_name": null,
+    "registered_predictor_name": null,
+    "display_name": "RoBERTa large",
+    "task_id": "sentiment-analysis",
+    "archive_file": "sst-roberta-large-2020.06.08.tar.gz",
+    "model_details": {
+        "description": "This model is trained on RoBERTa large with the binary classification setting of the Stanford Sentiment Treebank. It achieves 95.11% accuracy on the test set.",
+        "short_description": "RoBERTa-based binary classifier for Stanford Sentiment Treebank",
+        "developed_by": "Devlin et al",
+        "contributed_by": "Zhaofeng Wu",
+        "date": "2020-06-08",
+        "version": "1",
+        "model_type": "RoBERTa large",
+        "paper": "[RoBERTa: A Robustly Optimized BERT Pretraining Approach (Liu et al)]
+                  (https://api.semanticscholar.org/CorpusID:198953378)",
+        "citation": "@article{Liu2019RoBERTaAR,
+                     title={RoBERTa: A Robustly Optimized BERT Pretraining Approach},
+                     author={Y. Liu and Myle Ott and Naman Goyal and Jingfei Du and Mandar Joshi and Danqi Chen and Omer Levy and M. Lewis and Luke Zettlemoyer and Veselin Stoyanov},
+                     journal={ArXiv},
+                     year={2019},
+                     volume={abs/1907.11692}}",
+        "license": null,
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": "classification/stanford_sentiment_treebank_roberta.jsonnet",
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "Accuracy",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": "[Stanford Sentiment Treebank](https://nlp.stanford.edu/sentiment/treebank.html)",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": "[Stanford Sentiment Treebank](https://nlp.stanford.edu/sentiment/treebank.html)",
+        "motivation": null,
+        "preprocessing": "Binary classification setting"
+    },
+    "quantitative_analyses": {
+        "unitary_results": "Accuracy: 95.11% on SST test set.",
+        "intersectional_results": null
+    },
+    "ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    }
 }

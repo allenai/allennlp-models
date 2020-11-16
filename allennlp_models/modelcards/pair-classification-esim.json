@@ -8,6 +8,7 @@
     "model_details": {
         "description": "This `Model` implements the ESIM model, which is a sequential neural inference model
                         based on chain LSTMs.",
+        "short_description": "Enhanced LSTM trained on SNLI.",
         "developed_by": "Chen et al",
         "contributed_by": "Dirk Groeneveld",
         "date": "2020-04-09",
