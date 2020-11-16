@@ -97,7 +97,7 @@ class Seq2SeqDatasetReader(DatasetReader):
                 )
             except ValueError:
                 raise ValueError(
-                    f"Bad start or end symbol ({'start_symbol', 'end_symbol'}) "
+                    f"Bad start or end symbol ('{start_symbol}', '{end_symbol}') "
                     f"for tokenizer {self._source_tokenizer}"
                 )
 
