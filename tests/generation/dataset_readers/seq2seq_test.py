@@ -218,5 +218,5 @@ class TestSeq2SeqDatasetReader:
             ]
 
     def test_bad_start_or_end_symbol(self):
-        with pytest.raises(ValueError, match="Bad start or end symbol \('BAD SYMBOL"):
+        with pytest.raises(ValueError, match=r"Bad start or end symbol \('BAD SYMBOL"):
             Seq2SeqDatasetReader(start_symbol="BAD SYMBOL")
