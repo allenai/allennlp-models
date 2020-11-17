@@ -417,7 +417,7 @@ jobs:
 
     - name: Build image
       run: |
-        make docker-image DOCKER_IMAGE_NAME="$DOCKER_IMAGE_NAME" ALLENNLP_VERSION="ALLENNLP_VERSION"
+        make docker-image DOCKER_IMAGE_NAME="$DOCKER_IMAGE_NAME" ALLENNLP_VERSION="$ALLENNLP_VERSION"
 
     - name: Authenticate with Docker Hub
       run: |
