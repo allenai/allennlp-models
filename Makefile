@@ -1,4 +1,5 @@
 VERSION = $(shell python ./scripts/get_version.py current --minimal)
+ALLENNLP_VERSION = $(VERSION)
 
 SRC = allennlp_models
 
@@ -13,6 +14,7 @@ MD_DOCS_TGT = site/
 MD_DOCS_EXTRAS = $(addprefix $(MD_DOCS_ROOT),README.md CHANGELOG.md)
 
 DOCKER_TAG = latest
+DOCKER_IMAGE_NAME = allennlp/models:v$(VERSION)
 DOCKER_RUN_CMD = docker run --rm \
 		-v $$HOME/.allennlp:/root/.allennlp \
 		-v $$HOME/.cache/torch:/root/.cache/torch \
@@ -117,9 +119,9 @@ $(MD_DOCS_API_ROOT)%.md : $(SRC)/%.py scripts/py2md.py
 docker-image :
 	docker build \
 		--pull \
-		--build-arg ALLENNLP_VERSION=$(VERSION) \
+		--build-arg ALLENNLP_VERSION=$(ALLENNLP_VERSION) \
 		-f Dockerfile \
-		-t allennlp/models:v$(VERSION) .
+		-t $(DOCKER_IMAGE_NAME) .
 
 .PHONY : docker-test-image
 docker-test-image :
