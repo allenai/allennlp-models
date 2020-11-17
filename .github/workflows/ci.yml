@@ -379,6 +379,7 @@ jobs:
         ./scripts/ensure_models_found.py
 
     - name: Ensure versions match
+      if: github.event_name == 'release'
       run: |
         ./scripts/ensure_versions_match.py
 
