@@ -421,7 +421,7 @@ jobs:
 
   publish:
     name: PyPI
-    if: github.repository == 'allenai/allennlp-models'
+    if: github.repository == 'allenai/allennlp-models' && github.event_name == 'release'
     needs: [checks, build_package, test_package, docker, docs, pretrained, configs, gpu_checks]
     runs-on: ubuntu-latest
 
