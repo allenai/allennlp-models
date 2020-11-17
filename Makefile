@@ -1,5 +1,5 @@
 VERSION = $(shell python ./scripts/get_version.py current --minimal)
-ALLENNLP_VERSION = $(VERSION)
+ALLENNLP_TAG = v$(VERSION)
 
 SRC = allennlp_models
 
@@ -119,7 +119,7 @@ $(MD_DOCS_API_ROOT)%.md : $(SRC)/%.py scripts/py2md.py
 docker-image :
 	docker build \
 		--pull \
-		--build-arg ALLENNLP_VERSION=$(ALLENNLP_VERSION) \
+		--build-arg ALLENNLP_TAG=$(ALLENNLP_TAG) \
 		-f Dockerfile \
 		-t $(DOCKER_IMAGE_NAME) .
 

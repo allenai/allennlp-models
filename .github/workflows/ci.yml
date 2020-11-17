@@ -413,11 +413,11 @@ jobs:
       run: |
         VERSION="$(scripts/get_version.py current)-cuda${CUDA}"
         echo "DOCKER_IMAGE_NAME=allennlp/models:${VERSION}" >> $GITHUB_ENV
-        echo "ALLENNLP_VERSION=${VERSION}" >> $GITHUB_ENV
+        echo "ALLENNLP_TAG=${VERSION}" >> $GITHUB_ENV
 
     - name: Build image
       run: |
-        make docker-image DOCKER_IMAGE_NAME="$DOCKER_IMAGE_NAME" ALLENNLP_VERSION="$ALLENNLP_VERSION"
+        make docker-image DOCKER_IMAGE_NAME="$DOCKER_IMAGE_NAME" ALLENNLP_TAG="$ALLENNLP_TAG"
 
     - name: Authenticate with Docker Hub
       run: |

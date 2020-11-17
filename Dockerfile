@@ -8,9 +8,9 @@
 # The reason for this difference is that this image is built during a release workflow
 # on a GitHub Actions job, which is required to succeed *before* the PyPI release is uploaded.
 
-ARG ALLENNLP_VERSION
+ARG ALLENNLP_TAG
 
-FROM allennlp/allennlp:v${ALLENNLP_VERSION}
+FROM allennlp/allennlp:${ALLENNLP_TAG}
 
 # Install the wheel of allennlp-models.
 COPY dist dist/
