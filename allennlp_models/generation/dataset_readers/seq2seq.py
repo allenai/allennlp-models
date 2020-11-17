@@ -49,12 +49,16 @@ class Seq2SeqDatasetReader(DatasetReader):
         Whether or not to add `start_symbol` to the beginning of the source sequence.
     source_add_end_token : `bool`, (optional, default=`True`)
         Whether or not to add `end_symbol` to the end of the source sequence.
+    target_add_start_token : `bool`, (optional, default=`True`)
+        Whether or not to add `start_symbol` to the beginning of the target sequence.
+    target_add_end_token : `bool`, (optional, default=`True`)
+        Whether or not to add `end_symbol` to the end of the target sequence.
     start_symbol : `str`, (optional, default=`START_SYMBOL`)
-        The special token to add to the beginning of the target sequence, and the source sequence
-        if `source_add_start_token`.
+        The special token to add to the end of the source sequence or the target sequence if
+        `source_add_start_token` or `target_add_start_token` respectively.
     end_symbol : `str`, (optional, default=`END_SYMBOL`)
-        The special token to add to the end of the target sequence, and the source sequence if
-        `source_add_end_token`.
+        The special token to add to the end of the source sequence or the target sequence if
+        `source_add_end_token` or `target_add_end_token` respectively.
     delimiter : `str`, (optional, default=`"\t"`)
         Set delimiter for tsv/csv file.
     quoting : `int`, (optional, default=`csv.QUOTE_MINIMAL`)
