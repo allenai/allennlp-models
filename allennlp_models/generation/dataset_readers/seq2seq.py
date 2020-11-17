@@ -46,9 +46,15 @@ class Seq2SeqDatasetReader(DatasetReader):
         Indexers used to define output (target side) token representations. Defaults to
         `source_token_indexers`.
     source_add_start_token : `bool`, (optional, default=`True`)
-        Whether or not to add `START_SYMBOL` to the beginning of the source sequence.
+        Whether or not to add `start_symbol` to the beginning of the source sequence.
     source_add_end_token : `bool`, (optional, default=`True`)
-        Whether or not to add `END_SYMBOL` to the end of the source sequence.
+        Whether or not to add `end_symbol` to the end of the source sequence.
+    start_symbol : `str`, (optional, default=`START_SYMBOL`)
+        The special token to add to the beginning of the target sequence, and the source sequence
+        if `source_add_start_token`.
+    end_symbol : `str`, (optional, default=`END_SYMBOL`)
+        The special token to add to the end of the target sequence, and the source sequence if
+        `source_add_end_token`.
     delimiter : `str`, (optional, default=`"\t"`)
         Set delimiter for tsv/csv file.
     quoting : `int`, (optional, default=`csv.QUOTE_MINIMAL`)
@@ -91,15 +97,17 @@ class Seq2SeqDatasetReader(DatasetReader):
             or target_add_start_token
             or target_add_end_token
         ):
-            try:
-                self._start_token, self._end_token = self._source_tokenizer.tokenize(
-                    start_symbol + " " + end_symbol
-                )
-            except ValueError:
+            # Check that the tokenizer correctly appends the start and end tokens to
+            # the sequence without splitting them.
+            tokens = self._source_tokenizer.tokenize(start_symbol + " " + end_symbol)
+            start_token, end_token = tokens[0], tokens[-1]
+            if start_token.text != start_symbol or end_token.text != end_symbol:
                 raise ValueError(
                     f"Bad start or end symbol ('{start_symbol}', '{end_symbol}') "
                     f"for tokenizer {self._source_tokenizer}"
                 )
+            self._start_token = start_token
+            self._end_token = end_token
 
         self._delimiter = delimiter
         self._source_max_tokens = source_max_tokens
