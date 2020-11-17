@@ -16,6 +16,9 @@ LABEL com.nvidia.volumes.needed="nvidia_driver"
 
 WORKDIR /stage/allennlp-models
 
+# Our self-hosted runner currently has CUDA 11.0.
+RUN pip install --no-cache-dir torch==1.7.0+cu110 -f https://download.pytorch.org/whl/torch_stable.html
+
 COPY requirements.txt requirements.txt
 COPY dev-requirements.txt dev-requirements.txt
 
