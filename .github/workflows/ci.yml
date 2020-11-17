@@ -387,6 +387,7 @@ jobs:
     # Only build and push images for releases.
     if: github.repository == 'allenai/allennlp-models' && github.event_name == 'release'
     needs: [build_package]  # needs the package artifact created from 'build_package' job.
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         cuda: ['10.2', '11.0']
