@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+
+## [v1.2.2](https://github.com/allenai/allennlp-models/releases/tag/v1.2.2) - 2020-11-17
+
 ### Changed
 
 - Changed AllenNLP dependency for releases to allow for a range of versions, instead
