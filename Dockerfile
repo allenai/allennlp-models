@@ -14,4 +14,4 @@ FROM allennlp/allennlp:v${ALLENNLP_VERSION}
 
 # Install the wheel of allennlp-models.
 COPY dist dist/
-RUN pip install $(ls dist/*.whl)
+RUN pip install --no-cache-dir $(ls dist/*.whl) && rm -rf dist/

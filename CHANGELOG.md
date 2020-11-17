@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changed AllenNLP dependency for releases to allow for a range of versions, instead
   of being pinned to an exact version.
+- There will now be multiple Docker images pushed to Docker Hub for releases, each
+  corresponding to a different supported CUDA version (currently just 10.2 and 11.0).
 
 ### Fixed
 
