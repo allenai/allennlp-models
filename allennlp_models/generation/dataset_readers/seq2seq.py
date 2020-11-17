@@ -104,12 +104,16 @@ class Seq2SeqDatasetReader(DatasetReader):
             # Check that the tokenizer correctly appends the start and end tokens to
             # the sequence without splitting them.
             tokens = self._source_tokenizer.tokenize(start_symbol + " " + end_symbol)
-            start_token, end_token = tokens[0], tokens[-1]
-            if start_token.text != start_symbol or end_token.text != end_symbol:
+            try:
+                start_token, end_token = tokens[0], tokens[-1]
+                if start_token.text != start_symbol or end_token.text != end_symbol:
+                    raise IndexError
+            except IndexError:
                 raise ValueError(
                     f"Bad start or end symbol ('{start_symbol}', '{end_symbol}') "
                     f"for tokenizer {self._source_tokenizer}"
                 )
+
             self._start_token = start_token
             self._end_token = end_token
 
