@@ -11,7 +11,9 @@
                         and used to prune away spans that are unlikely to occur in a coreference 
                         cluster. For the remaining spans, the model decides which antecedent
                         span (if any) they are coreferent with. The resulting coreference links, after applying
-                        transitivity, imply a clustering of the spans in the document.",
+                        transitivity, imply a clustering of the spans in the document.
+                        The GloVe embeddings in the original paper have been substituted with SpanBERT embeddings.",
+        "short_description": "Higher-order coref with coarse-to-fine inference (with SpanBERT embeddings).",
         "developed_by": "Lee et al",
         "contributed_by": "Zhaofeng Wu",
         "date": "2020-02-27",
@@ -24,7 +26,8 @@
                      booktitle={NAACL-HLT},
                      year={2018}}",
         "license": null,
-        "contact": "allennlp-contact@allenai.org"
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": "coref/coref_spanbert_large.jsonnet"
     },
     "intended_use": {
         "primary_uses": null,
@@ -41,12 +44,12 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": null,
+        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": null,
+        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
         "motivation": null,
         "preprocessing": null
     },

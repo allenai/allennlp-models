@@ -1,4 +1,5 @@
 VERSION = $(shell python ./scripts/get_version.py current --minimal)
+ALLENNLP_TAG = v$(VERSION)
 
 SRC = allennlp_models
 
@@ -13,11 +14,14 @@ MD_DOCS_TGT = site/
 MD_DOCS_EXTRAS = $(addprefix $(MD_DOCS_ROOT),README.md CHANGELOG.md)
 
 DOCKER_TAG = latest
+DOCKER_IMAGE_NAME = allennlp/models:v$(VERSION)
 DOCKER_RUN_CMD = docker run --rm \
 		-v $$HOME/.allennlp:/root/.allennlp \
 		-v $$HOME/.cache/torch:/root/.cache/torch \
 		-v $$HOME/nltk_data:/root/nltk_data
-ALLENNLP_COMMIT_SHA = $(shell git ls-remote https://github.com/epwalsh/allennlp data-loading | cut -f 1)
+
+# TODO: change this back to master branch
+ALLENNLP_COMMIT_SHA = $(shell git ls-remote https://github.com/allenai/allennlp vision | cut -f 1)
 
 ifeq ($(shell uname),Darwin)
 ifeq ($(shell which gsed),)
@@ -117,9 +121,9 @@ $(MD_DOCS_API_ROOT)%.md : $(SRC)/%.py scripts/py2md.py
 docker-image :
 	docker build \
 		--pull \
-		--build-arg ALLENNLP_VERSION=$(VERSION) \
+		--build-arg ALLENNLP_TAG=$(ALLENNLP_TAG) \
 		-f Dockerfile \
-		-t allennlp/models:v$(VERSION) .
+		-t $(DOCKER_IMAGE_NAME) .
 
 .PHONY : docker-test-image
 docker-test-image :

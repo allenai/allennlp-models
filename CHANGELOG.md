@@ -15,6 +15,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased (1.x branch)
 
 
+## [v1.2.2](https://github.com/allenai/allennlp-models/releases/tag/v1.2.2) - 2020-11-17
+
+### Changed
+
+- Changed AllenNLP dependency for releases to allow for a range of versions, instead
+  of being pinned to an exact version.
+- There will now be multiple Docker images pushed to Docker Hub for releases, each
+  corresponding to a different supported CUDA version (currently just 10.2 and 11.0).
+
+### Fixed
+
+- Fixed `pair-classification-esim` pretrained model.
+- Fixed `ValueError` error message in `Seq2SeqDatasetReader`.
+- Better check for start and end symbols in `Seq2SeqDatasetReader` that doesn't fail for BPE-based tokenizers.
+
+### Added
+
+- Added `short_description` field to `ModelCard`. 
+- Information updates for all model cards.
+
+
 ## [v1.2.1](https://github.com/allenai/allennlp-models/releases/tag/v1.2.1) - 2020-11-10
 
 ### Added

@@ -11,11 +11,12 @@
                         from BART in this module.  For the typical use case of using BART to encode inputs to your
                         model (where we include the token and position embeddings from BART), you should use
                         `PretrainedTransformerEmbedder(bart_model_name, sub_module=\"encoder\")` instead of this.",
+        "short_description": "BART with a language model head for generation.",
         "developed_by": "Lewis et al",
         "contributed_by": "Dirk Groeneveld",
         "date": "2020-07-25",
         "version": "1",
-        "model_type": null,
+        "model_type": "BART",
         "paper": "[BART: Denosing Sequence-to-Sequence Pre-training for Natural Language Generation,
                    Translation, and Comprehension](https://api.semanticscholar.org/CorpusID:204960716)",
         "citation": "@inproceedings{Lewis2020BARTDS,
@@ -41,7 +42,7 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": null,
+        "dataset": "[CNN/DailyMail](https://github.com/abisee/cnn-dailymail)",
         "motivation": null,
         "preprocessing": null
     },

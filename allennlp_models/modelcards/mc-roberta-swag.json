@@ -9,6 +9,7 @@
         "description": "This is a multiple choice model patterned after the BERT architecture.
                         It calculates a score for each sequence on top of the CLS token, and then chooses the alternative
                         with the highest score.",
+        "short_description": "RoBERTa-based multiple choice model for SWAG.",
         "developed_by": "Devlin et al",
         "contributed_by": "Dirk Groeneveld",
         "date": "2020-07-08",

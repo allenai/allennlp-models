@@ -20,6 +20,7 @@
                         a feedforward network to modify the representation.
 
                         This model uses ELMo embeddings.",
+        "short_description": "The decomposable attention model (Parikh et al, 2017) combined with ELMo embeddings trained on SNLI.",
         "developed_by": "Parikh et al",
         "contributed_by": "Dirk Groeneveld",
         "date": "2020-04-09",
