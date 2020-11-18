@@ -379,7 +379,7 @@ jobs:
 
     - name: Patch AllenNLP dependency
       run: |
-        pip install git+https://github.com/allenai/allennlp.git@vision
+        pip install --upgrade git+https://github.com/allenai/allennlp.git@vision
 
     - name: Debug info
       run: |
