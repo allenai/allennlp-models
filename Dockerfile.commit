@@ -3,8 +3,9 @@
 # which should be set to the desired commit SHAs for each repo, respectively.
 
 ARG ALLENNLP_COMMIT
+ARG CUDA
 
-FROM allennlp/commit:${ALLENNLP_COMMIT}
+FROM allennlp/commit:${ALLENNLP_COMMIT}-cuda${CUDA}
 
 ARG ALLENNLP_MODELS_COMMIT
 
