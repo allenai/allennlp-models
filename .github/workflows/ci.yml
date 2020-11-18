@@ -381,6 +381,10 @@ jobs:
       run: |
         pip install git+https://github.com/allenai/allennlp.git@vision
 
+    - name: Debug info
+      run: |
+        pip freeze
+
     - name: Ensure models automatically loaded
       run: |
         ./scripts/ensure_models_found.py
