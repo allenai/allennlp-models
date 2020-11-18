@@ -377,6 +377,10 @@ jobs:
       run: |
         pip install $(ls dist/*.whl)
 
+    - name: Patch AllenNLP dependency
+      run: |
+        pip install git+https://github.com/allenai/allennlp.git@vision
+
     - name: Ensure models automatically loaded
       run: |
         ./scripts/ensure_models_found.py
