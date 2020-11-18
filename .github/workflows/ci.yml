@@ -164,6 +164,7 @@ jobs:
     - uses: actions/checkout@v1
 
     - name: Setup SSH Client 🔑
+      if: github.event_name == 'push' || github.event_name == 'release'
       uses: webfactory/ssh-agent@v0.4.1
       with:
         ssh-private-key: ${{ secrets.DOCS_DEPLOY_KEY }}
@@ -193,6 +194,7 @@ jobs:
         make build-docs
 
     - name: Configure Git
+      if: github.event_name == 'push' || github.event_name == 'release'
       run: |
         git config --global user.email "ai2service@allenai.org"
         git config --global user.name "ai2service"
