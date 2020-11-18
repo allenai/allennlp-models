@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Updated `Dockerfile.release` and `Dockerfile.commit` to work with different CUDA versions.
+
 
 ## [v1.2.2](https://github.com/allenai/allennlp-models/releases/tag/v1.2.2) - 2020-11-17
 
