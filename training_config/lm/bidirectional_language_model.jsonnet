@@ -25,10 +25,10 @@ local BASE_READER = {
 };
 
 local BASE_LOADER = {
+  "max_instances_in_memory": BATCH_SIZE * 100,
   "batch_sampler": {
     "type": "bucket",
     "batch_size": BATCH_SIZE,
-    "max_instances_in_memory": BATCH_SIZE * 100,
   }
 };
 
