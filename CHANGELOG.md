@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added link to source code to API docs.
+
 ### Changed
 
 - Updated `Dockerfile.release` and `Dockerfile.commit` to work with different CUDA versions.
