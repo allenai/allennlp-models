@@ -4,13 +4,22 @@
 flake8
 
 # Static type checking
-mypy==0.782
+mypy==0.790
 
 # Automatic code formatting
 black
 
+# Running unit tests.
+pytest
+
 # Allows generation of coverage reports with pytest.
 pytest-cov
+
+# Lets you run tests in forked subprocesses.
+pytest-forked
+
+# Lets you run tests in parallel.
+pytest-xdist
 
 # Allows codecov to generate coverage reports
 coverage
@@ -30,8 +39,8 @@ nr.databind.core<0.0.17
 nr.interface<0.0.4
 
 mkdocs==1.1.2
-mkdocs-material>=5.5.0,<5.6.0
-markdown-include==0.5.1
+mkdocs-material>=5.5.0,<6.2.0
+markdown-include==0.6.0
 
 #### PACKAGE-UPLOAD PACKAGES ####
 

@@ -1,4 +1,5 @@
 VERSION = $(shell python ./scripts/get_version.py current --minimal)
+ALLENNLP_TAG = v$(VERSION)
 
 SRC = allennlp_models
 
@@ -13,6 +14,7 @@ MD_DOCS_TGT = site/
 MD_DOCS_EXTRAS = $(addprefix $(MD_DOCS_ROOT),README.md CHANGELOG.md)
 
 DOCKER_TAG = latest
+DOCKER_IMAGE_NAME = allennlp/models:v$(VERSION)
 DOCKER_RUN_CMD = docker run --rm \
 		-v $$HOME/.allennlp:/root/.allennlp \
 		-v $$HOME/.cache/torch:/root/.cache/torch \
@@ -58,7 +60,7 @@ typecheck :
 
 .PHONY : test
 test :
-	pytest --color=yes -rf --durations=40 -m "not pretrained_model_test" -m "not pretrained_config_test"
+	pytest --color=yes -rf --durations=40 -m "not pretrained_model_test and not pretrained_config_test"
 
 .PHONY : gpu-test
 gpu-test :
@@ -67,19 +69,18 @@ gpu-test :
 .PHONY : test-with-cov
 test-with-cov :
 	pytest --color=yes -rf --durations=40 \
-			-m "not pretrained_model_test" \
-			-m "not pretrained_config_test" \
+			-m "not pretrained_model_test and not pretrained_config_test" \
 			--cov-config=.coveragerc \
 			--cov=allennlp_models/ \
 			--cov-report=xml
 
 .PHONY : test-pretrained
 test-pretrained :
-	pytest -v --color=yes --durations=10 -m "pretrained_model_test"
+	pytest -v -n2 --forked --color=yes --durations=10 -m "pretrained_model_test"
 
 .PHONY : test-configs
 test-configs :
-	pytest -v --color=yes --durations=10 -m "pretrained_config_test"
+	pytest -v -n2 --forked --color=yes --durations=10 -m "pretrained_config_test"
 
 .PHONY : build-all-api-docs
 build-all-api-docs : scripts/py2md.py
@@ -118,14 +119,18 @@ $(MD_DOCS_API_ROOT)%.md : $(SRC)/%.py scripts/py2md.py
 docker-image :
 	docker build \
 		--pull \
-		--build-arg ALLENNLP_VERSION=$(VERSION) \
+		--build-arg ALLENNLP_TAG=$(ALLENNLP_TAG) \
 		-f Dockerfile \
-		-t allennlp/models:v$(VERSION) .
+		-t $(DOCKER_IMAGE_NAME) .
 
 .PHONY : docker-test-image
 docker-test-image :
 	docker build --pull -f Dockerfile.test --build-arg ALLENNLP_COMMIT_SHA=$(ALLENNLP_COMMIT_SHA) -t allennlp-models/test:$(DOCKER_TAG) .
 
+.PHONY : docker-test-run-with-gpus
+docker-test-run-with-gpus :
+	$(DOCKER_RUN_CMD) --gpus 2 allennlp-models/test:$(DOCKER_TAG) $(ARGS)
+
 .PHONY : docker-test-run
 docker-test-run :
-	$(DOCKER_RUN_CMD) --gpus 2 allennlp-models/test:$(DOCKER_TAG) $(ARGS)
+	$(DOCKER_RUN_CMD) allennlp-models/test:$(DOCKER_TAG) $(ARGS)

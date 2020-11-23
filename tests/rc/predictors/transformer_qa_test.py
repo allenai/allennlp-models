@@ -19,7 +19,11 @@ class TestTransformerQAPredictor(AllenNlpTestCase):
         prediction = self.predictor.predict(
             "What is love?", "Baby don't hurt me, don't hurt me, no more."
         )
-        assert all(0 <= i < len(prediction["context_tokens"]) for i in prediction["best_span"])
+        span_start, span_end = prediction["best_span"]
+        assert -1 <= span_start <= span_end
+        assert "best_span_str" in prediction and isinstance(prediction["best_span_str"], str)
+        if span_start > -1:
+            assert len(prediction["best_span_str"]) > 0
 
     def test_predict_long_instance(self):
         # We use a short context and a long context, so that the long context has to be broken into multiple

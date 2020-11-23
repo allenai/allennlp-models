@@ -76,7 +76,7 @@ setup(
         "Intended Audience :: Science/Research",
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: Apache Software License",
-        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ],
     keywords="allennlp NLP deep learning machine reading semantic parsing parsers",
@@ -84,7 +84,9 @@ setup(
     author="Allen Institute for Artificial Intelligence",
     author_email="allennlp@allenai.org",
     license="Apache",
-    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"],),
+    packages=find_packages(
+        exclude=["*.tests", "*.tests.*", "tests.*", "tests"],
+    ),
     install_requires=install_requirements,
     include_package_data=True,
     package_data={

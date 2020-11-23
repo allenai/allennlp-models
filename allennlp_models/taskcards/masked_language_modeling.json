@@ -1,0 +1,11 @@
+{
+    "id": "masked-language-modeling",
+    "name": "Masked Language Modeling",
+    "description": "Masked language modeling is a fill-in-the-blank task, where a model uses the context words surrounding a [MASK] token to try to predict what the [MASK] word should be.",
+    "expected_inputs": "Text string with one or more [MASK] tokens.",
+    "expected_outputs": "Most likely word subsitutions for each [MASK] token.",
+    "scope_and_limitations": null,
+    "examples": [
+    	{"text": "The doctor ran to the emergency room to see [MASK] patient."}
+    ],
+}

@@ -1,8 +1,8 @@
 import os
 
 _MAJOR = "1"
-_MINOR = "1"
-_PATCH = "0rc3"
+_MINOR = "2"
+_PATCH = "2"
 # This is mainly for nightly builds which have the suffix ".dev$DATE". See
 # https://semver.org/#is-v123-a-semantic-version for the semantics.
 _SUFFIX = os.environ.get("ALLENNLP_MODELS_VERSION_SUFFIX", "")

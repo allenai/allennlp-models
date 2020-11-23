@@ -12,7 +12,8 @@ logger = logging.getLogger(__name__)
 class TransformerMC(Model):
     """
     This class implements a multiple choice model patterned after the proposed model in
-    https://arxiv.org/abs/1810.04805 (Devlin et al).
+    [RoBERTa: A Robustly Optimized BERT Pretraining Approach (Liu et al)]
+    (https://api.semanticscholar.org/CorpusID:198953378).
 
     It calculates a score for each sequence on top of the CLS token, and then chooses the alternative
     with the highest score.

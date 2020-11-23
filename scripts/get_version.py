@@ -8,12 +8,17 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("version_type", choices=["stable", "latest", "current"])
     parser.add_argument("--minimal", action="store_true", default=False)
+    parser.add_argument("--as-range", action="store_true", default=False)
     return parser.parse_args()
 
 
-def post_process(version: str, minimal: bool = False):
+def post_process(version: str, minimal: bool = False, as_range: bool = False):
+    assert not (minimal and as_range)
     if version.startswith("v"):
-        return version if not minimal else version[1:]
+        version = version[1:]
+    if as_range:
+        major, minor, *_ = version.split(".")
+        return f">={version},<{major}.{int(minor)+1}"
     return version if minimal else f"v{version}"
 
 
@@ -43,11 +48,11 @@ def get_stable_version() -> str:
 def main() -> None:
     opts = parse_args()
     if opts.version_type == "stable":
-        print(post_process(get_stable_version(), opts.minimal))
+        print(post_process(get_stable_version(), opts.minimal, opts.as_range))
     elif opts.version_type == "latest":
-        print(post_process(get_latest_version(), opts.minimal))
+        print(post_process(get_latest_version(), opts.minimal, opts.as_range))
     elif opts.version_type == "current":
-        print(post_process(get_current_version(), opts.minimal))
+        print(post_process(get_current_version(), opts.minimal, opts.as_range))
     else:
         raise NotImplementedError
 

@@ -464,13 +464,13 @@ class DialogQA(Model):
                             refs = [answer_texts[z] for z in idxes]
                             t_f1.append(
                                 squad.metric_max_over_ground_truths(
-                                    squad.f1_score, best_span_string, refs
+                                    squad.compute_f1, best_span_string, refs
                                 )
                             )
                         f1_score = 1.0 * sum(t_f1) / len(t_f1)
                     else:
                         f1_score = squad.metric_max_over_ground_truths(
-                            squad.f1_score, best_span_string, answer_texts
+                            squad.compute_f1, best_span_string, answer_texts
                         )
                 self._official_f1(100 * f1_score)
             output_dict["qid"].append(per_dialog_query_id_list)

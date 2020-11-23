@@ -1,6 +1,63 @@
 {
     "id": "tagging-elmo-crf-tagger",
-    "registered_model_name": "crf_tagger", 
+    "registered_model_name": "crf_tagger",
+    "registered_predictor_name": null,
     "display_name": "ELMo-based Named Entity Recognition",
-    "archive_file": "ner-model-2020.02.10.tar.gz"
+    "task_id": "ner",
+    "archive_file": "ner-model-2020.02.10.tar.gz",
+    "model_details": {
+        "description": "This model is the baseline model described in [Semi-supervised sequence tagging with bidirectional language models](https://api.semanticscholar.org/CorpusID:7197241).
+                        It uses a Gated Recurrent Unit (GRU) character encoder as well as a GRU phrase encoder,
+                        and it starts with pretrained GloVe vectors for its token embeddings. It was trained on
+                        the CoNLL-2003 NER dataset.",
+        "short_description": "NER tagger using a Gated Recurrent Unit (GRU) character encoder as well as a GRU phrase encoder, with GloVe embeddings.",
+        "developed_by": "Peters et al",
+        "contributed_by": null,
+        "date": "2020-02-10",
+        "version": "1",
+        "model_type": "Gated Recurrent Unit (GRU)",
+        "paper": "[Semi-supervised sequence tagging with bidirectional language models](https://api.semanticscholar.org/CorpusID:7197241)",
+        "citation": "@inproceedings{Peters2017SemisupervisedST,
+                     title={Semi-supervised sequence tagging with bidirectional language models},
+                     author={Matthew E. Peters and Waleed Ammar and Chandra Bhagavatula and R. Power},
+                     booktitle={ACL},
+                     year={2017}}",
+        "license": null,
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": null,
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": null,
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": "[CoNLL-2003 NER dataset](https://www.clips.uantwerpen.be/conll2003/ner/)",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": "[CoNLL-2003 NER dataset](https://www.clips.uantwerpen.be/conll2003/ner/)",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    }
 }

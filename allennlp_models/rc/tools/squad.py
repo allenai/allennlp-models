@@ -1,18 +1,28 @@
-""" Official evaluation script for v1.1 of the SQuAD dataset. """
-from __future__ import print_function
-from collections import Counter
-import string
+"""Functions taken from [the official evaluation script]
+(https://worksheets.codalab.org/rest/bundles/0x6b567e1cf2e041ec80d7098f031c5c9e/contents/blob/)
+for SQuAD version 2.0.
+"""
+
+import collections
 import re
-import argparse
-import json
-import sys
+import string
+
+
+def make_qid_to_has_ans(dataset):
+    qid_to_has_ans = {}
+    for article in dataset:
+        for p in article["paragraphs"]:
+            for qa in p["qas"]:
+                qid_to_has_ans[qa["id"]] = bool(qa["answers"])
+    return qid_to_has_ans
 
 
 def normalize_answer(s):
     """Lower text and remove punctuation, articles and extra whitespace."""
 
     def remove_articles(text):
-        return re.sub(r"\b(a|an|the)\b", " ", text)
+        regex = re.compile(r"\b(a|an|the)\b", re.UNICODE)
+        return re.sub(regex, " ", text)
 
     def white_space_fix(text):
         return " ".join(text.split())
@@ -27,21 +37,30 @@ def normalize_answer(s):
     return white_space_fix(remove_articles(remove_punc(lower(s))))
 
 
-def f1_score(prediction, ground_truth):
-    prediction_tokens = normalize_answer(prediction).split()
-    ground_truth_tokens = normalize_answer(ground_truth).split()
-    common = Counter(prediction_tokens) & Counter(ground_truth_tokens)
+def get_tokens(s):
+    if not s:
+        return []
+    return normalize_answer(s).split()
+
+
+def compute_exact(a_gold, a_pred):
+    return int(normalize_answer(a_gold) == normalize_answer(a_pred))
+
+
+def compute_f1(a_gold, a_pred):
+    gold_toks = get_tokens(a_gold)
+    pred_toks = get_tokens(a_pred)
+    common = collections.Counter(gold_toks) & collections.Counter(pred_toks)
     num_same = sum(common.values())
+    if len(gold_toks) == 0 or len(pred_toks) == 0:
+        # If either is no-answer, then F1 is 1 if they agree, 0 otherwise
+        return int(gold_toks == pred_toks)
     if num_same == 0:
         return 0
-    precision = 1.0 * num_same / len(prediction_tokens)
-    recall = 1.0 * num_same / len(ground_truth_tokens)
+    precision = 1.0 * num_same / len(pred_toks)
+    recall = 1.0 * num_same / len(gold_toks)
     f1 = (2 * precision * recall) / (precision + recall)
     return f1
-
-
-def exact_match_score(prediction, ground_truth):
-    return normalize_answer(prediction) == normalize_answer(ground_truth)
 
 
 def metric_max_over_ground_truths(metric_fn, prediction, ground_truths):
@@ -52,46 +71,7 @@ def metric_max_over_ground_truths(metric_fn, prediction, ground_truths):
     return max(scores_for_ground_truths)
 
 
-def evaluate(dataset, predictions):
-    f1 = exact_match = total = 0
-    for article in dataset:
-        for paragraph in article["paragraphs"]:
-            for qa in paragraph["qas"]:
-                total += 1
-                if qa["id"] not in predictions:
-                    message = "Unanswered question " + qa["id"] + " will receive score 0."
-                    print(message, file=sys.stderr)
-                    continue
-                ground_truths = list(map(lambda x: x["text"], qa["answers"]))
-                prediction = predictions[qa["id"]]
-                exact_match += metric_max_over_ground_truths(
-                    exact_match_score, prediction, ground_truths
-                )
-                f1 += metric_max_over_ground_truths(f1_score, prediction, ground_truths)
-
-    exact_match = 100.0 * exact_match / total
-    f1 = 100.0 * f1 / total
-
-    return {"exact_match": exact_match, "f1": f1}
-
-
-if __name__ == "__main__":
-    expected_version = "1.1"
-    parser = argparse.ArgumentParser(description="Evaluation for SQuAD " + expected_version)
-    parser.add_argument("dataset_file", help="Dataset file")
-    parser.add_argument("prediction_file", help="Prediction File")
-    args = parser.parse_args()
-    with open(args.dataset_file) as dataset_file:
-        dataset_json = json.load(dataset_file)
-        if dataset_json["version"] != expected_version:
-            print(
-                "Evaluation expects v-"
-                + expected_version
-                + ", but got dataset with v-"
-                + dataset_json["version"],
-                file=sys.stderr,
-            )
-        dataset = dataset_json["data"]
-    with open(args.prediction_file) as prediction_file:
-        predictions = json.load(prediction_file)
-    print(json.dumps(evaluate(dataset, predictions)))
+def get_metric_score(prediction, gold_answers):
+    exact_scores = metric_max_over_ground_truths(compute_exact, prediction, gold_answers)
+    f1_scores = metric_max_over_ground_truths(compute_f1, prediction, gold_answers)
+    return exact_scores, f1_scores

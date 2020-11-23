@@ -1,8 +1,9 @@
+from typing import Dict, List
 import pytest
 import spacy
 
 from allennlp.common.testing import AllenNlpTestCase
-from allennlp_models.pretrained import get_pretrained_models, load_predictor
+from allennlp_models.pretrained import get_pretrained_models, get_tasks, load_predictor
 
 
 # But default we don't run these tests
@@ -83,9 +84,7 @@ class TestAllenNlpPretrainedModels(AllenNlpTestCase):
             },
             {
                 "verb": "playing",
-                "description": "If you liked [ARG1: the music] [ARG0: we] were [V: playing] "
-                "[ARGM-TMP: last night] , you will absolutely love what we "
-                "'re playing tomorrow !",
+                "description": "If you liked [ARG1: the music] [ARG0: we] were [V: playing] [ARGM-TMP: last night] , you will absolutely love what we 're playing tomorrow !",
                 "tags": [
                     "O",
                     "O",
@@ -112,30 +111,28 @@ class TestAllenNlpPretrainedModels(AllenNlpTestCase):
             },
             {
                 "verb": "will",
-                "description": "[ARGM-ADV: If you liked the music we were playing last "
-                "night] , [ARG0: you] [V: will] [ARG1: absolutely love what "
-                "we 're playing tomorrow] !",
+                "description": "If you liked the music we were playing last night , you [V: will] absolutely love what we 're playing tomorrow !",
                 "tags": [
-                    "B-ARGM-ADV",
-                    "I-ARGM-ADV",
-                    "I-ARGM-ADV",
-                    "I-ARGM-ADV",
-                    "I-ARGM-ADV",
-                    "I-ARGM-ADV",
-                    "I-ARGM-ADV",
-                    "I-ARGM-ADV",
-                    "I-ARGM-ADV",
-                    "I-ARGM-ADV",
                     "O",
-                    "B-ARG0",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
                     "B-V",
-                    "B-ARG1",
-                    "I-ARG1",
-                    "I-ARG1",
-                    "I-ARG1",
-                    "I-ARG1",
-                    "I-ARG1",
-                    "I-ARG1",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
                     "O",
                 ],
             },
@@ -361,6 +358,11 @@ class TestAllenNlpPretrainedModels(AllenNlpTestCase):
         ]
         assert result["predicted_heads"] == [2, 0, 2, 2, 4, 2]
 
+    def test_sentiment_analysis(self):
+        predictor = load_predictor("roberta-sst")
+        result = predictor.predict_json({"sentence": "This is a positive review."})
+        assert result["label"] == "1"
+
     def test_openie(self):
         predictor = load_predictor("structured-prediction-srl")
         result = predictor.predict_json(
@@ -380,7 +382,36 @@ class TestAllenNlpPretrainedModels(AllenNlpTestCase):
         # Just assert that we predicted something better than all-O.
         assert len(frozenset(result["tags"])) > 1
 
+    def test_transformer_qa(self):
+        predictor = load_predictor("rc-transformer-qa")
+
+        passage = (
+            "The Normans (Norman: Nourmands; French: Normands; Latin: Normanni) were "
+            "the people who in the 10th and 11th centuries gave their name to Normandy, a region in France. "
+            'They were descended from Norse ("Norman" comes from "Norseman") raiders and pirates from Denmark, '
+            "Iceland and Norway who, under their leader Rollo, agreed to swear fealty to King Charles III of West Francia. "
+            "Through generations of assimilation and mixing with the native Frankish and Roman-Gaulish populations, "
+            "their descendants would gradually merge with the Carolingian-based cultures of West Francia. "
+            "The distinct cultural and ethnic identity of the Normans emerged initially in the first half "
+            "of the 10th century, and it continued to evolve over the succeeding centuries."
+        )
+
+        question = "In what country is Normandy located?"
+        result = predictor.predict(question, passage)
+        assert result["best_span_str"] == "France"
+
+        question = "Who gave their name to Normandy in the 1000's and 1100's"
+        result = predictor.predict(question, passage)
+        assert result["best_span_str"] == ""
+
     @pytest.mark.parametrize("model_id, model_card", get_pretrained_models().items())
     def test_pretrained_models(self, model_id, model_card):
-        # Each model in pretrained_models should have an archive and registered_predictor_name.
+        # Each model in pretrained_models should have an archive and a description.
         assert model_card.archive_file is not None
+        assert model_card.display_name is not None
+        assert model_card.model_details.description is not None
+        assert model_card.model_details.short_description is not None
+
+    @pytest.mark.parametrize("task_id, task_card", get_tasks().items())
+    def test_tasks(self, task_id, task_card):
+        assert isinstance(task_card.examples, List) or isinstance(task_card.examples, Dict)

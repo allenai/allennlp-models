@@ -7,7 +7,7 @@ import argparse
 from typing import List
 
 import torch
-from allennlp.data.samplers import SequentialSampler
+from torch.utils.data import SequentialSampler
 
 from allennlp_models.structured_prediction.models.srl import write_to_conll_eval_file
 

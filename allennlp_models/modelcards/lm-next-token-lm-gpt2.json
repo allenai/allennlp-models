@@ -1,6 +1,58 @@
 {
     "id": "lm-next-token-lm-gpt2",
     "registered_model_name": "next_token_lm",
+    "registered_predictor_name": null,
     "display_name": "GPT2-based Next Token Language Model",
-    "archive_file": "gpt2-next-word-lm-2020.06.30.tar.gz"
+    "task_id": "language-modeling",
+    "archive_file": "gpt2-next-word-lm-2020.06.30.tar.gz",
+    "model_details": {
+        "description": "The model embeds some input tokens, contextualizes them, then predicts the next word,
+                        computing a loss against known target. \nIf `BeamSearch` is given, this model will predict
+                        a sequence of next tokens.",
+        "short_description": "GPT2 based language model that generates the next token.",
+        "developed_by": null,
+        "contributed_by": null,
+        "date": "2020-06-30",
+        "version": "1",
+        "model_type": "GPT2",
+        "paper": null,
+        "citation": null,
+        "license": null,
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": null,
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": null,
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": null,
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": null,
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    }
 }

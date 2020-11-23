@@ -70,32 +70,36 @@ environment to a compute cluster.
 
 Once you have [installed Docker](https://docs.docker.com/engine/installation/) you can either use a [prebuilt image from a release](https://hub.docker.com/r/allennlp/models) or build an image locally with any version of `allennlp` and `allennlp-models`.
 
+If you have GPUs available, you also need to install the [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) runtime.
+
 To build an image locally from a specific release, run
 
 ```bash
 docker build \
-    --build-arg ALLENNLP_VERSION=1.0.0rc3 \
+    --build-arg RELEASE=1.2.2 \
+    --build-arg CUDA=10.2 \
     -t allennlp/models - < Dockerfile.release
 ```
 
-Just replace "1.0.0rc3" with the desired version.
+Just replace the `RELEASE` and `CUDA` build args what you need. Currently only CUDA 10.2 and 11.0 are officially supported.
 
 Alternatively, you can build against specific commits of `allennlp` and `allennlp-models` with
 
 ```bash
 docker build \
-    --build-arg ALLENNLP_COMMIT=e3d72fcb1664caf9554ef4e611191c33a7a5cbbd \
-    --build-arg ALLENNLP_MODELS_COMMIT=54a5df89da64d8d3869e746bc6dab940552dbfc4 \
+    --build-arg ALLENNLP_COMMIT=d823a2591e94912a6315e429d0fe0ee2efb4b3ee \
+    --build-arg ALLENNLP_MODELS_COMMIT=01bc777e0d89387f03037d398cd967390716daf1 \
+    --build-arg CUDA=10.2 \
     -t allennlp/models - < Dockerfile.commit
 ```
 
-Just change the `ALLENNLP_COMMIT` and `ALLENNLP_MODELS_COMMIT` build args to the desired commit SHAs.
+Just change the `ALLENNLP_COMMIT` / `ALLENNLP_MODELS_COMMIT` and `CUDA` build args to the desired commit SHAs and CUDA versions, respectively.
 
-Now run the following command to get an environment that will run on either the cpu or gpu.
+Once you've built your image, you can run it like this:
 
 ```bash
 mkdir -p $HOME/.allennlp/
-docker run --rm -v $HOME/.allennlp:/root/.allennlp allennlp/models
+docker run --rm --gpus all -v $HOME/.allennlp:/root/.allennlp allennlp/models
 ```
 
-If you have GPUs available, you can install the [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) runtime and then add the flag `--gpus all` right before `--rm`.
+> Note: the `--gpus all` is only valid if you've installed the nvidia-docker runtime.

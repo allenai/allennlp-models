@@ -3,6 +3,7 @@ from allennlp.models.archival import load_archive
 from allennlp.predictors import Predictor
 
 from tests import FIXTURES_ROOT
+from allennlp_models import lm  # noqa: F401
 
 
 class TestNextTokenLMPredictor(AllenNlpTestCase):

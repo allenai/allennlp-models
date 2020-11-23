@@ -1,0 +1,26 @@
+{
+    "id": "vqa",
+    "name": "Visual Question Answering",
+    "description": "Visual Question Answering (VQA) is the task of generating a answer in response to a natural language question about the contents of an image. VQA models are typically trained and evaluated on datasets such as VQA2.0, GQA, Visual7W and VizWiz.",
+    "expected_inputs": "The task requires an input image and a corresponding free text question about the image.",
+    "expected_outputs": "A free text answer.",
+    "scope_and_limitations": null,
+    "examples": [
+        {
+            "image" : "baseball_game.jpg", // Change to full link? Or interpret this in the demo.
+            "question" : "What game are they playing?"
+        },
+        {
+            "image": "bus_stop.jpg",
+            "question": "What are the people waiting for?"
+        },
+        {
+            "image": "kitchen.jpg",
+            "question": "What is in the bowls on the island?"
+        },
+        {
+            "image": "living_room.jpg",
+            "question": "What color is the pillow in the middle?"
+        }
+    ]
+}
