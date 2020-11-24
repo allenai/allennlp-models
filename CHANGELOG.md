@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- Fix an index bug in  BART prediction.
+
 ### Added
 
 - Added link to source code to API docs.
