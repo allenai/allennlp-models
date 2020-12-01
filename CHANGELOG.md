@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added link to source code to API docs.
+- Information updates for remaining model cards (also includes the ones in demo, but not in the repository).
 
 ### Changed
 
