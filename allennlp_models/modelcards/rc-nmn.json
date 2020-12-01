@@ -1,20 +1,25 @@
 {
-    "id": "tagging-fine-grained-transformer-crf-tagger",
-    "registered_model_name": "crf_tagger",
+    "id": "rc-nmn",
+    "registered_model_name": null,
     "registered_predictor_name": null,
-    "display_name": "Fine Grained Named Entity Recognition with Transformer",
-    "task_id": "ner",
-    "archive_file": "fgner_transformer.2020-07-14.tar.gz",
+    "display_name": "Neural Module Network (NMN)",
+    "task_id": "rc",
+    "archive_file": "drop-nmn-2020.04.04.tar.gz",
     "model_details": {
-        "description": "Fine-grained NER model",
-        "short_description": "Fine-grained NER model",
-        "developed_by": null,
+        "description": "A neural module network trained on DROP.",
+        "short_description": "A neural module network trained on DROP.",
+        "developed_by": "Andreas et al",
         "contributed_by": null,
-        "date": "2020-07-14",
+        "date": "2020-04-04",
         "version": "1",
-        "model_type": "Transformer",
-        "paper": null,
-        "citation": null,
+        "model_type": "Neural Module Network",
+        "paper": "[Neural Module Networks](https://api.semanticscholar.org/CorpusID:5276660)",
+        "citation": "@article{Andreas2016NeuralMN,
+                     title={Neural Module Networks},
+                     author={Jacob Andreas and Marcus Rohrbach and Trevor Darrell and D. Klein},
+                     journal={2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+                     year={2016},
+                     pages={39-48}}",
         "license": null,
         "contact": "allennlp-contact@allenai.org",
         "training_config": null,
@@ -29,17 +34,17 @@
         "evaluation_factors": null
     },
     "metrics": {
-        "model_performance_measures": "Accuracy and Span-based F1 metric",
+        "model_performance_measures": null,
         "decision_thresholds": null,
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
+        "dataset": null,
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
+        "dataset": "DROP",
         "motivation": null,
         "preprocessing": null
     },

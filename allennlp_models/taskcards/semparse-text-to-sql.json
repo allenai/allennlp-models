@@ -1,0 +1,9 @@
+{
+    "id": "semparse-text-to-sql",
+    "name": "Text to SQL",
+    "description": "Natural language to SQL interfaces allow users to query data in relational databases without writing SQL queries.",
+    "expected_inputs": "Natural language query on relational database",
+    "expected_outputs": "Corresponding SQL query for the input",
+    "scope_and_limitations": null,
+    "examples": null,
+}
