@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+- Fixed `SemanticRoleLabelerPredictor.tokens_to_instances` so it treats auxiliary verbs as verbs as well
+
 ### Added
 
 - Added link to source code to API docs.
