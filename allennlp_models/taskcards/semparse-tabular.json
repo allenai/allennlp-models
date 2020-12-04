@@ -1,0 +1,9 @@
+{
+    "id": "semparse-tabular",
+    "name": "WikiTables Semantic Parsing",
+    "description": "Semantic parsing maps natural language to machine language. For WikiTables, the natural language being parsed is in tabular format.",
+    "expected_inputs": "Tabular format text, natural language question about the table.",
+    "expected_outputs": "A particular cell in the table, answering the question.",
+    "scope_and_limitations": null,
+    "examples": null,
+}
