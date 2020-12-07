@@ -390,7 +390,7 @@ class Bart(Model):
         predicted_tokens = [None] * predictions.shape[0]
         for i in range(predictions.shape[0]):
             predicted_tokens[i] = self._indexer.indices_to_tokens(
-                {"token_ids": predictions[0].tolist()}, self.vocab
+                {"token_ids": predictions[i].tolist()}, self.vocab
             )
         output_dict["predicted_tokens"] = predicted_tokens
 
