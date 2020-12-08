@@ -56,6 +56,33 @@ class TestAllenNlpPretrainedModels(AllenNlpTestCase):
 
         assert result["verbs"] == [
             {
+                "verb": "were",
+                "description": "If you liked the music we [V: were] playing last night , you will absolutely love what we 're playing tomorrow !",
+                "tags": [
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "B-V",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                    "O",
+                ],
+            },
+            {
                 "verb": "liked",
                 "description": "If [ARG0: you] [V: liked] [ARG1: the music we were playing last night] , you will absolutely love what we 're playing tomorrow !",
                 "tags": [
