@@ -21,6 +21,7 @@ class SemanticRoleLabelerPredictor(Predictor):
         self, model: Model, dataset_reader: DatasetReader, language: str = "en_core_web_sm"
     ) -> None:
         super().__init__(model, dataset_reader)
+        self._language = language
         self._tokenizer = SpacyTokenizer(language=language, pos_tags=True)
 
     def predict(self, sentence: str) -> JsonDict:
@@ -105,7 +106,10 @@ class SemanticRoleLabelerPredictor(Predictor):
         words = [token.text for token in tokens]
         instances: List[Instance] = []
         for i, word in enumerate(tokens):
-            if word.pos_ in ["VERB", "AUX"]:
+            # We treat auxiliaries as verbs only for English for now to be safe. We didn't want to 
+            # hypothetically break the predictor for unknown number of other languages where 
+            # auxiliaries can't be treated this way.
+            if word.pos_ == "VERB" or (self._language.startswith("en_") and word.pos_ == "AUX"):
                 verb_labels = [0 for _ in words]
                 verb_labels[i] = 1
                 instance = self._dataset_reader.text_to_instance(tokens, verb_labels)
