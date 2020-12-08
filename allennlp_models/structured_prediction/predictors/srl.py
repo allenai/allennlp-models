@@ -106,8 +106,8 @@ class SemanticRoleLabelerPredictor(Predictor):
         words = [token.text for token in tokens]
         instances: List[Instance] = []
         for i, word in enumerate(tokens):
-            # We treat auxiliaries as verbs only for English for now to be safe. We didn't want to 
-            # hypothetically break the predictor for unknown number of other languages where 
+            # We treat auxiliaries as verbs only for English for now to be safe. We didn't want to
+            # hypothetically break the predictor for unknown number of other languages where
             # auxiliaries can't be treated this way.
             if word.pos_ == "VERB" or (self._language.startswith("en_") and word.pos_ == "AUX"):
                 verb_labels = [0 for _ in words]
