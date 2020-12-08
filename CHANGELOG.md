@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Fixed
+
+- Fix an index bug in  BART prediction.
 - Fixed `SemanticRoleLabelerPredictor.tokens_to_instances` so it treats auxiliary verbs as verbs as well
 
 ### Added
