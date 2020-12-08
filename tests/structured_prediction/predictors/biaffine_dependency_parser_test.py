@@ -19,8 +19,6 @@ class TestBiaffineDependencyParser(AllenNlpTestCase):
         )
         predictor = Predictor.from_archive(archive, "biaffine_dependency_parser")
 
-        print(predictor)
-
         result = predictor.predict_json(inputs)
 
         words = result.get("words")
