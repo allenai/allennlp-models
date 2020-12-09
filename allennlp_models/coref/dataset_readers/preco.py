@@ -91,11 +91,12 @@ class PrecoReader(DatasetReader):
         sentences = [sentence for sentence in sentences if sentence != [" "]]
 
         # Convert (sent_idx, rel_start, rel_exclusive_end) to (abs_start, abs_inclusive_end)
-        for cluster in gold_clusters:
-            for mention_id, (sent_idx, start, end) in enumerate(cluster):
-                start = start + sentence_offsets[sent_idx]
-                end = end + sentence_offsets[sent_idx] - 1  # exclusive -> inclusive
-                cluster[mention_id] = (start, end)  # type: ignore
+        if gold_clusters:
+            for cluster in gold_clusters:
+                for mention_id, (sent_idx, start, end) in enumerate(cluster):
+                    start = start + sentence_offsets[sent_idx]
+                    end = end + sentence_offsets[sent_idx] - 1  # exclusive -> inclusive
+                    cluster[mention_id] = (start, end)  # type: ignore
 
         return make_coref_instance(
             sentences,
