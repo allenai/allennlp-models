@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix an index bug in  BART prediction.
+- Add `None` check in `PrecoReader`'s `text_to_instance()` method. 
 - Fixed `SemanticRoleLabelerPredictor.tokens_to_instances` so it treats auxiliary verbs as verbs
   when the language is English
 
