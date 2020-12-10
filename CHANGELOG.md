@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix an index bug in  BART prediction.
-- Fix None check in PrecoReader's text_to_instance. 
+- Add `None` check in `PrecoReader`'s `text_to_instance()` method. 
 
 ### Added
 
