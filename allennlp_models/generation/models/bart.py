@@ -345,7 +345,6 @@ class Bart(Model):
                 encoder_outputs=encoder_outputs,
                 decoder_input_ids=last_predictions[:, : i + 1],
                 past_key_values=decoder_cache,
-                generation_mode=True,
                 use_cache=True,
             )
 
