@@ -4,7 +4,7 @@ from overrides import overrides
 import torch
 from torch.nn.modules import Linear, Dropout
 import torch.nn.functional as F
-from transformers.modeling_bert import BertModel
+from transformers.models.bert.modeling_bert import BertModel
 
 from allennlp.data import TextFieldTensors, Vocabulary
 from allennlp.models.model import Model

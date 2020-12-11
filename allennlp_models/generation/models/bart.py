@@ -10,7 +10,7 @@ from allennlp.nn.beam_search import BeamSearch
 from allennlp.nn.util import sequence_cross_entropy_with_logits
 from allennlp.training.metrics import ROUGE, BLEU
 
-from transformers import BartModel, BartForConditionalGeneration
+from transformers.models.bart.modeling_bart import BartModel, BartForConditionalGeneration
 
 import torch
 from torch import nn
@@ -30,7 +30,7 @@ class BartEncoder(Seq2SeqEncoder):
 
     model_name : `str`, required
         Name of the pre-trained BART model to use. Available options can be found in
-        `transformers.modeling_bart.BART_PRETRAINED_MODEL_ARCHIVE_MAP`.
+        `transformers.models.bart.modeling_bart.BART_PRETRAINED_MODEL_ARCHIVE_MAP`.
     """
 
     def __init__(self, model_name):
@@ -129,7 +129,7 @@ class Bart(Model):
 
         model_name : `str`, required
             Name of the pre-trained BART model to use. Available options can be found in
-            `transformers.modeling_bart.BART_PRETRAINED_MODEL_ARCHIVE_MAP`.
+            `transformers.models.bart.modeling_bart.BART_PRETRAINED_MODEL_ARCHIVE_MAP`.
         vocab : `Vocabulary`, required
             Vocabulary containing source and target vocabularies.
         indexer : `PretrainedTransformerIndexer`, optional (default = `None`)
