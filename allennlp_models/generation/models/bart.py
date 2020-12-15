@@ -110,7 +110,7 @@ class _BartEncoderWrapper(nn.Module):
 @Model.register("bart")
 class Bart(Model):
     """
-    BART model from the paper "BART: Denosing Sequence-to-Sequence Pre-training for Natural Language Generation,
+    BART model from the paper "BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation,
     Translation, and Comprehension" (https://arxiv.org/abs/1910.13461). The Bart model here uses a language
     modeling head and thus can be used for text generation.
     """
@@ -390,7 +390,7 @@ class Bart(Model):
         predicted_tokens = [None] * predictions.shape[0]
         for i in range(predictions.shape[0]):
             predicted_tokens[i] = self._indexer.indices_to_tokens(
-                {"token_ids": predictions[0].tolist()}, self.vocab
+                {"token_ids": predictions[i].tolist()}, self.vocab
             )
         output_dict["predicted_tokens"] = predicted_tokens
 

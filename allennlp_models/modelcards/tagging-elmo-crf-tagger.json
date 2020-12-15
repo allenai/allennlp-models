@@ -36,7 +36,7 @@
         "evaluation_factors": null
     },
     "metrics": {
-        "model_performance_measures": null,
+        "model_performance_measures": "Accuracy and Span-based F1 metric",
         "decision_thresholds": null,
         "variation_approaches": null
     },

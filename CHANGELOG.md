@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- Fix an index bug in  BART prediction.
+- Add `None` check in `PrecoReader`'s `text_to_instance()` method. 
+- Fixed `SemanticRoleLabelerPredictor.tokens_to_instances` so it treats auxiliary verbs as verbs
+  when the language is English
+
 ### Added
 
 - Added link to source code to API docs.
+- Information updates for remaining model cards (also includes the ones in demo, but not in the repository).
 
 ### Changed
 

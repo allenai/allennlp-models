@@ -10,7 +10,7 @@
                         contextualizes them, then predicts targets for the masked tokens, computing a loss against
                         known targets.",
         "short_description": "BERT-based masked language model",
-        "developed_by": null,
+        "developed_by": "Devlin et al",
         "contributed_by": null,
         "date": "2020-10-07",
         "version": "1",
@@ -35,19 +35,19 @@
         "evaluation_factors": null
     },
     "metrics": {
-        "model_performance_measures": null,
+        "model_performance_measures": "Perplexity",
         "decision_thresholds": null,
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": null,
+        "dataset": "BooksCorpus (800M words) and English Wikipedia (2,500M words).",
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": null,
-        "motivation": null,
-        "preprocessing": null
+        "dataset": "BooksCorpus (800M words) and English Wikipedia (2,500M words).",
+        "motivation": "Document-level corpus is used rather than shuffled sentence-level corpus, to extract long contiguous sequences.",
+        "preprocessing": "For Wikipedia, text passages are extracted and lists, tables, and headers are ignored."
     },
     "quantitative_analyses": {
         "unitary_results": null,
