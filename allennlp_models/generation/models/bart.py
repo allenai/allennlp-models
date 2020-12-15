@@ -10,7 +10,7 @@ from allennlp.nn.beam_search import BeamSearch
 from allennlp.nn.util import sequence_cross_entropy_with_logits
 from allennlp.training.metrics import ROUGE, BLEU
 
-from transformers import BartModel, BartForConditionalGeneration
+from transformers.models.bart.modeling_bart import BartModel, BartForConditionalGeneration
 
 import torch
 from torch import nn
@@ -30,7 +30,7 @@ class BartEncoder(Seq2SeqEncoder):
 
     model_name : `str`, required
         Name of the pre-trained BART model to use. Available options can be found in
-        `transformers.modeling_bart.BART_PRETRAINED_MODEL_ARCHIVE_MAP`.
+        `transformers.models.bart.modeling_bart.BART_PRETRAINED_MODEL_ARCHIVE_MAP`.
     """
 
     def __init__(self, model_name):
@@ -110,7 +110,7 @@ class _BartEncoderWrapper(nn.Module):
 @Model.register("bart")
 class Bart(Model):
     """
-    BART model from the paper "BART: Denosing Sequence-to-Sequence Pre-training for Natural Language Generation,
+    BART model from the paper "BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation,
     Translation, and Comprehension" (https://arxiv.org/abs/1910.13461). The Bart model here uses a language
     modeling head and thus can be used for text generation.
     """
@@ -129,7 +129,7 @@ class Bart(Model):
 
         model_name : `str`, required
             Name of the pre-trained BART model to use. Available options can be found in
-            `transformers.modeling_bart.BART_PRETRAINED_MODEL_ARCHIVE_MAP`.
+            `transformers.models.bart.modeling_bart.BART_PRETRAINED_MODEL_ARCHIVE_MAP`.
         vocab : `Vocabulary`, required
             Vocabulary containing source and target vocabularies.
         indexer : `PretrainedTransformerIndexer`, optional (default = `None`)
@@ -345,7 +345,6 @@ class Bart(Model):
                 encoder_outputs=encoder_outputs,
                 decoder_input_ids=last_predictions[:, : i + 1],
                 past_key_values=decoder_cache,
-                generation_mode=True,
                 use_cache=True,
             )
 
@@ -390,7 +389,7 @@ class Bart(Model):
         predicted_tokens = [None] * predictions.shape[0]
         for i in range(predictions.shape[0]):
             predicted_tokens[i] = self._indexer.indices_to_tokens(
-                {"token_ids": predictions[0].tolist()}, self.vocab
+                {"token_ids": predictions[i].tolist()}, self.vocab
             )
         output_dict["predicted_tokens"] = predicted_tokens
 

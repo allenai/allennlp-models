@@ -1,5 +1,5 @@
 from overrides import overrides
-from transformers import BertConfig, BertForMaskedLM
+from transformers.models.bert.modeling_bert import BertConfig, BertForMaskedLM
 import torch
 
 from .language_model_head import LanguageModelHead

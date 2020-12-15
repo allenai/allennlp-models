@@ -6,15 +6,20 @@
     "task_id": "ner",
     "archive_file": "fine-grained-ner.2020-06-24.tar.gz",
     "model_details": {
-        "description": "Fine-grained NER model",
-        "short_description": "Fine-grained NER model",
-        "developed_by": null,
+        "description": "This model identifies a broad range of 16 semantic types in the input text. It is a reimplementation of Lample (2016) and uses a biLSTM with a CRF layer, character embeddings and ELMo embeddings.",
+        "short_description": "This model identifies a broad range of 16 semantic types in the input text. It is a reimplementation of Lample (2016) and uses a biLSTM with a CRF layer, character embeddings and ELMo embeddings.",
+        "developed_by": "Lample et al",
         "contributed_by": null,
         "date": "2020-06-24",
         "version": "1",
-        "model_type": null,
-        "paper": null,
-        "citation": null,
+        "model_type": "BiLSTM",
+        "paper": "[Neural Architectures for Named Entity Recognition](https://api.semanticscholar.org/CorpusID:6042994)",
+        "citation": "@article{Lample2016NeuralAF,
+                     title={Neural Architectures for Named Entity Recognition},
+                     author={Guillaume Lample and Miguel Ballesteros and Sandeep Subramanian and K. Kawakami and Chris Dyer},
+                     journal={ArXiv},
+                     year={2016},
+                     volume={abs/1603.01360}}",
         "license": null,
         "contact": "allennlp-contact@allenai.org",
         "training_config": null,
@@ -29,17 +34,17 @@
         "evaluation_factors": null
     },
     "metrics": {
-        "model_performance_measures": null,
+        "model_performance_measures": "Accuracy and Span-based F1 metric",
         "decision_thresholds": null,
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": null,
+        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": null,
+        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
         "motivation": null,
         "preprocessing": null
     },
