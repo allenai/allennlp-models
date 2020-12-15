@@ -110,7 +110,7 @@ class _BartEncoderWrapper(nn.Module):
 @Model.register("bart")
 class Bart(Model):
     """
-    BART model from the paper "BART: Denosing Sequence-to-Sequence Pre-training for Natural Language Generation,
+    BART model from the paper "BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation,
     Translation, and Comprehension" (https://arxiv.org/abs/1910.13461). The Bart model here uses a language
     modeling head and thus can be used for text generation.
     """
