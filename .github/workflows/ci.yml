@@ -311,6 +311,7 @@ jobs:
         fi
 
     - name: Set AllenNLP version override
+      if: github.event_name == 'release' || github.event_name == 'schedule'
       run: |
         ALLENNLP_VERSION_OVERRIDE="allennlp$(./scripts/get_version.py current --as-range)"
         echo "Setting ALLENNLP_VERSION_OVERRIDE to $ALLENNLP_VERSION_OVERRIDE"
