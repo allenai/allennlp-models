@@ -4,7 +4,7 @@
     "registered_predictor_name": null,
     "display_name": "SRL BERT",
     "task_id": "srl",
-    "archive_file": "bert-base-srl-2020.09.03.tar.gz",
+    "archive_file": "structured-prediction-srl-bert.2020.12.15.tar.gz",
     "model_details": {
         "description": "An implementation of a BERT based model (Shi et al, 2019) with some modifications (no additional parameters apart from a linear classification layer), which is currently the state of the art single model for English PropBank SRL (Newswire sentences). It achieves 86.49 test F1 on the Ontonotes 5.0 dataset.",
         "short_description": "A BERT based model (Shi et al, 2019) with some modifications (no additional parameters apart from a linear classification layer)",

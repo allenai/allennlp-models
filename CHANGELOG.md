@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated `Dockerfile.release` and `Dockerfile.commit` to work with different CUDA versions.
+- Changes required for the `transformers` dependency update to version 4.0.1.
 
 ### Fixed
 
