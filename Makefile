@@ -17,7 +17,7 @@ DOCKER_TAG = latest
 DOCKER_IMAGE_NAME = allennlp/models:v$(VERSION)
 DOCKER_RUN_CMD = docker run --rm \
 		-v $$HOME/.allennlp:/root/.allennlp \
-		-v $$HOME/.cache:/root/.cache \
+		-v $$HOME/.cache/huggingface:/root/.cache/huggingface \
 		-v $$HOME/nltk_data:/root/nltk_data
 ALLENNLP_COMMIT_SHA = $(shell git ls-remote https://github.com/allenai/allennlp master | cut -f 1)
 
