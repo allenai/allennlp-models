@@ -4,7 +4,7 @@ git+https://github.com/allenai/allennlp.git@vision
 torch>=1.7.0,<1.8.0
 
 # For structured prediction.
-conllu==4.2.1
+conllu==4.2.2
 
 # For RC models
 word2number>=1.1

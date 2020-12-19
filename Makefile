@@ -17,7 +17,7 @@ DOCKER_TAG = latest
 DOCKER_IMAGE_NAME = allennlp/models:v$(VERSION)
 DOCKER_RUN_CMD = docker run --rm \
 		-v $$HOME/.allennlp:/root/.allennlp \
-		-v $$HOME/.cache/torch:/root/.cache/torch \
+		-v $$HOME/.cache/huggingface:/root/.cache/huggingface \
 		-v $$HOME/nltk_data:/root/nltk_data
 
 # TODO: change this back to master branch
