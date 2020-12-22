@@ -57,6 +57,7 @@ jobs:
     - name: Install requirements
       run: |
         pip install --upgrade pip setuptools wheel
+        pip uninstall -y allennlp
         pip install --upgrade --upgrade-strategy eager -r requirements.txt
         pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
 
@@ -182,6 +183,7 @@ jobs:
     - name: Install requirements
       run: |
         pip install --upgrade pip setuptools wheel
+        pip uninstall -y allennlp
         pip install --upgrade --upgrade-strategy eager -r requirements.txt
         pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
 
@@ -325,6 +327,7 @@ jobs:
     - name: Install requirements
       run: |
         pip install --upgrade pip setuptools wheel
+        pip uninstall -y allennlp
         pip install -e .
         pip install -r dev-requirements.txt
 
