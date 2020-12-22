@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Moving `ModelCard` and `TaskCard` abstractions out of the models repository.
+
 ## [v1.3.0](https://github.com/allenai/allennlp-models/releases/tag/v1.2.2) - 2020-12-15
 
 ### Fixed
