@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Changed
+### Removed
 
 - Moving `ModelCard` and `TaskCard` abstractions out of the models repository.
 
