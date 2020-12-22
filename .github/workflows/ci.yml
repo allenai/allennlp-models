@@ -54,10 +54,16 @@ jobs:
         path: ${{ env.pythonLocation }}
         key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
 
+    - name: Set AllenNLP version override
+      run: |
+        ALLENNLP_VERSION_OVERRIDE="git+https://github.com/allenai/allennlp.git@$(git ls-remote https://github.com/allenai/allennlp master | cut -f 1)"
+        echo "Setting ALLENNLP_VERSION_OVERRIDE to $ALLENNLP_VERSION_OVERRIDE"
+        echo "ALLENNLP_VERSION_OVERRIDE=$ALLENNLP_VERSION_OVERRIDE" >> $GITHUB_ENV
+
     - name: Install requirements
       run: |
         pip install --upgrade pip setuptools wheel
-        pip install --upgrade --upgrade-strategy eager -r requirements.txt
+        pip install --upgrade --upgrade-strategy eager -e .
         pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
 
     - name: Show pip freeze
@@ -179,10 +185,16 @@ jobs:
         path: ${{ env.pythonLocation }}
         key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
 
+    - name: Set AllenNLP version override
+      run: |
+        ALLENNLP_VERSION_OVERRIDE="git+https://github.com/allenai/allennlp.git@$(git ls-remote https://github.com/allenai/allennlp master | cut -f 1)"
+        echo "Setting ALLENNLP_VERSION_OVERRIDE to $ALLENNLP_VERSION_OVERRIDE"
+        echo "ALLENNLP_VERSION_OVERRIDE=$ALLENNLP_VERSION_OVERRIDE" >> $GITHUB_ENV
+
     - name: Install requirements
       run: |
         pip install --upgrade pip setuptools wheel
-        pip install --upgrade --upgrade-strategy eager -r requirements.txt
+        pip install --upgrade --upgrade-strategy eager -e .
         pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
 
     - name: Debug info
@@ -314,6 +326,13 @@ jobs:
       if: github.event_name == 'release' || github.event_name == 'schedule'
       run: |
         ALLENNLP_VERSION_OVERRIDE="allennlp$(./scripts/get_version.py current --as-range)"
+        echo "Setting ALLENNLP_VERSION_OVERRIDE to $ALLENNLP_VERSION_OVERRIDE"
+        echo "ALLENNLP_VERSION_OVERRIDE=$ALLENNLP_VERSION_OVERRIDE" >> $GITHUB_ENV
+
+    - name: Set AllenNLP version override
+      if: github.event_name == 'push' || github.event_name == 'pull_request'
+      run: |
+        ALLENNLP_VERSION_OVERRIDE="git+https://github.com/allenai/allennlp.git@$(git ls-remote https://github.com/allenai/allennlp master | cut -f 1)"
         echo "Setting ALLENNLP_VERSION_OVERRIDE to $ALLENNLP_VERSION_OVERRIDE"
         echo "ALLENNLP_VERSION_OVERRIDE=$ALLENNLP_VERSION_OVERRIDE" >> $GITHUB_ENV
 
