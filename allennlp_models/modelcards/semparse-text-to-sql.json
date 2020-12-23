@@ -1,0 +1,63 @@
+{
+    "id": "semparse-text-to-sql",
+    "registered_model_name": null,
+    "registered_predictor_name": null,
+    "display_name": "Text to SQL (ATIS)",
+    "task_id": "semparse-text-to-sql",
+    "archive_file": "https://allennlp.s3.amazonaws.com/models/atis-parser-2020.02.10.tar.gz",
+    "model_details": {
+        "description": "This model is an implementation of an encoder-decoder architecture with LSTMs and constrained type decoding trained on the ATIS dataset. This model is still a proof-of-concept of what you can do with semantic parsing in AllenNLP and its performance is not state-of-the-art (this naive model gets around 40% exact denotation accuracy on the contextual ATIS dataset).",
+        "short_description": "This model is an implementation of an encoder-decoder architecture with LSTMs and constrained type decoding trained on the ATIS dataset.",
+        "developed_by": "Dasigi et al",
+        "contributed_by": null,
+        "date": "2020-02-10",
+        "version": "1",
+        "model_type": null,
+        "paper": "[Iterative Search for Weakly Supervised Semantic Parsing](https://api.semanticscholar.org/CorpusID:174799945)",
+        "citation": "@inproceedings{Dasigi2019IterativeSF,
+                     title={Iterative Search for Weakly Supervised Semantic Parsing},
+                     author={Pradeep Dasigi and Matt Gardner and Shikhar Murty and Luke Zettlemoyer and E. Hovy},
+                     booktitle={NAACL-HLT},
+                     year={2019}}",
+        "license": null,
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": null,
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "1. `exact_match`; the percentage of the time that our best output action sequence matches the SQL query exactly.
+                                       2. `denotation_acc`; the percentage of examples where we get the correct denotation.  
+                                       3. `valid_sql_query`; the percentage of time that decoding actually produces avalid SQL query.  
+                                       4. `action_similarity`; how similar the action sequence predicted is to the actual action sequence.",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": "[ATIS](https://api.semanticscholar.org/CorpusID:1094063)",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": "[ATIS](https://api.semanticscholar.org/CorpusID:1094063)",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    }
+}

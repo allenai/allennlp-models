@@ -1,6 +1,61 @@
 {
     "id": "structured-prediction-srl-bert",
     "registered_model_name": "srl_bert",
+    "registered_predictor_name": null,
     "display_name": "SRL BERT",
-    "archive_file": "bert-base-srl-2020.07.14.tar.gz"
+    "task_id": "srl",
+    "archive_file": "structured-prediction-srl-bert.2020.12.15.tar.gz",
+    "model_details": {
+        "description": "An implementation of a BERT based model (Shi et al, 2019) with some modifications (no additional parameters apart from a linear classification layer), which is currently the state of the art single model for English PropBank SRL (Newswire sentences). It achieves 86.49 test F1 on the Ontonotes 5.0 dataset.",
+        "short_description": "A BERT based model (Shi et al, 2019) with some modifications (no additional parameters apart from a linear classification layer)",
+        "developed_by": "Shi et al",
+        "contributed_by": null,
+        "date": "2020-09-03",
+        "version": "1",
+        "model_type": "BERT",
+        "paper": "[Simple BERT Models for Relation Extraction and Semantic Role Labeling](https://api.semanticscholar.org/CorpusID:131773936)",
+        "citation": "@article{Shi2019SimpleBM,
+                     title={Simple BERT Models for Relation Extraction and Semantic Role Labeling},
+                     author={Peng Shi and Jimmy Lin},
+                     journal={ArXiv},
+                     year={2019},
+                     volume={abs/1904.05255}}",
+        "license": null,
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": null,
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "Precision, recall and F1-score",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": "86.49 test F1 on the Ontonotes 5.0 dataset",
+        "intersectional_results": null
+    },
+    "ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    }
 }

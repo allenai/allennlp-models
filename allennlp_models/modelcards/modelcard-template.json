@@ -1,0 +1,56 @@
+{
+    "id": "model-id",
+    "registered_model_name": null,
+    "registered_predictor_name": null,
+    "display_name": null,
+    "task_id": null,
+    "archive_file": null,
+    "model_details": {
+        "description": null,
+        "short_description": null,
+        "developed_by": null,
+        "contributed_by": null,
+        "date": null,
+        "version": null,
+        "model_type": null,
+        "paper": null,
+        "citation": null,
+        "license": null,
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": null,
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": null,
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": null,
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": null,
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    }
+}

@@ -7,9 +7,131 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- 'master' branch renamed to 'main'
+
+
+## [v1.3.0](https://github.com/allenai/allennlp-models/releases/tag/v1.2.2) - 2020-12-15
+
 ### Fixed
 
+- Fix an index bug in  BART prediction.
+- Add `None` check in `PrecoReader`'s `text_to_instance()` method. 
+- Fixed `SemanticRoleLabelerPredictor.tokens_to_instances` so it treats auxiliary verbs as verbs
+  when the language is English
+
+### Added
+
+- Added link to source code to API docs.
+- Information updates for remaining model cards (also includes the ones in demo, but not in the repository).
+
+### Changed
+
+- Updated `Dockerfile.release` and `Dockerfile.commit` to work with different CUDA versions.
+- Changes required for the `transformers` dependency update to version 4.0.1.
+
+### Fixed
+
+- Added missing folder for `taskcards` in setup.py
+
+
+## [v1.2.2](https://github.com/allenai/allennlp-models/releases/tag/v1.2.2) - 2020-11-17
+
+### Changed
+
+- Changed AllenNLP dependency for releases to allow for a range of versions, instead
+  of being pinned to an exact version.
+- There will now be multiple Docker images pushed to Docker Hub for releases, each
+  corresponding to a different supported CUDA version (currently just 10.2 and 11.0).
+
+### Fixed
+
+- Fixed `pair-classification-esim` pretrained model.
+- Fixed `ValueError` error message in `Seq2SeqDatasetReader`.
+- Better check for start and end symbols in `Seq2SeqDatasetReader` that doesn't fail for BPE-based tokenizers.
+
+### Added
+
+- Added `short_description` field to `ModelCard`. 
+- Information updates for all model cards.
+
+
+## [v1.2.1](https://github.com/allenai/allennlp-models/releases/tag/v1.2.1) - 2020-11-10
+
+### Added
+
+- Added the `TaskCard` class and task cards for common tasks.
+- Added a test for the interpret functionality
+
+### Changed
+
+- Added more information to model cards for pair classification models (`pair-classification-decomposable-attention-elmo`, `pair-classification-roberta-snli`, `pair-classification-roberta-mnli`, `pair-classification-esim`).
+
+### Fixed
+
+- Fixed TransformerElmo config to work with the new AllenNLP
+- Pinned the version of torch more tightly to make AMP work
+- Fixed the somewhat fragile Bidaf test
+
+
+## [v1.2.0](https://github.com/allenai/allennlp-models/releases/tag/v1.2.0) - 2020-10-29
+
+### Changed
+
+- Updated docstring for Transformer MC.
+- Added more information to model cards for multiple choice models (`mc-roberta-commonsenseqa`,
+`mc-roberta-piqa`, and `mc-roberta-swag`).
+
+### Fixed
+
+- Fixed many training configs to work out-of-the box. These include the configs for `bart_cnn_dm`, `swag`, `bidaf`, `bidaf_elmo`,
+  `naqanet`, and `qanet`.
+- Fixed minor bug in MaskedLanguageModel, where getting token ids used hard-coded assumptions (that
+  could be wrong) instead of our standard utility function.
+
+
+## [v1.2.0rc1](https://github.com/allenai/allennlp-models/releases/tag/v1.2.0rc1) - 2020-10-22
+
+### Added
+
+- Added dataset reader support for SQuAD 2.0 with both the `SquadReader` and `TransformerSquadReader`.
+- Updated the SQuAD v1.1 metric to work with SQuAD 2.0 as well.
+- Updated the `TransformerQA` model to work for SQuAD 2.0.
+- Added official support for Python 3.8.
+- Added a json template for model cards.
+- Added `training_config` as a field in model cards.
+- Added a `BeamSearchGenerator` registrable class which can be provided to a `NextTokenLM` model
+  to utilize beam search for predicting a sequence of tokens, instead of a single next token.
+  `BeamSearchGenerator` is an abstract class, so a concrete registered implementation needs to be used.
+  One implementation is provided so far: `TransformerBeamSearchGenerator`, registered as `transformer`,
+  which will work with any `NextTokenLM` that uses a `PretrainedTransformerEmbedder`.
+- Added an `overrides` parameter to `pretrained.load_predictor()`.
+
+### Changed
+
+- `rc-transformer-qa` pretrained model is now an updated version trained on SQuAD v2.0.
+- `skip_invalid_examples` parameter in SQuAD dataset readers has been deprecated. Please use
+  `skip_impossible_questions` instead.
+
+### Fixed
+
+- Fixed `lm-masked-language-model` pretrained model.
+- Fixed BART for latest `transformers` version.
+- Fixed BiDAF predictor and BiDAF predictor tests.
+- Fixed a bug with `Seq2SeqDatasetReader` that would cause an exception when
+  the desired behavior is to not add start or end symbols to either the source or the target
+  and the default `start_symbol` or `end_symbol` are not part of the tokenizer's vocabulary.
+
+
+## [v1.1.0](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0) - 2020-09-08
+
+### Fixed
+
+- Updated `LanguageModelTokenEmbedder` to allow allow multiple token embedders, but only use first with non-empty type
 - Fixed evaluation of metrics when using distributed setting.
+- Fixed a bug introduced in 1.0 where the SRL model did not reproduce the original result.
+
 
 ## [v1.1.0rc4](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc4) - 2020-08-21
 
@@ -20,6 +142,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added way for questions from quora dataset to be concatenated like the sequences in the SNLI dataset.
 - Added a BART based model for question generation conditioned on a passage marked with an answer span.
 
+
 ## [v1.1.0rc3](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc3) - 2020-08-12
 
 ### Fixed
@@ -27,7 +150,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed `GraphParser.get_metrics` so that it expects a dict from `F1Measure.get_metric`.
 - `CopyNet` and `SimpleSeq2Seq` models now work with AMP.
 - Made the SST reader a little more strict in the kinds of input it accepts.
-
 
 
 ## [v1.1.0rc2](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc2) - 2020-07-31
@@ -51,7 +173,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [v1.1.0rc1](https://github.com/allenai/allennlp-models/releases/tag/v1.1.0rc1) - 2020-07-14
-
 
 ### Fixed
 
@@ -79,6 +200,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 No additional note-worthy changes since rc6.
 
+
 ## [v1.0.0rc6](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0rc6) - 2020-06-11
 
 ### Changed
@@ -100,6 +222,7 @@ No additional note-worthy changes since rc6.
 - Added sentiment analysis models to pretrained.py
 - Added NLI models to pretrained.py
 
+
 ## [v1.0.0rc5](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0rc5) - 2020-05-14
 
 ### Changed
@@ -113,6 +236,7 @@ No additional note-worthy changes since rc6.
 ### Added
 
 - `conllu` dependency (previously part of `allennlp`'s dependencies)
+
 
 ## [v1.0.0rc4](https://github.com/allenai/allennlp-models/releases/tag/v1.0.0rc4) - 2020-05-14
 

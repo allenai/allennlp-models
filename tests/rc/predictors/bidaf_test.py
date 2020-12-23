@@ -4,7 +4,7 @@ from allennlp.common.testing import AllenNlpTestCase
 from allennlp.models.archival import load_archive
 from allennlp.predictors import Predictor
 
-from allennlp_models.rc.bidaf import ReadingComprehensionPredictor
+from allennlp_models.rc import ReadingComprehensionPredictor
 
 from tests import FIXTURES_ROOT
 
@@ -16,7 +16,7 @@ class TestBidafPredictor(AllenNlpTestCase):
             "passage": "One time I was writing a unit test, and it succeeded on the first attempt.",
         }
 
-        archive = load_archive(FIXTURES_ROOT / "bidaf" / "serialization" / "model.tar.gz")
+        archive = load_archive(FIXTURES_ROOT / "rc" / "bidaf" / "serialization" / "model.tar.gz")
         predictor = Predictor.from_archive(archive, "reading_comprehension")
 
         result = predictor.predict_json(inputs)
@@ -50,7 +50,7 @@ class TestBidafPredictor(AllenNlpTestCase):
             },
         ]
 
-        archive = load_archive(FIXTURES_ROOT / "bidaf" / "serialization" / "model.tar.gz")
+        archive = load_archive(FIXTURES_ROOT / "rc" / "bidaf" / "serialization" / "model.tar.gz")
         predictor = Predictor.from_archive(archive, "reading_comprehension")
 
         results = predictor.predict_batch_json(inputs)
@@ -75,39 +75,13 @@ class TestBidafPredictor(AllenNlpTestCase):
                 assert all(isinstance(x, float) for x in probs)
                 assert sum(probs) == approx(1.0)
 
-    def test_model_internals(self):
-        archive = load_archive(FIXTURES_ROOT / "bidaf" / "serialization" / "model.tar.gz")
-        predictor = Predictor.from_archive(archive, "reading_comprehension")
-
-        inputs = {
-            "question": "What kind of test succeeded on its first attempt?",
-            "passage": "One time I was writing a unit test, and it succeeded on the first attempt.",
-        }
-
-        # Context manager to capture model internals
-        with predictor.capture_model_internals() as internals:
-            predictor.predict_json(inputs)
-
-        assert internals is not None
-        assert len(internals) == 24
-
-        linear_50_1 = internals[23]
-        print(linear_50_1)
-        assert "Linear(in_features=50, out_features=1, bias=True)" in linear_50_1["name"]
-        assert len(linear_50_1["output"][0]) == 17
-        assert all(len(a) == 1 for a in linear_50_1["output"][0])
-
-        # hooks should be gone
-        for module in predictor._model.modules():
-            assert not module._forward_hooks
-
     def test_predictions_to_labeled_instances(self):
         inputs = {
             "question": "What kind of test succeeded on its first attempt?",
             "passage": "One time I was writing a unit test, and it succeeded on the first attempt.",
         }
 
-        archive = load_archive(FIXTURES_ROOT / "bidaf" / "serialization" / "model.tar.gz")
+        archive = load_archive(FIXTURES_ROOT / "rc" / "bidaf" / "serialization" / "model.tar.gz")
         predictor = Predictor.from_archive(archive, "reading_comprehension")
 
         instance = predictor._json_to_instance(inputs)
@@ -125,7 +99,7 @@ class TestBidafPredictor(AllenNlpTestCase):
             "passage": "One time I was writing 2 unit tests, and 1 succeeded on the first attempt.",
         }
 
-        archive = load_archive(FIXTURES_ROOT / "naqanet" / "serialization" / "model.tar.gz")
+        archive = load_archive(FIXTURES_ROOT / "rc" / "naqanet" / "serialization" / "model.tar.gz")
         predictor = Predictor.from_archive(archive, "reading_comprehension")
         predictor._dataset_reader.skip_when_all_empty = False
 

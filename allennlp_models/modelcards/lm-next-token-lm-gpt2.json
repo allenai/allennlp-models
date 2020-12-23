@@ -1,6 +1,62 @@
 {
     "id": "lm-next-token-lm-gpt2",
     "registered_model_name": "next_token_lm",
+    "registered_predictor_name": null,
     "display_name": "GPT2-based Next Token Language Model",
-    "archive_file": "gpt2-next-word-lm-2020.06.30.tar.gz"
+    "task_id": "language-modeling",
+    "archive_file": "gpt2-next-word-lm-2020.06.30.tar.gz",
+    "model_details": {
+        "description": "This is the public 345M parameter OpenAI GPT-2 language model for generating sentences.
+                        The model embeds some input tokens, contextualizes them, then predicts the next word,
+                        computing a loss against known target. \nIf `BeamSearch` is given, this model will predict
+                        a sequence of next tokens.",
+        "short_description": "OpenAI's GPT-2 language model that generates the next token.",
+        "developed_by": "Radford et al",
+        "contributed_by": null,
+        "date": "2020-06-30",
+        "version": "1",
+        "model_type": "GPT2",
+        "paper": "[Language Models are Unsupervised Multitask Learners](https://api.semanticscholar.org/CorpusID:160025533)",
+        "citation": "@inproceedings{Radford2019LanguageMA,
+                     title={Language Models are Unsupervised Multitask Learners},
+                     author={A. Radford and Jeffrey Wu and R. Child and David Luan and Dario Amodei and Ilya Sutskever},
+                     year={2019}}",
+        "license": null,
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": null,
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "Perplexity",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": "[WebText corpus](https://github.com/openai/gpt-2-output-dataset)",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": "[WebText corpus](https://github.com/openai/gpt-2-output-dataset)",
+        "motivation": "WebText emphasizes document quality. Only human-curated/filtered documents are scraped. Reddit outbound links which receive at least 3 karma points are taken as a proxy for human filtered webpages that are interesting.",
+        "preprocessing": "Dragnet and [Newspaper](https://github.com/codelucas/newspaper) content extractors are used. Wikipedia articles are removed."
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    }
 }

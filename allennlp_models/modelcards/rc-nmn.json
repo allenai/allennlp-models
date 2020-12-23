@@ -1,0 +1,61 @@
+{
+    "id": "rc-nmn",
+    "registered_model_name": null,
+    "registered_predictor_name": null,
+    "display_name": "Neural Module Network (NMN)",
+    "task_id": "rc",
+    "archive_file": "drop-nmn-2020.04.04.tar.gz",
+    "model_details": {
+        "description": "A neural module network trained on DROP.",
+        "short_description": "A neural module network trained on DROP.",
+        "developed_by": "Andreas et al",
+        "contributed_by": null,
+        "date": "2020-04-04",
+        "version": "1",
+        "model_type": "Neural Module Network",
+        "paper": "[Neural Module Networks](https://api.semanticscholar.org/CorpusID:5276660)",
+        "citation": "@article{Andreas2016NeuralMN,
+                     title={Neural Module Networks},
+                     author={Jacob Andreas and Marcus Rohrbach and Trevor Darrell and D. Klein},
+                     journal={2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+                     year={2016},
+                     pages={39-48}}",
+        "license": null,
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": null,
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": null,
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": null,
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": "DROP",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    }
+}

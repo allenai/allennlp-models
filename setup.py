@@ -76,7 +76,7 @@ setup(
         "Intended Audience :: Science/Research",
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: Apache Software License",
-        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ],
     keywords="allennlp NLP deep learning machine reading semantic parsing parsers",
@@ -90,7 +90,11 @@ setup(
     install_requires=install_requirements,
     include_package_data=True,
     package_data={
-        "allennlp_models": ["modelcards/*.json", "structured_prediction/tools/srl-eval.pl"]
+        "allennlp_models": [
+            "modelcards/*.json",
+            "taskcards/*.json",
+            "structured_prediction/tools/srl-eval.pl",
+        ]
     },
     python_requires=">=3.6.1",
     zip_safe=False,

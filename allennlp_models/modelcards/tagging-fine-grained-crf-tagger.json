@@ -1,6 +1,61 @@
 {
     "id": "tagging-fine-grained-crf-tagger",
     "registered_model_name": "crf_tagger",
+    "registered_predictor_name": null,
     "display_name": "Fine Grained Named Entity Recognition",
-    "archive_file": "fine-grained-ner.2020-06-24.tar.gz"
+    "task_id": "ner",
+    "archive_file": "fine-grained-ner.2020-06-24.tar.gz",
+    "model_details": {
+        "description": "This model identifies a broad range of 16 semantic types in the input text. It is a reimplementation of Lample (2016) and uses a biLSTM with a CRF layer, character embeddings and ELMo embeddings.",
+        "short_description": "This model identifies a broad range of 16 semantic types in the input text. It is a reimplementation of Lample (2016) and uses a biLSTM with a CRF layer, character embeddings and ELMo embeddings.",
+        "developed_by": "Lample et al",
+        "contributed_by": null,
+        "date": "2020-06-24",
+        "version": "1",
+        "model_type": "BiLSTM",
+        "paper": "[Neural Architectures for Named Entity Recognition](https://api.semanticscholar.org/CorpusID:6042994)",
+        "citation": "@article{Lample2016NeuralAF,
+                     title={Neural Architectures for Named Entity Recognition},
+                     author={Guillaume Lample and Miguel Ballesteros and Sandeep Subramanian and K. Kawakami and Chris Dyer},
+                     journal={ArXiv},
+                     year={2016},
+                     volume={abs/1603.01360}}",
+        "license": null,
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": null,
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "Accuracy and Span-based F1 metric",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    }
 }

@@ -1,8 +1,8 @@
 import numpy
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
-from transformers.modeling_bert import BertConfig, BertModel
-from transformers.tokenization_bert import BertTokenizer
+from transformers.models.bert.modeling_bert import BertConfig, BertModel
+from transformers.models.bert.tokenization_bert import BertTokenizer
 
 from allennlp.common.testing import ModelTestCase
 from allennlp.nn.util import get_lengths_from_binary_sequence_mask

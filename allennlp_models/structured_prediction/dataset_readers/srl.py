@@ -2,7 +2,7 @@ import logging
 from typing import Dict, List, Iterable, Tuple, Any
 
 from overrides import overrides
-from transformers.tokenization_bert import BertTokenizer
+from transformers.models.bert.tokenization_bert import BertTokenizer
 
 from allennlp.common.file_utils import cached_path
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
@@ -133,7 +133,14 @@ class SrlReader(DatasetReader):
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
-        self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
+        if token_indexers is not None:
+            self._token_indexers = token_indexers
+        elif bert_model_name is not None:
+            from allennlp.data.token_indexers import PretrainedTransformerIndexer
+
+            self._token_indexers = {"tokens": PretrainedTransformerIndexer(bert_model_name)}
+        else:
+            self._token_indexers = {"tokens": SingleIdTokenIndexer()}
         self._domain_identifier = domain_identifier
 
         if bert_model_name is not None:

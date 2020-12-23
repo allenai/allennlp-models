@@ -17,8 +17,7 @@ from allennlp.training.metrics import CategoricalAccuracy
 class DecomposableAttention(Model):
     """
     This `Model` implements the Decomposable Attention model described in [A Decomposable
-    Attention Model for Natural Language Inference](
-    https://www.semanticscholar.org/paper/A-Decomposable-Attention-Model-for-Natural-Languag-Parikh-T%C3%A4ckstr%C3%B6m/07a9478e87a8304fc3267fa16e83e9f3bbd98b27)
+    Attention Model for Natural Language Inference](https://api.semanticscholar.org/CorpusID:8495258)
     by Parikh et al., 2016, with some optional enhancements before the decomposable attention
     actually happens.  Parikh's original model allowed for computing an "intra-sentence" attention
     before doing the decomposable entailment step.  We generalize this to any

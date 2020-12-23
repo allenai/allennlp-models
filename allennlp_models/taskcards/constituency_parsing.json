@@ -1,0 +1,14 @@
+{
+    "id": "constituency-parsing",
+    "name": "Constituency Parsing",
+    "description": "Constituency parsing is the task of breaking a text into sub-phrases, or constituents. Non-terminals in the parse tree are types of phrases, the terminals are the words in the sentence.",
+    "expected_inputs": "The task expects an input sentence.",
+    "expected_outputs": "Subwords or constituents.",
+    "scope_and_limitations": null,
+    "examples": [
+                    {"sentence" : "Pierre Vinken died aged 81; immortalised aged 61."},
+                    {"sentence" : "James went to the corner shop to buy some eggs, milk and bread for breakfast."},
+                    {"sentence" : "If you bring $10 with you tomorrow, can you pay for me to eat too?"},
+                    {"sentence" : "True self-control is waiting until the movie starts to eat your popcorn."},
+                ],
+}
