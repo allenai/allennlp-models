@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased (1.x branch)
 
+## [v1.3.0](https://github.com/allenai/allennlp-models/releases/tag/v1.2.2) - 2020-12-15
+
 ### Fixed
 
 - Fix an index bug in  BART prediction.
@@ -30,6 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated `Dockerfile.release` and `Dockerfile.commit` to work with different CUDA versions.
 - Changes required for the `transformers` dependency update to version 4.0.1.
+
+### Fixed
+
+- Added missing folder for `taskcards` in setup.py
 
 
 ## [v1.2.2](https://github.com/allenai/allennlp-models/releases/tag/v1.2.2) - 2020-11-17
