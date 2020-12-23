@@ -4,13 +4,13 @@
     "registered_predictor_name": "vilbert_ve",
     "display_name": "Visual Entailment",
     "task_id": "ve",
-    "archive_file": "visual-entailment-2020.12.17.tar.gz",
+    "archive_file": "visual-entailment-torchvision-2020.12.23.tar.gz",
     "model_details": {
         "description": "This model is based on the ViLBERT architecture. The image features are obtained using the ResNet backbone and Faster RCNN (region detection).",
         "short_description": "ViLBERT-based model for Visual Entailment.",
         "developed_by": "Lu et al",
         "contributed_by": "Akshita Bhagia",
-        "date": "2020-12-22",
+        "date": "2020-12-23",
         "version": "1",
         "model_type": "ViLBERT based on BERT large",
         "paper": "[ViLBERT: Pretraining Task-Agnostic Visiolinguistic Representations for Vision-and-Language Tasks](https://api.semanticscholar.org/CorpusID:199453025)",
@@ -25,7 +25,7 @@
         "training_config": null,
     },
     "intended_use": {
-        "primary_uses": null,
+        "primary_uses": "This model is developed for the AllenNLP demo.",
         "primary_users": null,
         "out_of_scope_use_cases": null
     },
