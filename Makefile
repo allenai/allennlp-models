@@ -19,7 +19,7 @@ DOCKER_RUN_CMD = docker run --rm \
 		-v $$HOME/.allennlp:/root/.allennlp \
 		-v $$HOME/.cache/huggingface:/root/.cache/huggingface \
 		-v $$HOME/nltk_data:/root/nltk_data
-ALLENNLP_COMMIT_SHA = $(shell git ls-remote https://github.com/allenai/allennlp master | cut -f 1)
+ALLENNLP_COMMIT_SHA = $(shell git ls-remote https://github.com/allenai/allennlp main | cut -f 1)
 
 ifeq ($(shell uname),Darwin)
 ifeq ($(shell which gsed),)
@@ -106,7 +106,7 @@ $(MD_DOCS_ROOT)%.md : %.md
 	cp $< $@
 
 scripts/py2md.py :
-	wget https://raw.githubusercontent.com/allenai/allennlp/master/scripts/py2md.py -O $@
+	wget https://raw.githubusercontent.com/allenai/allennlp/main/scripts/py2md.py -O $@
 
 $(MD_DOCS_CONF) : $(MD_DOCS_CONF_SRC) $(MD_DOCS)
 	@PYTHONPATH=./ python scripts/build_docs_config.py $@ $(MD_DOCS_CONF_SRC) $(MD_DOCS_ROOT) $(MD_DOCS_API_ROOT)
