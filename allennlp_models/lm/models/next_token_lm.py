@@ -84,9 +84,7 @@ class NextTokenLM(Model):
 
         # Ensure beam_search_generator is compatable with text_field_embedder.
         if self._beam_search_generator is not None:
-            self._beam_search_generator.validate_text_field_embedder(
-                self._text_field_embedder
-            )
+            self._beam_search_generator.validate_text_field_embedder(self._text_field_embedder)
 
         if initializer is not None:
             initializer(self)
@@ -156,9 +154,7 @@ class NextTokenLM(Model):
 
             # Shape (both): (batch_size, n_best)
             # min here largely because tests use small vocab
-            top_probs, top_indices = probs.topk(
-                k=min(target_logits.size(-1), self._n_best), dim=-1
-            )
+            top_probs, top_indices = probs.topk(k=min(target_logits.size(-1), self._n_best), dim=-1)
 
             # Shape: (batch_size, n_best, 1)
             top_indices = top_indices.unsqueeze(-1)
@@ -179,9 +175,7 @@ class NextTokenLM(Model):
         if self._contextualizer:
             mask = util.get_text_field_mask(embeddings)
             contextual_embeddings = self._contextualizer(embeddings, mask)
-            final_embeddings = util.get_final_encoder_states(
-                contextual_embeddings, mask
-            )
+            final_embeddings = util.get_final_encoder_states(contextual_embeddings, mask)
         else:
             final_embeddings = embeddings[:, -1]
 
@@ -207,9 +201,7 @@ class NextTokenLM(Model):
             start_target_logits = state.pop("start_target_logits")
 
             # Shape: (group_size, vocab_size)
-            start_target_log_probs = torch.nn.functional.log_softmax(
-                start_target_logits, dim=-1
-            )
+            start_target_log_probs = torch.nn.functional.log_softmax(start_target_logits, dim=-1)
 
             return start_target_log_probs, state
 
