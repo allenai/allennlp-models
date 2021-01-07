@@ -84,7 +84,9 @@ class NextTokenLM(Model):
 
         # Ensure beam_search_generator is compatable with text_field_embedder.
         if self._beam_search_generator is not None:
-            self._beam_search_generator.validate_text_field_embedder(self._text_field_embedder)
+            self._beam_search_generator.validate_text_field_embedder(
+                self._text_field_embedder
+            )
 
         if initializer is not None:
             initializer(self)
@@ -117,7 +119,13 @@ class NextTokenLM(Model):
         # Compute loss.
         if target_ids is not None:
             batch_size, vocab_size = target_logits.size()
-            targets = util.get_token_ids_from_text_field_tensors(target_ids).view(batch_size)
+            tmp = util.get_token_ids_from_text_field_tensors(target_ids)
+            # In some scenarios, target_ids might be a topk list of token ids (e.g. sorted by probabilities).
+            # Therefore, we need to make sure only one token per batch
+            # Assume: first token in each batch is the most desirable one (e.g. highest probability)
+            tmp = tmp[:, 0] if len(tmp.shape) == 2 else tmp
+            assert len(tmp.shape) <= 2
+            targets = tmp.view(batch_size)
             loss = torch.nn.functional.cross_entropy(target_logits, targets)
             self._perplexity(loss)
             output_dict["loss"] = loss
@@ -148,7 +156,9 @@ class NextTokenLM(Model):
 
             # Shape (both): (batch_size, n_best)
             # min here largely because tests use small vocab
-            top_probs, top_indices = probs.topk(k=min(target_logits.size(-1), self._n_best), dim=-1)
+            top_probs, top_indices = probs.topk(
+                k=min(target_logits.size(-1), self._n_best), dim=-1
+            )
 
             # Shape: (batch_size, n_best, 1)
             top_indices = top_indices.unsqueeze(-1)
@@ -169,7 +179,9 @@ class NextTokenLM(Model):
         if self._contextualizer:
             mask = util.get_text_field_mask(embeddings)
             contextual_embeddings = self._contextualizer(embeddings, mask)
-            final_embeddings = util.get_final_encoder_states(contextual_embeddings, mask)
+            final_embeddings = util.get_final_encoder_states(
+                contextual_embeddings, mask
+            )
         else:
             final_embeddings = embeddings[:, -1]
 
@@ -195,7 +207,9 @@ class NextTokenLM(Model):
             start_target_logits = state.pop("start_target_logits")
 
             # Shape: (group_size, vocab_size)
-            start_target_log_probs = torch.nn.functional.log_softmax(start_target_logits, dim=-1)
+            start_target_log_probs = torch.nn.functional.log_softmax(
+                start_target_logits, dim=-1
+            )
 
             return start_target_log_probs, state
 
