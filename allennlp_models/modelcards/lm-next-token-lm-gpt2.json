@@ -6,10 +6,7 @@
     "task_id": "language-modeling",
     "archive_file": "gpt2-next-word-lm-2020.06.30.tar.gz",
     "model_details": {
-        "description": "This is the public 345M parameter OpenAI GPT-2 language model for generating sentences.
-                        The model embeds some input tokens, contextualizes them, then predicts the next word,
-                        computing a loss against known target. \nIf `BeamSearch` is given, this model will predict
-                        a sequence of next tokens.",
+        "description": "This is the public 345M parameter OpenAI GPT-2 language model for generating sentences. The model embeds some input tokens, contextualizes them, then predicts the next word, computing a loss against known target. \nIf `BeamSearch` is given, this model will predict a sequence of next tokens.",
         "short_description": "OpenAI's GPT-2 language model that generates the next token.",
         "developed_by": "Radford et al",
         "contributed_by": null,
@@ -17,10 +14,7 @@
         "version": "1",
         "model_type": "GPT2",
         "paper": "[Language Models are Unsupervised Multitask Learners](https://api.semanticscholar.org/CorpusID:160025533)",
-        "citation": "@inproceedings{Radford2019LanguageMA,
-                     title={Language Models are Unsupervised Multitask Learners},
-                     author={A. Radford and Jeffrey Wu and R. Child and David Luan and Dario Amodei and Ilya Sutskever},
-                     year={2019}}",
+        "citation": "```\n@inproceedings{Radford2019LanguageMA,\ntitle={Language Models are Unsupervised Multitask Learners},\nauthor={A. Radford and Jeffrey Wu and R. Child and David Luan and Dario Amodei and Ilya Sutskever},\nyear={2019}}\n```",
         "license": null,
         "contact": "allennlp-contact@allenai.org",
         "training_config": null,

@@ -6,8 +6,7 @@
     "task_id": "sentiment-analysis",
     "archive_file": "basic_stanford_sentiment_treebank-2020.06.09.tar.gz",
     "model_details": {
-        "description": "This model uses GloVe embeddings and is trained on the binary classification
-                        setting of the Stanford Sentiment Treebank. It achieves about 87% on the test set.",
+        "description": "This model uses GloVe embeddings and is trained on the binary classification setting of the Stanford Sentiment Treebank. It achieves about 87% on the test set.",
         "short_description": "LSTM binary classifier with GloVe embeddings.",
         "developed_by": null,
         "contributed_by": null,

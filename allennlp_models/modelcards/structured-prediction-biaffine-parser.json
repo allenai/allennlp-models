@@ -6,18 +6,7 @@
     "task_id": "dependency-parsing",
     "archive_file": "biaffine-dependency-parser-ptb-2020.04.06.tar.gz",
     "model_details": {
-        "description": "This dependency parser follows the model of
-                        [Deep Biaffine Attention for Neural Dependency Parsing (Dozat and Manning, 2016)]
-                        (https://api.semanticscholar.org/CorpusID:7942973) .
-
-                        Word representations are generated using a bidirectional LSTM,
-                        followed by separate biaffine classifiers for pairs of words,
-                        predicting whether a directed arc exists between the two words
-                        and the dependency label the arc should have. Decoding can either
-                        be done greedily, or the optimal Minimum Spanning Tree can be
-                        decoded using Edmond's algorithm by viewing the dependency tree as
-                        a MST on a fully connected graph, where nodes are words and edges
-                        are scored dependency arcs.",
+        "description": "This dependency parser follows the model of [Deep Biaffine Attention for Neural Dependency Parsing (Dozat and Manning, 2016)](https://api.semanticscholar.org/CorpusID:7942973) .\n\nWord representations are generated using a bidirectional LSTM, followed by separate biaffine classifiers for pairs of words, predicting whether a directed arc exists between the two words and the dependency label the arc should have. Decoding can either be done greedily, or the optimal Minimum Spanning Tree can be decoded using Edmond's algorithm by viewing the dependency tree as a MST on a fully connected graph, where nodes are words and edges are scored dependency arcs.",
         "short_description": "A neural model for dependency parsing using biaffine classifiers on top of a bidirectional LSTM.",
         "developed_by": "Dozat et al",
         "contributed_by": null,
@@ -25,12 +14,7 @@
         "version": "1",
         "model_type": null,
         "paper": "[Deep Biaffine Attention for Neural Dependency Parsing (Dozat and Manning, 2016)](https://api.semanticscholar.org/CorpusID:7942973)",
-        "citation": "@article{Dozat2017DeepBA,
-                     title={Deep Biaffine Attention for Neural Dependency Parsing},
-                     author={Timothy Dozat and Christopher D. Manning},
-                     journal={ArXiv},
-                     year={2017},
-                     volume={abs/1611.01734}}",
+        "citation": "```\n@article{Dozat2017DeepBA,\ntitle={Deep Biaffine Attention for Neural Dependency Parsing},\nauthor={Timothy Dozat and Christopher D. Manning},\njournal={ArXiv},\nyear={2017},\nvolume={abs/1611.01734}}\n```",
         "license": null,
         "contact": "allennlp-contact@allenai.org",
         "training_config": null,

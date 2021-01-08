@@ -14,11 +14,7 @@
         "version": "1",
         "model_type": null,
         "paper": "[Iterative Search for Weakly Supervised Semantic Parsing](https://api.semanticscholar.org/CorpusID:174799945)",
-        "citation": "@inproceedings{Dasigi2019IterativeSF,
-                     title={Iterative Search for Weakly Supervised Semantic Parsing},
-                     author={Pradeep Dasigi and Matt Gardner and Shikhar Murty and Luke Zettlemoyer and E. Hovy},
-                     booktitle={NAACL-HLT},
-                     year={2019}}",
+        "citation": "```\n@inproceedings{Dasigi2019IterativeSF,\ntitle={Iterative Search for Weakly Supervised Semantic Parsing},\nauthor={Pradeep Dasigi and Matt Gardner and Shikhar Murty and Luke Zettlemoyer and E. Hovy},\nbooktitle={NAACL-HLT},\nyear={2019}}\n```",
         "license": null,
         "contact": "allennlp-contact@allenai.org",
         "training_config": null,
@@ -33,10 +29,7 @@
         "evaluation_factors": null
     },
     "metrics": {
-        "model_performance_measures": "1. `exact_match`; the percentage of the time that our best output action sequence matches the SQL query exactly.
-                                       2. `denotation_acc`; the percentage of examples where we get the correct denotation.  
-                                       3. `valid_sql_query`; the percentage of time that decoding actually produces avalid SQL query.  
-                                       4. `action_similarity`; how similar the action sequence predicted is to the actual action sequence.",
+        "model_performance_measures": "1. `exact_match`; the percentage of the time that our best output action sequence matches the SQL query exactly.\n2. `denotation_acc`; the percentage of examples where we get the correct denotation.\n3. `valid_sql_query`; the percentage of time that decoding actually produces avalid SQL query.\n4. `action_similarity`; how similar the action sequence predicted is to the actual action sequence.",
         "decision_thresholds": null,
         "variation_approaches": null
     },

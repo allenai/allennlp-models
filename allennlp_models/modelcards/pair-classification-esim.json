@@ -6,8 +6,7 @@
     "task_id": "textual_entailment",
     "archive_file": "esim-elmo-2020.11.11.tar.gz",
     "model_details": {
-        "description": "This `Model` implements the ESIM model, which is a sequential neural inference model
-                        based on chain LSTMs.",
+        "description": "This `Model` implements the ESIM model, which is a sequential neural inference model based on chain LSTMs.",
         "short_description": "Enhanced LSTM trained on SNLI.",
         "developed_by": "Chen et al",
         "contributed_by": "Dirk Groeneveld",
@@ -15,11 +14,7 @@
         "version": "1",
         "model_type": "LSTM",
         "paper": "[Enhanced LSTM for Natural Language Inference](https://api.semanticscholar.org/CorpusID:34032948)",
-        "citation": "@inproceedings{Chen2017EnhancedLF,
-                     title={Enhanced LSTM for Natural Language Inference},
-                     author={Qian Chen and Xiao-Dan Zhu and Z. Ling and Si Wei and Hui Jiang and Diana Inkpen},
-                     booktitle={ACL},
-                     year={2017}}",
+        "citation": "```\n@inproceedings{Chen2017EnhancedLF,\ntitle={Enhanced LSTM for Natural Language Inference},\nauthor={Qian Chen and Xiao-Dan Zhu and Z. Ling and Si Wei and Hui Jiang and Diana Inkpen},\nbooktitle={ACL},\nyear={2017}}\n```",
         "license": null,
         "contact": "allennlp-contact@allenai.org",
         "training_config": "esim.jsonnet",

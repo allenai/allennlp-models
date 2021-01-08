@@ -6,10 +6,7 @@
     "task_id": "ner",
     "archive_file": "ner-model-2020.02.10.tar.gz",
     "model_details": {
-        "description": "This model is the baseline model described in [Semi-supervised sequence tagging with bidirectional language models](https://api.semanticscholar.org/CorpusID:7197241).
-                        It uses a Gated Recurrent Unit (GRU) character encoder as well as a GRU phrase encoder,
-                        and it starts with pretrained GloVe vectors for its token embeddings. It was trained on
-                        the CoNLL-2003 NER dataset.",
+        "description": "This model is the baseline model described in [Semi-supervised sequence tagging with bidirectional language models](https://api.semanticscholar.org/CorpusID:7197241). It uses a Gated Recurrent Unit (GRU) character encoder as well as a GRU phrase encoder, and it starts with pretrained GloVe vectors for its token embeddings. It was trained on the CoNLL-2003 NER dataset.",
         "short_description": "NER tagger using a Gated Recurrent Unit (GRU) character encoder as well as a GRU phrase encoder, with GloVe embeddings.",
         "developed_by": "Peters et al",
         "contributed_by": null,
@@ -17,11 +14,7 @@
         "version": "1",
         "model_type": "Gated Recurrent Unit (GRU)",
         "paper": "[Semi-supervised sequence tagging with bidirectional language models](https://api.semanticscholar.org/CorpusID:7197241)",
-        "citation": "@inproceedings{Peters2017SemisupervisedST,
-                     title={Semi-supervised sequence tagging with bidirectional language models},
-                     author={Matthew E. Peters and Waleed Ammar and Chandra Bhagavatula and R. Power},
-                     booktitle={ACL},
-                     year={2017}}",
+        "citation": "```\n@inproceedings{Peters2017SemisupervisedST,\ntitle={Semi-supervised sequence tagging with bidirectional language models},\nauthor={Matthew E. Peters and Waleed Ammar and Chandra Bhagavatula and R. Power},\nbooktitle={ACL},\nyear={2017}}\n```",
         "license": null,
         "contact": "allennlp-contact@allenai.org",
         "training_config": null,

@@ -6,24 +6,15 @@
     "task_id": "rc",
     "archive_file": "transformer-qa-2020-10-03.tar.gz",
     "model_details": {
-        "description": "The model implements a reading comprehension model patterned after the proposed model in 
-                        https://api.semanticscholar.org/CorpusID:52967399 (Devlin et al, 2018), with improvements 
-                        borrowed from the SQuAD model in the transformers project. It predicts start tokens and end
-                        tokens with a linear layer on top of word piece embeddings.",
+        "description": "The model implements a reading comprehension model patterned after the proposed model in [BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding (Devlin et al, 2018)](https://api.semanticscholar.org/CorpusID:52967399), with improvements borrowed from the SQuAD model in the transformers project. It predicts start tokens and end tokens with a linear layer on top of word piece embeddings.",
         "short_description": "A reading comprehension model patterned after the proposed model in Devlin et al, with improvements borrowed from the SQuAD model in the transformers project",
         "developed_by": "Devlin et al",
         "contributed_by": "Dirk Groeneveld and Evan Pete Walsh",
         "date": "2020-10-03",
         "version": "2",
         "model_type": "RoBERTa",
-        "paper": "[RoBERTa: A Robustly Optimized BERT Pretraining Approach]
-                  (https://api.semanticscholar.org/CorpusID:198953378)",
-        "citation": "@article{Liu2019RoBERTaAR,
-                    title={RoBERTa: A Robustly Optimized BERT Pretraining Approach},
-                    author={Y. Liu and Myle Ott and Naman Goyal and Jingfei Du and Mandar Joshi and Danqi Chen and Omer Levy and M. Lewis and L. Zettlemoyer and V. Stoyanov},
-                    journal={ArXiv},
-                    year={2019},
-                    volume={abs/1907.11692}}",
+        "paper": "[RoBERTa: A Robustly Optimized BERT Pretraining Approach](https://api.semanticscholar.org/CorpusID:198953378)",
+        "citation": "```\n@article{Liu2019RoBERTaAR,\ntitle={RoBERTa: A Robustly Optimized BERT Pretraining Approach},\nauthor={Y. Liu and Myle Ott and Naman Goyal and Jingfei Du and Mandar Joshi and Danqi Chen and Omer Levy and M. Lewis and L. Zettlemoyer and V. Stoyanov},\njournal={ArXiv},\nyear={2019},\nvolume={abs/1907.11692}}\n```",
         "license": null,
         "contact": "allennlp-contact@allenai.org"
     },
@@ -37,12 +28,7 @@
         "evaluation_factors": null
     },
     "metrics": {
-        "model_performance_measures": "F1-score, Span Accuracy, Exact Match. Note that the metrics 
-                                       that the model produces are calculated on a per-instance basis only.
-                                       Since there could be more than one instance per question, these
-                                       metrics are not the official numbers on the SQuAD task. To get
-                                       official numbers, run the evaluation script v2.0 at
-                                       https://rajpurkar.github.io/SQuAD-explorer/",
+        "model_performance_measures": "F1-score, Span Accuracy, Exact Match. Note that the metrics that the model produces are calculated on a per-instance basis only. Since there could be more than one instance per question, these metrics are not the official numbers on the SQuAD task. To get official numbers, run the evaluation script v2.0 at https://rajpurkar.github.io/SQuAD-explorer/",
         "decision_thresholds": null,
         "variation_approaches": null
     },
@@ -52,14 +38,9 @@
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "The TransformerQA model was fine-tuned on SQuAD train set. 
-                    The underlying RoBERTa model was pretrained on BooksCorpus (Zhu et al., 2015) 
-                    plus English Wikipedia (16GB), CC-News (Nagel, 2016) (76GB), OpenWebText (Gokaslan and Cohen, 2019) (38GB),
-                    and STORIES (Trinh and Le, 2018) (31GB).",
-        "motivation": "For the pretrained RoBERTa model, document-level corpora were used rather than a shuffled sentence-level corpus 
-                       such as the Billion Word Benchmark (Chelba et al., 2013) in order to extract long contiguous sequences",
-        "preprocessing": "For the pretrained RoBERTa model, only the text passages were extracted from English Wikipedia; 
-                          lists, tables, and headers were ignored.",
+        "dataset": "The TransformerQA model was fine-tuned on SQuAD train set. \nThe underlying RoBERTa model was pretrained on BooksCorpus (Zhu et al., 2015) plus English Wikipedia (16GB), CC-News (Nagel, 2016) (76GB), OpenWebText (Gokaslan and Cohen, 2019) (38GB), and STORIES (Trinh and Le, 2018) (31GB).",
+        "motivation": "For the pretrained RoBERTa model, document-level corpora were used rather than a shuffled sentence-level corpus such as the Billion Word Benchmark (Chelba et al., 2013) in order to extract long contiguous sequences",
+        "preprocessing": "For the pretrained RoBERTa model, only the text passages were extracted from English Wikipedia; lists, tables, and headers were ignored.",
     },
     "quantitative_analyses": {
         "unitary_results": null,

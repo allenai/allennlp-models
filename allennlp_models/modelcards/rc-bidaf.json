@@ -6,12 +6,7 @@
     "task_id": "rc",
     "archive_file": "bidaf-model-2020.03.19.tar.gz",
     "model_details": {
-        "description": "This is an implementation of the BiDAF model with GloVe embeddings. The basic layout is pretty simple:
-                        encode words as a combination of word embeddings and a character-level encoder, pass the
-                        word representations through a bi-LSTM/GRU, use a matrix of
-                        attentions to put question information into the passage word representations (this is the only
-                        part that is at all non-standard), pass this through another few layers of bi-LSTMs/GRUs, and
-                        do a softmax over span start and span end.",
+        "description": "This is an implementation of the BiDAF model with GloVe embeddings. The basic layout is pretty simple: encode words as a combination of word embeddings and a character-level encoder, pass the word representations through a bi-LSTM/GRU, use a matrix of attentions to put question information into the passage word representations (this is the only part that is at all non-standard), pass this through another few layers of bi-LSTMs/GRUs, and do a softmax over span start and span end.",
         "short_description": "BiDAF model with GloVe embeddings.",
         "developed_by": "Seo et al",
         "contributed_by": null,
@@ -19,12 +14,7 @@
         "version": "1",
         "model_type": "BiDAF",
         "paper": "[Bidirectional Attention Flow for Machine Comprehension](https://api.semanticscholar.org/CorpusID:8535316)",
-        "citation": "@article{Seo2017BidirectionalAF,
-                     title={Bidirectional Attention Flow for Machine Comprehension},
-                     author={Minjoon Seo and Aniruddha Kembhavi and Ali Farhadi and Hannaneh Hajishirzi},
-                     journal={ArXiv},
-                     year={2017},
-                     volume={abs/1611.01603}}",
+        "citation": "```\n@article{Seo2017BidirectionalAF,\ntitle={Bidirectional Attention Flow for Machine Comprehension},\nauthor={Minjoon Seo and Aniruddha Kembhavi and Ali Farhadi and Hannaneh Hajishirzi},\njournal={ArXiv},\nyear={2017},\nvolume={abs/1611.01603}}\n```",
         "license": null,
         "contact": "allennlp-contact@allenai.org",
         "training_config": null,

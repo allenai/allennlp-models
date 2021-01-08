@@ -5,25 +5,15 @@
     "display_name": "BART",
     "archive_file": "bart-2020.07.25.tar.gz",
     "model_details": {
-        "description": "The BART model here uses a language modeling head, and therefore can be used for generation.
-                        The BART encoder, implemented as a `Seq2SeqEncoder`, which assumes it operates on
-                        already embedded inputs.  This means that we remove the token and position embeddings
-                        from BART in this module.  For the typical use case of using BART to encode inputs to your
-                        model (where we include the token and position embeddings from BART), you should use
-                        `PretrainedTransformerEmbedder(bart_model_name, sub_module=\"encoder\")` instead of this.",
+        "description": "The BART model here uses a language modeling head, and therefore can be used for generation. The BART encoder, implemented as a `Seq2SeqEncoder`, which assumes it operates on already embedded inputs.  This means that we remove the token and position embeddings from BART in this module.  For the typical use case of using BART to encode inputs to your model (where we include the token and position embeddings from BART), you should use `PretrainedTransformerEmbedder(bart_model_name, sub_module=\"encoder\")` instead of this.",
         "short_description": "BART with a language model head for generation.",
         "developed_by": "Lewis et al",
         "contributed_by": "Dirk Groeneveld",
         "date": "2020-07-25",
         "version": "1",
         "model_type": "BART",
-        "paper": "[BART: Denosing Sequence-to-Sequence Pre-training for Natural Language Generation,
-                   Translation, and Comprehension](https://api.semanticscholar.org/CorpusID:204960716)",
-        "citation": "@inproceedings{Lewis2020BARTDS,
-                     title={BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension},
-                     author={M. Lewis and Yinhan Liu and Naman Goyal and Marjan Ghazvininejad and A. Mohamed and Omer Levy and Ves Stoyanov and L. Zettlemoyer},
-                     booktitle={ACL},
-                     year={2020}}",
+        "paper": "[BART: Denosing Sequence-to-Sequence Pre-training for Natural Language Generation,Translation, and Comprehension](https://api.semanticscholar.org/CorpusID:204960716)",
+        "citation": "```\n@inproceedings{Lewis2020BARTDS,\ntitle={BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension},\nauthor={M. Lewis and Yinhan Liu and Naman Goyal and Marjan Ghazvininejad and A. Mohamed and Omer Levy and Ves Stoyanov and L. Zettlemoyer},\nbooktitle={ACL},\nyear={2020}}\n```",
         "license": null,
         "contact": "allennlp-contact@allenai.org"
     },
