@@ -59,7 +59,7 @@ class CNNDailyMailDatasetReader(DatasetReader):
         **kwargs,
     ) -> None:
         super().__init__(
-            manual_distributed_sharding=True, manual_multi_process_sharding=True, **kwargs
+            manual_distributed_sharding=True, manual_multiprocess_sharding=True, **kwargs
         )
         self._source_tokenizer = source_tokenizer or SpacyTokenizer()
         self._target_tokenizer = target_tokenizer or self._source_tokenizer
