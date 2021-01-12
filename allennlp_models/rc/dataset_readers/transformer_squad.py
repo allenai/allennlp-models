@@ -103,7 +103,7 @@ class TransformerSquadReader(DatasetReader):
             skip_impossible_questions = kwargs.pop("skip_invalid_examples")
 
         super().__init__(
-            manual_distributed_sharding=True, manual_multi_process_sharding=True, **kwargs
+            manual_distributed_sharding=True, manual_multiprocess_sharding=True, **kwargs
         )
         self._tokenizer = PretrainedTransformerTokenizer(
             transformer_model_name,
