@@ -185,7 +185,7 @@ class TransformerSquadReader(DatasetReader):
         context: str,
         first_answer_offset: Optional[int],
         always_add_answer_span: bool = False,
-        is_training: bool = False
+        is_training: bool = False,
     ) -> Iterable[Instance]:
         """
         Create training instances from a SQuAD example.
@@ -255,9 +255,11 @@ class TransformerSquadReader(DatasetReader):
                 # The answer is not contained in the window.
                 window_token_answer_span = None
 
-            if (not is_training
-                    or not self.skip_impossible_questions
-                    or window_token_answer_span is not None):
+            if (
+                not is_training
+                or not self.skip_impossible_questions
+                or window_token_answer_span is not None
+            ):
                 additional_metadata = {"id": qid}
                 instance = self.text_to_instance(
                     question,
