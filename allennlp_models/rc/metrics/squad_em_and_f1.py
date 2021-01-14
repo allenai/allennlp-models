@@ -39,7 +39,7 @@ class SquadEmAndF1(Metric):
                 device = torch.device("cpu")
             # Converting bool to int here, since we want to count the number of exact matches.
             _exact_match = torch.tensor(exact_match, dtype=torch.int).to(device)
-            _f1_score = torch.tensor(f1_score).to(device)
+            _f1_score = torch.tensor(f1_score, dtype=torch.double).to(device)
             _count = torch.tensor(count).to(device)
             dist.all_reduce(_exact_match, op=dist.ReduceOp.SUM)
             dist.all_reduce(_f1_score, op=dist.ReduceOp.SUM)
