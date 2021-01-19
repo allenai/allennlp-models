@@ -216,7 +216,7 @@ class Bart(Model):
                 attention_mask=input_mask,
                 decoder_input_ids=target_ids[:, :-1].contiguous(),
                 decoder_attention_mask=target_mask[:, :-1].contiguous(),
-                use_cache=not self.training,
+                use_cache=False,
                 return_dict=True,
             )
             outputs["decoder_logits"] = bart_outputs.logits
@@ -309,8 +309,6 @@ class Bart(Model):
             A tuple containing logits for the next tokens of shape `(group_size, target_vocab_size)` and
             an updated state dictionary.
         """
-        print("Step:", step)
-
         if len(last_predictions.shape) == 1:
             last_predictions = last_predictions.unsqueeze(-1)
 
@@ -336,7 +334,6 @@ class Bart(Model):
 
         logits = outputs.logits[:, -1, :]
         log_probabilities = F.log_softmax(logits, dim=-1)
-        print(log_probabilities.shape)
 
         decoder_cache = outputs.past_key_values
         if decoder_cache is not None:
