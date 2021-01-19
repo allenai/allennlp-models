@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - 'master' branch renamed to 'main'
 
+### Fixed
+
+- Fixed BART. This implementation had some major bugs in it that caused poor beam search predictions.
+
 ## [v1.3.0](https://github.com/allenai/allennlp-models/releases/tag/v1.2.2) - 2020-12-15
 
 ### Fixed
