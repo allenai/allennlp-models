@@ -68,6 +68,7 @@ class TransformerQAPredictor(Predictor):
             answers=[],
             context=context,
             first_answer_offset=None,
+            is_training=False,
         ):
             self._dataset_reader.apply_token_indexers(instance)
             result.append(instance)

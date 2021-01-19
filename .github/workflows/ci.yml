@@ -3,11 +3,11 @@ name: CI
 on:
   pull_request:
     branches:
-    - master
+    - main
     - vision
   push:
     branches:
-    - master
+    - main
   release:
     types: [published]
   schedule:
@@ -33,7 +33,7 @@ jobs:
       run: |
         # If this step fails, this means you haven't updated the CHANGELOG.md
         # file with notes on your contribution.
-        git diff --name-only $(git merge-base origin/master HEAD) | grep '^CHANGELOG.md$' && echo "Thanks for helping keep our CHANGELOG up-to-date!"
+        git diff --name-only $(git merge-base origin/main HEAD) | grep '^CHANGELOG.md$' && echo "Thanks for helping keep our CHANGELOG up-to-date!"
 
   checks:
     name: Checks
@@ -58,6 +58,7 @@ jobs:
     - name: Install requirements
       run: |
         pip install --upgrade pip setuptools wheel
+        pip uninstall -y allennlp
         pip install --upgrade --upgrade-strategy eager -r requirements.txt
         pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
 
@@ -183,6 +184,7 @@ jobs:
     - name: Install requirements
       run: |
         pip install --upgrade pip setuptools wheel
+        pip uninstall -y allennlp
         pip install --upgrade --upgrade-strategy eager -r requirements.txt
         pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
 
@@ -197,8 +199,8 @@ jobs:
             echo "DOCS_FOLDER=models/${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV;
             echo "BASE_SOURCE_LINK=https://github.com/allenai/allennlp-models/blob/${GITHUB_REF#refs/tags/}/allennlp_models/" >> $GITHUB_ENV;
         else
-            echo "DOCS_FOLDER=models/master" >> $GITHUB_ENV;
-            echo "BASE_SOURCE_LINK=https://github.com/allenai/allennlp-models/blob/master/allennlp_models/" >> $GITHUB_ENV;
+            echo "DOCS_FOLDER=models/main" >> $GITHUB_ENV;
+            echo "BASE_SOURCE_LINK=https://github.com/allenai/allennlp-models/blob/main/allennlp_models/" >> $GITHUB_ENV;
         fi
 
     - name: Build docs
@@ -326,6 +328,7 @@ jobs:
     - name: Install requirements
       run: |
         pip install --upgrade pip setuptools wheel
+        pip uninstall -y allennlp
         pip install -e .
         pip install -r dev-requirements.txt
 

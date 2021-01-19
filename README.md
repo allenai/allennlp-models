@@ -1,6 +1,6 @@
 <div align="center">
     <br>
-    <img src="https://raw.githubusercontent.com/allenai/allennlp/master/docs/img/allennlp-logo-dark.png" width="400"/>
+    <img src="https://raw.githubusercontent.com/allenai/allennlp/main/docs/img/allennlp-logo-dark.png" width="400"/>
     <p>
     Officially supported AllenNLP models.
     </p>
@@ -8,16 +8,16 @@
 </div>
 <p align="center">
     <a href="https://github.com/allenai/allennlp-models/actions">
-        <img alt="Build" src="https://github.com/allenai/allennlp-models/workflows/CI/badge.svg?event=push&branch=master">
+        <img alt="Build" src="https://github.com/allenai/allennlp-models/workflows/CI/badge.svg?event=push&branch=main">
     </a>
     <a href="https://pypi.org/project/allennlp-models/">
         <img alt="PyPI" src="https://img.shields.io/pypi/v/allennlp-models">
     </a>
-    <a href="https://github.com/allenai/allennlp-models/blob/master/LICENSE">
+    <a href="https://github.com/allenai/allennlp-models/blob/main/LICENSE">
         <img alt="License" src="https://img.shields.io/github/license/allenai/allennlp-models.svg?color=blue&cachedrop">
     </a>
     <a href="https://codecov.io/gh/allenai/allennlp">
-        <img alt="Codecov" src="https://codecov.io/gh/allenai/allennlp/branch/master/graph/badge.svg">
+        <img alt="Codecov" src="https://codecov.io/gh/allenai/allennlp/branch/main/graph/badge.svg">
     </a>
 </p>
 <br/>
@@ -57,9 +57,9 @@ ALLENNLP_VERSION_OVERRIDE='allennlp' pip install -e .
 pip install -r dev-requirements.txt
 ```
 
-The `ALLENNLP_VERSION_OVERRIDE` environment variable ensures that the `allennlp` dependency is unpinned so that your local install of `allennlp` will be sufficient. If, however, you haven't installed `allennlp` yet and don't want to manage a local install, just omit this environment variable and `allennlp` will be installed from the master branch on GitHub.
+The `ALLENNLP_VERSION_OVERRIDE` environment variable ensures that the `allennlp` dependency is unpinned so that your local install of `allennlp` will be sufficient. If, however, you haven't installed `allennlp` yet and don't want to manage a local install, just omit this environment variable and `allennlp` will be installed from the main branch on GitHub.
 
-Both `allennlp` and `allennlp-models` are developed and tested side-by-side, so they should be kept up-to-date with each other. If you look at the GitHub Actions [workflow for `allennlp-models`](https://github.com/allenai/allennlp-models/actions), it's always tested against the master branch of `allennlp`. Similarly, `allennlp` is always tested against the master branch of `allennlp-models`.
+Both `allennlp` and `allennlp-models` are developed and tested side-by-side, so they should be kept up-to-date with each other. If you look at the GitHub Actions [workflow for `allennlp-models`](https://github.com/allenai/allennlp-models/actions), it's always tested against the main branch of `allennlp`. Similarly, `allennlp` is always tested against the main branch of `allennlp-models`.
 
 ### Using Docker
 
