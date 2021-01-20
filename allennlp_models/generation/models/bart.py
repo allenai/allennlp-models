@@ -267,6 +267,8 @@ class Bart(Model):
     def _decoder_cache_to_dict(decoder_cache: DecoderCacheType) -> Dict[str, torch.Tensor]:
         cache_dict = {}
         for layer_index, layer_cache in enumerate(decoder_cache):
+            # Each layer caches the key and value tensors for its self-attention and cross-attention.
+            # Hence the `layer_cache` tuple has 4 elements.
             assert len(layer_cache) == 4
             for tensor_index, tensor in enumerate(layer_cache):
                 key = f"decoder_cache_{layer_index}_{tensor_index}"
