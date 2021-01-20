@@ -167,5 +167,10 @@ class CollapsedSnliReader(SnliReader):
         combine_input_fields: Optional[bool] = None,
         **kwargs,
     ) -> None:
-        super().__init__(tokenizer, token_indexers, combine_input_fields, **kwargs,)
+        super().__init__(
+            tokenizer,
+            token_indexers,
+            combine_input_fields,
+            **kwargs,
+        )
         self._collapse = True
