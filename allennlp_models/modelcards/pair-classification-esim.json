@@ -20,7 +20,7 @@
         },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
-        "training_config": "esim.jsonnet",
+        "training_config": "esim.jsonnet"
     },
     "intended_use": {
         "primary_uses": null,

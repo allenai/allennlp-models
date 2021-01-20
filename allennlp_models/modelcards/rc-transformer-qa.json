@@ -43,7 +43,7 @@
     "training_data": {
         "dataset": "The TransformerQA model was fine-tuned on SQuAD train set. \nThe underlying RoBERTa model was pretrained on BooksCorpus (Zhu et al., 2015) plus English Wikipedia (16GB), CC-News (Nagel, 2016) (76GB), OpenWebText (Gokaslan and Cohen, 2019) (38GB), and STORIES (Trinh and Le, 2018) (31GB).",
         "motivation": "For the pretrained RoBERTa model, document-level corpora were used rather than a shuffled sentence-level corpus such as the Billion Word Benchmark (Chelba et al., 2013) in order to extract long contiguous sequences",
-        "preprocessing": "For the pretrained RoBERTa model, only the text passages were extracted from English Wikipedia; lists, tables, and headers were ignored.",
+        "preprocessing": "For the pretrained RoBERTa model, only the text passages were extracted from English Wikipedia; lists, tables, and headers were ignored."
     },
     "quantitative_analyses": {
         "unitary_results": null,
