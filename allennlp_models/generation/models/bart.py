@@ -232,7 +232,7 @@ class Bart(Model):
         else:
             # Use decoder start id and start of sentence to start decoder
             initial_decoder_ids = torch.tensor(
-                [[self._decoder_start_id, self._start_id]],
+                [[self._decoder_start_id]],
                 dtype=input_ids.dtype,
                 device=input_ids.device,
             ).repeat(input_ids.shape[0], 1)
@@ -365,7 +365,8 @@ class Bart(Model):
         predicted_tokens = [None] * predictions.shape[0]
         for i in range(predictions.shape[0]):
             predicted_tokens[i] = self._indexer.indices_to_tokens(
-                {"token_ids": predictions[i].tolist()}, self.vocab
+                {"token_ids": [idx for idx in predictions[i].tolist() if idx != self._end_id]},
+                self.vocab,
             )
         output_dict["predicted_tokens"] = predicted_tokens  # type: ignore
 
