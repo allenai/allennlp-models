@@ -1,14 +1,12 @@
 import logging
-import warnings
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import torch
-import torch.distributed as dist
 from torch import nn
 from torch.nn.functional import cross_entropy
 
-from allennlp.common.util import sanitize_wordpiece, is_distributed
+from allennlp.common.util import sanitize_wordpiece
 from allennlp.modules.text_field_embedders import BasicTextFieldEmbedder
 from allennlp.modules.token_embedders import PretrainedTransformerEmbedder
 from allennlp.nn.util import get_token_ids_from_text_field_tensors
@@ -249,30 +247,15 @@ class TransformerQA(Model):
         """
         _best_spans = best_spans.detach().cpu().numpy()
 
-        min_node_batch_size = len(metadata)
-        if is_distributed():
-            # In the distributed case, if the batch isn't balanced across nodes, we'll get a dead-lock
-            # if one node has more instances in a batch than another node.
-            if dist.get_backend() == "nccl":
-                device = torch.cuda.current_device()
-            else:
-                device = torch.device("cpu")
-            _min_node_batch_size = torch.tensor(min_node_batch_size, dtype=torch.int, device=device)
-            dist.all_reduce(_min_node_batch_size, op=dist.ReduceOp.MIN)
-            min_node_batch_size = _min_node_batch_size.item()
+        best_span_strings: List[str] = []
+        best_span_strings_for_metric: List[str] = []
+        answer_strings_for_metric: List[List[str]] = []
 
-            if min_node_batch_size != len(metadata):
-                warnings.warn(
-                    "Nodes have different batch sizes! Some instances will be excluded from metric computation.",
-                    UserWarning,
-                )
-
-        best_span_strings = []
         for (metadata_entry, best_span, cspan, cls_ind) in zip(
             metadata,
             _best_spans,
             context_span,
-            cls_index or (0 for _ in range(min_node_batch_size)),
+            cls_index or (0 for _ in range(len(metadata))),
         ):
             context_tokens_for_question = metadata_entry["context_tokens"]
 
@@ -320,10 +303,13 @@ class TransformerQA(Model):
                 best_span_string = metadata_entry["context"][character_start:character_end]
 
             best_span_strings.append(best_span_string)
-
             answers = metadata_entry.get("answers")
             if answers:
-                self._per_instance_metrics(best_span_string, answers)
+                best_span_strings_for_metric.append(best_span_string)
+                answer_strings_for_metric.append(answers)
+
+        if answer_strings_for_metric:
+            self._per_instance_metrics(best_span_strings_for_metric, answer_strings_for_metric)
 
         return best_span_strings, best_spans
 
