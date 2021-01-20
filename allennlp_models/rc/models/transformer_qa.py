@@ -3,16 +3,16 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import torch
+from torch import nn
+from torch.nn.functional import cross_entropy
+
 from allennlp.common.util import sanitize_wordpiece
 from allennlp.modules.text_field_embedders import BasicTextFieldEmbedder
 from allennlp.modules.token_embedders import PretrainedTransformerEmbedder
 from allennlp.nn.util import get_token_ids_from_text_field_tensors
-from torch import nn
-
 from allennlp.data import Vocabulary
 from allennlp.models.model import Model
 from allennlp.training.metrics import BooleanAccuracy, CategoricalAccuracy
-from torch.nn.functional import cross_entropy
 
 from allennlp_models.rc.models.utils import (
     get_best_span,
@@ -247,9 +247,15 @@ class TransformerQA(Model):
         """
         _best_spans = best_spans.detach().cpu().numpy()
 
-        best_span_strings = []
+        best_span_strings: List[str] = []
+        best_span_strings_for_metric: List[str] = []
+        answer_strings_for_metric: List[List[str]] = []
+
         for (metadata_entry, best_span, cspan, cls_ind) in zip(
-            metadata, _best_spans, context_span, cls_index or (0 for _ in range(len(metadata)))
+            metadata,
+            _best_spans,
+            context_span,
+            cls_index or (0 for _ in range(len(metadata))),
         ):
             context_tokens_for_question = metadata_entry["context_tokens"]
 
@@ -297,10 +303,13 @@ class TransformerQA(Model):
                 best_span_string = metadata_entry["context"][character_start:character_end]
 
             best_span_strings.append(best_span_string)
-
             answers = metadata_entry.get("answers")
             if answers:
-                self._per_instance_metrics(best_span_string, answers)
+                best_span_strings_for_metric.append(best_span_string)
+                answer_strings_for_metric.append(answers)
+
+        if answer_strings_for_metric:
+            self._per_instance_metrics(best_span_strings_for_metric, answer_strings_for_metric)
 
         return best_span_strings, best_spans
 
