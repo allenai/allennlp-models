@@ -17,7 +17,7 @@
         "citation": null,
         "license": null,
         "contact": "allennlp-contact@allenai.org",
-        "training_config": null,
+        "training_config": null
     },
     "intended_use": {
         "primary_uses": null,

@@ -13,11 +13,14 @@
         "date": "2020-04-06",
         "version": "1",
         "model_type": null,
-        "paper": "[Deep Biaffine Attention for Neural Dependency Parsing (Dozat and Manning, 2016)](https://api.semanticscholar.org/CorpusID:7942973)",
-        "citation": "```\n@article{Dozat2017DeepBA,\ntitle={Deep Biaffine Attention for Neural Dependency Parsing},\nauthor={Timothy Dozat and Christopher D. Manning},\njournal={ArXiv},\nyear={2017},\nvolume={abs/1611.01734}}\n```",
+        "paper": {
+            "name": "Deep Biaffine Attention for Neural Dependency Parsing (Dozat and Manning, 2016)",
+            "link": "https://api.semanticscholar.org/CorpusID:7942973",
+            "citation": "```\n@article{Dozat2017DeepBA,\ntitle={Deep Biaffine Attention for Neural Dependency Parsing},\nauthor={Timothy Dozat and Christopher D. Manning},\njournal={ArXiv},\nyear={2017},\nvolume={abs/1611.01734}}\n```"
+        },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
-        "training_config": null,
+        "training_config": null
     },
     "intended_use": {
         "primary_uses": null,
@@ -34,12 +37,18 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "[PTB 3.0](https://catalog.ldc.upenn.edu/LDC99T42)",
+        "dataset": {
+            "name": "PTB 3.0",
+            "link": "https://catalog.ldc.upenn.edu/LDC99T42"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "[PTB 3.0](https://catalog.ldc.upenn.edu/LDC99T42)",
+        "dataset": {
+            "name": "PTB 3.0",
+            "link": "https://catalog.ldc.upenn.edu/LDC99T42"
+        },
         "motivation": null,
         "preprocessing": null
     },

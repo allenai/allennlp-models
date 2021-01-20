@@ -13,11 +13,14 @@
         "date": "2020-02-10",
         "version": "1",
         "model_type": "Seq2SeqEncoder",
-        "paper": "[Extending a Parser to Distant Domains Using a Few Dozen Partially Annotated Examples](https://api.semanticscholar.org/CorpusID:21712653)",
-        "citation": "```\n@inproceedings{Joshi2018ExtendingAP,\ntitle={Extending a Parser to Distant Domains Using a Few Dozen Partially Annotated Examples},\nauthor={V. Joshi and Matthew E. Peters and Mark Hopkins},\nbooktitle={ACL},\nyear={2018}}\n```",
+        "paper": {
+            "name": "Extending a Parser to Distant Domains Using a Few Dozen Partially Annotated Examples",
+            "link": "https://api.semanticscholar.org/CorpusID:21712653",
+            "citation": "```\n@inproceedings{Joshi2018ExtendingAP,\ntitle={Extending a Parser to Distant Domains Using a Few Dozen Partially Annotated Examples},\nauthor={V. Joshi and Matthew E. Peters and Mark Hopkins},\nbooktitle={ACL},\nyear={2018}}\n```"
+        },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
-        "training_config": null,
+        "training_config": null
     },
     "intended_use": {
         "primary_uses": null,
@@ -34,12 +37,18 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "[PTB 3.0](https://catalog.ldc.upenn.edu/LDC99T42)",
+        "dataset": {
+            "name": "PTB 3.0",
+            "link": "https://catalog.ldc.upenn.edu/LDC99T42"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "[PTB 3.0](https://catalog.ldc.upenn.edu/LDC99T42)",
+        "dataset": {
+            "name": "PTB 3.0",
+            "link": "https://catalog.ldc.upenn.edu/LDC99T42"
+        },
         "motivation": null,
         "preprocessing": null
     },

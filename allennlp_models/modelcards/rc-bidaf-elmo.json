@@ -13,11 +13,14 @@
         "date": "2020-03-19",
         "version": "1",
         "model_type": "BiDAF",
-        "paper": "[Bidirectional Attention Flow for Machine Comprehension](https://api.semanticscholar.org/CorpusID:8535316)",
-        "citation": "```\n@article{Seo2017BidirectionalAF,\ntitle={Bidirectional Attention Flow for Machine Comprehension},\nauthor={Minjoon Seo and Aniruddha Kembhavi and Ali Farhadi and Hannaneh Hajishirzi},\njournal={ArXiv},\nyear={2017},\nvolume={abs/1611.01603}}\n```",
+        "paper": {
+            "name": "Bidirectional Attention Flow for Machine Comprehension",
+            "link": "https://api.semanticscholar.org/CorpusID:8535316",
+            "citation": "```\n@article{Seo2017BidirectionalAF,\ntitle={Bidirectional Attention Flow for Machine Comprehension},\nauthor={Minjoon Seo and Aniruddha Kembhavi and Ali Farhadi and Hannaneh Hajishirzi},\njournal={ArXiv},\nyear={2017},\nvolume={abs/1611.01603}}\n```",
+        },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
-        "training_config": null,
+        "training_config": null
     },
     "intended_use": {
         "primary_uses": null,

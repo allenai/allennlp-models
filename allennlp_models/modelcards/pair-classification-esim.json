@@ -13,8 +13,11 @@
         "date": "2020-04-09",
         "version": "1",
         "model_type": "LSTM",
-        "paper": "[Enhanced LSTM for Natural Language Inference](https://api.semanticscholar.org/CorpusID:34032948)",
-        "citation": "```\n@inproceedings{Chen2017EnhancedLF,\ntitle={Enhanced LSTM for Natural Language Inference},\nauthor={Qian Chen and Xiao-Dan Zhu and Z. Ling and Si Wei and Hui Jiang and Diana Inkpen},\nbooktitle={ACL},\nyear={2017}}\n```",
+        "paper": {
+            "name": "Enhanced LSTM for Natural Language Inference",
+            "link": "https://api.semanticscholar.org/CorpusID:34032948",
+            "citation": "```\n@inproceedings{Chen2017EnhancedLF,\ntitle={Enhanced LSTM for Natural Language Inference},\nauthor={Qian Chen and Xiao-Dan Zhu and Z. Ling and Si Wei and Hui Jiang and Diana Inkpen},\nbooktitle={ACL},\nyear={2017}}\n```"
+        },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
         "training_config": "esim.jsonnet",
@@ -34,12 +37,18 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "[Stanford Natural Language Inference (SNLI)](https://nlp.stanford.edu/projects/snli/) dev set",
+        "dataset": {
+            "name": "Stanford Natural Language Inference (SNLI) dev set",
+            "link": "https://nlp.stanford.edu/projects/snli/"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "[Stanford Natural Language Inference (SNLI)](https://nlp.stanford.edu/projects/snli/) train set",
+        "dataset": {
+            "name": "Stanford Natural Language Inference (SNLI) train set",
+            "link": "https://nlp.stanford.edu/projects/snli/"
+        },
         "motivation": null,
         "preprocessing": null
     },

@@ -13,11 +13,14 @@
         "date": null,
         "version": null,
         "model_type": null,
-        "paper": "[Iterative Search for Weakly Supervised Semantic Parsing](https://api.semanticscholar.org/CorpusID:174799945)",
-        "citation": "```\n@inproceedings{Dasigi2019IterativeSF,\ntitle={Iterative Search for Weakly Supervised Semantic Parsing},\nauthor={Pradeep Dasigi and Matt Gardner and Shikhar Murty and Luke Zettlemoyer and E. Hovy},\nbooktitle={NAACL-HLT},\nyear={2019}}\n```",
+        "paper": {
+            "name": "Iterative Search for Weakly Supervised Semantic Parsing",
+            "link": "https://api.semanticscholar.org/CorpusID:174799945",
+            "citation": "```\n@inproceedings{Dasigi2019IterativeSF,\ntitle={Iterative Search for Weakly Supervised Semantic Parsing},\nauthor={Pradeep Dasigi and Matt Gardner and Shikhar Murty and Luke Zettlemoyer and E. Hovy},\nbooktitle={NAACL-HLT},\nyear={2019}}\n```"
+        },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
-        "training_config": null,
+        "training_config": null
     },
     "intended_use": {
         "primary_uses": null,
@@ -34,12 +37,18 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "[Cornell NLVR](http://lil.nlp.cornell.edu/nlvr/)",
+        "dataset": {
+            "name": "Cornell NLVR",
+            "link": "http://lil.nlp.cornell.edu/nlvr/"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "[Cornell NLVR](http://lil.nlp.cornell.edu/nlvr/)",
+        "dataset": {
+            "name": "Cornell NLVR",
+            "link": "http://lil.nlp.cornell.edu/nlvr/"
+        },
         "motivation": null,
         "preprocessing": null
     },

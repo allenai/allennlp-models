@@ -13,11 +13,14 @@
         "date": "2020-02-10",
         "version": "1",
         "model_type": "Gated Recurrent Unit (GRU)",
-        "paper": "[Semi-supervised sequence tagging with bidirectional language models](https://api.semanticscholar.org/CorpusID:7197241)",
-        "citation": "```\n@inproceedings{Peters2017SemisupervisedST,\ntitle={Semi-supervised sequence tagging with bidirectional language models},\nauthor={Matthew E. Peters and Waleed Ammar and Chandra Bhagavatula and R. Power},\nbooktitle={ACL},\nyear={2017}}\n```",
+        "paper": {
+            "name": "Semi-supervised sequence tagging with bidirectional language models",
+            "link": "https://api.semanticscholar.org/CorpusID:7197241",
+            "citation": "```\n@inproceedings{Peters2017SemisupervisedST,\ntitle={Semi-supervised sequence tagging with bidirectional language models},\nauthor={Matthew E. Peters and Waleed Ammar and Chandra Bhagavatula and R. Power},\nbooktitle={ACL},\nyear={2017}}\n```"
+        },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
-        "training_config": null,
+        "training_config": null
     },
     "intended_use": {
         "primary_uses": null,
@@ -34,12 +37,18 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "[CoNLL-2003 NER dataset](https://www.clips.uantwerpen.be/conll2003/ner/)",
+        "dataset": {
+            "name": "CoNLL-2003 NER dataset",
+            "link": "https://www.clips.uantwerpen.be/conll2003/ner/"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "[CoNLL-2003 NER dataset](https://www.clips.uantwerpen.be/conll2003/ner/)",
+        "dataset": {
+            "name": "CoNLL-2003 NER dataset",
+            "link": "https://www.clips.uantwerpen.be/conll2003/ner/"
+        },
         "motivation": null,
         "preprocessing": null
     },

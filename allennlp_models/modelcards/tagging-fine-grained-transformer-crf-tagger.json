@@ -14,10 +14,9 @@
         "version": "1",
         "model_type": "Transformer",
         "paper": null,
-        "citation": null,
         "license": null,
         "contact": "allennlp-contact@allenai.org",
-        "training_config": null,
+        "training_config": null
     },
     "intended_use": {
         "primary_uses": null,
@@ -34,12 +33,18 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
+        "dataset": {
+            "name": "Ontonotes 5.0",
+            "link": "https://catalog.ldc.upenn.edu/LDC2013T19"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
+        "dataset": {
+            "name": "Ontonotes 5.0",
+            "link": "https://catalog.ldc.upenn.edu/LDC2013T19"
+        },
         "motivation": null,
         "preprocessing": null
     },

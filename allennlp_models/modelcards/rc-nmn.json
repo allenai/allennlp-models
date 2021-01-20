@@ -13,8 +13,11 @@
         "date": "2020-04-04",
         "version": "1",
         "model_type": "Neural Module Network",
-        "paper": "[Neural Module Networks](https://api.semanticscholar.org/CorpusID:5276660)",
-        "citation": "```\n@article{Andreas2016NeuralMN,\ntitle={Neural Module Networks},\nauthor={Jacob Andreas and Marcus Rohrbach and Trevor Darrell and D. Klein},\njournal={2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},\nyear={2016},\npages={39-48}}\n```",
+        "paper": {
+            "name": "Neural Module Networks",
+            "link": "https://api.semanticscholar.org/CorpusID:5276660",
+            "citation": "```\n@article{Andreas2016NeuralMN,\ntitle={Neural Module Networks},\nauthor={Jacob Andreas and Marcus Rohrbach and Trevor Darrell and D. Klein},\njournal={2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},\nyear={2016},\npages={39-48}}\n```"
+        },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
         "training_config": null,
@@ -39,7 +42,10 @@
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "DROP",
+        "dataset": {
+            "name": "DROP",
+            "link": "https://allennlp.org/drop"
+        },
         "motivation": null,
         "preprocessing": null
     },

@@ -13,11 +13,14 @@
         "date": "2020-07-29",
         "version": "1",
         "model_type": "RoBERTa",
-        "paper": "[RoBERTa: A Robustly Optimized BERT Pretraining Approach](https://api.semanticscholar.org/CorpusID:198953378)",
-        "citation": "```\n@article{Liu2019RoBERTaAR,\ntitle={RoBERTa: A Robustly Optimized BERT Pretraining Approach},\nauthor={Y. Liu and Myle Ott and Naman Goyal and Jingfei Du and Mandar Joshi and Danqi Chen and Omer Levy and M. Lewis and Luke Zettlemoyer and Veselin Stoyanov},\njournal={ArXiv},\nyear={2019},\nvolume={abs/1907.11692}}\n```",
+        "paper": {
+            "name": "RoBERTa: A Robustly Optimized BERT Pretraining Approach (Liu et al)",
+            "link": "https://api.semanticscholar.org/CorpusID:198953378",
+            "citation": "```\n@article{Liu2019RoBERTaAR,\ntitle={RoBERTa: A Robustly Optimized BERT Pretraining Approach},\nauthor={Y. Liu and Myle Ott and Naman Goyal and Jingfei Du and Mandar Joshi and Danqi Chen and Omer Levy and M. Lewis and Luke Zettlemoyer and Veselin Stoyanov},\njournal={ArXiv},\nyear={2019},\nvolume={abs/1907.11692}}\n```"
+        },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
-        "training_config": "snli_roberta.jsonnet",
+        "training_config": "snli_roberta.jsonnet"
     },
     "intended_use": {
         "primary_uses": null,
@@ -34,12 +37,18 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "[Stanford Natural Language Inference (SNLI)](https://nlp.stanford.edu/projects/snli/) dev set",
+        "dataset": {
+            "name": "Stanford Natural Language Inference (SNLI) dev set",
+            "link": "https://nlp.stanford.edu/projects/snli/"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "[Stanford Natural Language Inference (SNLI)](https://nlp.stanford.edu/projects/snli/) train set",
+        "dataset": {
+            "name": "Stanford Natural Language Inference (SNLI) train set",
+            "link": "https://nlp.stanford.edu/projects/snli/"
+        },
         "motivation": null,
         "preprocessing": null
     },

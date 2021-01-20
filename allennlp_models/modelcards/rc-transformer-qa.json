@@ -13,8 +13,11 @@
         "date": "2020-10-03",
         "version": "2",
         "model_type": "RoBERTa",
-        "paper": "[RoBERTa: A Robustly Optimized BERT Pretraining Approach](https://api.semanticscholar.org/CorpusID:198953378)",
-        "citation": "```\n@article{Liu2019RoBERTaAR,\ntitle={RoBERTa: A Robustly Optimized BERT Pretraining Approach},\nauthor={Y. Liu and Myle Ott and Naman Goyal and Jingfei Du and Mandar Joshi and Danqi Chen and Omer Levy and M. Lewis and L. Zettlemoyer and V. Stoyanov},\njournal={ArXiv},\nyear={2019},\nvolume={abs/1907.11692}}\n```",
+        "paper": {
+            "name": "RoBERTa: A Robustly Optimized BERT Pretraining Approach",
+            "link": "https://api.semanticscholar.org/CorpusID:198953378",
+            "citation": "```\n@article{Liu2019RoBERTaAR,\ntitle={RoBERTa: A Robustly Optimized BERT Pretraining Approach},\nauthor={Y. Liu and Myle Ott and Naman Goyal and Jingfei Du and Mandar Joshi and Danqi Chen and Omer Levy and M. Lewis and L. Zettlemoyer and V. Stoyanov},\njournal={ArXiv},\nyear={2019},\nvolume={abs/1907.11692}}\n```"
+        },
         "license": null,
         "contact": "allennlp-contact@allenai.org"
     },

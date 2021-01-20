@@ -12,8 +12,11 @@
         "date": "2020-07-25",
         "version": "1",
         "model_type": "BART",
-        "paper": "[BART: Denosing Sequence-to-Sequence Pre-training for Natural Language Generation,Translation, and Comprehension](https://api.semanticscholar.org/CorpusID:204960716)",
-        "citation": "```\n@inproceedings{Lewis2020BARTDS,\ntitle={BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension},\nauthor={M. Lewis and Yinhan Liu and Naman Goyal and Marjan Ghazvininejad and A. Mohamed and Omer Levy and Ves Stoyanov and L. Zettlemoyer},\nbooktitle={ACL},\nyear={2020}}\n```",
+        "paper": {
+            "name": "BART: Denosing Sequence-to-Sequence Pre-training for Natural Language Generation,Translation, and Comprehension",
+            "link": "https://api.semanticscholar.org/CorpusID:204960716",
+            "citation": "```\n@inproceedings{Lewis2020BARTDS,\ntitle={BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension},\nauthor={M. Lewis and Yinhan Liu and Naman Goyal and Marjan Ghazvininejad and A. Mohamed and Omer Levy and Ves Stoyanov and L. Zettlemoyer},\nbooktitle={ACL},\nyear={2020}}\n```"
+        },
         "license": null,
         "contact": "allennlp-contact@allenai.org"
     },
@@ -32,12 +35,18 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "[CNN/DailyMail](https://github.com/abisee/cnn-dailymail)",
+        "dataset": {
+            "name": "CNN/DailyMail",
+            "link": "https://github.com/abisee/cnn-dailymail"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "[CNN/DailyMail](https://github.com/abisee/cnn-dailymail)",
+        "dataset": {
+            "name": "CNN/DailyMail",
+            "link": "https://github.com/abisee/cnn-dailymail"
+        },
         "motivation": null,
         "preprocessing": null
     },

@@ -13,11 +13,14 @@
         "date": "2020-07-08",
         "version": "1",
         "model_type": "RoBERTa large",
-        "paper": "[RoBERTa: A Robustly Optimized BERT Pretraining Approach (Liu et al)](https://api.semanticscholar.org/CorpusID:198953378)",
-        "citation": "```\n@article{Liu2019RoBERTaAR,\ntitle={RoBERTa: A Robustly Optimized BERT Pretraining Approach},\nauthor={Y. Liu and Myle Ott and Naman Goyal and Jingfei Du and Mandar Joshi and Danqi Chen and Omer Levy and M. Lewis and Luke Zettlemoyer and Veselin Stoyanov},\njournal={ArXiv},\nyear={2019},\nvolume={abs/1907.11692}}\n```",
+        "paper": {
+            "name": "RoBERTa: A Robustly Optimized BERT Pretraining Approach (Liu et al)",
+            "link": "https://api.semanticscholar.org/CorpusID:198953378",
+            "citation": "```\n@article{Liu2019RoBERTaAR,\ntitle={RoBERTa: A Robustly Optimized BERT Pretraining Approach},\nauthor={Y. Liu and Myle Ott and Naman Goyal and Jingfei Du and Mandar Joshi and Danqi Chen and Omer Levy and M. Lewis and Luke Zettlemoyer and Veselin Stoyanov},\njournal={ArXiv},\nyear={2019},\nvolume={abs/1907.11692}}\n```"
+        },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
-        "training_config": null,
+        "training_config": null
     },
     "intended_use": {
         "primary_uses": null,
@@ -34,12 +37,18 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "[CommonSenseQA](https://github.com/jonathanherzig/commonsenseqa) validation set",
+        "dataset": {
+            "name": "CommonSenseQA (validation set)",
+            "link": "https://github.com/jonathanherzig/commonsenseqa"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "[CommonSenseQA](https://github.com/jonathanherzig/commonsenseqa) train set",
+        "dataset": {
+            "name": "CommonSenseQA (train set)",
+            "link": "https://github.com/jonathanherzig/commonsenseqa"
+        },
         "motivation": null,
         "preprocessing": null
     },
