@@ -25,23 +25,23 @@ class SquadEmAndF1(Metric):
     @overrides
     def __call__(
         self,
-        best_span_string: Union[str, List[str]],
+        best_span_strings: Union[str, List[str]],
         answer_strings: Union[List[str], List[List[str]]],
     ):
-        if not isinstance(best_span_string, list):
-            best_span_string = [best_span_string]
+        if not isinstance(best_span_strings, list):
+            best_span_strings = [best_span_strings]
             answer_strings = [answer_strings]  # type: ignore
 
-        cast(List[str], best_span_string)
+        cast(List[str], best_span_strings)
         cast(List[List[str]], answer_strings)
 
-        assert len(best_span_string) == len(answer_strings)
+        assert len(best_span_strings) == len(answer_strings)
 
-        count = len(best_span_string)
+        count = len(best_span_strings)
         exact_match = 0
         f1_score = 0.0
 
-        for prediction, gold_answers in zip(best_span_string, answer_strings):
+        for prediction, gold_answers in zip(best_span_strings, answer_strings):
             exact_match += squad.metric_max_over_ground_truths(
                 squad.compute_exact, prediction, gold_answers
             )
