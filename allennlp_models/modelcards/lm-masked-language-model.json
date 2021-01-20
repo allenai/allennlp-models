@@ -50,10 +50,10 @@
         "unitary_results": null,
         "intersectional_results": null
     },
-    "ethical_considerations": {
-        "ethical_considerations": "BERT demonstrates gender bias in that it thinks the doctor is more likely a man ('his') than a woman ('her'). An important issue in NLP is how to understand and address such biases in our linguistic models."
-    },
-    "caveats_and_recommendations": {
+    "model_caveats_and_recommendations": {
         "caveats_and_recommendations": "NOTE: This was developed for use in a demo, not for training.  It's possible that it will still work for training a masked LM, but it is very likely that some other code would be much more efficient for that.  This `does` compute correct gradients of the loss, because we use that in our demo, so in principle it should be able to train a model, we just don't necessarily endorse that use."
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": "BERT demonstrates gender bias in that it thinks the doctor is more likely a man ('his') than a woman ('her'). An important issue in NLP is how to understand and address such biases in our linguistic models."
     }
 }

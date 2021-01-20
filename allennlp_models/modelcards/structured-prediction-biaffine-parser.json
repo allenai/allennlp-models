@@ -56,10 +56,10 @@
         "unitary_results": "The parser achieves 95.57% and 94.44% unlabeled and labeled attachement score using gold POS tags. For predicted POS tags, it achieves 94.81% UAS and 92.86% LAS respectively.",
         "intersectional_results": null
     },
-    "ethical_considerations": {
-        "ethical_considerations": null
-    },
-    "caveats_and_recommendations": {
+    "model_caveats_and_recommendations": {
         "caveats_and_recommendations": null
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": null
     }
 }
