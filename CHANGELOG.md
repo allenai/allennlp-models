@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - 'master' branch renamed to 'main'
+- `SquadEmAndF1` metric can now also accept a batch of predictions and corresponding answers (instead of a single one)
+  in the form of list (for each).
+
+### Fixed
+
+- Fixed the potential for a dead-lock when training the `TransformerQA` model on multiple GPUs
+  when nodes receive different sized batches.
 
 ### Fixed
 
