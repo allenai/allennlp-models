@@ -14,9 +14,9 @@
         "version": "1",
         "model_type": "BiLSTM",
         "paper": {
-            "name": "Supervised Open Information Extraction",
-            "link": "https://api.semanticscholar.org/CorpusID:44145304",
-            "citation": "```\n@inproceedings{Stanovsky2018SupervisedOI,\ntitle={Supervised Open Information Extraction},\nauthor={Gabriel Stanovsky and Julian Michael and Luke Zettlemoyer and I. Dagan},\nbooktitle={NAACL-HLT},\nyear={2018}}\n```"
+            "citation": "\n@inproceedings{Stanovsky2018SupervisedOI,\ntitle={Supervised Open Information Extraction},\nauthor={Gabriel Stanovsky and Julian Michael and Luke Zettlemoyer and I. Dagan},\nbooktitle={NAACL-HLT},\nyear={2018}}\n",
+            "title": "Supervised Open Information Extraction",
+            "url": "https://api.semanticscholar.org/CorpusID:44145304"
         },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
@@ -39,7 +39,7 @@
     "evaluation_data": {
         "dataset": {
             "name": "OIE2016, WEB and NYT, PENN",
-            "link": "https://api.semanticscholar.org/CorpusID:18391662, https://api.semanticscholar.org/CorpusID:6398201"
+            "url": "https://api.semanticscholar.org/CorpusID:18391662, https://api.semanticscholar.org/CorpusID:6398201"
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +47,7 @@
     "training_data": {
         "dataset": {
             "name": "All Words Open IE",
-            "link": "https://github.com/gabrielStanovsky/supervised-oie/tree/master/data"
+            "url": "https://github.com/gabrielStanovsky/supervised-oie/tree/master/data"
         },
         "motivation": null,
         "preprocessing": null

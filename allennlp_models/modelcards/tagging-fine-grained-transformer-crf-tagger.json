@@ -35,7 +35,7 @@
     "evaluation_data": {
         "dataset": {
             "name": "Ontonotes 5.0",
-            "link": "https://catalog.ldc.upenn.edu/LDC2013T19"
+            "url": "https://catalog.ldc.upenn.edu/LDC2013T19"
         },
         "motivation": null,
         "preprocessing": null
@@ -43,7 +43,7 @@
     "training_data": {
         "dataset": {
             "name": "Ontonotes 5.0",
-            "link": "https://catalog.ldc.upenn.edu/LDC2013T19"
+            "url": "https://catalog.ldc.upenn.edu/LDC2013T19"
         },
         "motivation": null,
         "preprocessing": null

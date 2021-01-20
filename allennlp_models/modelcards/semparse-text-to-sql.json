@@ -14,9 +14,9 @@
         "version": "1",
         "model_type": null,
         "paper": {
-            "name": "Iterative Search for Weakly Supervised Semantic Parsing",
-            "link": "https://api.semanticscholar.org/CorpusID:174799945",
-            "citation": "```\n@inproceedings{Dasigi2019IterativeSF,\ntitle={Iterative Search for Weakly Supervised Semantic Parsing},\nauthor={Pradeep Dasigi and Matt Gardner and Shikhar Murty and Luke Zettlemoyer and E. Hovy},\nbooktitle={NAACL-HLT},\nyear={2019}}\n```"
+            "citation": "\n@inproceedings{Dasigi2019IterativeSF,\ntitle={Iterative Search for Weakly Supervised Semantic Parsing},\nauthor={Pradeep Dasigi and Matt Gardner and Shikhar Murty and Luke Zettlemoyer and E. Hovy},\nbooktitle={NAACL-HLT},\nyear={2019}}\n",
+            "title": "Iterative Search for Weakly Supervised Semantic Parsing",
+            "url": "https://api.semanticscholar.org/CorpusID:174799945"
         },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
@@ -39,7 +39,7 @@
     "evaluation_data": {
         "dataset": {
             "name": "ATIS",
-            "link": "https://api.semanticscholar.org/CorpusID:1094063"
+            "url": "https://api.semanticscholar.org/CorpusID:1094063"
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +47,7 @@
     "training_data": {
         "dataset": {
             "name": "ATIS",
-            "link": "https://api.semanticscholar.org/CorpusID:1094063"
+            "url": "https://api.semanticscholar.org/CorpusID:1094063"
         },
         "motivation": null,
         "preprocessing": null

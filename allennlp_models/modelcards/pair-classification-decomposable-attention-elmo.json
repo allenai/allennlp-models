@@ -14,9 +14,9 @@
         "version": "1",
         "model_type": "Seq2Seq",
         "paper": {
-            "name": "A Decomposable Attention Model for Natural Language Inference",
-            "link": "https://api.semanticscholar.org/CorpusID:8495258",
-            "citation": "```\n@article{Parikh2016ADA,\ntitle={A Decomposable Attention Model for Natural Language Inference},\nauthor={Ankur P. Parikh and Oscar T{\"a}ckstr{\"o}m and Dipanjan Das and Jakob Uszkoreit},\njournal={ArXiv},\nyear={2016},\nvolume={abs/1606.01933}}\n```"
+            "citation": "\n@article{Parikh2016ADA,\ntitle={A Decomposable Attention Model for Natural Language Inference},\nauthor={Ankur P. Parikh and Oscar T{\"a}ckstr{\"o}m and Dipanjan Das and Jakob Uszkoreit},\njournal={ArXiv},\nyear={2016},\nvolume={abs/1606.01933}}\n",
+            "title": "A Decomposable Attention Model for Natural Language Inference",
+            "url": "https://api.semanticscholar.org/CorpusID:8495258"
         },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
@@ -39,7 +39,7 @@
     "evaluation_data": {
         "dataset": {
             "name": "Stanford Natural Language Inference (SNLI) dev set",
-            "link": "https://nlp.stanford.edu/projects/snli/"
+            "url": "https://nlp.stanford.edu/projects/snli/"
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +47,7 @@
     "training_data": {
         "dataset": {
             "name": "Stanford Natural Language Inference (SNLI) train set",
-            "link": "https://nlp.stanford.edu/projects/snli/"
+            "url": "https://nlp.stanford.edu/projects/snli/"
         },
         "motivation": null,
         "preprocessing": null

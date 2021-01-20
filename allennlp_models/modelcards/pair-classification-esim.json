@@ -14,9 +14,9 @@
         "version": "1",
         "model_type": "LSTM",
         "paper": {
-            "name": "Enhanced LSTM for Natural Language Inference",
-            "link": "https://api.semanticscholar.org/CorpusID:34032948",
-            "citation": "```\n@inproceedings{Chen2017EnhancedLF,\ntitle={Enhanced LSTM for Natural Language Inference},\nauthor={Qian Chen and Xiao-Dan Zhu and Z. Ling and Si Wei and Hui Jiang and Diana Inkpen},\nbooktitle={ACL},\nyear={2017}}\n```"
+            "citation": "\n@inproceedings{Chen2017EnhancedLF,\ntitle={Enhanced LSTM for Natural Language Inference},\nauthor={Qian Chen and Xiao-Dan Zhu and Z. Ling and Si Wei and Hui Jiang and Diana Inkpen},\nbooktitle={ACL},\nyear={2017}}\n",
+            "title": "Enhanced LSTM for Natural Language Inference",
+            "url": "https://api.semanticscholar.org/CorpusID:34032948"
         },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
@@ -39,7 +39,7 @@
     "evaluation_data": {
         "dataset": {
             "name": "Stanford Natural Language Inference (SNLI) dev set",
-            "link": "https://nlp.stanford.edu/projects/snli/"
+            "url": "https://nlp.stanford.edu/projects/snli/"
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +47,7 @@
     "training_data": {
         "dataset": {
             "name": "Stanford Natural Language Inference (SNLI) train set",
-            "link": "https://nlp.stanford.edu/projects/snli/"
+            "url": "https://nlp.stanford.edu/projects/snli/"
         },
         "motivation": null,
         "preprocessing": null

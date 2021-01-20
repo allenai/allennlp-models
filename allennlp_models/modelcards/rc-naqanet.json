@@ -14,9 +14,9 @@
         "version": "1",
         "model_type": "QANet",
         "paper": {
-            "name": "DROP: A Reading Comprehension Benchmark Requiring Discrete Reasoning Over Paragraphs",
-            "link": "https://api.semanticscholar.org/CorpusID:67855846",
-            "citation": "```\n@inproceedings{Dua2019DROPAR,\ntitle={DROP: A Reading Comprehension Benchmark Requiring Discrete Reasoning Over Paragraphs},\nauthor={Dheeru Dua and Yizhong Wang and Pradeep Dasigi and Gabriel Stanovsky and Sameer Singh and Matt Gardner},\nbooktitle={NAACL-HLT},\nyear={2019}}\n```"
+            "citation": "\n@inproceedings{Dua2019DROPAR,\ntitle={DROP: A Reading Comprehension Benchmark Requiring Discrete Reasoning Over Paragraphs},\nauthor={Dheeru Dua and Yizhong Wang and Pradeep Dasigi and Gabriel Stanovsky and Sameer Singh and Matt Gardner},\nbooktitle={NAACL-HLT},\nyear={2019}}\n",
+            "title": "DROP: A Reading Comprehension Benchmark Requiring Discrete Reasoning Over Paragraphs",
+            "url": "https://api.semanticscholar.org/CorpusID:67855846"
         },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
@@ -39,7 +39,7 @@
     "evaluation_data": {
         "dataset": {
             "name": "DROP",
-            "link": "https://allennlp.org/drop"
+            "url": "https://allennlp.org/drop"
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +47,7 @@
     "training_data": {
         "dataset": {
             "name": "DROP",
-            "link": "https://allennlp.org/drop"
+            "url": "https://allennlp.org/drop"
         },
         "motivation": null,
         "preprocessing": null

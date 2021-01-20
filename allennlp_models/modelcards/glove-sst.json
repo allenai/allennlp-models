@@ -35,7 +35,7 @@
     "evaluation_data": {
         "dataset": {
             "name": "Stanford Sentiment Treebank",
-            "link": "https://nlp.stanford.edu/sentiment/treebank.html"
+            "url": "https://nlp.stanford.edu/sentiment/treebank.html"
         },
         "motivation": null,
         "preprocessing": null
@@ -43,7 +43,7 @@
     "training_data": {
         "dataset": {
             "name": "Stanford Sentiment Treebank",
-            "link": "https://nlp.stanford.edu/sentiment/treebank.html"
+            "url": "https://nlp.stanford.edu/sentiment/treebank.html"
         },
         "motivation": null,
         "preprocessing": "Binary classification setting"

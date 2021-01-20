@@ -14,9 +14,9 @@
         "version": "1",
         "model_type": "GPT2",
         "paper": {
-            "name": "Language Models are Unsupervised Multitask Learners",
-            "link": "https://api.semanticscholar.org/CorpusID:160025533",
-            "citation": "```\n@inproceedings{Radford2019LanguageMA,\ntitle={Language Models are Unsupervised Multitask Learners},\nauthor={A. Radford and Jeffrey Wu and R. Child and David Luan and Dario Amodei and Ilya Sutskever},\nyear={2019}}\n```"
+            "citation": "\n@inproceedings{Radford2019LanguageMA,\ntitle={Language Models are Unsupervised Multitask Learners},\nauthor={A. Radford and Jeffrey Wu and R. Child and David Luan and Dario Amodei and Ilya Sutskever},\nyear={2019}}\n",
+            "title": "Language Models are Unsupervised Multitask Learners",
+            "url": "https://api.semanticscholar.org/CorpusID:160025533"
         },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
@@ -39,7 +39,7 @@
     "evaluation_data": {
         "dataset": {
             "name": "WebText corpus",
-            "link": "https://github.com/openai/gpt-2-output-dataset"
+            "url": "https://github.com/openai/gpt-2-output-dataset"
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +47,7 @@
     "training_data": {
         "dataset": {
             "name": "WebText corpus",
-            "link": "https://github.com/openai/gpt-2-output-dataset"
+            "url": "https://github.com/openai/gpt-2-output-dataset"
         },
         "motivation": "WebText emphasizes document quality. Only human-curated/filtered documents are scraped. Reddit outbound links which receive at least 3 karma points are taken as a proxy for human filtered webpages that are interesting.",
         "preprocessing": "Dragnet and [Newspaper](https://github.com/codelucas/newspaper) content extractors are used. Wikipedia articles are removed."

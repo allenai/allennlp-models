@@ -14,9 +14,9 @@
         "version": "1",
         "model_type": "BERT",
         "paper": {
-            "name": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
-            "link": "https://api.semanticscholar.org/CorpusID:52967399",
-            "citation": "```\n@inproceedings{Devlin2019BERTPO,\ntitle={BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding},\nauthor={J. Devlin and Ming-Wei Chang and Kenton Lee and Kristina Toutanova},\nbooktitle={NAACL-HLT},\nyear={2019}}\n```"
+            "citation": "\n@inproceedings{Devlin2019BERTPO,\ntitle={BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding},\nauthor={J. Devlin and Ming-Wei Chang and Kenton Lee and Kristina Toutanova},\nbooktitle={NAACL-HLT},\nyear={2019}}\n",
+            "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+            "url": "https://api.semanticscholar.org/CorpusID:52967399"
         },
         "license": null,
         "contact": "allennlp-contact@allenai.org",

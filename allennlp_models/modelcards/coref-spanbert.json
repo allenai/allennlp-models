@@ -14,9 +14,9 @@
         "version": "2",
         "model_type": "SpanBERT",
         "paper": {
-            "name": "Higher-order Coreference Resolution with Coarse-to-fine Inference",
-            "link": "https://api.semanticscholar.org/CorpusID:4891749",
-            "citation": "```\n@inproceedings{Lee2018HigherorderCR,\ntitle={Higher-order Coreference Resolution with Coarse-to-fine Inference},\nauthor={Kenton Lee and Luheng He and L. Zettlemoyer},\nbooktitle={NAACL-HLT},\nyear={2018}}\n```"
+            "citation": "\n@inproceedings{Lee2018HigherorderCR,\ntitle={Higher-order Coreference Resolution with Coarse-to-fine Inference},\nauthor={Kenton Lee and Luheng He and L. Zettlemoyer},\nbooktitle={NAACL-HLT},\nyear={2018}}\n",
+            "title": "Higher-order Coreference Resolution with Coarse-to-fine Inference",
+            "url": "https://api.semanticscholar.org/CorpusID:4891749"
         },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
@@ -39,7 +39,7 @@
     "evaluation_data": {
         "dataset": {
             "name": "Ontonotes 5.0",
-            "link": "https://catalog.ldc.upenn.edu/LDC2013T19"
+            "url": "https://catalog.ldc.upenn.edu/LDC2013T19"
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +47,7 @@
     "training_data": {
         "dataset": {
             "name": "Ontonotes 5.0",
-            "link": "https://catalog.ldc.upenn.edu/LDC2013T19"
+            "url": "https://catalog.ldc.upenn.edu/LDC2013T19"
         },
         "motivation": null,
         "preprocessing": null
