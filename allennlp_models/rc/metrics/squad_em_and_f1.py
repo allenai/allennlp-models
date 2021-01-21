@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Union, List, cast
 
 import torch
 import torch.distributed as dist
@@ -23,15 +23,32 @@ class SquadEmAndF1(Metric):
         self._count = 0
 
     @overrides
-    def __call__(self, best_span_string, answer_strings):
-        exact_match = squad.metric_max_over_ground_truths(
-            squad.compute_exact, best_span_string, answer_strings
-        )
-        f1_score = squad.metric_max_over_ground_truths(
-            squad.compute_f1, best_span_string, answer_strings
-        )
+    def __call__(
+        self,
+        best_span_strings: Union[str, List[str]],
+        answer_strings: Union[List[str], List[List[str]]],
+    ):
+        if not isinstance(best_span_strings, list):
+            best_span_strings = [best_span_strings]
+            answer_strings = [answer_strings]  # type: ignore
 
-        count = 1
+        cast(List[str], best_span_strings)
+        cast(List[List[str]], answer_strings)
+
+        assert len(best_span_strings) == len(answer_strings)
+
+        count = len(best_span_strings)
+        exact_match = 0
+        f1_score = 0.0
+
+        for prediction, gold_answers in zip(best_span_strings, answer_strings):
+            exact_match += squad.metric_max_over_ground_truths(
+                squad.compute_exact, prediction, gold_answers
+            )
+            f1_score += squad.metric_max_over_ground_truths(
+                squad.compute_f1, prediction, gold_answers
+            )
+
         if is_distributed():
             if dist.get_backend() == "nccl":
                 device = torch.cuda.current_device()
