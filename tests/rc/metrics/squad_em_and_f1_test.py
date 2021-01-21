@@ -18,13 +18,13 @@ class SquadEmAndF1Test(AllenNlpTestCase):
         assert f1_score == 0.75
 
     def test_distributed_squad_em_and_f1(self):
-        best_span_string = ["this is the best span", "this is another span"]
+        best_span_strings = ["this is the best span", "this is another span"]
         answer_strings = [
             ["this is a good span", "something irrelevant"],
             ["this is another span", "this one is less perfect"],
         ]
 
-        metric_kwargs = {"best_span_string": best_span_string, "answer_strings": answer_strings}
+        metric_kwargs = {"best_span_strings": best_span_strings, "answer_strings": answer_strings}
         desired_values = (1 / 2, 1.75 / 2)
         run_distributed_test(
             [-1, -1],
