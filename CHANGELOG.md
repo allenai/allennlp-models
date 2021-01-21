@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added a helper contructor to `Seq2SeqPredictor` for creating a predictor for a pretrained
+  BART generation model: `Seq2SeqPredictor.pretrained_bart_for_generation()`.
+
 ### Removed
 
 - Moving `ModelCard` and `TaskCard` abstractions out of the models repository.
@@ -21,9 +26,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed the potential for a dead-lock when training the `TransformerQA` model on multiple GPUs
   when nodes receive different sized batches.
-
-### Fixed
-
 - Fixed BART. This implementation had some major bugs in it that caused poor performance during prediction.
 
 ## [v1.3.0](https://github.com/allenai/allennlp-models/releases/tag/v1.2.2) - 2020-12-15
