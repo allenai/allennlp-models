@@ -16,7 +16,7 @@ class TestGQAReader(AllenNlpTestCase):
 
         super().setup_method()
         self.reader = GQAReader(
-            image_dir= FIXTURES_ROOT / "vision" / "images" / "gqa",
+            image_dir=FIXTURES_ROOT / "vision" / "images" / "gqa",
             image_loader=TorchImageLoader(),
             image_featurizer=Lazy(NullGridEmbedder),
             region_detector=Lazy(RandomRegionDetector),

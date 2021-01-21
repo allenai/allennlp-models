@@ -25,7 +25,9 @@ class TestVqaVilbert(ModelTestCase):
             self.ensure_model_can_train_save_and_load(param_file, overrides=overrides)
 
     def test_model_can_train_save_and_load_from_huggingface(self):
-        param_file = FIXTURES_ROOT / "vision" / "vilbert_vqa" / "experiment_from_huggingface.jsonnet"
+        param_file = (
+            FIXTURES_ROOT / "vision" / "vilbert_vqa" / "experiment_from_huggingface.jsonnet"
+        )
         self.ensure_model_can_train_save_and_load(param_file)
 
     def test_model_loads_weights_correctly(self):

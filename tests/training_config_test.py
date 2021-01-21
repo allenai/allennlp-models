@@ -66,12 +66,14 @@ def patch_image_dir(params):
         elif isinstance(value, Params):
             patch_image_dir(value)
 
+
 def patch_dataset_reader(params):
     if params["type"] == "multitask":
         for reader_params in params["readers"].values():
             reader_params["max_instances"] = 4
     else:
         params["max_instances"] = 4
+
 
 # fmt: off
 DATASET_PATCHES: Dict[Path, Tuple[str, ...]] = {
