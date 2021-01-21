@@ -57,6 +57,22 @@ def patch_glove(params):
             patch_glove(value)
 
 
+def patch_image_dir(params):
+    for key, value in params.items():
+        if key == "image_dir" and isinstance(value, str):
+            params[key] = FIXTURES_ROOT / "vision" / "images"
+        elif key == "feature_cache_dir" and isinstance(value, str):
+            params[key] = FIXTURES_ROOT / "vision" / "images" / "feature_cache"
+        elif isinstance(value, Params):
+            patch_image_dir(value)
+
+def patch_dataset_reader(params):
+    if params["type"] == "multitask":
+        for reader_params in params["readers"].values():
+            reader_params["max_instances"] = 4
+    else:
+        params["max_instances"] = 4
+
 # fmt: off
 DATASET_PATCHES: Dict[Path, Tuple[str, ...]] = {
     FIXTURES_ROOT / "structured_prediction" / "srl" / "conll_2012": ("SRL_TRAIN_DATA_PATH", "SRL_VALIDATION_DATA_PATH"),
@@ -110,12 +126,20 @@ class TestAllenNlpPretrainedModelConfigs(AllenNlpTestCase):
             "'trainer.cuda_device': -1, "
             "'trainer.use_amp': false, "
             "'trainer.num_epochs': 2, "
-            "'dataset_reader.max_instances': 4, "
             "}",
         )
 
+        # Patch max_instances in the multitask case
+        patch_dataset_reader(params["dataset_reader"])
+        if "validation_dataset_reader" in params:
+            # Unclear why this doesn't work for biattentive_classification_network
+            if "biattentive_classification_network" not in path:
+                patch_dataset_reader(params["validation_dataset_reader"])
+
         # Patch any pretrained glove files with smaller fixtures.
         patch_glove(params)
+        # Patch image_dir and feature_cache_dir keys so they point at our test fixtures instead.
+        patch_image_dir(params)
 
         # Remove unnecessary keys.
         for key in ("random_seed", "numpy_seed", "pytorch_seed", "distributed"):
