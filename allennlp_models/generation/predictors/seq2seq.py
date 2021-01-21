@@ -32,14 +32,14 @@ class Seq2SeqPredictor(Predictor):
         cls, model_name: str = "facebook/bart-large-cnn"
     ) -> "Seq2SeqPredictor":
         """
-        A helper method for created a predictor for a pretrained BART generation model.
+        A helper method for creating a predictor for a pretrained BART generation model.
 
         # Examples
 
         ```python
         from allennlp_models.generation.predictors import Seq2SeqPredictor
 
-        ARTICLE_TO_SUMMARIZE = \"\"\"
+        ARTICLE_TO_SUMMARIZE = \"""
         The tower is 324 metres (1,063 ft) tall, about the same height as an 81-storey building,
         and the tallest structure in Paris. Its base is square, measuring 125 metres (410 ft) on each side.
         During its construction, the Eiffel Tower surpassed the Washington Monument to become the tallest
@@ -48,7 +48,7 @@ class Seq2SeqPredictor(Predictor):
         Due to the addition of a broadcasting aerial at the top of the tower in 1957, it is now taller
         than the Chrysler Building by 5.2 metres (17 ft). Excluding transmitters, the Eiffel Tower is
         the second tallest free-standing structure in France after the Millau Viaduct."
-        \"\"\".strip().replace(
+        \""".strip().replace(
             "\n", " "
         )
 
