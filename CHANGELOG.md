@@ -7,12 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased (2.0 branch)
 
+### Added
+
+- Dataset readers, models, metrics, and training configs for VQAv2, GQA, and Visual Entailment
+
 ### Fixed
 
 - Fixed `training_configs/pair_classification/bimpm.jsonnet` and `training_configs/rc/dialog_qa.jsonnet`
   to work with new data loading API.
-
-## Unreleased (1.x branch)
+- Fixed the potential for a dead-lock when training the `TransformerQA` model on multiple GPUs
+  when nodes receive different sized batches.
+- Fixed BART. This implementation had some major bugs in it that caused poor performance during prediction.
 
 ### Removed
 
@@ -20,18 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- 'master' branch renamed to 'main'
+- `master` branch renamed to `main`
 - `SquadEmAndF1` metric can now also accept a batch of predictions and corresponding answers (instead of a single one)
   in the form of list (for each).
 
-### Fixed
-
-- Fixed the potential for a dead-lock when training the `TransformerQA` model on multiple GPUs
-  when nodes receive different sized batches.
-
-### Fixed
-
-- Fixed BART. This implementation had some major bugs in it that caused poor performance during prediction.
 
 ## [v1.3.0](https://github.com/allenai/allennlp-models/releases/tag/v1.2.2) - 2020-12-15
 
