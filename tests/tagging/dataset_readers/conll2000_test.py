@@ -1,6 +1,7 @@
 import pytest
 
 from allennlp_models.tagging import Conll2000DatasetReader
+from allennlp.common.checks import ConfigurationError
 from allennlp.common.util import ensure_list
 
 from tests import FIXTURES_ROOT
@@ -460,3 +461,7 @@ class TestConll2000Reader:
             ".",
         ]
         assert fields["tags"].labels == expected_labels
+
+    def test_read_data_from_with_unsupported_coding_scheme(self):
+        with pytest.raises(ConfigurationError):
+            Conll2000DatasetReader(convert_to_coding_scheme="IOB100")
