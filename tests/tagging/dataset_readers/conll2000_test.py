@@ -236,7 +236,9 @@ class TestConll2000Reader:
     @pytest.mark.parametrize("lazy", (True, False))
     @pytest.mark.parametrize("convert_to_coding_scheme", (None, "BIOUL"))
     def test_read_from_file(self, lazy, convert_to_coding_scheme):
-        conll_reader = Conll2000DatasetReader(lazy=lazy, convert_to_coding_scheme=convert_to_coding_scheme)
+        conll_reader = Conll2000DatasetReader(
+            lazy=lazy, convert_to_coding_scheme=convert_to_coding_scheme
+        )
         instances = conll_reader.read(str(FIXTURES_ROOT / "tagging" / "conll2000.txt"))
         instances = ensure_list(instances)
         assert len(instances) == 2
