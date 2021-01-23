@@ -94,7 +94,8 @@ class Conll2000DatasetReader(DatasetReader):
             raise ConfigurationError("unknown coding_scheme: {}".format(convert_to_coding_scheme))
         if convert_to_coding_scheme is None:
             warnings.warn(
-                "`coding_scheme` is deprecated. Consider using `convert_to_coding_scheme`."
+                "`coding_scheme` is deprecated. Consider using `convert_to_coding_scheme`.",
+                DeprecationWarning,
             )
             convert_to_coding_scheme = coding_scheme
 
