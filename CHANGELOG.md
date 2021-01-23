@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 'master' branch renamed to 'main'
 - `SquadEmAndF1` metric can now also accept a batch of predictions and corresponding answers (instead of a single one)
   in the form of list (for each).
+- Introduce `convert_to_coding_scheme` and make `coding_scheme` deprecated in `Conll2002DatasetReader`.
 
 ### Fixed
 
@@ -31,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix an index bug in  BART prediction.
-- Add `None` check in `PrecoReader`'s `text_to_instance()` method. 
+- Add `None` check in `PrecoReader`'s `text_to_instance()` method.
 - Fixed `SemanticRoleLabelerPredictor.tokens_to_instances` so it treats auxiliary verbs as verbs
   when the language is English
 
@@ -67,7 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added `short_description` field to `ModelCard`. 
+- Added `short_description` field to `ModelCard`.
 - Information updates for all model cards.
 
 
