@@ -8,6 +8,7 @@ from tests import FIXTURES_ROOT
 
 
 class TestConll2000Reader:
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     @pytest.mark.parametrize("lazy", (True, False))
     @pytest.mark.parametrize("coding_scheme", ("BIO", "BIOUL"))
     def test_read_from_file_with_deprecated_parameter(self, lazy, coding_scheme):
@@ -234,6 +235,7 @@ class TestConll2000Reader:
         ]
         assert fields["tags"].labels == expected_labels
 
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     @pytest.mark.parametrize("lazy", (True, False))
     @pytest.mark.parametrize("convert_to_coding_scheme", (None, "BIOUL"))
     def test_read_from_file(self, lazy, convert_to_coding_scheme):
