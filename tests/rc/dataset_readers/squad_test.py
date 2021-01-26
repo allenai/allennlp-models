@@ -1,8 +1,7 @@
-import pytest
-
 from allennlp.common import Params
 from allennlp.common.util import ensure_list
 from allennlp.data import DatasetReader
+import pytest
 
 from allennlp_models.rc import SquadReader
 from allennlp_models.rc.dataset_readers.squad import SQUAD2_NO_ANSWER_TOKEN
@@ -21,9 +20,8 @@ class TestSquadReader:
             )
             assert squad_reader.skip_impossible_questions is True
 
-    @pytest.mark.parametrize("lazy", (True, False))
-    def test_read_from_file(self, lazy):
-        reader = SquadReader(lazy=lazy)
+    def test_read_from_file(self):
+        reader = SquadReader()
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "squad.json"))
         assert len(instances) == 5
 
@@ -113,9 +111,8 @@ class TestSquadReader:
 
 
 class TestSquad2Reader:
-    @pytest.mark.parametrize("lazy", (True, False))
-    def test_read_from_file(self, lazy):
-        reader = SquadReader.squad2(lazy=lazy)
+    def test_read_from_file(self):
+        reader = SquadReader.squad2()
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "squad2.json"))
         assert len(instances) == 6
 

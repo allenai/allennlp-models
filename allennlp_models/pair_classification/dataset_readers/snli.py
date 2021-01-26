@@ -1,4 +1,3 @@
-import itertools
 from typing import Dict, Optional
 import json
 import logging
@@ -46,7 +45,9 @@ class SnliReader(DatasetReader):
         combine_input_fields: Optional[bool] = None,
         **kwargs,
     ) -> None:
-        super().__init__(manual_distributed_sharding=True, **kwargs)
+        super().__init__(
+            manual_distributed_sharding=True, manual_multiprocess_sharding=True, **kwargs
+        )
         self._tokenizer = tokenizer or SpacyTokenizer()
         if isinstance(self._tokenizer, PretrainedTransformerTokenizer):
             assert not self._tokenizer._add_special_tokens
@@ -60,27 +61,12 @@ class SnliReader(DatasetReader):
     def _read(self, file_path: str):
         # if `file_path` is a URL, redirect to the cache
         file_path = cached_path(file_path)
-
-        import torch.distributed as dist
-        from allennlp.common.util import is_distributed
-
-        if is_distributed():
-            start_index = dist.get_rank()
-            step_size = dist.get_world_size()
-            logger.info(
-                "Reading SNLI instances %% %d from jsonl dataset at: %s", step_size, file_path
-            )
-        else:
-            start_index = 0
-            step_size = 1
-            logger.info("Reading SNLI instances from jsonl dataset at: %s", file_path)
-
         with open(file_path, "r") as snli_file:
             example_iter = (json.loads(line) for line in snli_file)
             filtered_example_iter = (
                 example for example in example_iter if example["gold_label"] != "-"
             )
-            for example in itertools.islice(filtered_example_iter, start_index, None, step_size):
+            for example in self.shard_iterable(filtered_example_iter):
                 label = example["gold_label"]
                 premise = example["sentence1"]
                 hypothesis = example["sentence2"]
@@ -100,12 +86,12 @@ class SnliReader(DatasetReader):
 
         if self._combine_input_fields:
             tokens = self._tokenizer.add_special_tokens(premise, hypothesis)
-            fields["tokens"] = TextField(tokens, self._token_indexers)
+            fields["tokens"] = TextField(tokens)
         else:
             premise_tokens = self._tokenizer.add_special_tokens(premise)
             hypothesis_tokens = self._tokenizer.add_special_tokens(hypothesis)
-            fields["premise"] = TextField(premise_tokens, self._token_indexers)
-            fields["hypothesis"] = TextField(hypothesis_tokens, self._token_indexers)
+            fields["premise"] = TextField(premise_tokens)
+            fields["hypothesis"] = TextField(hypothesis_tokens)
 
             metadata = {
                 "premise_tokens": [x.text for x in premise_tokens],
@@ -117,3 +103,11 @@ class SnliReader(DatasetReader):
             fields["label"] = LabelField(label)
 
         return Instance(fields)
+
+    @overrides
+    def apply_token_indexers(self, instance: Instance) -> Instance:
+        if "tokens" in instance.fields:
+            instance.fields["tokens"]._token_indexers = self._token_indexers
+        else:
+            instance.fields["premise"]._token_indexers = self._token_indexers
+            instance.fields["hypothesis"]._token_indexers = self._token_indexers

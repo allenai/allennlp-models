@@ -9,7 +9,7 @@ from tests import FIXTURES_ROOT
 class TestCommonsenseQaReader:
     def test_read_from_file(self):
         reader = PiqaReader(transformer_model_name="bert-base-uncased")
-        instances = ensure_list(reader.read(FIXTURES_ROOT / "mc" / "piqa.jsonl"))
+        instances = ensure_list(reader.read(str(FIXTURES_ROOT / "mc" / "piqa.jsonl")))
         assert len(instances) == 10
 
         instance = instances[0]
@@ -31,7 +31,7 @@ class TestCommonsenseQaReader:
         length_limit = 20
 
         reader = PiqaReader(transformer_model_name="bert-base-uncased", length_limit=length_limit)
-        instances = ensure_list(reader.read(FIXTURES_ROOT / "mc" / "piqa.jsonl"))
+        instances = ensure_list(reader.read(str(FIXTURES_ROOT / "mc" / "piqa.jsonl")))
 
         assert len(instances) == 10
         for instance in instances:

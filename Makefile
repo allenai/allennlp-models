@@ -19,7 +19,9 @@ DOCKER_RUN_CMD = docker run --rm \
 		-v $$HOME/.allennlp:/root/.allennlp \
 		-v $$HOME/.cache/huggingface:/root/.cache/huggingface \
 		-v $$HOME/nltk_data:/root/nltk_data
-ALLENNLP_COMMIT_SHA = $(shell git ls-remote https://github.com/allenai/allennlp main | cut -f 1)
+
+# TODO: change this back to master branch
+ALLENNLP_COMMIT_SHA = $(shell git ls-remote https://github.com/allenai/allennlp vision | cut -f 1)
 
 ifeq ($(shell uname),Darwin)
 ifeq ($(shell which gsed),)

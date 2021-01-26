@@ -102,7 +102,9 @@ class TransformerSquadReader(DatasetReader):
             )
             skip_impossible_questions = kwargs.pop("skip_invalid_examples")
 
-        super().__init__(**kwargs)
+        super().__init__(
+            manual_distributed_sharding=True, manual_multiprocess_sharding=True, **kwargs
+        )
         self._tokenizer = PretrainedTransformerTokenizer(
             transformer_model_name,
             add_special_tokens=False,
@@ -144,7 +146,7 @@ class TransformerSquadReader(DatasetReader):
         for article in dataset:
             for paragraph_json in article["paragraphs"]:
                 context = paragraph_json["context"]
-                for question_answer in paragraph_json["qas"]:
+                for question_answer in self.shard_iterable(paragraph_json["qas"]):
                     answers = [answer_json["text"] for answer_json in question_answer["answers"]]
 
                     # Just like huggingface, we only use the first answer for training.
@@ -295,7 +297,6 @@ class TransformerSquadReader(DatasetReader):
         # make the question field
         question_field = TextField(
             self._tokenizer.add_special_tokens(tokenized_question, tokenized_context),
-            self._token_indexers,
         )
         fields["question_with_context"] = question_field
 
@@ -340,6 +341,10 @@ class TransformerSquadReader(DatasetReader):
         fields["metadata"] = MetadataField(metadata)
 
         return Instance(fields)
+
+    @overrides
+    def apply_token_indexers(self, instance: Instance) -> None:
+        instance["question_with_context"].token_indexers = self._token_indexers
 
     def _find_cls_index(self, tokens: List[Token]) -> int:
         return next(i for i, t in enumerate(tokens) if t.text == self._cls_token)

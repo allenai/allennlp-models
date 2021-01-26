@@ -11,9 +11,8 @@ from tests import FIXTURES_ROOT
 class TestStanfordSentimentTreebankReader:
     sst_path = FIXTURES_ROOT / "classification" / "sst.txt"
 
-    @pytest.mark.parametrize("lazy", (True, False))
-    def test_read_from_file(self, lazy):
-        reader = StanfordSentimentTreeBankDatasetReader(lazy=lazy)
+    def test_read_from_file(self):
+        reader = StanfordSentimentTreeBankDatasetReader()
         instances = reader.read(self.sst_path)
         instances = ensure_list(instances)
 

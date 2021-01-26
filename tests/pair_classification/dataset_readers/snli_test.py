@@ -8,9 +8,8 @@ from tests import FIXTURES_ROOT
 
 
 class TestSnliReader:
-    @pytest.mark.parametrize("lazy", (True, False))
-    def test_read_from_file(self, lazy):
-        reader = SnliReader(lazy=lazy)
+    def test_read_from_file(self):
+        reader = SnliReader()
         instances = reader.read(FIXTURES_ROOT / "pair_classification" / "snli.jsonl")
         instances = ensure_list(instances)
 
