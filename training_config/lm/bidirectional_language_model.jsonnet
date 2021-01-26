@@ -1,5 +1,6 @@
 local NUM_GPUS = 2;
 local NUM_GRAD_ACC = 4;
+local BATCH_SIZE = 512 / NUM_GPUS / NUM_GRAD_ACC;
 
 local BASE_READER = {
         "type": "simple_language_modeling",
@@ -24,9 +25,10 @@ local BASE_READER = {
 };
 
 local BASE_LOADER = {
+  "max_instances_in_memory": BATCH_SIZE * 100,
   "batch_sampler": {
     "type": "bucket",
-    "batch_size": 512 / NUM_GPUS / NUM_GRAD_ACC
+    "batch_size": BATCH_SIZE,
   }
 };
 
@@ -34,7 +36,6 @@ local BASE_LOADER = {
   "dataset_reader": {
     "type": "sharded",
     "base_reader": BASE_READER,
-    "lazy": false
   },
   // Note: We don't set a validation_data_path because the softmax is only
   // sampled during training. Not sampling on GPUs results in a certain OOM

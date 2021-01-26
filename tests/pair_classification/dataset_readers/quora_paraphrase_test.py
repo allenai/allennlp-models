@@ -1,5 +1,3 @@
-import pytest
-
 from allennlp.common.util import ensure_list
 
 from allennlp_models.pair_classification.dataset_readers.quora_paraphrase import (
@@ -9,9 +7,8 @@ from tests import FIXTURES_ROOT
 
 
 class TestQuoraParaphraseReader:
-    @pytest.mark.parametrize("lazy", (True, False))
-    def test_read_from_file(self, lazy):
-        reader = QuoraParaphraseDatasetReader(lazy=lazy)
+    def test_read_from_file(self):
+        reader = QuoraParaphraseDatasetReader()
         instances = reader.read(FIXTURES_ROOT / "pair_classification" / "quora_paraphrase.tsv")
         instances = ensure_list(instances)
 

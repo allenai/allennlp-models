@@ -7,10 +7,9 @@ from tests import FIXTURES_ROOT
 
 
 class TestConll2000Reader:
-    @pytest.mark.parametrize("lazy", (True, False))
     @pytest.mark.parametrize("coding_scheme", ("BIO", "BIOUL"))
-    def test_read_from_file(self, lazy, coding_scheme):
-        conll_reader = Conll2000DatasetReader(lazy=lazy, coding_scheme=coding_scheme)
+    def test_read_from_file(self, coding_scheme):
+        conll_reader = Conll2000DatasetReader(coding_scheme=coding_scheme)
         instances = conll_reader.read(str(FIXTURES_ROOT / "tagging" / "conll2000.txt"))
         instances = ensure_list(instances)
         assert len(instances) == 2

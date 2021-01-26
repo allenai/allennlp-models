@@ -90,7 +90,9 @@ class SquadReader(DatasetReader):
             )
             skip_impossible_questions = kwargs.pop("skip_invalid_examples")
 
-        super().__init__(**kwargs)
+        super().__init__(
+            manual_distributed_sharding=True, manual_multiprocess_sharding=True, **kwargs
+        )
         self._tokenizer = tokenizer or SpacyTokenizer()
         self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
         self.passage_length_limit = passage_length_limit
@@ -113,7 +115,7 @@ class SquadReader(DatasetReader):
                 paragraph = paragraph_json["context"]
                 tokenized_paragraph = self._tokenizer.tokenize(paragraph)
 
-                for question_answer in paragraph_json["qas"]:
+                for question_answer in self.shard_iterable(paragraph_json["qas"]):
                     question_text = question_answer["question"].strip().replace("\n", "")
                     is_impossible = question_answer.get("is_impossible", False)
                     if is_impossible:

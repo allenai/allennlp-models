@@ -1,5 +1,3 @@
-import pytest
-
 from allennlp.common.util import ensure_list
 
 from allennlp_models.tagging.dataset_readers.ontonotes_ner import OntonotesNamedEntityRecognition
@@ -7,9 +5,8 @@ from tests import FIXTURES_ROOT
 
 
 class TestOntonotesNamedEntityRecognitionReader:
-    @pytest.mark.parametrize("lazy", (True, False))
-    def test_read_from_file(self, lazy):
-        conll_reader = OntonotesNamedEntityRecognition(lazy=lazy)
+    def test_read_from_file(self):
+        conll_reader = OntonotesNamedEntityRecognition()
         instances = conll_reader.read(
             FIXTURES_ROOT / "structured_prediction" / "srl" / "conll_2012" / "subdomain"
         )

@@ -8,9 +8,8 @@ from tests import FIXTURES_ROOT
 
 
 class TestDropReader:
-    @pytest.mark.parametrize("lazy", (True, False))
-    def test_read_from_file(self, lazy):
-        reader = DropReader(lazy=lazy)
+    def test_read_from_file(self):
+        reader = DropReader()
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "drop.json"))
         assert len(instances) == 19
 

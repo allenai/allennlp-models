@@ -19,7 +19,7 @@ local gradient_accumulation_steps = batch_size / gpu_batch_size;
       "transformer_model": transformer_model
   },
   "data_loader": {
-    "sampler": "random",
+    "shuffle": true,
     "batch_size": gpu_batch_size
   },
   "trainer": {

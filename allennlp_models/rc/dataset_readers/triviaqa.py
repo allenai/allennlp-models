@@ -57,9 +57,9 @@ class TriviaQaReader(DatasetReader):
         unfiltered_tarball_path: str = None,
         tokenizer: Tokenizer = None,
         token_indexers: Dict[str, TokenIndexer] = None,
-        lazy: bool = False,
+        **kwargs
     ) -> None:
-        super().__init__(lazy)
+        super().__init__(**kwargs)
         self._base_tarball_path = base_tarball_path
         self._unfiltered_tarball_path = unfiltered_tarball_path
         self._tokenizer = tokenizer or SpacyTokenizer()

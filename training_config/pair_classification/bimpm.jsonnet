@@ -1,7 +1,6 @@
 {
   "dataset_reader": {
     "type": "quora_paraphrase",
-    "lazy": false,
     "tokenizer": {
       "type": "just_spaces"
     },

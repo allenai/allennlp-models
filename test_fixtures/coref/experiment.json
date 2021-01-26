@@ -74,7 +74,7 @@
         "batch_size": 5,
         "padding_noise": 0.0
     }
-},
+  },
   "trainer": {
     "num_epochs": 2,
     "grad_norm": 5.0,
@@ -83,5 +83,8 @@
     "optimizer": {
       "type": "adam"
     }
-  }
+  },
+  "random_seed": 42,
+  "numpy_seed": 42,
+  "pytorch_seed": 42
 }

@@ -9,7 +9,7 @@ from allennlp.models import Model
 from tests import FIXTURES_ROOT
 
 
-class TestUnidirectionalLanguageModel(ModelTestCase):
+class LmBaseTestCase(ModelTestCase):
     def setup_method(self):
         super().setup_method()
 
@@ -23,11 +23,6 @@ class TestUnidirectionalLanguageModel(ModelTestCase):
             "mask",
             "batch_weight",
         }
-
-        self.set_up_model(
-            FIXTURES_ROOT / "lm" / "language_model" / "experiment_unidirectional.jsonnet",
-            FIXTURES_ROOT / "lm" / "language_model" / "sentences.txt",
-        )
 
     def test_unidirectional_language_model_can_train_save_and_load(self):
         self.ensure_model_can_train_save_and_load(self.param_file)
@@ -69,7 +64,28 @@ class TestUnidirectionalLanguageModel(ModelTestCase):
         assert predictions is not None
 
 
-class TestUnidirectionalLanguageModelUnsampled(TestUnidirectionalLanguageModel):
+class TestUnidirectionalLanguageModel(LmBaseTestCase):
+    def setup_method(self):
+        super().setup_method()
+
+        self.expected_embedding_shape = (2, 8, 7)
+        self.bidirectional = False
+        self.result_keys = {
+            "loss",
+            "forward_loss",
+            "lm_embeddings",
+            "noncontextual_token_embeddings",
+            "mask",
+            "batch_weight",
+        }
+
+        self.set_up_model(
+            FIXTURES_ROOT / "lm" / "language_model" / "experiment_unidirectional.jsonnet",
+            FIXTURES_ROOT / "lm" / "language_model" / "sentences.txt",
+        )
+
+
+class TestUnidirectionalLanguageModelUnsampled(LmBaseTestCase):
     def setup_method(self):
         super().setup_method()
         self.set_up_model(
@@ -78,7 +94,7 @@ class TestUnidirectionalLanguageModelUnsampled(TestUnidirectionalLanguageModel):
         )
 
 
-class TestUnidirectionalLanguageModelTransformer(TestUnidirectionalLanguageModel):
+class TestUnidirectionalLanguageModelTransformer(LmBaseTestCase):
     def setup_method(self):
         super().setup_method()
 
@@ -104,7 +120,7 @@ class TestUnidirectionalLanguageModelTransformer(TestUnidirectionalLanguageModel
         )
 
 
-class TestBidirectionalLanguageModel(TestUnidirectionalLanguageModel):
+class TestBidirectionalLanguageModel(LmBaseTestCase):
     def setup_method(self):
         super().setup_method()
 
@@ -118,20 +134,27 @@ class TestBidirectionalLanguageModel(TestUnidirectionalLanguageModel):
         )
 
 
-class TestBidirectionalLanguageModelUnsampled(TestBidirectionalLanguageModel):
+class TestBidirectionalLanguageModelUnsampled(LmBaseTestCase):
     def setup_method(self):
         super().setup_method()
+
+        self.expected_embedding_shape = (2, 8, 14)
+        self.bidirectional = True
+        self.result_keys.add("backward_loss")
+
         self.set_up_model(
             FIXTURES_ROOT / "lm" / "language_model" / "experiment_unsampled.jsonnet",
             FIXTURES_ROOT / "lm" / "language_model" / "sentences.txt",
         )
 
 
-class TestBidirectionalLanguageModelTransformer(TestBidirectionalLanguageModel):
+class TestBidirectionalLanguageModelTransformer(LmBaseTestCase):
     def setup_method(self):
         super().setup_method()
 
         self.expected_embedding_shape = (2, 8, 32)
+        self.bidirectional = True
+        self.result_keys.add("backward_loss")
 
         self.set_up_model(
             FIXTURES_ROOT / "lm" / "language_model" / "experiment_transformer.jsonnet",
