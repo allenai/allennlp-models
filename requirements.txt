@@ -1,5 +1,4 @@
-# TODO: point this back to allenai/allennlp.git@master
-git+https://github.com/allenai/allennlp.git@vision
+git+https://github.com/allenai/allennlp.git@main
 
 torch>=1.7.0,<1.8.0
 

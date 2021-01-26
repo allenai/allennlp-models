@@ -4,7 +4,6 @@ on:
   pull_request:
     branches:
     - main
-    - vision
   push:
     branches:
     - main
@@ -385,7 +384,7 @@ jobs:
 
     - name: Patch AllenNLP dependency
       run: |
-        pip install --upgrade git+https://github.com/allenai/allennlp.git@vision
+        pip install --upgrade git+https://github.com/allenai/allennlp.git
 
     - name: Debug info
       run: |
