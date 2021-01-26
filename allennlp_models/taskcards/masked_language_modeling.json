@@ -6,6 +6,10 @@
     "expected_outputs": "Most likely word subsitutions for each [MASK] token.",
     "scope_and_limitations": null,
     "examples": [
-    	{"text": "The doctor ran to the emergency room to see [MASK] patient."}
-    ],
+        {"sentence": "The doctor ran to the emergency room to see [MASK] patient."},
+        {"sentence": "The [MASK] blocked the [MASK]."},
+        {"sentence": "The woman wept because she was [MASK]."},
+        {"sentence": "The [MASK] burned the [MASK] quickly."},
+        {"sentence": "My dog is [MASK] and likes to [MASK] the entire [MASK]."}
+    ]
 }
