@@ -4,9 +4,11 @@ on:
   pull_request:
     branches:
     - main
+    - v1.x
   push:
     branches:
     - main
+    - v1.x
   release:
     types: [published]
   schedule:
@@ -381,6 +383,14 @@ jobs:
     - name: Install models package
       run: |
         pip install $(ls dist/*.whl)
+
+    - name: Patch AllenNLP dependency
+      run: |
+        pip install --upgrade git+https://github.com/allenai/allennlp.git@v1.x
+
+    - name: Debug info
+      run: |
+        pip freeze
 
     - name: Ensure models automatically loaded
       run: |
