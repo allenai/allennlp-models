@@ -102,10 +102,6 @@ local vocabulary = if construct_vocab then {
     "patience": 5,
     "num_epochs": 40,
     "num_gradient_accumulation_steps": effective_batch_size / gpu_batch_size / std.max(1, num_gpus),
-    "tensorboard_writer": {
-        "summary_interval": 10,
-        "should_log_learning_rate": true
-    },
   },
   "random_seed": 876170670,
   "numpy_seed": 876170670,

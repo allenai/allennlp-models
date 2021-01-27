@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Fixed
+
+- Made the training configs compatible with the tensorboard logging changes in the main repo
+
 
 ## [v2.0.0rc1](https://github.com/allenai/allennlp-models/releases/tag/v2.0.0rc1) - 2021-01-21
 
