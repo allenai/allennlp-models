@@ -450,9 +450,8 @@ jobs:
 
     - name: Upload latest image
       # HACK: we don't publish images for releases in the core library at the moment so this step would fail.
-      if: github.event_name == 'release'
-      # CUDA 10.2 is currently our default.
-      if: matrix.cuda == '10.2'
+      # The CUDA condition is because CUDA 10.2 is currently our default.
+      if: github.event_name == 'release' && matrix.cuda = '10.2'
       run: |
         docker tag $DOCKER_IMAGE_NAME allennlp/models:latest
         docker push allennlp/models:latest
