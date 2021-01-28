@@ -7,7 +7,6 @@ import argparse
 from typing import List
 
 import torch
-from torch.utils.data import SequentialSampler
 
 from allennlp_models.structured_prediction.models.srl import write_to_conll_eval_file
 
@@ -16,7 +15,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(os.path.join(__file__, os.par
 from allennlp.common.tqdm import Tqdm
 from allennlp.common import Params
 from allennlp.models.archival import load_archive
-from allennlp.data import DatasetReader, DataLoader
+from allennlp.data import DatasetReader
+from allennlp.data.data_loaders import SimpleDataLoader
 from allennlp.nn.util import move_to_device
 
 
@@ -63,10 +63,10 @@ def main(serialization_directory: str, device: int, data: str, prefix: str, doma
 
     # Load the evaluation data and index it.
     print("reading evaluation data from {}".format(evaluation_data_path))
-    dataset = dataset_reader.read(evaluation_data_path)
+    dataset = list(dataset_reader.read(evaluation_data_path))
 
     with torch.autograd.no_grad():
-        loader = DataLoader(dataset, sampler=SequentialSampler(dataset), batch_size=32)
+        loader = SimpleDataLoader(dataset, 32)
         model_predictions: List[List[str]] = []
         for batch in Tqdm.tqdm(loader):
             batch = move_to_device(batch, device)

@@ -83,7 +83,9 @@ class Seq2SeqDatasetReader(DatasetReader):
         quoting: int = csv.QUOTE_MINIMAL,
         **kwargs,
     ) -> None:
-        super().__init__(**kwargs)
+        super().__init__(
+            manual_distributed_sharding=True, manual_multiprocess_sharding=True, **kwargs
+        )
         self._source_tokenizer = source_tokenizer or SpacyTokenizer()
         self._target_tokenizer = target_tokenizer or self._source_tokenizer
         self._source_token_indexers = source_token_indexers or {"tokens": SingleIdTokenIndexer()}
@@ -132,8 +134,8 @@ class Seq2SeqDatasetReader(DatasetReader):
         self._target_max_exceeded = 0
         with open(cached_path(file_path), "r") as data_file:
             logger.info("Reading instances from lines in file at: %s", file_path)
-            for line_num, row in enumerate(
-                csv.reader(data_file, delimiter=self._delimiter, quoting=self.quoting)
+            for line_num, row in self.shard_iterable(
+                enumerate(csv.reader(data_file, delimiter=self._delimiter, quoting=self.quoting))
             ):
                 if len(row) != 2:
                     raise ConfigurationError(
@@ -168,7 +170,7 @@ class Seq2SeqDatasetReader(DatasetReader):
             tokenized_source.insert(0, copy.deepcopy(self._start_token))
         if self._source_add_end_token:
             tokenized_source.append(copy.deepcopy(self._end_token))
-        source_field = TextField(tokenized_source, self._source_token_indexers)
+        source_field = TextField(tokenized_source)
         if target_string is not None:
             tokenized_target = self._target_tokenizer.tokenize(target_string)
             if self._target_max_tokens and len(tokenized_target) > self._target_max_tokens:
@@ -178,7 +180,13 @@ class Seq2SeqDatasetReader(DatasetReader):
                 tokenized_target.insert(0, copy.deepcopy(self._start_token))
             if self._target_add_end_token:
                 tokenized_target.append(copy.deepcopy(self._end_token))
-            target_field = TextField(tokenized_target, self._target_token_indexers)
+            target_field = TextField(tokenized_target)
             return Instance({"source_tokens": source_field, "target_tokens": target_field})
         else:
             return Instance({"source_tokens": source_field})
+
+    @overrides
+    def apply_token_indexers(self, instance: Instance) -> None:
+        instance.fields["source_tokens"]._token_indexers = self._source_token_indexers  # type: ignore
+        if "target_tokens" in instance.fields:
+            instance.fields["target_tokens"]._token_indexers = self._target_token_indexers  # type: ignore

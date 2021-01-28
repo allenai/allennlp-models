@@ -1,0 +1,61 @@
+{
+    "id": "visual-entailment",
+    "registered_model_name": "visual-entailment",
+    "registered_predictor_name": "vilbert_ve",
+    "display_name": "Visual Entailment",
+    "task_id": "ve",
+    "archive_file": "visual-entailment-torchvision-2020.12.23.tar.gz",
+    "model_details": {
+        "description": "This model is based on the ViLBERT architecture. The image features are obtained using the ResNet backbone and Faster RCNN (region detection).",
+        "short_description": "ViLBERT-based model for Visual Entailment.",
+        "developed_by": "Lu et al",
+        "contributed_by": "Akshita Bhagia",
+        "date": "2020-12-23",
+        "version": "1",
+        "model_type": "ViLBERT based on BERT large",
+        "paper": "[ViLBERT: Pretraining Task-Agnostic Visiolinguistic Representations for Vision-and-Language Tasks](https://api.semanticscholar.org/CorpusID:199453025)",
+        "citation": "```@inproceedings{Lu2019ViLBERTPT,
+  title={ViLBERT: Pretraining Task-Agnostic Visiolinguistic Representations for Vision-and-Language Tasks},
+  author={Jiasen Lu and Dhruv Batra and D. Parikh and Stefan Lee},
+  booktitle={NeurIPS},
+  year={2019}
+}```",
+        "license": null,
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": null,
+    },
+    "intended_use": {
+        "primary_uses": "This model is developed for the AllenNLP demo.",
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "Accuracy and F1-score",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": "[SNLI-VE validation set](https://github.com/necla-ml/SNLI-VE)",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": "[SNLI-VE](https://github.com/necla-ml/SNLI-VE)",
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "caveats_and_recommendations": {
+        "caveats_and_recommendations": "This model is trained on the original SNLI-VE dataset. [Subsequent work](https://api.semanticscholar.org/CorpusID:215415945) has found that an estimated 31% of `neutral` labels in the dataset are incorrect. The `e-SNLI-VE-2.0` dataset contains the re-annotated validation and test sets."
+    }
+}

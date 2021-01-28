@@ -382,6 +382,15 @@ jobs:
       run: |
         pip install $(ls dist/*.whl)
 
+    - name: Patch AllenNLP dependency
+      if: github.event_name == 'push' || github.event_name == 'pull_request'
+      run: |
+        pip install --upgrade git+https://github.com/allenai/allennlp.git
+
+    - name: Debug info
+      run: |
+        pip freeze
+
     - name: Ensure models automatically loaded
       run: |
         ./scripts/ensure_models_found.py
@@ -394,7 +403,7 @@ jobs:
   docker:
     name: Docker
     # Only build and push images for releases.
-    if: github.repository == 'allenai/allennlp-models' && github.event_name == 'release'
+    if: github.repository == 'allenai/allennlp-models' && (github.event_name == 'release' || github.event_name == 'schedule')
     needs: [build_package]  # needs the package artifact created from 'build_package' job.
     runs-on: ubuntu-latest
     strategy:
@@ -424,6 +433,8 @@ jobs:
         echo "ALLENNLP_TAG=${VERSION}" >> $GITHUB_ENV
 
     - name: Build image
+      # HACK: we don't publish images for releases in the core library at the moment so this step would fail.
+      if: github.event_name == 'release'
       run: |
         make docker-image DOCKER_IMAGE_NAME="$DOCKER_IMAGE_NAME" ALLENNLP_TAG="$ALLENNLP_TAG"
 
@@ -432,19 +443,22 @@ jobs:
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Upload release image
+      # HACK: we don't publish images for releases in the core library at the moment so this step would fail.
+      if: github.event_name == 'release'
       run: |
         docker push $DOCKER_IMAGE_NAME
 
     - name: Upload latest image
-      # CUDA 10.2 is currently our default.
-      if: matrix.cuda == '10.2'
+      # HACK: we don't publish images for releases in the core library at the moment so this step would fail.
+      # The CUDA condition is because CUDA 10.2 is currently our default.
+      if: github.event_name == 'release' && matrix.cuda == '10.2'
       run: |
         docker tag $DOCKER_IMAGE_NAME allennlp/models:latest
         docker push allennlp/models:latest
 
   publish:
     name: PyPI
-    if: github.repository == 'allenai/allennlp-models' && github.event_name == 'release'
+    if: github.repository == 'allenai/allennlp-models' && (github.event_name == 'release' || github.event_name == 'schedule')
     needs: [checks, build_package, test_package, docker, docs, pretrained, configs, gpu_checks]
     runs-on: ubuntu-latest
 

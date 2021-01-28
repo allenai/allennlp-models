@@ -1,5 +1,3 @@
-import pytest
-
 from allennlp.common.util import ensure_list
 from allennlp.common.testing import AllenNlpTestCase
 
@@ -11,9 +9,8 @@ from tests import FIXTURES_ROOT
 
 
 class TestSrlReader:
-    @pytest.mark.parametrize("lazy", (True, False))
-    def test_read_from_file(self, lazy):
-        conll_reader = SrlReader(lazy=lazy)
+    def test_read_from_file(self):
+        conll_reader = SrlReader()
         instances = conll_reader.read(
             FIXTURES_ROOT / "structured_prediction" / "srl" / "conll_2012" / "subdomain"
         )

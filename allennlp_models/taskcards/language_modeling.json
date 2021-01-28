@@ -1,0 +1,11 @@
+{
+    "id": "language-modeling",
+    "name": "Language Modeling",
+    "description": "Language modeling  is the task of determining the probability of a given sequence of words occurring in a sentence.",
+    "expected_inputs": "Text string with a few initial tokens.",
+    "expected_outputs": "A probability distribution over the vocabulary for the next word.",
+    "scope_and_limitations": null,
+    "examples": [
+        {"text": "AllenNLP is "}
+    ],
+}

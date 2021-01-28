@@ -1,7 +1,6 @@
 {
     "dataset_reader": {
         "type": "quac",
-        "lazy": true,
         "num_context_answers": 2,
         "token_indexers": {
             "elmo": {
@@ -23,6 +22,7 @@
         }
     },
     "data_loader": {
+        "max_instances_in_memory": 100,
         "batch_sampler": {
           "type": "bucket",
           "batch_size": 10

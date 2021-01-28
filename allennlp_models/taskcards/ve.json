@@ -1,0 +1,9 @@
+{
+    "id": "ve",
+    "name": "Visual Entailment",
+    "description": "Visual Entailment (VE) is an inference task on image-sentence pairs. The goal is to predict whether the image (premise) semantically entails the sentence (hypothesis).",
+    "expected_inputs": "The task expects a `premise` image and a `hypothesis` sentence.",
+    "expected_outputs": "The expected output is whether the `premise` entails/contradicts/is neutral towards the `hypothesis`.",
+    "scope_and_limitations": null,
+    "examples": null,
+}
