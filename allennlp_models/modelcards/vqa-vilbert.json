@@ -1,0 +1,65 @@
+{
+    "id": "vqa-vilbert",
+    "registered_model_name": "vqa_vilbert",
+    "registered_predictor_name": "vilbert_vqa",
+    "display_name": "ViLBERT - Visual Question Answering",
+    "task_id": "vqa",
+    "archive_file": "vilbert-vqa-2020.10.01.tar.gz",
+    "model_details": {
+        "description": "ViLBERT (short for Vision-and-Language BERT), is a model for learning task-agnostic joint representations of image content and natural language.",
+        "short_description": "ViLBERT (short for Vision-and-Language BERT), is a model for learning task-agnostic joint representations of image content and natural language.",
+        "developed_by": "Lu et al",
+        "contributed_by": "Dirk Groeneveld",
+        "date": "2020-10-01",
+        "version": "1",
+        "model_type": "ViLBERT based on BERT large",
+        "paper": {
+            "citation": "\n@inproceedings{Lu2019ViLBERTPT,\ntitle={ViLBERT: Pretraining Task-Agnostic Visiolinguistic Representations for Vision-and-Language Tasks},\nauthor={Jiasen Lu and Dhruv Batra and D. Parikh and Stefan Lee},\nbooktitle={NeurIPS},\nyear={2019}\n}",
+            "title": "ViLBERT: Pretraining Task-Agnostic Visiolinguistic Representations for Vision-and-Language Tasks",
+            "url": "https://api.semanticscholar.org/CorpusID:199453025"
+        },
+        "license": null,
+        "contact": "allennlp-contact@allenai.org",
+        "training_config": null,
+    },
+    "intended_use": {
+        "primary_uses": "This model is developed for the AllenNLP demo.",
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "F1-metric and VQA score",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": {
+            "name": "VQA dataset",
+            "url": "https://visualqa.org/"
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": {
+            "name": "VQA dataset",
+            "url": "https://visualqa.org/"
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "model_caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    }
+}
