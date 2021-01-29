@@ -186,9 +186,12 @@ class OpenIePredictor(Predictor):
     Used by online demo and for prediction on an input file using command line.
     """
 
-    def __init__(self, model: Model, dataset_reader: DatasetReader) -> None:
+    def __init__(
+        self, model: Model, dataset_reader: DatasetReader, language: str = "en_core_web_sm"
+    ) -> None:
         super().__init__(model, dataset_reader)
-        self._tokenizer = SpacyTokenizer(pos_tags=True)
+        self._language = language
+        self._tokenizer = SpacyTokenizer(language=language, pos_tags=True)
 
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         """
@@ -223,7 +226,11 @@ class OpenIePredictor(Predictor):
         sent_tokens = self._tokenizer.tokenize(inputs["sentence"])
 
         # Find all verbs in the input sentence
-        pred_ids = [i for (i, t) in enumerate(sent_tokens) if t.pos_ == "VERB"]
+        pred_ids = [
+            i
+            for (i, t) in enumerate(sent_tokens)
+            if t.pos_ == "VERB" or (self._language.startswith("en_") and t.pos_ == "AUX")
+        ]
 
         # Create instances
         instances = [
