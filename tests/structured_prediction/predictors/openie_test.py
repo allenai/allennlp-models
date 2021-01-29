@@ -118,3 +118,23 @@ class TestOpenIePredictor(AllenNlpTestCase):
         assert len(pred_dict) == 1
         tags = list(pred_dict.values())[0]
         assert get_predicate_text(sent_tokens, tags) == "refused to consider joining"
+
+    def test_aux_verb(self):
+        inputs = {"sentence": "Yellowstone National Park is in the United States of America."}
+
+        archive = load_archive(
+            FIXTURES_ROOT / "structured_prediction" / "srl" / "serialization" / "model.tar.gz"
+        )
+        predictor = Predictor.from_archive(archive, "open_information_extraction")
+
+        result = predictor.predict_json(inputs)
+
+        verbs = result.get("verbs")
+        assert verbs is not None
+        assert isinstance(verbs, list)
+
+        for verb in verbs:
+            tags = verb.get("tags")
+            assert tags is not None
+            assert isinstance(tags, list)
+            assert all(isinstance(tag, str) for tag in tags)
