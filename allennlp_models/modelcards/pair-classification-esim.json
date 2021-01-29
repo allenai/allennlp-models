@@ -6,23 +6,21 @@
     "task_id": "textual_entailment",
     "archive_file": "esim-elmo-2020.11.11.tar.gz",
     "model_details": {
-        "description": "This `Model` implements the ESIM model, which is a sequential neural inference model
-                        based on chain LSTMs.",
+        "description": "This `Model` implements the ESIM model, which is a sequential neural inference model based on chain LSTMs.",
         "short_description": "Enhanced LSTM trained on SNLI.",
         "developed_by": "Chen et al",
         "contributed_by": "Dirk Groeneveld",
         "date": "2020-04-09",
         "version": "1",
         "model_type": "LSTM",
-        "paper": "[Enhanced LSTM for Natural Language Inference](https://api.semanticscholar.org/CorpusID:34032948)",
-        "citation": "@inproceedings{Chen2017EnhancedLF,
-                     title={Enhanced LSTM for Natural Language Inference},
-                     author={Qian Chen and Xiao-Dan Zhu and Z. Ling and Si Wei and Hui Jiang and Diana Inkpen},
-                     booktitle={ACL},
-                     year={2017}}",
+        "paper": {
+            "citation": "\n@inproceedings{Chen2017EnhancedLF,\ntitle={Enhanced LSTM for Natural Language Inference},\nauthor={Qian Chen and Xiao-Dan Zhu and Z. Ling and Si Wei and Hui Jiang and Diana Inkpen},\nbooktitle={ACL},\nyear={2017}}\n",
+            "title": "Enhanced LSTM for Natural Language Inference",
+            "url": "https://api.semanticscholar.org/CorpusID:34032948"
+        },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
-        "training_config": "esim.jsonnet",
+        "training_config": "esim.jsonnet"
     },
     "intended_use": {
         "primary_uses": null,
@@ -39,12 +37,18 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "[Stanford Natural Language Inference (SNLI)](https://nlp.stanford.edu/projects/snli/) dev set",
+        "dataset": {
+            "name": "Stanford Natural Language Inference (SNLI) dev set",
+            "url": "https://nlp.stanford.edu/projects/snli/"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "[Stanford Natural Language Inference (SNLI)](https://nlp.stanford.edu/projects/snli/) train set",
+        "dataset": {
+            "name": "Stanford Natural Language Inference (SNLI) train set",
+            "url": "https://nlp.stanford.edu/projects/snli/"
+        },
         "motivation": null,
         "preprocessing": null
     },
@@ -52,10 +56,10 @@
         "unitary_results": null,
         "intersectional_results": null
     },
-    "ethical_considerations": {
-        "ethical_considerations": null
-    },
-    "caveats_and_recommendations": {
+    "model_caveats_and_recommendations": {
         "caveats_and_recommendations": null
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": null
     }
 }

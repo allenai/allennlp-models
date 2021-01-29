@@ -17,7 +17,7 @@
         "citation": null,
         "license": null,
         "contact": "allennlp-contact@allenai.org",
-        "training_config": null,
+        "training_config": null
     },
     "intended_use": {
         "primary_uses": null,
@@ -47,10 +47,10 @@
         "unitary_results": null,
         "intersectional_results": null
     },
-    "ethical_considerations": {
-        "ethical_considerations": null
-    },
-    "caveats_and_recommendations": {
+    "model_caveats_and_recommendations": {
         "caveats_and_recommendations": null
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": null
     }
 }
