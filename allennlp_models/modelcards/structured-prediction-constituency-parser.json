@@ -6,30 +6,21 @@
     "task_id": "constituency-parsing",
     "archive_file": "elmo-constituency-parser-2020.02.10.tar.gz",
     "model_details": {
-        "description": "This is an implementation of a minimal neural model for constituency parsing
-                        based on an independent scoring of labels and spans.
-                        This `SpanConstituencyParser` simply encodes a sequence of text
-                        with a stacked `Seq2SeqEncoder`, extracts span representations using a
-                        `SpanExtractor`, and then predicts a label for each span in the sequence.
-                        These labels are non-terminal nodes in a constituency parse tree, which we then
-                        greedily reconstruct. The model uses ELMo embeddings, which are completely character-based
-                        and improves single model performance from 92.6 F1 to 94.11 F1 on the Penn Treebank,
-                        a 20% relative error reduction.",
+        "description": "This is an implementation of a minimal neural model for constituency parsing based on an independent scoring of labels and spans. This `SpanConstituencyParser` simply encodes a sequence of text with a stacked `Seq2SeqEncoder`, extracts span representations using a `SpanExtractor`, and then predicts a label for each span in the sequence. These labels are non-terminal nodes in a constituency parse tree, which we then greedily reconstruct. The model uses ELMo embeddings, which are completely character-based and improves single model performance from 92.6 F1 to 94.11 F1 on the Penn Treebank, a 20% relative error reduction.",
         "short_description": "Constituency parser with character-based ELMo embeddings",
         "developed_by": "Joshi et al",
         "contributed_by": null,
         "date": "2020-02-10",
         "version": "1",
         "model_type": "Seq2SeqEncoder",
-        "paper": "[Extending a Parser to Distant Domains Using a Few Dozen Partially Annotated Examples](https://api.semanticscholar.org/CorpusID:21712653)",
-        "citation": "@inproceedings{Joshi2018ExtendingAP,
-                     title={Extending a Parser to Distant Domains Using a Few Dozen Partially Annotated Examples},
-                     author={V. Joshi and Matthew E. Peters and Mark Hopkins},
-                     booktitle={ACL},
-                     year={2018}}",
+        "paper": {
+            "citation": "\n@inproceedings{Joshi2018ExtendingAP,\ntitle={Extending a Parser to Distant Domains Using a Few Dozen Partially Annotated Examples},\nauthor={V. Joshi and Matthew E. Peters and Mark Hopkins},\nbooktitle={ACL},\nyear={2018}}\n",
+            "title": "Extending a Parser to Distant Domains Using a Few Dozen Partially Annotated Examples",
+            "url": "https://api.semanticscholar.org/CorpusID:21712653"
+        },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
-        "training_config": null,
+        "training_config": null
     },
     "intended_use": {
         "primary_uses": null,
@@ -46,12 +37,18 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "[PTB 3.0](https://catalog.ldc.upenn.edu/LDC99T42)",
+        "dataset": {
+            "name": "PTB 3.0",
+            "url": "https://catalog.ldc.upenn.edu/LDC99T42"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "[PTB 3.0](https://catalog.ldc.upenn.edu/LDC99T42)",
+        "dataset": {
+            "name": "PTB 3.0",
+            "url": "https://catalog.ldc.upenn.edu/LDC99T42"
+        },
         "motivation": null,
         "preprocessing": null
     },
@@ -59,10 +56,10 @@
         "unitary_results": "94.11 F1 score",
         "intersectional_results": null
     },
-    "ethical_considerations": {
-        "ethical_considerations": null
-    },
-    "caveats_and_recommendations": {
+    "model_caveats_and_recommendations": {
         "caveats_and_recommendations": null
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": null
     }
 }

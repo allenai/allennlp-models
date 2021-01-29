@@ -13,15 +13,14 @@
         "date": "2020-03-26",
         "version": "1",
         "model_type": "BiLSTM",
-        "paper": "[Supervised Open Information Extraction](https://api.semanticscholar.org/CorpusID:44145304)",
-        "citation": "@inproceedings{Stanovsky2018SupervisedOI,
-                     title={Supervised Open Information Extraction},
-                     author={Gabriel Stanovsky and Julian Michael and Luke Zettlemoyer and I. Dagan},
-                     booktitle={NAACL-HLT},
-                     year={2018}}",
+        "paper": {
+            "citation": "\n@inproceedings{Stanovsky2018SupervisedOI,\ntitle={Supervised Open Information Extraction},\nauthor={Gabriel Stanovsky and Julian Michael and Luke Zettlemoyer and I. Dagan},\nbooktitle={NAACL-HLT},\nyear={2018}}\n",
+            "title": "Supervised Open Information Extraction",
+            "url": "https://api.semanticscholar.org/CorpusID:44145304"
+        },
         "license": null,
         "contact": "allennlp-contact@allenai.org",
-        "training_config": null,
+        "training_config": null
     },
     "intended_use": {
         "primary_uses": null,
@@ -38,12 +37,18 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "OIE2016, [WEB and NYT](https://api.semanticscholar.org/CorpusID:18391662), [PENN](https://api.semanticscholar.org/CorpusID:6398201)",
+        "dataset": {
+            "name": "OIE2016, WEB and NYT, PENN",
+            "url": "https://api.semanticscholar.org/CorpusID:18391662, https://api.semanticscholar.org/CorpusID:6398201"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "[All Words Open IE](https://github.com/gabrielStanovsky/supervised-oie/tree/master/data)",
+        "dataset": {
+            "name": "All Words Open IE",
+            "url": "https://github.com/gabrielStanovsky/supervised-oie/tree/master/data"
+        },
         "motivation": null,
         "preprocessing": null
     },
@@ -51,10 +56,10 @@
         "unitary_results": null,
         "intersectional_results": null
     },
-    "ethical_considerations": {
-        "ethical_considerations": null
-    },
-    "caveats_and_recommendations": {
+    "model_caveats_and_recommendations": {
         "caveats_and_recommendations": null
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": null
     }
 }

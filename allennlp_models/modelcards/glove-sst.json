@@ -6,8 +6,7 @@
     "task_id": "sentiment-analysis",
     "archive_file": "basic_stanford_sentiment_treebank-2020.06.09.tar.gz",
     "model_details": {
-        "description": "This model uses GloVe embeddings and is trained on the binary classification
-                        setting of the Stanford Sentiment Treebank. It achieves about 87% on the test set.",
+        "description": "This model uses GloVe embeddings and is trained on the binary classification setting of the Stanford Sentiment Treebank. It achieves about 87% on the test set.",
         "short_description": "LSTM binary classifier with GloVe embeddings.",
         "developed_by": null,
         "contributed_by": null,
@@ -15,10 +14,9 @@
         "version": "1",
         "model_type": "LSTM",
         "paper": null,
-        "citation": null,
         "license": null,
         "contact": "allennlp-contact@allenai.org",
-        "training_config": "classification/basic_stanford_sentiment_treebank.jsonnet",
+        "training_config": "classification/basic_stanford_sentiment_treebank.jsonnet"
     },
     "intended_use": {
         "primary_uses": null,
@@ -35,12 +33,18 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "[Stanford Sentiment Treebank](https://nlp.stanford.edu/sentiment/treebank.html)",
+        "dataset": {
+            "name": "Stanford Sentiment Treebank",
+            "url": "https://nlp.stanford.edu/sentiment/treebank.html"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "[Stanford Sentiment Treebank](https://nlp.stanford.edu/sentiment/treebank.html)",
+        "dataset": {
+            "name": "Stanford Sentiment Treebank",
+            "url": "https://nlp.stanford.edu/sentiment/treebank.html"
+        },
         "motivation": null,
         "preprocessing": "Binary classification setting"
     },
@@ -48,10 +52,10 @@
         "unitary_results": "Accuracy: 87% on SST test set.",
         "intersectional_results": null
     },
-    "ethical_considerations": {
-        "ethical_considerations": null
-    },
-    "caveats_and_recommendations": {
+    "model_caveats_and_recommendations": {
         "caveats_and_recommendations": null
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": null
     }
 }
