@@ -6,6 +6,10 @@
     "expected_outputs": "A probability distribution over the vocabulary for the next word.",
     "scope_and_limitations": null,
     "examples": [
-        {"text": "AllenNLP is "}
+        {"sentence": "AllenNLP is "},
+        {"sentence": "The woman wept because she was "},
+        {"sentence": "My dog is very "},
+        {"sentence": "The fire burned the "},
+        {"sentence": "The doctor ran to the emergency room to see the "}
     ],
 }
