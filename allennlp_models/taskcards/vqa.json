@@ -7,19 +7,19 @@
     "scope_and_limitations": null,
     "examples": [
         {
-            "image" : "baseball_game.jpg", // Change to full link? Or interpret this in the demo.
+            "image" : "https://storage.googleapis.com/allennlp-public-data/vqav2/vqa-examples/baseball_game.jpg",
             "question" : "What game are they playing?"
         },
         {
-            "image": "bus_stop.jpg",
+            "image": "https://storage.googleapis.com/allennlp-public-data/vqav2/vqa-examples/bus_stop.jpg",
             "question": "What are the people waiting for?"
         },
         {
-            "image": "kitchen.jpg",
+            "image": "https://storage.googleapis.com/allennlp-public-data/vqav2/vqa-examples/kitchen.jpg",
             "question": "What is in the bowls on the island?"
         },
         {
-            "image": "living_room.jpg",
+            "image": "https://storage.googleapis.com/allennlp-public-data/vqav2/vqa-examples/living_room.jpg",
             "question": "What color is the pillow in the middle?"
         }
     ]
