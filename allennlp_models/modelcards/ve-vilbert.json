@@ -1,5 +1,5 @@
 {
-    "id": "ve-visual-entailment",
+    "id": "ve-vilbert",
     "registered_model_name": "visual-entailment",
     "registered_predictor_name": "vilbert_ve",
     "display_name": "Visual Entailment",
