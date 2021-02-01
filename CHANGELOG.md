@@ -7,10 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+
+## [v2.0.1](https://github.com/allenai/allennlp-models/releases/tag/v2.0.1) - 2021-02-01
+
 ### Fixed
 
 - Fixed `OpenIePredictor.predict_json` so it treats auxiliary verbs as verbs
   when the language is English.
+
 
 ## [v2.0.0](https://github.com/allenai/allennlp-models/releases/tag/v2.0.0) - 2021-01-27
 
