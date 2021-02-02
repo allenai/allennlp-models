@@ -4,7 +4,6 @@
     "registered_predictor_name": null,
     "display_name": "Text to SQL (ATIS)",
     "task_id": "semparse-text-to-sql",
-    "archive_file": "https://allennlp.s3.amazonaws.com/models/atis-parser-2020.02.10.tar.gz",
     "model_details": {
         "description": "This model is an implementation of an encoder-decoder architecture with LSTMs and constrained type decoding trained on the ATIS dataset. This model is still a proof-of-concept of what you can do with semantic parsing in AllenNLP and its performance is not state-of-the-art (this naive model gets around 40% exact denotation accuracy on the contextual ATIS dataset).",
         "short_description": "This model is an implementation of an encoder-decoder architecture with LSTMs and constrained type decoding trained on the ATIS dataset.",
@@ -19,8 +18,7 @@
             "url": "https://api.semanticscholar.org/CorpusID:174799945"
         },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": null
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -39,7 +37,8 @@
     "evaluation_data": {
         "dataset": {
             "name": "ATIS",
-            "url": "https://api.semanticscholar.org/CorpusID:1094063"
+            "url": "https://api.semanticscholar.org/CorpusID:1094063",
+            "notes": "Please download the data from the url provided."
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +46,8 @@
     "training_data": {
         "dataset": {
             "name": "ATIS",
-            "url": "https://api.semanticscholar.org/CorpusID:1094063"
+            "url": "https://api.semanticscholar.org/CorpusID:1094063",
+            "notes": "Please download the data from the url provided."
         },
         "motivation": null,
         "preprocessing": null
@@ -61,5 +61,10 @@
     },
     "model_ethical_considerations": {
         "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "https://allennlp.s3.amazonaws.com/models/atis-parser-2020.02.10.tar.gz",
+        "training_config": null,
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }

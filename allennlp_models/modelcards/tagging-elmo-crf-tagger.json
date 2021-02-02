@@ -4,7 +4,6 @@
     "registered_predictor_name": null,
     "display_name": "ELMo-based Named Entity Recognition",
     "task_id": "ner",
-    "archive_file": "ner-model-2020.02.10.tar.gz",
     "model_details": {
         "description": "This model is the baseline model described in [Semi-supervised sequence tagging with bidirectional language models](https://api.semanticscholar.org/CorpusID:7197241). It uses a Gated Recurrent Unit (GRU) character encoder as well as a GRU phrase encoder, and it starts with pretrained GloVe vectors for its token embeddings. It was trained on the CoNLL-2003 NER dataset.",
         "short_description": "NER tagger using a Gated Recurrent Unit (GRU) character encoder as well as a GRU phrase encoder, with GloVe embeddings.",
@@ -19,8 +18,7 @@
             "url": "https://api.semanticscholar.org/CorpusID:7197241"
         },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": null
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -39,7 +37,8 @@
     "evaluation_data": {
         "dataset": {
             "name": "CoNLL-2003 NER dataset",
-            "url": "https://www.clips.uantwerpen.be/conll2003/ner/"
+            "url": "https://www.clips.uantwerpen.be/conll2003/ner/",
+            "notes": "The NER model was evaluated on the CoNLL-2003 NER dataset. Unfortunately we cannot release this data due to licensing restrictions."
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +46,8 @@
     "training_data": {
         "dataset": {
             "name": "CoNLL-2003 NER dataset",
-            "url": "https://www.clips.uantwerpen.be/conll2003/ner/"
+            "url": "https://www.clips.uantwerpen.be/conll2003/ner/",
+            "notes": "The NER model was trained on the CoNLL-2003 NER dataset. Unfortunately we cannot release this data due to licensing restrictions."
         },
         "motivation": null,
         "preprocessing": null
@@ -61,5 +61,10 @@
     },
     "model_ethical_considerations": {
         "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "ner-model-2020.02.10.tar.gz",
+        "training_config": "tagging/ner_elmo.jsonnet",
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }

@@ -4,7 +4,6 @@
     "registered_predictor_name": null,
     "display_name": "GLoVe-LSTM",
     "task_id": "sentiment-analysis",
-    "archive_file": "basic_stanford_sentiment_treebank-2020.06.09.tar.gz",
     "model_details": {
         "description": "This model uses GloVe embeddings and is trained on the binary classification setting of the Stanford Sentiment Treebank. It achieves about 87% on the test set.",
         "short_description": "LSTM binary classifier with GloVe embeddings.",
@@ -15,8 +14,7 @@
         "model_type": "LSTM",
         "paper": null,
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": "classification/basic_stanford_sentiment_treebank.jsonnet"
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -35,7 +33,8 @@
     "evaluation_data": {
         "dataset": {
             "name": "Stanford Sentiment Treebank",
-            "url": "https://nlp.stanford.edu/sentiment/treebank.html"
+            "url": "https://nlp.stanford.edu/sentiment/treebank.html",
+            "processed_url": "https://allennlp.s3.amazonaws.com/datasets/sst/test.txt"
         },
         "motivation": null,
         "preprocessing": null
@@ -43,7 +42,8 @@
     "training_data": {
         "dataset": {
             "name": "Stanford Sentiment Treebank",
-            "url": "https://nlp.stanford.edu/sentiment/treebank.html"
+            "url": "https://nlp.stanford.edu/sentiment/treebank.html",
+            "processed_url": "https://allennlp.s3.amazonaws.com/datasets/sst/train.txt"
         },
         "motivation": null,
         "preprocessing": "Binary classification setting"
@@ -57,5 +57,10 @@
     },
     "model_ethical_considerations": {
         "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "basic_stanford_sentiment_treebank-2020.06.09.tar.gz",
+        "training_config": "classification/basic_stanford_sentiment_treebank.jsonnet",
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }

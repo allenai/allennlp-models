@@ -4,7 +4,6 @@
     "registered_predictor_name": null,
     "display_name": "GPT2-based Next Token Language Model",
     "task_id": "language-modeling",
-    "archive_file": "gpt2-next-word-lm-2020.06.30.tar.gz",
     "model_details": {
         "description": "This is the public 345M parameter OpenAI GPT-2 language model for generating sentences. The model embeds some input tokens, contextualizes them, then predicts the next word, computing a loss against known target. \nIf `BeamSearch` is given, this model will predict a sequence of next tokens.",
         "short_description": "OpenAI's GPT-2 language model that generates the next token.",
@@ -19,8 +18,7 @@
             "url": "https://api.semanticscholar.org/CorpusID:160025533"
         },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": null
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -61,5 +59,10 @@
     },
     "model_ethical_considerations": {
         "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "gpt2-next-word-lm-2020.06.30.tar.gz",
+        "training_config": null,
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }

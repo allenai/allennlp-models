@@ -4,7 +4,6 @@
     "registered_predictor_name": null,
     "display_name": "Fine Grained Named Entity Recognition",
     "task_id": "ner",
-    "archive_file": "fine-grained-ner.2020-06-24.tar.gz",
     "model_details": {
         "description": "This model identifies a broad range of 16 semantic types in the input text. It is a reimplementation of Lample (2016) and uses a biLSTM with a CRF layer, character embeddings and ELMo embeddings.",
         "short_description": "This model identifies a broad range of 16 semantic types in the input text. It is a reimplementation of Lample (2016) and uses a biLSTM with a CRF layer, character embeddings and ELMo embeddings.",
@@ -19,8 +18,7 @@
             "url": "https://api.semanticscholar.org/CorpusID:6042994"
         },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": null
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -39,7 +37,8 @@
     "evaluation_data": {
         "dataset": {
             "name": "Ontonotes 5.0",
-            "url": "https://catalog.ldc.upenn.edu/LDC2013T19"
+            "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
+            "notes": "We cannot release this data due to licensing restrictions."
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +46,8 @@
     "training_data": {
         "dataset": {
             "name": "Ontonotes 5.0",
-            "url": "https://catalog.ldc.upenn.edu/LDC2013T19"
+            "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
+            "notes": "We cannot release this data due to licensing restrictions."
         },
         "motivation": null,
         "preprocessing": null
@@ -61,5 +61,10 @@
     },
     "model_ethical_considerations": {
         "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "fine-grained-ner.2020-06-24.tar.gz",
+        "training_config": "tagging/fine-grained-ner.jsonnet",
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }

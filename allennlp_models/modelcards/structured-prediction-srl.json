@@ -4,7 +4,6 @@
     "registered_predictor_name": null,
     "display_name": "Open Information Extraction",
     "task_id": "srl",
-    "archive_file": "openie-model.2020.03.26.tar.gz",
     "model_details": {
         "description": "A reimplementation of a deep BiLSTM sequence prediction model (Stanovsky et al., 2018).",
         "short_description": "A reimplementation of a deep BiLSTM sequence prediction model (Stanovsky et al., 2018)",
@@ -19,8 +18,7 @@
             "url": "https://api.semanticscholar.org/CorpusID:44145304"
         },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": null
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -39,7 +37,8 @@
     "evaluation_data": {
         "dataset": {
             "name": "OIE2016, WEB and NYT, PENN",
-            "url": "https://api.semanticscholar.org/CorpusID:18391662, https://api.semanticscholar.org/CorpusID:6398201"
+            "url": "https://github.com/gabrielStanovsky/oie-benchmark",
+            "notes": "The Open Information extractor was evaluated on the OIE2016 corpus. Unfortunately we cannot release this data due to licensing restrictions by the LDC. You can get the data on the corpus homepage."
         },
         "motivation": null,
         "preprocessing": null
@@ -61,5 +60,10 @@
     },
     "model_ethical_considerations": {
         "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "openie-model.2020.03.26.tar.gz",
+        "training_config": "structured-prediction/srl.jsonnet",
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }

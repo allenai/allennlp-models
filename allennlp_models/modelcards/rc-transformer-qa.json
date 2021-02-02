@@ -4,7 +4,6 @@
     "registered_predictor_name": null,
     "display_name": "Transformer QA",
     "task_id": "rc",
-    "archive_file": "transformer-qa-2020-10-03.tar.gz",
     "model_details": {
         "description": "The model implements a reading comprehension model patterned after the proposed model in [BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding (Devlin et al, 2018)](https://api.semanticscholar.org/CorpusID:52967399), with improvements borrowed from the SQuAD model in the transformers project. It predicts start tokens and end tokens with a linear layer on top of word piece embeddings.",
         "short_description": "A reading comprehension model patterned after the proposed model in Devlin et al, with improvements borrowed from the SQuAD model in the transformers project",
@@ -36,12 +35,20 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "The TransformerQA was evaluated on the SQuAD dev set.",
+        "dataset": {
+            "name": "SQuAD dev set",
+            "url": "https://rajpurkar.github.io/SQuAD-explorer/explore/1.1/dev/",
+            "processed_url": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/squad/squad-dev-v1.1.json"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "The TransformerQA model was fine-tuned on SQuAD train set. \nThe underlying RoBERTa model was pretrained on BooksCorpus (Zhu et al., 2015) plus English Wikipedia (16GB), CC-News (Nagel, 2016) (76GB), OpenWebText (Gokaslan and Cohen, 2019) (38GB), and STORIES (Trinh and Le, 2018) (31GB).",
+        "dataset": {
+            "name": "SQuAD training set",
+            "url": "https://rajpurkar.github.io/SQuAD-explorer/explore/1.1/dev/",
+            "processed_url": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/squad/squad-train-v1.1.json"
+        },
         "motivation": "For the pretrained RoBERTa model, document-level corpora were used rather than a shuffled sentence-level corpus such as the Billion Word Benchmark (Chelba et al., 2013) in order to extract long contiguous sequences",
         "preprocessing": "For the pretrained RoBERTa model, only the text passages were extracted from English Wikipedia; lists, tables, and headers were ignored."
     },
@@ -54,5 +61,10 @@
     },
     "model_ethical_considerations": {
         "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "transformer-qa-2020-10-03.tar.gz",
+        "training_config": "rc/transformer_qa.jsonnet",
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }

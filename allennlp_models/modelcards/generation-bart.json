@@ -3,7 +3,6 @@
     "registered_model_name": "bart",
     "registered_predictor_name": null,
     "display_name": "BART",
-    "archive_file": "bart-2020.07.25.tar.gz",
     "model_details": {
         "description": "The BART model here uses a language modeling head, and therefore can be used for generation. The BART encoder, implemented as a `Seq2SeqEncoder`, which assumes it operates on already embedded inputs.  This means that we remove the token and position embeddings from BART in this module.  For the typical use case of using BART to encode inputs to your model (where we include the token and position embeddings from BART), you should use `PretrainedTransformerEmbedder(bart_model_name, sub_module=\"encoder\")` instead of this.",
         "short_description": "BART with a language model head for generation.",
@@ -37,7 +36,8 @@
     "evaluation_data": {
         "dataset": {
             "name": "CNN/DailyMail",
-            "url": "https://github.com/abisee/cnn-dailymail"
+            "url": "https://github.com/abisee/cnn-dailymail",
+            "notes": "Please download the data from the url provided."
         },
         "motivation": null,
         "preprocessing": null
@@ -45,7 +45,8 @@
     "training_data": {
         "dataset": {
             "name": "CNN/DailyMail",
-            "url": "https://github.com/abisee/cnn-dailymail"
+            "url": "https://github.com/abisee/cnn-dailymail",
+            "notes": "Please download the data from the url provided."
         },
         "motivation": null,
         "preprocessing": null
@@ -59,5 +60,10 @@
     },
     "model_ethical_considerations": {
         "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "bart-2020.07.25.tar.gz",
+        "training_config": "generation/bart_cnn_dm.jsonnet",
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }
