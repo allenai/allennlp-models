@@ -4,7 +4,6 @@
     "registered_predictor_name": null,
     "display_name": "Numerically Augmented QA Net",
     "task_id": "rc",
-    "archive_file": "naqanet-2020.02.19.tar.gz",
     "model_details": {
         "description": "An augmented version of QANet model with some rudimentary numerical reasoning abilities. The main idea here is that instead of just predicting a passage span after doing all of the QANet modeling stuff, we add several different 'answer abilities': predicting a span from the question, predicting a count, or predicting an arithmetic expression.  Near the end of the QANet model, we have a variable that predicts what kind of answer type we need, and each branch has separate modeling logic to predict that answer type.  We then marginalize over all possible ways of getting to the right answer through each of these answer types.",
         "short_description": "An augmented version of QANet that adds rudimentary numerical reasoning ability, trained on DROP (Dua et al., 2019), as published in the original DROP paper.",
@@ -19,8 +18,7 @@
             "url": "https://api.semanticscholar.org/CorpusID:67855846"
         },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": null
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -39,7 +37,8 @@
     "evaluation_data": {
         "dataset": {
             "name": "DROP",
-            "url": "https://allennlp.org/drop"
+            "url": "https://allennlp.org/drop",
+            "notes": "Please download the data from the url provided."
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +46,8 @@
     "training_data": {
         "dataset": {
             "name": "DROP",
-            "url": "https://allennlp.org/drop"
+            "url": "https://allennlp.org/drop",
+            "notes": "Please download the data from the url provided."
         },
         "motivation": null,
         "preprocessing": null
@@ -61,5 +61,10 @@
     },
     "model_ethical_considerations": {
         "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "naqanet-2020.02.19.tar.gz",
+        "training_config": "rc/naqanet.jsonnet",
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }

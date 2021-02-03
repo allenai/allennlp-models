@@ -70,10 +70,10 @@ def load_predictor(
     """
     pretrained_models = pretrained_models or get_pretrained_models()
     model_card = pretrained_models[model_id]
-    if model_card.archive_file is None:
+    if model_card.model_usage.archive_file is None:
         raise ValueError(f"archive_file is required in the {model_card}")
     return Predictor.from_path(
-        model_card.archive_file,
+        model_card.model_usage.archive_file,
         predictor_name=model_card.registered_predictor_name,
         overrides=overrides,
     )

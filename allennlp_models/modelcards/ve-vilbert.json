@@ -4,7 +4,6 @@
     "registered_predictor_name": "vilbert_ve",
     "display_name": "Visual Entailment",
     "task_id": "ve",
-    "archive_file": "visual-entailment-torchvision-2020.12.23.tar.gz",
     "model_details": {
         "description": "This model is based on the ViLBERT architecture. The image features are obtained using the ResNet backbone and Faster RCNN (region detection).",
         "short_description": "ViLBERT-based model for Visual Entailment.",
@@ -19,8 +18,7 @@
             "url": "https://api.semanticscholar.org/CorpusID:199453025"
         },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": null,
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": "This model is developed for the AllenNLP demo.",
@@ -39,7 +37,8 @@
     "evaluation_data": {
         "dataset": {
             "name": "Stanford Natural Language Inference - Visual Entailment(SNLI-VE) dev set",
-            "url": "https://github.com/necla-ml/SNLI-VE"
+            "url": "https://github.com/necla-ml/SNLI-VE",
+            "notes": "Evaluation requires a large amount of images to be accessible locally, so we cannot provide a command you can easily copy and paste."
         },
         "motivation": null,
         "preprocessing": null
@@ -61,5 +60,10 @@
     },
     "model_caveats_and_recommendations": {
         "caveats_and_recommendations": "This model is trained on the original SNLI-VE dataset. [Subsequent work](https://api.semanticscholar.org/CorpusID:215415945) has found that an estimated 31% of `neutral` labels in the dataset are incorrect. The `e-SNLI-VE-2.0` dataset contains the re-annotated validation and test sets."
+    },
+    "model_usage": {
+        "archive_file": "visual-entailment-torchvision-2020.12.23.tar.gz",
+        "training_config": "vilbert_ve_pretrained.jsonnet",
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }

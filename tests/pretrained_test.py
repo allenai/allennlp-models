@@ -460,7 +460,11 @@ class TestAllenNlpPretrainedModels(AllenNlpTestCase):
 
     @pytest.mark.parametrize("model_id, model_card", get_pretrained_models().items())
     def test_pretrained_models(self, model_id, model_card):
-        assert model_card.archive_file is not None
+        assert model_card.model_usage.archive_file is not None
+        if model_id not in ["rc-nmn", "lm-next-token-lm-gpt2"] and not model_id.startswith(
+            "semparse"
+        ):
+            assert model_card.model_usage.training_config is not None
         assert model_card.display_name is not None
         assert model_card.model_details.description is not None
         assert model_card.model_details.short_description is not None
@@ -469,6 +473,12 @@ class TestAllenNlpPretrainedModels(AllenNlpTestCase):
             assert model_card.evaluation_data.dataset is not None
             assert model_card.training_data.dataset is not None
             assert model_card.metrics.model_performance_measures is not None
+
+            if not model_id.startswith("lm") and not model_id.startswith("generation"):
+                assert (
+                    model_card.evaluation_data.dataset.processed_url is not None
+                    or model_card.evaluation_data.dataset.notes is not None
+                )
 
     @pytest.mark.parametrize("task_id, task_card", get_tasks().items())
     def test_tasks(self, task_id, task_card):

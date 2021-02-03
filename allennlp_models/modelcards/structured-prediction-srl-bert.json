@@ -4,7 +4,6 @@
     "registered_predictor_name": null,
     "display_name": "SRL BERT",
     "task_id": "srl",
-    "archive_file": "structured-prediction-srl-bert.2020.12.15.tar.gz",
     "model_details": {
         "description": "An implementation of a BERT based model (Shi et al, 2019) with some modifications (no additional parameters apart from a linear classification layer), which is currently the state of the art single model for English PropBank SRL (Newswire sentences). It achieves 86.49 test F1 on the Ontonotes 5.0 dataset.",
         "short_description": "A BERT based model (Shi et al, 2019) with some modifications (no additional parameters apart from a linear classification layer)",
@@ -19,8 +18,7 @@
             "url": "https://api.semanticscholar.org/CorpusID:131773936"
         },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": null
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -39,7 +37,8 @@
     "evaluation_data": {
         "dataset": {
             "name": "Ontonotes 5.0",
-            "url": "https://catalog.ldc.upenn.edu/LDC2013T19"
+            "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
+            "notes": "We cannot release this data due to licensing restrictions."
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +46,8 @@
     "training_data": {
         "dataset": {
             "name": "Ontonotes 5.0",
-            "url": "https://catalog.ldc.upenn.edu/LDC2013T19"
+            "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
+            "notes": "We cannot release this data due to licensing restrictions."
         },
         "motivation": null,
         "preprocessing": null
@@ -61,5 +61,10 @@
     },
     "model_ethical_considerations": {
         "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "structured-prediction-srl-bert.2020.12.15.tar.gz",
+        "training_config": "structured_prediction/bert_base_srl.jsonnet",
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }

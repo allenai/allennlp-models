@@ -4,7 +4,6 @@
     "registered_predictor_name": null,
     "display_name": "Neural Module Network (NMN)",
     "task_id": "rc",
-    "archive_file": "drop-nmn-2020.04.04.tar.gz",
     "model_details": {
         "description": "A neural module network trained on DROP.",
         "short_description": "A neural module network trained on DROP.",
@@ -19,8 +18,7 @@
             "url": "https://api.semanticscholar.org/CorpusID:5276660"
         },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": null
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -58,5 +56,10 @@
     },
     "model_ethical_considerations": {
         "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "drop-nmn-2020.04.04.tar.gz",
+        "training_config": null,
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }
