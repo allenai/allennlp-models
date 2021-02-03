@@ -4,7 +4,6 @@
     "registered_predictor_name": "textual_entailment",
     "display_name": "Enhanced LSTM for Natural Language Inference",
     "task_id": "textual_entailment",
-    "archive_file": "esim-elmo-2020.11.11.tar.gz",
     "model_details": {
         "description": "This `Model` implements the ESIM model, which is a sequential neural inference model based on chain LSTMs.",
         "short_description": "Enhanced LSTM trained on SNLI.",
@@ -19,8 +18,7 @@
             "url": "https://api.semanticscholar.org/CorpusID:34032948"
         },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": "esim.jsonnet"
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -39,7 +37,8 @@
     "evaluation_data": {
         "dataset": {
             "name": "Stanford Natural Language Inference (SNLI) dev set",
-            "url": "https://nlp.stanford.edu/projects/snli/"
+            "url": "https://nlp.stanford.edu/projects/snli/",
+            "processed_url": "https://allennlp.s3.amazonaws.com/datasets/snli/snli_1.0_test.jsonl"
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +46,8 @@
     "training_data": {
         "dataset": {
             "name": "Stanford Natural Language Inference (SNLI) train set",
-            "url": "https://nlp.stanford.edu/projects/snli/"
+            "url": "https://nlp.stanford.edu/projects/snli/",
+            "processed_url": "https://allennlp.s3.amazonaws.com/datasets/snli/snli_1.0_train.jsonl"
         },
         "motivation": null,
         "preprocessing": null
@@ -61,5 +61,10 @@
     },
     "model_ethical_considerations": {
         "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "esim-elmo-2020.11.11.tar.gz",
+        "training_config": "esim.jsonnet",
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }

@@ -4,7 +4,6 @@
     "registered_predictor_name": null,
     "display_name": "Deep Biaffine Attention for Neural Dependency Parsing",
     "task_id": "dependency-parsing",
-    "archive_file": "biaffine-dependency-parser-ptb-2020.04.06.tar.gz",
     "model_details": {
         "description": "This dependency parser follows the model of [Deep Biaffine Attention for Neural Dependency Parsing (Dozat and Manning, 2016)](https://api.semanticscholar.org/CorpusID:7942973) .\n\nWord representations are generated using a bidirectional LSTM, followed by separate biaffine classifiers for pairs of words, predicting whether a directed arc exists between the two words and the dependency label the arc should have. Decoding can either be done greedily, or the optimal Minimum Spanning Tree can be decoded using Edmond's algorithm by viewing the dependency tree as a MST on a fully connected graph, where nodes are words and edges are scored dependency arcs.",
         "short_description": "A neural model for dependency parsing using biaffine classifiers on top of a bidirectional LSTM.",
@@ -19,8 +18,7 @@
             "url": "https://api.semanticscholar.org/CorpusID:7942973"
         },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": null
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -39,7 +37,8 @@
     "evaluation_data": {
         "dataset": {
             "name": "PTB 3.0",
-            "url": "https://catalog.ldc.upenn.edu/LDC99T42"
+            "url": "https://catalog.ldc.upenn.edu/LDC99T42",
+            "notes": "The dependency parser was evaluated on the Penn Tree Bank dataset. Unfortunately we cannot release this data due to licensing restrictions by the LDC. You can download the PTB data from the LDC website."
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +46,8 @@
     "training_data": {
         "dataset": {
             "name": "PTB 3.0",
-            "url": "https://catalog.ldc.upenn.edu/LDC99T42"
+            "url": "https://catalog.ldc.upenn.edu/LDC99T42",
+            "notes": "The dependency parser was evaluated on the Penn Tree Bank dataset. Unfortunately we cannot release this data due to licensing restrictions by the LDC. You can download the PTB data from the LDC website."
         },
         "motivation": null,
         "preprocessing": null
@@ -61,5 +61,10 @@
     },
     "model_ethical_considerations": {
         "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "biaffine-dependency-parser-ptb-2020.04.06.tar.gz",
+        "training_config": "structured_prediction/dependency_parser.jsonnet",
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }

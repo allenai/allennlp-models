@@ -4,7 +4,6 @@
     "registered_predictor_name": null,
     "display_name": "Fine Grained Named Entity Recognition with Transformer",
     "task_id": "ner",
-    "archive_file": "fgner_transformer.2020-07-14.tar.gz",
     "model_details": {
         "description": "Fine-grained NER model",
         "short_description": "Fine-grained NER model",
@@ -15,8 +14,7 @@
         "model_type": "Transformer",
         "paper": null,
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": null
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -35,7 +33,8 @@
     "evaluation_data": {
         "dataset": {
             "name": "Ontonotes 5.0",
-            "url": "https://catalog.ldc.upenn.edu/LDC2013T19"
+            "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
+            "notes": "We cannot release this data due to licensing restrictions."
         },
         "motivation": null,
         "preprocessing": null
@@ -43,7 +42,8 @@
     "training_data": {
         "dataset": {
             "name": "Ontonotes 5.0",
-            "url": "https://catalog.ldc.upenn.edu/LDC2013T19"
+            "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
+            "notes": "We cannot release this data due to licensing restrictions."
         },
         "motivation": null,
         "preprocessing": null
@@ -57,5 +57,10 @@
     },
     "model_ethical_considerations": {
         "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "fgner_transformer.2020-07-14.tar.gz",
+        "training_config": "tagging/fgner_transformer.jsonnet",
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }

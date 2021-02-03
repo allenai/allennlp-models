@@ -4,7 +4,6 @@
     "registered_predictor_name": null,
     "display_name": "BERT-based Masked Language Model",
     "task_id": "masked-language-modeling",
-    "archive_file": "bert-masked-lm-2020-10-07.tar.gz",
     "model_details": {
         "description": "The `MaskedLanguageModel` embeds some input tokens (including some which are masked), contextualizes them, then predicts targets for the masked tokens, computing a loss against known targets.",
         "short_description": "BERT-based masked language model",
@@ -19,8 +18,7 @@
             "url": "https://api.semanticscholar.org/CorpusID:52967399"
         },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": null
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -55,5 +53,10 @@
     },
     "model_ethical_considerations": {
         "ethical_considerations": "BERT demonstrates gender bias in that it thinks the doctor is more likely a man ('his') than a woman ('her'). An important issue in NLP is how to understand and address such biases in our linguistic models."
+    },
+    "model_usage": {
+        "archive_file": "bert-masked-lm-2020-10-07.tar.gz",
+        "training_config": "lm/bidirectional_language_model.jsonnet",
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }

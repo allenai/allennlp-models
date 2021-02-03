@@ -4,7 +4,6 @@
     "registered_predictor_name": "vilbert_vqa",
     "display_name": "ViLBERT - Visual Question Answering",
     "task_id": "vqa",
-    "archive_file": "vilbert-vqa-2020.10.01.tar.gz",
     "model_details": {
         "description": "ViLBERT (short for Vision-and-Language BERT), is a model for learning task-agnostic joint representations of image content and natural language.",
         "short_description": "ViLBERT (short for Vision-and-Language BERT), is a model for learning task-agnostic joint representations of image content and natural language.",
@@ -19,8 +18,7 @@
             "url": "https://api.semanticscholar.org/CorpusID:199453025"
         },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": null,
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": "This model is developed for the AllenNLP demo.",
@@ -39,7 +37,8 @@
     "evaluation_data": {
         "dataset": {
             "name": "VQA dataset",
-            "url": "https://visualqa.org/"
+            "url": "https://visualqa.org/",
+            "notes": "Evaluation requires a large amount of images to be accessible locally, so we cannot provide a command you can easily copy and paste."
         },
         "motivation": null,
         "preprocessing": null
@@ -61,5 +60,10 @@
     },
     "model_caveats_and_recommendations": {
         "caveats_and_recommendations": null
+    },
+    "model_usage": {
+        "archive_file": "vilbert-vqa-2020.10.01.tar.gz",
+        "training_config": "vision/vilbert_vqa_from_huggingface.jsonnet",
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }

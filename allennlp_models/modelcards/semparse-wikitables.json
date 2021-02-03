@@ -4,7 +4,6 @@
     "registered_predictor_name": null,
     "display_name": "WikiTables Semantic Parsing",
     "task_id": "semparse-tabular",
-    "archive_file": "wikitables-model-2020.02.10.tar.gz",
     "model_details": {
         "description": "The model is a semantic parser trained on WikiTableQuestions.",
         "short_description": "The model is a semantic parser trained on WikiTableQuestions.",
@@ -19,8 +18,7 @@
             "url": "https://api.semanticscholar.org/CorpusID:174799945"
         },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": null
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -39,7 +37,8 @@
     "evaluation_data": {
         "dataset": {
             "name": "WikiTableQuestions",
-            "url": "https://ppasupat.github.io/WikiTableQuestions/"
+            "url": "https://ppasupat.github.io/WikiTableQuestions/",
+            "notes": "Please download the data from the url provided."
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +46,8 @@
     "training_data": {
         "dataset": {
             "name": "WikiTableQuestions",
-            "url": "https://ppasupat.github.io/WikiTableQuestions/"
+            "url": "https://ppasupat.github.io/WikiTableQuestions/",
+            "notes": "Please download the data from the url provided."
         },
         "motivation": null,
         "preprocessing": null
@@ -61,5 +61,10 @@
     },
     "model_ethical_considerations": {
         "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "wikitables-model-2020.02.10.tar.gz",
+        "training_config": null,
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }
