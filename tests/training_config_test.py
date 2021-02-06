@@ -120,6 +120,7 @@ class TestAllenNlpPretrainedModelConfigs(AllenNlpTestCase):
             for patch_target in patch_targets:
                 os.environ[patch_target] = str(dataset_patch)
 
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     @pytest.mark.parametrize("path", find_configs())
     def test_pretrained_configs(self, path):
         params = Params.from_file(

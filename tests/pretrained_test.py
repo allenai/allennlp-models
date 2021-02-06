@@ -344,6 +344,7 @@ class TestAllenNlpPretrainedModels(AllenNlpTestCase):
             ".",
         ]
 
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def test_ner(self):
         predictor = load_predictor("tagging-elmo-crf-tagger")
 
