@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- `coding_scheme` parameter is now deprecated in `Conll2000DatasetReader`, please use `convert_to_coding_scheme` instead.
+
 
 ## [v2.0.1](https://github.com/allenai/allennlp-models/releases/tag/v2.0.1) - 2021-02-01
 
