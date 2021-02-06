@@ -1,6 +1,7 @@
-from typing import Dict, List, Sequence, Iterable
+from typing import Dict, List, Optional, Sequence, Iterable
 import itertools
 import logging
+import warnings
 
 from overrides import overrides
 
@@ -52,12 +53,18 @@ class Conll2000DatasetReader(DatasetReader):
         Each will have its own namespace : `pos_tags` or `chunk_tags`.
         If you want to use one of the tags as a `feature` in your model, it should be
         specified here.
-    coding_scheme : `str`, optional (default=`BIO`)
+    convert_to_coding_scheme : `str`, optional (default=`BIO`)
         Specifies the coding scheme for `chunk_labels`.
-        Valid options are `BIO` and `BIOUL`.  The `BIO` default maintains
+        `Conll2000DatasetReader` assumes a coding scheme of input data is `BIO`.
+        Valid options are `None` and `BIOUL`.  The `None` default maintains
         the original BIO scheme in the CoNLL 2000 chunking data.
         In the BIO scheme, B is a token starting a span, I is a token continuing a span, and
         O is a token outside of a span.
+    coding_scheme: `str`, optional (default=`BIO`)
+        This parameter is deprecated. If you specify `coding_scheme` to
+        `BIO`, consider simply removing it or specifying `convert_to_coding_scheme`
+        to `None`. If you want to specify `BIOUL` for `coding_scheme`,
+        replace it with `convert_to_coding_scheme`.
     label_namespace : `str`, optional (default=`labels`)
         Specifies the namespace for the chosen `tag_label`.
     """
@@ -69,10 +76,23 @@ class Conll2000DatasetReader(DatasetReader):
         token_indexers: Dict[str, TokenIndexer] = None,
         tag_label: str = "chunk",
         feature_labels: Sequence[str] = (),
-        coding_scheme: str = "BIO",
+        convert_to_coding_scheme: Optional[str] = None,
         label_namespace: str = "labels",
         **kwargs,
     ) -> None:
+
+        if "coding_scheme" in kwargs:
+            warnings.warn("`coding_scheme` is deprecated.", DeprecationWarning)
+            coding_scheme = kwargs.pop("coding_scheme")
+
+            if coding_scheme not in ("BIO", "BIOUL"):
+                raise ConfigurationError("unknown coding_scheme: {}".format(coding_scheme))
+
+            if coding_scheme == "BIO":
+                convert_to_coding_scheme = None
+            else:
+                convert_to_coding_scheme = coding_scheme
+
         super().__init__(**kwargs)
         self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
         if tag_label is not None and tag_label not in self._VALID_LABELS:
@@ -80,12 +100,12 @@ class Conll2000DatasetReader(DatasetReader):
         for label in feature_labels:
             if label not in self._VALID_LABELS:
                 raise ConfigurationError("unknown feature label type: {}".format(label))
-        if coding_scheme not in ("BIO", "BIOUL"):
-            raise ConfigurationError("unknown coding_scheme: {}".format(coding_scheme))
+        if convert_to_coding_scheme not in (None, "BIOUL"):
+            raise ConfigurationError("unknown convert_to_coding_scheme: {}".format(convert_to_coding_scheme))
 
         self.tag_label = tag_label
         self.feature_labels = set(feature_labels)
-        self.coding_scheme = coding_scheme
+        self.convert_to_coding_scheme = convert_to_coding_scheme
         self.label_namespace = label_namespace
         self._original_coding_scheme = "BIO"
 
@@ -123,7 +143,7 @@ class Conll2000DatasetReader(DatasetReader):
         instance_fields["metadata"] = MetadataField({"words": [x.text for x in tokens]})
 
         # Recode the labels if necessary.
-        if self.coding_scheme == "BIOUL":
+        if self.convert_to_coding_scheme == "BIOUL":
             coded_chunks = (
                 to_bioul(chunk_tags, encoding=self._original_coding_scheme)
                 if chunk_tags is not None
