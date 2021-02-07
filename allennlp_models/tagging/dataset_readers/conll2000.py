@@ -101,7 +101,9 @@ class Conll2000DatasetReader(DatasetReader):
             if label not in self._VALID_LABELS:
                 raise ConfigurationError("unknown feature label type: {}".format(label))
         if convert_to_coding_scheme not in (None, "BIOUL"):
-            raise ConfigurationError("unknown convert_to_coding_scheme: {}".format(convert_to_coding_scheme))
+            raise ConfigurationError(
+                "unknown convert_to_coding_scheme: {}".format(convert_to_coding_scheme)
+            )
 
         self.tag_label = tag_label
         self.feature_labels = set(feature_labels)
