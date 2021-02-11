@@ -11,9 +11,9 @@ from allennlp.predictors.predictor import Predictor
 
 @Predictor.register("vilbert_vqa")
 class VilbertVqaPredictor(Predictor):
-    def predict(self, image: str, sentence: str) -> JsonDict:
+    def predict(self, image: str, question: str) -> JsonDict:
         image = cached_path(image)
-        return self.predict_json({"question": sentence, "image": image})
+        return self.predict_json({"question": question, "image": image})
 
     @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
