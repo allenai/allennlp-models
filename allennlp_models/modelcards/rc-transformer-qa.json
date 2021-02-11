@@ -63,8 +63,8 @@
         "ethical_considerations": null
     },
     "model_usage": {
-        "archive_file": "transformer-qa-2020-10-03.tar.gz",
+        "archive_file": "transformer-qa.2021-02-11.tar.gz",
         "training_config": "rc/transformer_qa.jsonnet",
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "install_instructions": "pip install allennlp==2.0.1 allennlp-models==2.0.1"
     }
 }
