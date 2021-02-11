@@ -62,8 +62,8 @@
         "caveats_and_recommendations": null
     },
     "model_usage": {
-        "archive_file": "vilbert-vqa-2020.10.01.tar.gz",
-        "training_config": "vision/vilbert_vqa_from_huggingface.jsonnet",
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "archive_file": "vilbert-vqa-pretrained.2021-02-11.tar.gz",
+        "training_config": "vision/vilbert_vqa_pretrained.jsonnet",
+        "install_instructions": "pip install allennlp==2.0.1 allennlp-models==2.0.1"
     }
 }
