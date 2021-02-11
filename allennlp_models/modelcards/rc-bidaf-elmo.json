@@ -63,8 +63,8 @@
         "ethical_considerations": null
     },
     "model_usage": {
-        "archive_file": "bidaf-elmo-model-2020.03.19.tar.gz",
+        "archive_file": "bidaf-elmo.2021-02-11.tar.gz",
         "training_config": "rc/bidaf_elmo.jsonnet",
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "install_instructions": "pip install allennlp==2.0.1 allennlp-models==2.0.1"
     }
 }
