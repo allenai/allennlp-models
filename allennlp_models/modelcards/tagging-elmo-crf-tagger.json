@@ -30,7 +30,7 @@
         "evaluation_factors": null
     },
     "metrics": {
-        "model_performance_measures": "Accuracy and Span-based F1 metric",
+        "model_performance_measures": "Accuracy and Span-based F1 metric. Achieves 99% accuracy and 96% F1 on the CoNLL-2003 validation set.",
         "decision_thresholds": null,
         "variation_approaches": null
     },
@@ -63,8 +63,8 @@
         "ethical_considerations": null
     },
     "model_usage": {
-        "archive_file": "ner-model-2020.02.10.tar.gz",
+        "archive_file": "ner-elmo.2021-02-12.tar.gz",
         "training_config": "tagging/ner_elmo.jsonnet",
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "install_instructions": "pip install allennlp==2.0.1 allennlp-models==2.0.1"
     }
 }
