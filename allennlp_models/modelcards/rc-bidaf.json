@@ -53,7 +53,7 @@
         "preprocessing": null
     },
     "quantitative_analyses": {
-        "unitary_results": "Start accuracy: 61%\nEnd accuracy: 66%\nOverall span accuracy: 52%\nExact match: 66%\nF1: 76%",
+        "unitary_results": "On the validation set:\nStart accuracy: 61%\nEnd accuracy: 66%\nOverall span accuracy: 52%\nExact match: 66%\nF1: 76%",
         "intersectional_results": null
     },
     "model_caveats_and_recommendations": {
