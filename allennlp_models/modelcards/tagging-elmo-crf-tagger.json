@@ -49,7 +49,7 @@
             "name": "CoNLL-2003 NER dataset",
             "url": "https://www.clips.uantwerpen.be/conll2003/ner/",
             "notes": "The NER model was trained on the CoNLL-2003 NER dataset. Unfortunately we cannot release this data due to licensing restrictions.",
-            "processed_url": "path/to/dataset"
+            "processed_url": "/path/to/dataset"
         },
         "motivation": null,
         "preprocessing": null
