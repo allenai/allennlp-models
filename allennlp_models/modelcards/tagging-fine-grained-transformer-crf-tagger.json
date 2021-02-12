@@ -49,7 +49,7 @@
         "preprocessing": null
     },
     "quantitative_analyses": {
-        "unitary_results": null,
+        "unitary_results": "On the validation set:\nAccuracy: 98%\nF1: 88%",
         "intersectional_results": null
     },
     "model_caveats_and_recommendations": {
