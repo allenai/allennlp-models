@@ -38,7 +38,8 @@
         "dataset": {
             "name": "Ontonotes 5.0",
             "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
-            "notes": "Unfortunately we cannot release this data due to licensing restrictions."
+            "notes": "Unfortunately we cannot release this data due to licensing restrictions.",
+            "processed_url": "/path/do/dataset"
         },
         "motivation": null,
         "preprocessing": null
@@ -47,13 +48,14 @@
         "dataset": {
             "name": "Ontonotes 5.0",
             "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
-            "notes": "Unfortunately we cannot release this data due to licensing restrictions."
+            "notes": "Unfortunately we cannot release this data due to licensing restrictions.",
+            "processed_url": "/path/do/dataset"
         },
         "motivation": null,
         "preprocessing": null
     },
     "quantitative_analyses": {
-        "unitary_results": null,
+        "unitary_results": "On the validation set:\nAccuracy: 97%\nF1: 88%",
         "intersectional_results": null
     },
     "model_caveats_and_recommendations": {
