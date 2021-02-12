@@ -59,7 +59,7 @@
         "intersectional_results": null
     },
     "model_caveats_and_recommendations": {
-        "caveats_and_recommendations": null
+        "caveats_and_recommendations": "This model is based on ELMo. ELMo is not deterministic, meaning that you will see slight differences every time you run it. Also, ELMo likes to be warmed up, so we recommend processing dummy input before processing real workloads with it."
     },
     "model_ethical_considerations": {
         "ethical_considerations": null
