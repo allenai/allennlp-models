@@ -30,15 +30,15 @@
         "evaluation_factors": null
     },
     "metrics": {
-        "model_performance_measures": "F1-score, Span Accuracy, Exact Match. Note that the metrics that the model produces are calculated on a per-instance basis only. Since there could be more than one instance per question, these metrics are not the official numbers on the SQuAD task. To get official numbers, run the evaluation script v2.0 at https://rajpurkar.github.io/SQuAD-explorer/",
+        "model_performance_measures": "F1-score, Span Accuracy, Exact Match",
         "decision_thresholds": null,
         "variation_approaches": null
     },
     "evaluation_data": {
         "dataset": {
             "name": "SQuAD dev set",
-            "url": "https://rajpurkar.github.io/SQuAD-explorer/explore/1.1/dev/",
-            "processed_url": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/squad/squad-dev-v1.1.json"
+            "url": "https://rajpurkar.github.io/SQuAD-explorer/explore/2.0/dev/",
+            "processed_url": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/squad/squad-dev-v2.0.json"
         },
         "motivation": null,
         "preprocessing": null
@@ -46,14 +46,14 @@
     "training_data": {
         "dataset": {
             "name": "SQuAD training set",
-            "url": "https://rajpurkar.github.io/SQuAD-explorer/explore/1.1/dev/",
-            "processed_url": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/squad/squad-train-v1.1.json"
+            "url": "https://rajpurkar.github.io/SQuAD-explorer/explore/2.0/dev/",
+            "processed_url": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/squad/squad-train-v2.0.json"
         },
         "motivation": "For the pretrained RoBERTa model, document-level corpora were used rather than a shuffled sentence-level corpus such as the Billion Word Benchmark (Chelba et al., 2013) in order to extract long contiguous sequences",
         "preprocessing": "For the pretrained RoBERTa model, only the text passages were extracted from English Wikipedia; lists, tables, and headers were ignored."
     },
     "quantitative_analyses": {
-        "unitary_results": null,
+        "unitary_results": "On the validation set:\nF1: 88%\nExact match: 84%\nThese are metrics using the official evaluation. Note that the metrics that the model produces while training are calculated on a per-instance basis only. Since there could be more than one instance per question, these metrics are not the official numbers on the SQuAD task. To get official numbers, run the evaluation script at allennlp_models/rc/tools/transformer_qa_eval.py.",
         "intersectional_results": null
     },
     "model_caveats_and_recommendations": {
