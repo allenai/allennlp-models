@@ -73,10 +73,17 @@ if __name__ == "__main__":
     metric = SquadEmAndF1()
     answers = {}
     for batch in make_batches(tqdm(instances, desc="Evaluating instances")):
+        gold_answers = {
+            instance["metadata"]["id"]: instance["metadata"]["answers"]
+            for instance in batch
+        }
         for result in predictor.predict_batch_instance(batch):
             assert result["id"] not in ids_seen
             ids_seen.add(result["id"])
-            metric(result["best_span_str"], result["answers"])
+            gold_answer = gold_answers[result["id"]]
+            if len(gold_answer) == 0:
+                gold_answer = [""]  # no-answer case
+            metric(result["best_span_str"], gold_answer)
             answers[result["id"]] = result["best_span_str"]
         if time.monotonic() - last_logged_scores_time > 30:
             exact_match, f1_score = metric.get_metric()
