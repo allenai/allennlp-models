@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+-  fixing the allennlp issue 4745.
+
 ### Changed
 
 - `coding_scheme` parameter is now deprecated in `Conll2000DatasetReader`, please use `convert_to_coding_scheme` instead.
