@@ -49,6 +49,11 @@ class SnliReader(DatasetReader):
         If False, represent the premise and the hypothesis as separate fields in the instance.
         If True, tokenize them together using `tokenizer.tokenize_sentence_pair()`
         and provide a single `tokens` field in the instance.
+    combine_input_fields : `bool`, optional
+            (default=`False`)
+        If True, collapse "neutral" and "contradiction" labels into "non-entailment";
+        and left "entailment" unchanged.
+        If False, read labels as they are in the files.
     """
 
     def __init__(
@@ -56,6 +61,7 @@ class SnliReader(DatasetReader):
         tokenizer: Optional[Tokenizer] = None,
         token_indexers: Dict[str, TokenIndexer] = None,
         combine_input_fields: Optional[bool] = None,
+        collapse_labels: Optional[bool] = False,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -69,7 +75,7 @@ class SnliReader(DatasetReader):
             self._combine_input_fields = combine_input_fields
         else:
             self._combine_input_fields = isinstance(self._tokenizer, PretrainedTransformerTokenizer)
-        self._collapse = False  # whether turn "neutral", "contradiction" into "non-entailment"
+        self.collapse_labels = collapse_labels  # whether turn "neutral", "contradiction" into "non-entailment"
 
     @overrides
     def _read(self, file_path: str):
@@ -114,7 +120,7 @@ class SnliReader(DatasetReader):
             fields["metadata"] = MetadataField(metadata)
 
         if label:
-            maybe_collapsed_label = maybe_collapse_label(label, self._collapse)
+            maybe_collapsed_label = maybe_collapse_label(label, self.collapse_labels)
             fields["label"] = LabelField(maybe_collapsed_label)
 
         return Instance(fields)
@@ -127,43 +133,3 @@ class SnliReader(DatasetReader):
             instance.fields["premise"]._token_indexers = self._token_indexers
             instance.fields["hypothesis"]._token_indexers = self._token_indexers
 
-
-@DatasetReader.register("collapsed_snli")
-class CollapsedSnliReader(SnliReader):
-    """
-    Reads a file from the Stanford Natural Language Inference (SNLI) dataset.  This data is
-    formatted as jsonl, one json-formatted instance per line.  The keys in the data are
-    "gold_label", "sentence1", and "sentence2".  We convert these keys into fields named "label",
-    "premise" and "hypothesis", along with a metadata field containing the tokenized strings of the
-    premise and hypothesis. Following the common practice in research, this dataset reader collapse
-    "neutral" and "contradiction" labels into "non-entailment".
-
-    Registered as a `DatasetReader` with name "collapsed_snli".
-
-    # Parameters
-
-    tokenizer : `Tokenizer`, optional (default=`SpacyTokenizer()`)
-        We use this `Tokenizer` for both the premise and the hypothesis.  See :class:`Tokenizer`.
-    token_indexers : `Dict[str, TokenIndexer]`, optional (default=`{"tokens": SingleIdTokenIndexer()}`)
-        We similarly use this for both the premise and the hypothesis.  See :class:`TokenIndexer`.
-    combine_input_fields : `bool`, optional
-            (default=`isinstance(tokenizer, PretrainedTransformerTokenizer)`)
-        If False, represent the premise and the hypothesis as separate fields in the instance.
-        If True, tokenize them together using `tokenizer.tokenize_sentence_pair()`
-        and provide a single `tokens` field in the instance.
-    """
-
-    def __init__(
-        self,
-        tokenizer: Optional[Tokenizer] = None,
-        token_indexers: Dict[str, TokenIndexer] = None,
-        combine_input_fields: Optional[bool] = None,
-        **kwargs,
-    ) -> None:
-        super().__init__(
-            tokenizer,
-            token_indexers,
-            combine_input_fields,
-            **kwargs,
-        )
-        self._collapse = True

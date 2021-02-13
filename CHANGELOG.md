@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Changed
--  Add options in SnliDatasetReader to support only having "non-entailment" and "entailment" as output labels.
+-  Add option in SnliDatasetReader to support only having "non-entailment" and "entailment" as output labels.
 
 ### Fixed
 -  fixing the allennlp issue 4745.
