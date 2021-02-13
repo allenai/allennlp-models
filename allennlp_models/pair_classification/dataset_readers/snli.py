@@ -75,7 +75,9 @@ class SnliReader(DatasetReader):
             self._combine_input_fields = combine_input_fields
         else:
             self._combine_input_fields = isinstance(self._tokenizer, PretrainedTransformerTokenizer)
-        self.collapse_labels = collapse_labels  # whether turn "neutral", "contradiction" into "non-entailment"
+        self.collapse_labels = (
+            collapse_labels  # whether turn "neutral", "contradiction" into "non-entailment"
+        )
 
     @overrides
     def _read(self, file_path: str):
@@ -132,4 +134,3 @@ class SnliReader(DatasetReader):
         else:
             instance.fields["premise"]._token_indexers = self._token_indexers
             instance.fields["hypothesis"]._token_indexers = self._token_indexers
-
