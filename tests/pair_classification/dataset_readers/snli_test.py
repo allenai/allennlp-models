@@ -3,7 +3,7 @@ import pytest
 from allennlp.data.tokenizers import PretrainedTransformerTokenizer
 from allennlp.common.util import ensure_list
 
-from allennlp_models.pair_classification import SnliReader
+from allennlp_models.pair_classification import SnliReader, CollapsedSnliReader
 from tests import FIXTURES_ROOT
 
 
@@ -149,3 +149,18 @@ class TestSnliReader:
         fields = instances[0].fields
         assert [t.text for t in fields["tokens"].tokens] == instance1["tokens"]
         assert fields["label"].label == instance1["label"]
+
+    def test_collapse_output_field(self):
+        reader = CollapsedSnliReader()
+        instances = reader.read(FIXTURES_ROOT / "pair_classification" / "snli.jsonl")
+        instances = ensure_list(instances)
+
+        assert len(instances) == 3
+        fields = instances[0].fields
+        assert fields["label"].label == "non-entailment"
+
+        fields = instances[1].fields
+        assert fields["label"].label == "non-entailment"
+
+        fields = instances[2].fields
+        assert fields["label"].label == "entailment"
