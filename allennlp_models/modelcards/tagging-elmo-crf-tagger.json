@@ -30,7 +30,7 @@
         "evaluation_factors": null
     },
     "metrics": {
-        "model_performance_measures": "Accuracy and Span-based F1 metric. Achieves 99% accuracy and 96% F1 on the CoNLL-2003 validation set.",
+        "model_performance_measures": "Accuracy and Span-based F1 metric",
         "decision_thresholds": null,
         "variation_approaches": null
     },
