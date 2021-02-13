@@ -14,7 +14,7 @@ from allennlp_models.rc.metrics import SquadEmAndF1
 logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
-    import allennlp_models.rc.transformer_qa  # noqa F401: Needed to register the registrables.
+    import allennlp_models.rc  # noqa F401: Needed to register the registrables.
     import argparse
 
     logging.basicConfig(level=logging.INFO)
@@ -35,7 +35,6 @@ if __name__ == "__main__":
         args.qa_model, predictor_name="transformer_qa", cuda_device=args.cuda_device
     )
     instances = predictor._dataset_reader.read(args.input_file)
-    logger.info("Running on %d instances", len(instances))
 
     # We have to make sure we put instances with the same qid all into the same batch.
     def batch_instances_by_qid(instances: Iterable[Instance]) -> Iterable[List[Instance]]:
