@@ -55,7 +55,7 @@
         "preprocessing": null
     },
     "quantitative_analyses": {
-        "unitary_results": null,
+        "unitary_results": "Achieves 99% accuracy and 96% F1 on the CoNLL-2003 validation set.",
         "intersectional_results": null
     },
     "model_caveats_and_recommendations": {
