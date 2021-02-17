@@ -18,10 +18,11 @@ class VilbertVqaPredictor(Predictor):
     @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         from allennlp_models.vision.dataset_readers.vqav2 import VQAv2Reader
+        from allennlp_models.vision import GQAReader
 
         question = json_dict["question"]
         image = cached_path(json_dict["image"])
-        if isinstance(self._dataset_reader, VQAv2Reader):
+        if isinstance(self._dataset_reader, VQAv2Reader) or isinstance(self._dataset_reader, GQAReader):
             return self._dataset_reader.text_to_instance(question, image, use_cache=False)
         else:
             raise ValueError(
