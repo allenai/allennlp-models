@@ -76,3 +76,16 @@ class VqaHead(Head):
         result = self.f1_metric.get_metric(reset)
         result["vqa"] = self.vqa_metric.get_metric(reset)["score"]
         return result
+
+    def make_output_human_readable(
+        self, output_dict: Dict[str, torch.Tensor]
+    ) -> Dict[str, torch.Tensor]:
+        if len(output_dict) <= 0:
+            return output_dict
+        logits = output_dict['logits']
+        best_answer_index = logits.argmax(-1)
+        best_answer = [self.vocab.get_token_from_index(int(i), "answers") for i in best_answer_index]
+        output_dict["best_answer"] = best_answer
+        return output_dict
+
+    default_predictor = "vilbert_vqa"
