@@ -364,10 +364,16 @@ class Bart(Model):
 
         """
         predictions = output_dict["predictions"]
-        predicted_text = []
-        for pred in self._indexer._tokenizer.batch_decode(predictions.tolist(), skip_special_tokens=True):
-            predicted_text.append(pred)
-        output_dict["predicted_text"] = predicted_text  # type: ignore
+        predicted_tokens = [None] * predictions.shape[0]
+        for i in range(predictions.shape[0]):
+            predicted_tokens[i] = self._indexer.indices_to_tokens(
+                {"token_ids": predictions[i].tolist()},
+                self.vocab,
+            )
+        output_dict["predicted_tokens"] = predicted_tokens  # type: ignore
+        output_dict["predicted_text"] = self._indexer._tokenizer.batch_decode(
+            predictions.tolist(), skip_special_tokens=True
+        )
 
         return output_dict
 
