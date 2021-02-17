@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- BART model now adds a `predicted_text` field in `make_output_human_readable` that has the cleaned text corresponding to `predicted_tokens`.
+
 ### Fixed
 
 - Fixed `OpenIePredictor.predict_json` so it treats auxiliary verbs as verbs
