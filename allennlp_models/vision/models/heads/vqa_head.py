@@ -82,9 +82,11 @@ class VqaHead(Head):
     ) -> Dict[str, torch.Tensor]:
         if len(output_dict) <= 0:
             return output_dict
-        logits = output_dict['logits']
+        logits = output_dict["logits"]
         best_answer_index = logits.argmax(-1)
-        best_answer = [self.vocab.get_token_from_index(int(i), "answers") for i in best_answer_index]
+        best_answer = [
+            self.vocab.get_token_from_index(int(i), "answers") for i in best_answer_index
+        ]
         output_dict["best_answer"] = best_answer
         return output_dict
 

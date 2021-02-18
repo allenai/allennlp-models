@@ -59,9 +59,11 @@ class VisualEntailmentHead(Head):
     ) -> Dict[str, torch.Tensor]:
         if len(output_dict) <= 0:
             return output_dict
-        logits = output_dict['logits']
+        logits = output_dict["logits"]
         entailment_answer_index = logits.argmax(-1)
-        entailment_answer = [self.vocab.get_token_from_index(int(i), "labels") for i in entailment_answer_index]
+        entailment_answer = [
+            self.vocab.get_token_from_index(int(i), "labels") for i in entailment_answer_index
+        ]
         output_dict["entailment_answer"] = entailment_answer
         return output_dict
 
