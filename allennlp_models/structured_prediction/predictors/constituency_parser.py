@@ -9,7 +9,7 @@ from allennlp.models import Model
 from allennlp.predictors.predictor import Predictor
 from allennlp.data.tokenizers.spacy_tokenizer import SpacyTokenizer
 
-from .utils import TAG_MAP
+from .util import TAG_MAP
 
 
 # Make the links to POS tag nodes render as "pos",
