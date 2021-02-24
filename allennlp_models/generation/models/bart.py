@@ -371,6 +371,9 @@ class Bart(Model):
                 self.vocab,
             )
         output_dict["predicted_tokens"] = predicted_tokens  # type: ignore
+        output_dict["predicted_text"] = self._indexer._tokenizer.batch_decode(
+            predictions.tolist(), skip_special_tokens=True
+        )
 
         return output_dict
 

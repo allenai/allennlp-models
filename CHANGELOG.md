@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `coding_scheme` parameter is now deprecated in `Conll2000DatasetReader`, please use `convert_to_coding_scheme` instead.
 
+### Added
+
+- BART model now adds a `predicted_text` field in `make_output_human_readable` that has the cleaned text corresponding to `predicted_tokens`.
+
+### Fixed
+
+- Made `label` parameter in `TransformerMCReader.text_to_instance` optional with default of `None`.
 
 ## [v2.0.1](https://github.com/allenai/allennlp-models/releases/tag/v2.0.1) - 2021-02-01
 

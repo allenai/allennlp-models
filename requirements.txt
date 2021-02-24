@@ -3,7 +3,7 @@ git+https://github.com/allenai/allennlp.git@main
 torch>=1.7.0,<1.8.0
 
 # For structured prediction.
-conllu==4.3
+conllu==4.4
 
 # For RC models
 word2number>=1.1
