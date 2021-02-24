@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Made `label` parameter in `TransformerMCReader.text_to_instance` optional with default of `None`.
 - Fixed `OpenIePredictor.predict_json` so it treats auxiliary verbs as verbs
   when the language is English.
 
