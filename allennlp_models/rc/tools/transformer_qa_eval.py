@@ -74,8 +74,7 @@ if __name__ == "__main__":
     answers = {}
     for batch in make_batches(tqdm(instances, desc="Evaluating instances")):
         gold_answers = {
-            instance["metadata"]["id"]: instance["metadata"]["answers"]
-            for instance in batch
+            instance["metadata"]["id"]: instance["metadata"]["answers"] for instance in batch
         }
         for result in predictor.predict_batch_instance(batch):
             assert result["id"] not in ids_seen

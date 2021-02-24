@@ -464,9 +464,9 @@ class TestAllenNlpPretrainedModels(AllenNlpTestCase):
 
         result = predictor.predict(
             question="What game are they playing?",
-            image="https://storage.googleapis.com/allennlp-public-data/vqav2/baseball.jpg"
+            image="https://storage.googleapis.com/allennlp-public-data/vqav2/baseball.jpg",
         )
-        max_answer = max((prob, answer) for answer, prob in result['tokens'].items())[1]
+        max_answer = max((prob, answer) for answer, prob in result["tokens"].items())[1]
         assert max_answer == "baseball"
 
     @pytest.mark.parametrize("model_id, model_card", get_pretrained_models().items())
