@@ -44,7 +44,7 @@ class TransformerMCReader(DatasetReader):
         qid: str,
         start: str,
         alternatives: List[str],
-        label: Optional[int],
+        label: Optional[int] = None,
     ) -> Instance:
         # tokenize
         start = self._tokenizer.tokenize(start)
