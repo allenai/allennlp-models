@@ -61,6 +61,6 @@
     "model_usage": {
         "archive_file": "fgner-transformer.2021-02-11.tar.gz",
         "training_config": "tagging/fgner_transformer.jsonnet",
-        "install_instructions": "pip install allennlp==2.0.1 allennlp-models==2.0.1"
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }
