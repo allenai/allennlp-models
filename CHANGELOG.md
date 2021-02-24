@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Made `label` parameter in `TransformerMCReader.text_to_instance` optional with default of `None`.
+- Updated many of the models for version 2.1.0. Fixed and re-trained many of the models.
+
 
 ## [v2.0.1](https://github.com/allenai/allennlp-models/releases/tag/v2.0.1) - 2021-02-01
 

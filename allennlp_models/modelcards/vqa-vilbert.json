@@ -38,7 +38,8 @@
         "dataset": {
             "name": "VQA dataset",
             "url": "https://visualqa.org/",
-            "notes": "Evaluation requires a large amount of images to be accessible locally, so we cannot provide a command you can easily copy and paste."
+            "notes": "Evaluation requires a large amount of images to be accessible locally, so we cannot provide a command you can easily copy and paste. The first time you run it, you will get an error message that tells you how to get the rest of the data.",
+            "processed_url": "balanced_real_val"
         },
         "motivation": null,
         "preprocessing": null
@@ -46,13 +47,15 @@
     "training_data": {
         "dataset": {
             "name": "VQA dataset",
-            "url": "https://visualqa.org/"
+            "url": "https://visualqa.org/",
+            "notes": "Training requires a large amount of images to be accessible locally, so we cannot provide a command you can easily copy and paste. The first time you run it, you will get an error message that tells you how to get the rest of the data.",
+            "processed_url": "balanced_real_train"
         },
         "motivation": null,
         "preprocessing": null
     },
     "quantitative_analyses": {
-        "unitary_results": null,
+        "unitary_results": "On the validation set:\nF1: 41%\nVQA: 52%.\nThese scores do not match the performance in the VilBERT paper. Please contact us if you want to match those scores!",
         "intersectional_results": null
     },
     "model_ethical_considerations": {
@@ -62,8 +65,8 @@
         "caveats_and_recommendations": null
     },
     "model_usage": {
-        "archive_file": "vilbert-vqa-2020.10.01.tar.gz",
-        "training_config": "vision/vilbert_vqa_from_huggingface.jsonnet",
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "archive_file": "vilbert-vqa-pretrained.2021-02-11.tar.gz",
+        "training_config": "vision/vilbert_vqa_pretrained.jsonnet",
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }
