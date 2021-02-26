@@ -1,0 +1,4 @@
+{"task": "vqa", "image": "https://i.imgur.com/UOt9Q4J.jpeg", "question": "What's the color of the pyramid in the foreground?"}
+{"task": "vqa", "image": "https://i.imgur.com/9JNTNQd.jpeg", "question": "How many human skulls are there?"}
+{"task": "gqa", "image": "https://i.imgur.com/FB4749j.jpeg", "question": "What color are the statues?"}
+{"task": "ve", "image": "https://i.imgur.com/FB4749j.jpeg", "hypothesis": "The statues are hugging each other."}

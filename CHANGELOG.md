@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Fixed
+
+- Predictors now work for the vilbert-multitask model
+
+
 ## [v2.1.0](https://github.com/allenai/allennlp-models/releases/tag/v2.1.0) - 2021-02-24
 
 ### Changed
@@ -16,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - BART model now adds a `predicted_text` field in `make_output_human_readable` that has the cleaned text corresponding to `predicted_tokens`.
 
 ### Fixed
-
+ 
 - Made `label` parameter in `TransformerMCReader.text_to_instance` optional with default of `None`.
 - Updated many of the models for version 2.1.0. Fixed and re-trained many of the models.
 
