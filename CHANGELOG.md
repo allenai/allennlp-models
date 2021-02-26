@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated `QaNet` and `NumericallyAugmentedQaNet` models to remove bias for layers that are followed by normalization layers.
 - Updated the model card for `rc-naqanet`.
+- Predictors now work for the vilbert-multitask model
+
 
 ## [v2.1.0](https://github.com/allenai/allennlp-models/releases/tag/v2.1.0) - 2021-02-24
 
@@ -23,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - BART model now adds a `predicted_text` field in `make_output_human_readable` that has the cleaned text corresponding to `predicted_tokens`.
 
 ### Fixed
-
+ 
 - Made `label` parameter in `TransformerMCReader.text_to_instance` optional with default of `None`.
 - Updated many of the models for version 2.1.0. Fixed and re-trained many of the models.
 
