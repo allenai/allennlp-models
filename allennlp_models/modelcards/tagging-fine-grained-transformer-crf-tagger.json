@@ -34,7 +34,7 @@
         "dataset": {
             "name": "Ontonotes 5.0",
             "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
-            "notes": "We cannot release this data due to licensing restrictions."
+            "notes": "Unfortunately we cannot release this data due to licensing restrictions."
         },
         "motivation": null,
         "preprocessing": null
@@ -43,13 +43,13 @@
         "dataset": {
             "name": "Ontonotes 5.0",
             "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
-            "notes": "We cannot release this data due to licensing restrictions."
+            "notes": "Unfortunately we cannot release this data due to licensing restrictions."
         },
         "motivation": null,
         "preprocessing": null
     },
     "quantitative_analyses": {
-        "unitary_results": null,
+        "unitary_results": "On the validation set:\nAccuracy: 98%\nF1: 88%",
         "intersectional_results": null
     },
     "model_caveats_and_recommendations": {
@@ -59,8 +59,8 @@
         "ethical_considerations": null
     },
     "model_usage": {
-        "archive_file": "fgner_transformer.2020-07-14.tar.gz",
+        "archive_file": "fgner-transformer.2021-02-11.tar.gz",
         "training_config": "tagging/fgner_transformer.jsonnet",
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }
