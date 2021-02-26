@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 @Model.register("copynet_seq2seq")
 class CopyNetSeq2Seq(Model):
     """
-    This is an implementation of [CopyNet](https://arxiv.org/pdf/1603.06393).
+    This is an implementation of [CopyNet](https://api.semanticscholar.org/CorpusID:8174613).
     CopyNet is a sequence-to-sequence encoder-decoder model with a copying mechanism
     that can copy tokens from the source sentence into the target sentence instead of
     generating all target tokens only from the target vocabulary.
@@ -795,9 +795,9 @@ class CopyNetSeq2Seq(Model):
         step : `int`
             The time step in beam search decoding.
 
-        Notes
-        -----
-        `group_size` != `batch_size`. In fact, `group_size` = `batch_size * beam_size`.
+        # Notes
+
+        `group_size != batch_size`. In fact, `group_size = batch_size * beam_size`.
         """
         _, source_sequence_length = state["source_to_target"].size()
 
