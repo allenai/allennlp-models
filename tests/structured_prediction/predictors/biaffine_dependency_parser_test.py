@@ -1,6 +1,7 @@
 from allennlp.common.testing import AllenNlpTestCase
 from allennlp.models.archival import load_archive
 from allennlp.predictors import Predictor
+import spacy
 
 from allennlp_models.structured_prediction import BiaffineDependencyParserPredictor
 from tests import FIXTURES_ROOT
@@ -50,7 +51,7 @@ class TestBiaffineDependencyParser(AllenNlpTestCase):
                     {
                         "word": "could",
                         "nodeType": "nummod",
-                        "attributes": ["VERB"],
+                        "attributes": ["VERB" if spacy.__version__ < "3.0" else "AUX"],
                         "link": "nummod",
                         "spans": [{"start": 7, "end": 13}],
                     },
@@ -136,10 +137,16 @@ class TestBiaffineDependencyParser(AllenNlpTestCase):
         inputs = {"sentence": "Dogs eat cats."}
         instance_with_ud_pos = predictor._json_to_instance(inputs)
         tags = instance_with_ud_pos.fields["pos_tags"].labels
-        assert tags == ["NOUN", "VERB", "NOUN", "PUNCT"]
+        if spacy.__version__ < "3.0":
+            assert tags == ["NOUN", "VERB", "NOUN", "PUNCT"]
+        else:
+            assert tags == ["PROPN", "VERB", "NOUN", "PUNCT"]
 
         predictor._dataset_reader.use_language_specific_pos = True
 
         instance_with_ptb_pos = predictor._json_to_instance(inputs)
         tags = instance_with_ptb_pos.fields["pos_tags"].labels
-        assert tags == ["NNS", "VBP", "NNS", "."]
+        if spacy.__version__ < "3.0":
+            assert tags == ["NNS", "VBP", "NNS", "."]
+        else:
+            assert tags == ["NNP", "VBP", "NNS", "."]

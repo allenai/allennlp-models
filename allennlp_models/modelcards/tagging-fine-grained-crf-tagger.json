@@ -38,7 +38,8 @@
         "dataset": {
             "name": "Ontonotes 5.0",
             "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
-            "notes": "We cannot release this data due to licensing restrictions."
+            "notes": "Unfortunately we cannot release this data due to licensing restrictions.",
+            "processed_url": "/path/do/dataset"
         },
         "motivation": null,
         "preprocessing": null
@@ -47,13 +48,14 @@
         "dataset": {
             "name": "Ontonotes 5.0",
             "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
-            "notes": "We cannot release this data due to licensing restrictions."
+            "notes": "Unfortunately we cannot release this data due to licensing restrictions.",
+            "processed_url": "/path/do/dataset"
         },
         "motivation": null,
         "preprocessing": null
     },
     "quantitative_analyses": {
-        "unitary_results": null,
+        "unitary_results": "On the validation set:\nAccuracy: 97%\nF1: 88%",
         "intersectional_results": null
     },
     "model_caveats_and_recommendations": {
@@ -63,8 +65,8 @@
         "ethical_considerations": null
     },
     "model_usage": {
-        "archive_file": "fine-grained-ner.2020-06-24.tar.gz",
+        "archive_file": "fine-grained-ner.2021-02-11.tar.gz",
         "training_config": "tagging/fine-grained-ner.jsonnet",
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }

@@ -53,18 +53,18 @@
         "preprocessing": null
     },
     "quantitative_analyses": {
-        "unitary_results": null,
+        "unitary_results": "On the validation set:\nStart accuracy: 66%\nEnd accuracy: 69%\nOverall span accuracy: 57%\nExact match: 71%\nF1: 80%",
         "intersectional_results": null
     },
     "model_caveats_and_recommendations": {
-        "caveats_and_recommendations": null
+        "caveats_and_recommendations": "This model is based on ELMo. ELMo is not deterministic, meaning that you will see slight differences every time you run it. Also, ELMo likes to be warmed up, so we recommend processing dummy input before processing real workloads with it."
     },
     "model_ethical_considerations": {
         "ethical_considerations": null
     },
     "model_usage": {
-        "archive_file": "bidaf-elmo-model-2020.03.19.tar.gz",
+        "archive_file": "bidaf-elmo.2021-02-11.tar.gz",
         "training_config": "rc/bidaf_elmo.jsonnet",
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }
