@@ -38,7 +38,7 @@
         "dataset": {
             "name": "DROP",
             "url": "https://allennlp.org/drop",
-            "notes": "Please download the data from the url provided."
+            "processed_url": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/drop/drop_dataset.zip!drop_dataset/drop_dataset_dev.json"
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +47,7 @@
         "dataset": {
             "name": "DROP",
             "url": "https://allennlp.org/drop",
-            "notes": "Please download the data from the url provided."
+            "processed_url": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/drop/drop_dataset.zip!drop_dataset/drop_dataset_train.json"
         },
         "motivation": null,
         "preprocessing": null

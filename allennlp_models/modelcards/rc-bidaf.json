@@ -30,7 +30,7 @@
         "evaluation_factors": null
     },
     "metrics": {
-        "model_performance_measures": "Start, end and overall span accuracy, Exact Match, F1 score",
+        "model_performance_measures": "Start, end, and overall span accuracy, Exact Match, F1 score",
         "decision_thresholds": null,
         "variation_approaches": null
     },
@@ -53,7 +53,7 @@
         "preprocessing": null
     },
     "quantitative_analyses": {
-        "unitary_results": null,
+        "unitary_results": "On the validation set:\nStart accuracy: 61%\nEnd accuracy: 66%\nOverall span accuracy: 52%\nExact match: 66%\nF1: 76%",
         "intersectional_results": null
     },
     "model_caveats_and_recommendations": {
@@ -65,6 +65,6 @@
     "model_usage": {
         "archive_file": "bidaf-model-2020.03.19.tar.gz",
         "training_config": "rc/bidaf.jsonnet",
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }

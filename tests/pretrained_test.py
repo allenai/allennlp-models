@@ -459,6 +459,16 @@ class TestAllenNlpPretrainedModels(AllenNlpTestCase):
         result = predictor.predict(question, passage)
         assert result["best_span_str"] == ""
 
+    def test_vilbert_vqa(self):
+        predictor = load_predictor("vqa-vilbert")
+
+        result = predictor.predict(
+            question="What game are they playing?",
+            image="https://storage.googleapis.com/allennlp-public-data/vqav2/baseball.jpg",
+        )
+        max_answer = max((prob, answer) for answer, prob in result["tokens"].items())[1]
+        assert max_answer == "baseball"
+
     @pytest.mark.parametrize("model_id, model_card", get_pretrained_models().items())
     def test_pretrained_models(self, model_id, model_card):
         assert model_card.model_usage.archive_file is not None

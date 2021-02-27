@@ -64,7 +64,7 @@
     },
     "model_usage": {
         "archive_file": "snli-roberta-2020-07-29.tar.gz",
-        "training_config": "snli_roberta.jsonnet",
+        "training_config": "pair_classification/snli_roberta.jsonnet",
         "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
     }
 }
