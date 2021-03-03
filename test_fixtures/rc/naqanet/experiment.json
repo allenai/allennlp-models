@@ -112,10 +112,10 @@
         ]
     },
     "data_loader": {
-        "batch_size": 16
+        "batch_size": 32
     },
     "trainer": {
-        "num_epochs": 1,
+        "num_epochs": 2,
         "grad_norm": 5,
         "patience": 10,
         "validation_metric": "+f1",

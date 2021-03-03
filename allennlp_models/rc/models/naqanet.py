@@ -72,12 +72,14 @@ class NumericallyAugmentedQaNet(Model):
         self._embedding_proj_layer = torch.nn.Linear(text_embed_dim, encoding_in_dim)
         self._highway_layer = Highway(encoding_in_dim, num_highway_layers)
 
-        self._encoding_proj_layer = torch.nn.Linear(encoding_in_dim, encoding_in_dim)
+        self._encoding_proj_layer = torch.nn.Linear(encoding_in_dim, encoding_in_dim, bias=False)
         self._phrase_layer = phrase_layer
 
         self._matrix_attention = matrix_attention_layer
 
-        self._modeling_proj_layer = torch.nn.Linear(encoding_out_dim * 4, modeling_in_dim)
+        self._modeling_proj_layer = torch.nn.Linear(
+            encoding_out_dim * 4, modeling_in_dim, bias=False
+        )
         self._modeling_layer = modeling_layer
 
         self._passage_weights_predictor = torch.nn.Linear(modeling_out_dim, 1)
