@@ -51,8 +51,8 @@ class SnliReader(DatasetReader):
         and provide a single `tokens` field in the instance.
     combine_input_fields : `bool`, optional
             (default=`False`)
-        If True, collapse "neutral" and "contradiction" labels into "non-entailment";
-        and left "entailment" unchanged.
+        If `True`, the "neutral" and "contradiction" labels will be collapsed into "non-entailment";
+        "entailment" will be left unchanged.
     """
 
     def __init__(
