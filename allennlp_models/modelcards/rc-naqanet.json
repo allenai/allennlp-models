@@ -10,7 +10,7 @@
         "developed_by": "Dua et al",
         "contributed_by": null,
         "date": "2020-02-19",
-        "version": "1",
+        "version": "2",
         "model_type": "QANet",
         "paper": {
             "citation": "\n@inproceedings{Dua2019DROPAR,\ntitle={DROP: A Reading Comprehension Benchmark Requiring Discrete Reasoning Over Paragraphs},\nauthor={Dheeru Dua and Yizhong Wang and Pradeep Dasigi and Gabriel Stanovsky and Sameer Singh and Matt Gardner},\nbooktitle={NAACL-HLT},\nyear={2019}}\n",
@@ -53,7 +53,7 @@
         "preprocessing": null
     },
     "quantitative_analyses": {
-        "unitary_results": null,
+        "unitary_results": "Validation F1-score: 0.509, Exact Match: 0.473",
         "intersectional_results": null
     },
     "model_caveats_and_recommendations": {
@@ -63,8 +63,8 @@
         "ethical_considerations": null
     },
     "model_usage": {
-        "archive_file": "naqanet-2020.02.19.tar.gz",
+        "archive_file": "naqanet-2021.02.26.tar.gz",
         "training_config": "rc/naqanet.jsonnet",
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }

@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed https://github.com/allenai/allennlp/issues/4745.
+- Updated `QaNet` and `NumericallyAugmentedQaNet` models to remove bias for layers that are followed by normalization layers.
+- Updated the model card for `rc-naqanet`.
 - Predictors now work for the vilbert-multitask model
 
 
