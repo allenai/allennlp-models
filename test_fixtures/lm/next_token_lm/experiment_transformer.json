@@ -47,6 +47,7 @@
     "optimizer": {
       "type": "sgd",
       "lr": 0.01
-    }
+    },
+    "run_sanity_check": false
   }
 }

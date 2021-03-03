@@ -8,6 +8,8 @@ from allennlp.data import DatasetReader, Vocabulary
 from allennlp.data import Batch
 from allennlp.models import Model
 
+from allennlp_models import rc  # noqa: F401
+
 from tests import FIXTURES_ROOT
 
 
