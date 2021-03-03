@@ -17,9 +17,7 @@ logger = logging.getLogger(__name__)
 def maybe_collapse_label(label: str, collapse: bool):
     """
     Helper function that optionally collapses the "contradiction" and "neutral" labels
-    into "non-entailment" and return
-    :param label: one of the NLI task target labels --- "entailment", "contradiction" and "neutral"
-    :param collapse: flag to determine whether to collapse
+    into "non-entailment".
     """
     assert label in ["contradiction", "neutral", "entailment"]
     if collapse and label in ["contradiction", "neutral"]:
