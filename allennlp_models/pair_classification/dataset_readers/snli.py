@@ -53,7 +53,6 @@ class SnliReader(DatasetReader):
             (default=`False`)
         If True, collapse "neutral" and "contradiction" labels into "non-entailment";
         and left "entailment" unchanged.
-        If False, read labels as they are in the files.
     """
 
     def __init__(
