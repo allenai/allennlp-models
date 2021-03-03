@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Fixed
--  fixing the allennlp issue 4745.
+
+- Fixed https://github.com/allenai/allennlp/issues/4745.
 - Predictors now work for the vilbert-multitask model
 
 
