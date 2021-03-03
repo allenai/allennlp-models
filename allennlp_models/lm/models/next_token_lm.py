@@ -117,13 +117,7 @@ class NextTokenLM(Model):
         # Compute loss.
         if target_ids is not None:
             batch_size, vocab_size = target_logits.size()
-            tmp = util.get_token_ids_from_text_field_tensors(target_ids)
-            # In some scenarios, target_ids might be a topk list of token ids (e.g. sorted by probabilities).
-            # Therefore, we need to make sure only one token per batch
-            # Assume: first token in each batch is the most desirable one (e.g. highest probability)
-            tmp = tmp[:, 0] if len(tmp.shape) == 2 else tmp
-            assert len(tmp.shape) <= 2
-            targets = tmp.view(batch_size)
+            targets = util.get_token_ids_from_text_field_tensors(target_ids).view(batch_size)
             loss = torch.nn.functional.cross_entropy(target_logits, targets)
             self._perplexity(loss)
             output_dict["loss"] = loss
