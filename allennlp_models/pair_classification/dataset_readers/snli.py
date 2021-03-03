@@ -75,9 +75,7 @@ class SnliReader(DatasetReader):
             self._combine_input_fields = combine_input_fields
         else:
             self._combine_input_fields = isinstance(self._tokenizer, PretrainedTransformerTokenizer)
-        self.collapse_labels = (
-            collapse_labels  # whether turn "neutral", "contradiction" into "non-entailment"
-        )
+        self.collapse_labels = collapse_labels
 
     @overrides
     def _read(self, file_path: str):
