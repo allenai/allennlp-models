@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+-  Add option `combine_input_fields` in `SnliDatasetReader` to support only having "non-entailment" and "entailment" as output labels.
+
 ### Fixed
 
 - Updated `QaNet` and `NumericallyAugmentedQaNet` models to remove bias for layers that are followed by normalization layers.
