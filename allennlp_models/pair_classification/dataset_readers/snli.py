@@ -14,6 +14,17 @@ from allennlp.data.tokenizers import Tokenizer, SpacyTokenizer, PretrainedTransf
 logger = logging.getLogger(__name__)
 
 
+def maybe_collapse_label(label: str, collapse: bool):
+    """
+    Helper function that optionally collapses the "contradiction" and "neutral" labels
+    into "non-entailment".
+    """
+    assert label in ["contradiction", "neutral", "entailment"]
+    if collapse and label in ["contradiction", "neutral"]:
+        return "non-entailment"
+    return label
+
+
 @DatasetReader.register("snli")
 class SnliReader(DatasetReader):
     """
@@ -36,6 +47,9 @@ class SnliReader(DatasetReader):
         If False, represent the premise and the hypothesis as separate fields in the instance.
         If True, tokenize them together using `tokenizer.tokenize_sentence_pair()`
         and provide a single `tokens` field in the instance.
+    combine_input_fields : `bool`, optional (default=`False`)
+        If `True`, the "neutral" and "contradiction" labels will be collapsed into "non-entailment";
+        "entailment" will be left unchanged.
     """
 
     def __init__(
@@ -43,6 +57,7 @@ class SnliReader(DatasetReader):
         tokenizer: Optional[Tokenizer] = None,
         token_indexers: Dict[str, TokenIndexer] = None,
         combine_input_fields: Optional[bool] = None,
+        collapse_labels: Optional[bool] = False,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -56,6 +71,7 @@ class SnliReader(DatasetReader):
             self._combine_input_fields = combine_input_fields
         else:
             self._combine_input_fields = isinstance(self._tokenizer, PretrainedTransformerTokenizer)
+        self.collapse_labels = collapse_labels
 
     @overrides
     def _read(self, file_path: str):
@@ -100,7 +116,8 @@ class SnliReader(DatasetReader):
             fields["metadata"] = MetadataField(metadata)
 
         if label:
-            fields["label"] = LabelField(label)
+            maybe_collapsed_label = maybe_collapse_label(label, self.collapse_labels)
+            fields["label"] = LabelField(maybe_collapsed_label)
 
         return Instance(fields)
 

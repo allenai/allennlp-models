@@ -149,3 +149,18 @@ class TestSnliReader:
         fields = instances[0].fields
         assert [t.text for t in fields["tokens"].tokens] == instance1["tokens"]
         assert fields["label"].label == instance1["label"]
+
+    def test_collapse_output_field(self):
+        reader = SnliReader(collapse_labels=True)
+        instances = reader.read(FIXTURES_ROOT / "pair_classification" / "snli.jsonl")
+        instances = ensure_list(instances)
+
+        assert len(instances) == 3
+        fields = instances[0].fields
+        assert fields["label"].label == "non-entailment"
+
+        fields = instances[1].fields
+        assert fields["label"].label == "non-entailment"
+
+        fields = instances[2].fields
+        assert fields["label"].label == "entailment"
