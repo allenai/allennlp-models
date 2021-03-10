@@ -65,7 +65,7 @@
         "ethical_considerations": null
     },
     "model_usage": {
-        "archive_file": "coref-spanbert-large-2020.02.27.tar.gz",
+        "archive_file": "coref-spanbert-large-2021.03.10.tar.gz",
         "training_config": "coref/coref_spanbert_large.jsonnet",
         "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
