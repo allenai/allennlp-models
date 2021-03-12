@@ -111,9 +111,10 @@ class StanfordSentimentTreeBankDatasetReader(DatasetReader):
             label : `LabelField`
                 The sentiment label of the sentence or phrase.
         """
-        assert isinstance(
-            tokens, list
-        )  # If tokens is a str, nothing breaks but the results are garbage, so we check.
+        if isinstance(tokens, str):
+            assert self._tokenizer is not None
+            tokens = [tokens]
+
         if self._tokenizer is None:
 
             def make_token(t: Union[str, Token]):
