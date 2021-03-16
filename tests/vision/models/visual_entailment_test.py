@@ -4,6 +4,8 @@ from allennlp.common.testing import ModelTestCase
 from allennlp.data import Vocabulary
 from allennlp.common.testing import assert_equal_parameters
 
+from allennlp_models import vision  # noqa: F401
+
 from tests import FIXTURES_ROOT
 
 
