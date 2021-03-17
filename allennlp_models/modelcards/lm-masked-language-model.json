@@ -57,6 +57,6 @@
     "model_usage": {
         "archive_file": "bert-masked-lm-2020-10-07.tar.gz",
         "training_config": "lm/bidirectional_language_model.jsonnet",
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }

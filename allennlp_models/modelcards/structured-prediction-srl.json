@@ -64,6 +64,6 @@
     "model_usage": {
         "archive_file": "openie-model.2020.03.26.tar.gz",
         "training_config": "structured-prediction/srl.jsonnet",
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }

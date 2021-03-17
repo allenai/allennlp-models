@@ -38,7 +38,8 @@
         "dataset": {
             "name": "PTB 3.0",
             "url": "https://catalog.ldc.upenn.edu/LDC99T42",
-            "notes": "Please download the data from the url provided."
+            "notes": "Please download the data from the url provided.",
+            "processed_url": "/path/do/dataset"
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +48,8 @@
         "dataset": {
             "name": "PTB 3.0",
             "url": "https://catalog.ldc.upenn.edu/LDC99T42",
-            "notes": "Please download the data from the url provided."
+            "notes": "Please download the data from the url provided.",
+            "processed_url": "/path/do/dataset"
         },
         "motivation": null,
         "preprocessing": null
@@ -65,6 +67,6 @@
     "model_usage": {
         "archive_file": "elmo-constituency-parser-2020.02.10.tar.gz",
         "training_config": "structured-prediction/constituency_parser_elmo.jsonnet",
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }
