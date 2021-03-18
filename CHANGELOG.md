@@ -13,14 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
--  Add option `combine_input_fields` in `SnliDatasetReader` to support only having "non-entailment" and "entailment" as output labels.
+- Add option `combine_input_fields` in `SnliDatasetReader` to support only having "non-entailment" and "entailment" as output labels.
+- Made all the models run on AllenNLP 2.1
 
 ### Fixed
 
 - Fixed https://github.com/allenai/allennlp/issues/4745.
 - Updated `QaNet` and `NumericallyAugmentedQaNet` models to remove bias for layers that are followed by normalization layers.
-- Updated the model card for `rc-naqanet`.
-- Predictors now work for the vilbert-multitask model
+- Updated the model cards for `rc-naqanet`, `vqa-vilbert` and `ve-vilbert`.
+- Predictors now work for the vilbert-multitask model.
 
 
 ## [v2.1.0](https://github.com/allenai/allennlp-models/releases/tag/v2.1.0) - 2021-02-24

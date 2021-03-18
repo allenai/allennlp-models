@@ -61,6 +61,6 @@
     "model_usage": {
         "archive_file": "basic_stanford_sentiment_treebank-2020.06.09.tar.gz",
         "training_config": "classification/basic_stanford_sentiment_treebank.jsonnet",
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }

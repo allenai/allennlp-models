@@ -38,7 +38,8 @@
         "dataset": {
             "name": "Ontonotes 5.0",
             "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
-            "notes": "The Coreference model was evaluated on the CoNLL 2012 dataset. Unfortunately we cannot release this data due to licensing restrictions by the LDC. To compile the data in the right format for evaluating the Coreference model, please see scripts/compile_coref_data.sh. This script requires the Ontonotes 5.0 dataset, available on the LDC website."
+            "notes": "The Coreference model was evaluated on the CoNLL 2012 dataset. Unfortunately we cannot release this data due to licensing restrictions by the LDC. To compile the data in the right format for evaluating the Coreference model, please see scripts/compile_coref_data.sh. This script requires the Ontonotes 5.0 dataset, available on the LDC website.",
+            "processed_url": "/path/to/dataset"
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +48,8 @@
         "dataset": {
             "name": "Ontonotes 5.0",
             "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
-            "notes": "The Coreference model was evaluated on the CoNLL 2012 dataset. Unfortunately we cannot release this data due to licensing restrictions by the LDC. To compile the data in the right format for evaluating the Coreference model, please see scripts/compile_coref_data.sh. This script requires the Ontonotes 5.0 dataset, available on the LDC website."
+            "notes": "The Coreference model was evaluated on the CoNLL 2012 dataset. Unfortunately we cannot release this data due to licensing restrictions by the LDC. To compile the data in the right format for evaluating the Coreference model, please see scripts/compile_coref_data.sh. This script requires the Ontonotes 5.0 dataset, available on the LDC website.",
+            "processed_url": "/path/to/dataset"
         },
         "motivation": null,
         "preprocessing": null
@@ -63,8 +65,8 @@
         "ethical_considerations": null
     },
     "model_usage": {
-        "archive_file": "coref-spanbert-large-2020.02.27.tar.gz",
+        "archive_file": "coref-spanbert-large-2021.03.10.tar.gz",
         "training_config": "coref/coref_spanbert_large.jsonnet",
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }

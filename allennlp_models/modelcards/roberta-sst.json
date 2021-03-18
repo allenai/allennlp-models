@@ -63,8 +63,8 @@
         "ethical_considerations": null
     },
     "model_usage": {
-        "archive_file": "sst-roberta-large-2020.06.08.tar.gz",
+        "archive_file": "stanford-sentiment-treebank-roberta.2021-03-11.tar.gz",
         "training_config": "classification/stanford_sentiment_treebank_roberta.jsonnet",
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }
