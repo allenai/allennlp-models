@@ -68,6 +68,10 @@ class CrfTagger(Model):
         {"tags": List, "score": float}.
         The "tags" value for the first dict in the list for each data_item will be the top
         choice, and will equal the corresponding item in output_dict['tags']
+    ignore_loss_on_o_tags : `bool`, optional (detaul=`False`)
+        If True, we compute the loss only for actual spans in `tags`, and not on `O` tokens.
+        This is useful for computing gradients of the loss on a _single span_, for
+        interpretation / attacking.
     """
 
     def __init__(
@@ -85,6 +89,7 @@ class CrfTagger(Model):
         verbose_metrics: bool = False,
         initializer: InitializerApplicator = InitializerApplicator(),
         top_k: int = 1,
+        ignore_loss_on_o_tags: bool = False,
         **kwargs,
     ) -> None:
         super().__init__(vocab, **kwargs)
@@ -94,6 +99,7 @@ class CrfTagger(Model):
         self.num_tags = self.vocab.get_vocab_size(label_namespace)
         self.encoder = encoder
         self.top_k = top_k
+        self.ignore_loss_on_o_tags = ignore_loss_on_o_tags
         self._verbose_metrics = verbose_metrics
         if dropout:
             self.dropout = torch.nn.Dropout(dropout)
@@ -166,7 +172,7 @@ class CrfTagger(Model):
         tokens: TextFieldTensors,
         tags: torch.LongTensor = None,
         metadata: List[Dict[str, Any]] = None,
-        ignore_loss_on_o_tags: bool = False,
+        ignore_loss_on_o_tags: Optional[bool] = None,
         **kwargs,  # to allow for a more general dataset reader that passes args we don't need
     ) -> Dict[str, torch.Tensor]:
 
@@ -187,10 +193,11 @@ class CrfTagger(Model):
             `(batch_size, num_tokens)`.
         metadata : `List[Dict[str, Any]]`, optional, (default = `None`)
             metadata containg the original words in the sentence to be tagged under a 'words' key.
-        ignore_loss_on_o_tags : `bool`, optional (default = `False`)
+        ignore_loss_on_o_tags : `Optional[bool]`, optional (default = `None`)
             If True, we compute the loss only for actual spans in `tags`, and not on `O` tokens.
             This is useful for computing gradients of the loss on a _single span_, for
             interpretation / attacking.
+            If `None`, `self.ignore_loss_on_o_tags` is used instead.
 
         # Returns
 
@@ -205,6 +212,7 @@ class CrfTagger(Model):
         loss : `torch.FloatTensor`, optional
             A scalar loss to be optimised. Only computed if gold label `tags` are provided.
         """
+        ignore_loss_on_o_tags = ignore_loss_on_o_tags or self.ignore_loss_on_o_tags
         embedded_text_input = self.text_field_embedder(tokens)
         mask = util.get_text_field_mask(tokens)
 
