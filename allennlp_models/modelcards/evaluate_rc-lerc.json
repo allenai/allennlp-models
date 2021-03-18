@@ -37,7 +37,8 @@
     "evaluation_data": {
         "dataset": {
             "name": "MOCHA",
-            "url": "https://allennlp.org/mocha"
+            "url": "https://allennlp.org/mocha",
+            "processed_url": null
         },
         "motivation": null,
         "preprocessing": null
@@ -45,7 +46,9 @@
     "training_data": {
         "dataset": {
             "name": "MOCHA",
-            "url": "https://allennlp.org/mocha"
+            "url": "https://allennlp.org/mocha",
+            "notes": "To train this model follow the instructions at https://github.com/anthonywchen/MOCHA",
+            "processed_url": null
         },
         "motivation": null,
         "preprocessing": null
