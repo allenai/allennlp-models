@@ -38,7 +38,8 @@
         "dataset": {
             "name": "PTB 3.0",
             "url": "https://catalog.ldc.upenn.edu/LDC99T42",
-            "notes": "The dependency parser was evaluated on the Penn Tree Bank dataset. Unfortunately we cannot release this data due to licensing restrictions by the LDC. You can download the PTB data from the LDC website."
+            "notes": "The dependency parser was evaluated on the Penn Tree Bank dataset. Unfortunately we cannot release this data due to licensing restrictions by the LDC. You can download the PTB data from the LDC website.",
+            "processed_url": "/path/to/dataset"
         },
         "motivation": null,
         "preprocessing": null
@@ -47,7 +48,8 @@
         "dataset": {
             "name": "PTB 3.0",
             "url": "https://catalog.ldc.upenn.edu/LDC99T42",
-            "notes": "The dependency parser was evaluated on the Penn Tree Bank dataset. Unfortunately we cannot release this data due to licensing restrictions by the LDC. You can download the PTB data from the LDC website."
+            "notes": "The dependency parser was evaluated on the Penn Tree Bank dataset. Unfortunately we cannot release this data due to licensing restrictions by the LDC. You can download the PTB data from the LDC website.",
+            "processed_url": "/path/to/dataset"
         },
         "motivation": null,
         "preprocessing": null
@@ -65,6 +67,6 @@
     "model_usage": {
         "archive_file": "biaffine-dependency-parser-ptb-2020.04.06.tar.gz",
         "training_config": "structured_prediction/dependency_parser.jsonnet",
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }

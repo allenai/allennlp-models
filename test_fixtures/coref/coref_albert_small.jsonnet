@@ -98,6 +98,7 @@ local span_pair_embedding_dim = 3 * span_embedding_dim + feature_size;
       "parameter_groups": [
         [[".*transformer.*"], {"lr": 1e-5}]
       ]
-    }
+    },
+    "run_sanity_check": false
   }
 }

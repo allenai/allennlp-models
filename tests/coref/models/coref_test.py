@@ -1,6 +1,7 @@
 import torch
 
 from allennlp.common.testing import ModelTestCase
+from allennlp_models import coref  # noqa: F401
 
 from tests import FIXTURES_ROOT
 
