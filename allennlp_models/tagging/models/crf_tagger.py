@@ -68,7 +68,7 @@ class CrfTagger(Model):
         {"tags": List, "score": float}.
         The "tags" value for the first dict in the list for each data_item will be the top
         choice, and will equal the corresponding item in output_dict['tags']
-    ignore_loss_on_o_tags : `bool`, optional (detaul=`False`)
+    ignore_loss_on_o_tags : `bool`, optional (default=`False`)
         If True, we compute the loss only for actual spans in `tags`, and not on `O` tokens.
         This is useful for computing gradients of the loss on a _single span_, for
         interpretation / attacking.
