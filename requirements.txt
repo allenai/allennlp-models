@@ -1,4 +1,4 @@
-git+https://github.com/allenai/allennlp.git@main
+git+https://github.com/allenai/allennlp.git@15b532fbee5ddc26ed293554678b0409aa54fd78
 
 torch>=1.7.0,<1.9.0
 
