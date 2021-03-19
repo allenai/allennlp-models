@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
-
+- Evaluating RC task card and associated LERC model card
 - Compatibility with PyTorch 1.8
 
 ### Changed
