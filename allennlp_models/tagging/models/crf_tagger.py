@@ -212,7 +212,11 @@ class CrfTagger(Model):
         loss : `torch.FloatTensor`, optional
             A scalar loss to be optimised. Only computed if gold label `tags` are provided.
         """
-        ignore_loss_on_o_tags = ignore_loss_on_o_tags or self.ignore_loss_on_o_tags
+        ignore_loss_on_o_tags = (
+            ignore_loss_on_o_tags
+            if ignore_loss_on_o_tags is not None
+            else self.ignore_loss_on_o_tags
+        )
         embedded_text_input = self.text_field_embedder(tokens)
         mask = util.get_text_field_mask(tokens)
 
