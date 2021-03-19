@@ -472,7 +472,7 @@ class TestAllenNlpPretrainedModels(AllenNlpTestCase):
     @pytest.mark.parametrize("model_id, model_card", get_pretrained_models().items())
     def test_pretrained_models(self, model_id, model_card):
         assert model_card.model_usage.archive_file is not None
-        if model_id not in ["rc-nmn", "lm-next-token-lm-gpt2"] and not model_id.startswith(
+        if model_id not in ["rc-nmn", "lm-next-token-lm-gpt2", "evaluate_rc-lerc"] and not model_id.startswith(
             "semparse"
         ):
             assert model_card.model_usage.training_config is not None
