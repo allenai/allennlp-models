@@ -57,7 +57,6 @@ local transformer_dim = 1024;
       "lr": 1e-5,
       "weight_decay": 0.1,
     },
-    "cuda_device": 0,
     "num_gradient_accumulation_steps": 16,
   },
 }
