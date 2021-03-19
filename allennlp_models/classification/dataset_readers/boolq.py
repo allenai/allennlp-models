@@ -2,6 +2,7 @@ import json
 import logging
 from typing import Optional, Iterable, Dict
 
+from allennlp.common.file_utils import cached_path
 from overrides import overrides
 from allennlp.data import DatasetReader, Tokenizer, TokenIndexer, Instance, Field
 from allennlp.data.tokenizers import WhitespaceTokenizer
@@ -39,6 +40,7 @@ class BoolQDatasetReader(DatasetReader):
 
     @overrides
     def _read(self, file_path) -> Iterable[Instance]:
+        file_path = cached_path(file_path, extract_archive=True)
         with open(file_path) as f:
             logger.info("Reading instances from lines in file at: %s", file_path)
             for line in self.shard_iterable(f):

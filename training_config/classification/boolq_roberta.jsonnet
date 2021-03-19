@@ -15,9 +15,9 @@ local transformer_dim = 1024;
       "model_name": transformer_model,
     }
   },
-  "train_data_path": "data/train.jsonl",
-  "validation_data_path": "data/val.jsonl",
-  "test_data_path": "data/test.jsonl",
+  "train_data_path": "https://storage.googleapis.com/allennlp-public-data/BoolQ.zip!BoolQ/train.jsonl",
+  "validation_data_path": "https://storage.googleapis.com/allennlp-public-data/BoolQ.zip!BoolQ/val.jsonl",
+  "test_data_path": "https://storage.googleapis.com/allennlp-public-data/BoolQ.zip!BoolQ/test.jsonl",
   "model": {
     "type": "basic_classifier",
     "text_field_embedder": {
