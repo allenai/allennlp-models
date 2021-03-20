@@ -1,0 +1,34 @@
+{
+    "id": "evaluate_rc",
+    "name": "Evaluate Reading Comprehension",
+    "description": "Evaluating reading comprehension is the task of automatically scoring how good a (candidate) answer is with respect to a context, a question, and a reference answer.",
+    "expected_inputs": "The task expects a `context` passage, a `question`, a `reference` (i.e. gold) answer, and a `candidate` answer.",
+    "expected_outputs": "The expected output is a score between `1` and `5` marking how similar the `candidate` answer is to the `reference` answer given the `context` and the `question`.",
+    "scope_and_limitations": null,
+    "examples": [
+        {
+            "context": "The short story takes place in a land ruled by a semi-barbaric king. Some of the king's ideas are progressive, but others cause people to suffer. One of the king's innovations is the use of a public trial by ordeal as an agent of poetic justice, with guilt or innocence decided by the result of chance. A person accused of a crime is brought into a public arena and must choose one of two doors. Behind one door is a lady whom the king has deemed an appropriate match for the accused; behind the other is a fierce, hungry tiger. Both doors are heavily soundproofed to prevent the accused from hearing what is behind each one. If he chooses the door with the lady behind it, he is innocent and must immediately marry her, but if he chooses the door with the tiger behind it, he is deemed guilty and is immediately devoured by it. The king learns that his daughter has a lover, a handsome and brave youth who is of lower status than the princess, and has him imprisoned to await trial. By the time that day comes, the princess has used her influence to learn the positions of the lady and the tiger behind the two doors. She has also discovered that the lady is someone whom she hates, thinking her to be a rival for the affections of the accused. When he looks to the princess for help, she discreetly indicates the door on his right, which he opens. The outcome of this choice is not revealed. Instead, the narrator departs from the story to summarize the princess's state of mind and her thoughts about directing the accused to one fate or the other, as she will lose him to either death or marriage. The story ends with the question, \"And so I leave it with all of you: Which came out of the opened door - the lady, or the tiger?\"",
+            "question": "What feature do the doors have?",
+            "reference" : "soundproofing",
+            "candidate" : "They are heavily soundproofed to prevent the accused from hearing what’s behind each one."
+        },
+        {
+            "context": "The last time that I washed dishes, I first rounded up all of the dishes and placed them in the sink. I then went one by one until they were all washed. I first put water on them and then soap and I used the sponge to clean them thoroughly. I lathered the sponge all over each dish and then put them each aside after I was done. After drying each one, I put it aside to dry. Soon after, everything was cleaned and I was able to start putting everything away. I put everyone in the same spot that it always goes in and this continued in this example as well. I let everything dry and I put it exactly where it belonged.This process was somewhat time consuming, but overall, it was a routine and easy process. I was able to wash all of the dishes and feel comfortable using them.",
+            "question": "Why were they washing the dishes?",
+            "reference" : "Because the dishes were dirty",
+            "candidate" : "To clean them"
+        },
+        {
+            "context": "The story begins in 1647 when King Charles I has been defeated in the civil war and has fled from London towards the New Forest. Parliamentary soldiers have been sent to search the forest and decide to burn Arnwood, the house of Colonel Beverley, a Cavalier officer killed at the Battle of Naseby. The four orphan children of the house, Edward, Humphrey, Alice and Edith, are believed to have died in the flames. However, they are saved by Jacob Armitage, a local verderer, who hides them in his isolated cottage and disguises them as his grandchildren. Under Armitage's guidance, the children adapt from an aristocratic lifestyle to that of simple foresters. After Armitage's death, Edward takes charge and the children develop and expand the farmstead, aided by the entrepreneurial spirit of the younger brother Humphrey. They are assisted by a gypsy boy, Pablo, who they rescue from a pitfall trap. A sub-plot involves a hostile Puritan gamekeeper named Corbould who seeks to harm Edward and his family. Edward also encounters the sympathetic Puritan, Heatherstone, placed in charge of the Royal land in the New Forest, and rescues his daughter, Patience, in a house-fire. Edward leaves the cottage and works as a secretary for Heatherstone, but Edward maintains the pretence that he is the grandson of Jacob Armitage. Edward eventually joins the army of the future King Charles II, but after the Royalist defeat at the Battle of Worcester, he returns to the New Forest where he learns that Heatherstone has been awarded the old Arnwood estate. Disillusioned by this, and by Patience's apparent rejection of his declarations of love, Edward flees to France. His sisters are sent away to be brought up as aristocratic ladies and his brother continues to live in the New Forest. Edward learns that Patience does, in fact, love him, and that Heatherstone had acquired the Arnwood estate for Edward, but he works as a mercenary soldier in exile until the Restoration when they are reunited.",
+            "question": "Who do the children rescue from a trap?",
+            "reference" : "Pablo.",
+            "candidate" : "A gypsy kid"
+        },
+        {
+            "context": "Robin wept in front of Skylar who was sick of seeing her cry.",
+            "question": "What will happen to Robin?",
+            "reference" : "be scolded",
+            "candidate" : "be sad"
+        }
+    ]
+}
