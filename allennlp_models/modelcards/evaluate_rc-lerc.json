@@ -1,0 +1,72 @@
+{
+    "id": "evaluate_rc-lerc",
+    "registered_model_name": "lerc",
+    "registered_predictor_name": "lerc",
+    "display_name": "Learned Evaluation for Reading Comprehension (LERC)",
+    "task_id": "evaluate_rc",
+    "model_details": {
+        "description": "LERC is a BERT model that is trained to mimic human judgement scores on candidate answers in the MOCHA dataset. LERC outputs scores that range from 1 to 5, however, to stay consistent with metrics such as BLEU and ROUGE, we normalize the output of LERC to be between 0 and 1 in this demo.",
+        "short_description": "A BERT model that scores candidate answers from 0 to 1.",
+        "developed_by": "Chen et al",
+        "contributed_by": "Anthony Chen",
+        "date": "2021-03-10",
+        "version": "1",
+        "model_type": "BERT",
+        "paper": {
+            "citation": "\n@inproceedings{Chen2020MOCHAAD,\ntitle={MOCHA: A Dataset for Training and Evaluating Generative Reading Comprehension Metrics},\nauthor={Anthony Chen and Gabriel Stanovsky and S. Singh and Matt Gardner},\nbooktitle={EMNLP},\nyear={2020}}\n",
+            "title": "MOCHA: A Dataset for Training and Evaluating Generative Reading Comprehension Metrics",
+            "url": "https://api.semanticscholar.org/CorpusID:222208714"
+        },
+        "license": null,
+        "contact": "allennlp-contact@allenai.org"
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "Pearson Correlation",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": {
+            "name": "MOCHA",
+            "url": "https://allennlp.org/mocha",
+            "notes": "To evaluate this model follow the instructions at https://github.com/anthonywchen/MOCHA.",
+            "processed_url": null
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": {
+            "name": "MOCHA",
+            "url": "https://allennlp.org/mocha",
+            "notes": "To train this model follow the instructions at https://github.com/anthonywchen/MOCHA.",
+            "processed_url": null
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "model_caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "lerc-2020-11-18.tar.gz",
+        "training_config": null,
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+    }
+}

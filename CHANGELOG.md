@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
-
+- Evaluating RC task card and associated LERC model card
 - Compatibility with PyTorch 1.8
 - Allows the order of examples in the task cards to be specified explicitly
 
@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add option `combine_input_fields` in `SnliDatasetReader` to support only having "non-entailment" and "entailment" as output labels.
 - Made all the models run on AllenNLP 2.1
+- Add option `ignore_loss_on_o_tags` in `CrfTagger` to set the flag outside its forward function.
 
 ### Fixed
 
