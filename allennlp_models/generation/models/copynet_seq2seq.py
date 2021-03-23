@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Tuple, List, Any, Union
+from typing import Dict, Tuple, List, Any, Union, Optional
 
 import numpy
 from overrides import overrides
@@ -80,6 +80,7 @@ class CopyNetSeq2Seq(Model):
         max_decoding_steps: int,
         target_embedding_dim: int = 30,
         copy_token: str = "@COPY@",
+        copy_next_token: Optional[str] = None,
         target_namespace: str = "target_tokens",
         tensor_based_metric: Metric = None,
         token_based_metric: Metric = None,
@@ -94,6 +95,11 @@ class CopyNetSeq2Seq(Model):
             self.vocab._padding_token, self._target_namespace
         )
         self._copy_index = self.vocab.add_token_to_namespace(copy_token, self._target_namespace)
+        self._copy_next_index = (
+            self.vocab.add_token_to_namespace(copy_next_token, self._target_namespace)
+            if copy_next_token is not None
+            else None
+        )
 
         self._tensor_based_metric = tensor_based_metric or BLEU(
             exclude_indices={self._pad_index, self._end_index, self._start_index}
@@ -872,12 +878,28 @@ class CopyNetSeq2Seq(Model):
                 indices = list(indices)
                 if self._end_index in indices:
                     indices = indices[: indices.index(self._end_index)]
+                last_copied_index = -1
                 for index in indices:
-                    if index >= self._target_vocab_size:
+                    # If the predicted token is the special copy_next_token, we replace
+                    # it with the immediate next token in the source sequence of the previously
+                    # copied token. This copy next operation is invalid if
+                    # 1) This is the first decoding timestep
+                    # 2) The previous token was generated (not copied from the source sequence)
+                    # 3) The previously copied token is from last timestep in the source sequence
+                    if (
+                        index == self._copy_next_index
+                        and last_copied_index >= 0
+                        and last_copied_index < len(metadata["source_tokens"]) - 1
+                    ):
+                        token = metadata["source_tokens"][last_copied_index + 1]
+                        last_copied_index += 1
+                    elif index >= self._target_vocab_size:
                         adjusted_index = index - self._target_vocab_size
                         token = metadata["source_tokens"][adjusted_index]
+                        last_copied_index = adjusted_index
                     else:
                         token = self.vocab.get_token_from_index(index, self._target_namespace)
+                        last_copied_index = -1
                     tokens.append(token)
                 batch_predicted_tokens.append(tokens)
             if n_best == 1:
