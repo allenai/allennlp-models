@@ -330,3 +330,67 @@ class CopyNetTransformerTest(ModelTestCase):
 
     def test_model_can_train_save_load_predict(self):
         self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-2)
+
+
+class CopyNetCopyNextTest(ModelTestCase):
+    def setup_method(self):
+        super().setup_method()
+        self.set_up_model(
+            FIXTURES_ROOT / "generation" / "copynet" / "experiment_copynext.json",
+            FIXTURES_ROOT / "generation" / "copynet" / "data" / "copyover.tsv",
+        )
+
+    def test_model_can_train_save_load_predict(self):
+        self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-2)
+
+    def test_vocab(self):
+        vocab = self.model.vocab
+        # Vocab size is the same as the copynet fixture (8) + 1 for the copynext token
+        assert vocab.get_vocab_size(self.model._target_namespace) == 9
+        assert "hello" not in vocab._token_to_index[self.model._target_namespace]
+        assert "world" not in vocab._token_to_index[self.model._target_namespace]
+        assert "@COPY@" in vocab._token_to_index["target_tokens"]
+        assert "@CN@" in vocab._token_to_index["target_tokens"]
+
+    def test_get_predicted_tokens(self):
+        tok_index = self.vocab.get_token_index("tokens", self.model._target_namespace)
+        copy_next_index = self.vocab.get_token_index("@CN@", self.model._target_namespace)
+        end_index = self.model._end_index
+        vocab_size = self.model._target_vocab_size
+
+        # shape: (batch_size, beam_size, max_predicted_length)
+        predicted_indices = np.array(
+            [
+                [
+                    # CopyNext op is valid here, so we expect it to copy the next token
+                    # after "hello" ("world")
+                    [tok_index, vocab_size, copy_next_index, end_index],
+                    [tok_index, tok_index, tok_index, tok_index],
+                ],
+                [
+                    # CopyNext op is invalid here, so we expect the literal copy_next token
+                    # in the output
+                    [copy_next_index, tok_index, tok_index, end_index],
+                    [tok_index, vocab_size + 1, end_index, end_index],
+                ],
+            ]
+        )
+
+        batch_metadata = [
+            {"source_tokens": ["hello", "world"]},
+            {"source_tokens": ["copynet", "is", "cool"]},
+        ]
+
+        predicted_tokens = self.model._get_predicted_tokens(predicted_indices, batch_metadata)
+        assert len(predicted_tokens) == 2
+        assert len(predicted_tokens[0]) == 2
+        assert len(predicted_tokens[1]) == 2
+        assert predicted_tokens[0][0] == ["tokens", "hello", "world"]
+        assert predicted_tokens[0][1] == ["tokens", "tokens", "tokens", "tokens"]
+
+        predicted_tokens = self.model._get_predicted_tokens(
+            predicted_indices, batch_metadata, n_best=1
+        )
+        assert len(predicted_tokens) == 2
+        assert predicted_tokens[0] == ["tokens", "hello", "world"]
+        assert predicted_tokens[1] == ["@CN@", "tokens", "tokens"]
