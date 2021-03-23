@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add option `combine_input_fields` in `SnliDatasetReader` to support only having "non-entailment" and "entailment" as output labels.
 - Made all the models run on AllenNLP 2.1
 - Add option `ignore_loss_on_o_tags` in `CrfTagger` to set the flag outside its forward function.
+- Add option `copy_next_token` in `CopyNetSeq2Seq` that enables a quasi [CopyNext](https://www.aclweb.org/anthology/2020.spnlp-1.2/) operation when provided.
 
 ### Fixed
 
