@@ -20,7 +20,7 @@ local gradient_accumulation_steps = batch_size / gpu_batch_size;
       "transformer_model": transformer_model,
   },
   "data_loader": {
-    "sampler": "random",
+    "shuffle": true,
     "batch_size": gpu_batch_size
   },
   "trainer": {
@@ -41,10 +41,6 @@ local gradient_accumulation_steps = batch_size / gpu_batch_size;
     "num_gradient_accumulation_steps": gradient_accumulation_steps,
     "patience": 3,
     "validation_metric": "+acc",
-    "tensorboard_writer": {
-        "summary_interval": 10,
-        "should_log_learning_rate": true
-    },
   },
   "random_seed": 42,
   "numpy_seed": 42,

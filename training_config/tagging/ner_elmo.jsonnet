@@ -8,7 +8,6 @@
 // with test set F1 of 92.51 compared to the single model reported
 // result of 92.22 +/- 0.10.
 {
-
   "dataset_reader": {
     "type": "conll2003",
     "tag_label": "ner",
@@ -44,22 +43,22 @@
         },
         "elmo":{
             "type": "elmo_token_embedder",
-        "options_file": "https://allennlp.s3.amazonaws.com/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_options.json",
-        "weight_file": "https://allennlp.s3.amazonaws.com/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5",
+            "options_file": "https://allennlp.s3.amazonaws.com/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_options.json",
+            "weight_file": "https://allennlp.s3.amazonaws.com/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5",
             "do_layer_norm": false,
             "dropout": 0.0
         },
         "token_characters": {
             "type": "character_encoding",
             "embedding": {
-            "embedding_dim": 16
+                "embedding_dim": 16
             },
             "encoder": {
-            "type": "cnn",
-            "embedding_dim": 16,
-            "num_filters": 128,
-            "ngram_filter_sizes": [3],
-            "conv_layer_activation": "relu"
+                "type": "cnn",
+                "embedding_dim": 16,
+                "num_filters": 128,
+                "ngram_filter_sizes": [3],
+                "conv_layer_activation": "relu"
             }
         }
       }

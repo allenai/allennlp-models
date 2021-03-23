@@ -1,5 +1,3 @@
-import pytest
-
 from allennlp.common import Params
 from allennlp.common.util import ensure_list
 
@@ -8,9 +6,8 @@ from tests import FIXTURES_ROOT
 
 
 class TestQuACReader:
-    @pytest.mark.parametrize("lazy", (True, False))
-    def test_read(self, lazy):
-        params = Params({"lazy": lazy, "num_context_answers": 2})
+    def test_read(self):
+        params = Params({"num_context_answers": 2})
         reader = QuACReader.from_params(params)
         instances = reader.read(str(FIXTURES_ROOT / "rc" / "dialog_qa" / "quac_sample.json"))
         instances = ensure_list(instances)

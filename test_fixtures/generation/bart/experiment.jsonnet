@@ -41,5 +41,6 @@ local data_base_url = "test_fixtures/generation/bart/data/";
             "type": "polynomial_decay",
         },
         "grad_norm": 1.0,
+        "run_sanity_check": false
     }
 }

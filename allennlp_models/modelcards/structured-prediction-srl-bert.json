@@ -4,7 +4,6 @@
     "registered_predictor_name": null,
     "display_name": "SRL BERT",
     "task_id": "srl",
-    "archive_file": "bert-base-srl-2020.09.03.tar.gz",
     "model_details": {
         "description": "An implementation of a BERT based model (Shi et al, 2019) with some modifications (no additional parameters apart from a linear classification layer), which is currently the state of the art single model for English PropBank SRL (Newswire sentences). It achieves 86.49 test F1 on the Ontonotes 5.0 dataset.",
         "short_description": "A BERT based model (Shi et al, 2019) with some modifications (no additional parameters apart from a linear classification layer)",
@@ -13,16 +12,13 @@
         "date": "2020-09-03",
         "version": "1",
         "model_type": "BERT",
-        "paper": "[Simple BERT Models for Relation Extraction and Semantic Role Labeling](https://api.semanticscholar.org/CorpusID:131773936)",
-        "citation": "@article{Shi2019SimpleBM,
-                     title={Simple BERT Models for Relation Extraction and Semantic Role Labeling},
-                     author={Peng Shi and Jimmy Lin},
-                     journal={ArXiv},
-                     year={2019},
-                     volume={abs/1904.05255}}",
+        "paper": {
+            "citation": "\n@article{Shi2019SimpleBM,\ntitle={Simple BERT Models for Relation Extraction and Semantic Role Labeling},\nauthor={Peng Shi and Jimmy Lin},\njournal={ArXiv},\nyear={2019},\nvolume={abs/1904.05255}}\n",
+            "title": "Simple BERT Models for Relation Extraction and Semantic Role Labeling",
+            "url": "https://api.semanticscholar.org/CorpusID:131773936"
+        },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": null,
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -39,12 +35,20 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
+        "dataset": {
+            "name": "Ontonotes 5.0",
+            "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
+            "notes": "We cannot release this data due to licensing restrictions."
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
+        "dataset": {
+            "name": "Ontonotes 5.0",
+            "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
+            "notes": "We cannot release this data due to licensing restrictions."
+        },
         "motivation": null,
         "preprocessing": null
     },
@@ -52,10 +56,15 @@
         "unitary_results": "86.49 test F1 on the Ontonotes 5.0 dataset",
         "intersectional_results": null
     },
-    "ethical_considerations": {
+    "model_caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    },
+    "model_ethical_considerations": {
         "ethical_considerations": null
     },
-    "caveats_and_recommendations": {
-        "caveats_and_recommendations": null
+    "model_usage": {
+        "archive_file": "structured-prediction-srl-bert.2020.12.15.tar.gz",
+        "training_config": "structured_prediction/bert_base_srl.jsonnet",
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }

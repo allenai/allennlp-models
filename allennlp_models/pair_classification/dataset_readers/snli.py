@@ -1,4 +1,3 @@
-import itertools
 from typing import Dict, Optional
 import json
 import logging
@@ -13,6 +12,17 @@ from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenIndexer
 from allennlp.data.tokenizers import Tokenizer, SpacyTokenizer, PretrainedTransformerTokenizer
 
 logger = logging.getLogger(__name__)
+
+
+def maybe_collapse_label(label: str, collapse: bool):
+    """
+    Helper function that optionally collapses the "contradiction" and "neutral" labels
+    into "non-entailment".
+    """
+    assert label in ["contradiction", "neutral", "entailment"]
+    if collapse and label in ["contradiction", "neutral"]:
+        return "non-entailment"
+    return label
 
 
 @DatasetReader.register("snli")
@@ -37,6 +47,9 @@ class SnliReader(DatasetReader):
         If False, represent the premise and the hypothesis as separate fields in the instance.
         If True, tokenize them together using `tokenizer.tokenize_sentence_pair()`
         and provide a single `tokens` field in the instance.
+    combine_input_fields : `bool`, optional (default=`False`)
+        If `True`, the "neutral" and "contradiction" labels will be collapsed into "non-entailment";
+        "entailment" will be left unchanged.
     """
 
     def __init__(
@@ -44,9 +57,12 @@ class SnliReader(DatasetReader):
         tokenizer: Optional[Tokenizer] = None,
         token_indexers: Dict[str, TokenIndexer] = None,
         combine_input_fields: Optional[bool] = None,
+        collapse_labels: Optional[bool] = False,
         **kwargs,
     ) -> None:
-        super().__init__(manual_distributed_sharding=True, **kwargs)
+        super().__init__(
+            manual_distributed_sharding=True, manual_multiprocess_sharding=True, **kwargs
+        )
         self._tokenizer = tokenizer or SpacyTokenizer()
         if isinstance(self._tokenizer, PretrainedTransformerTokenizer):
             assert not self._tokenizer._add_special_tokens
@@ -55,32 +71,18 @@ class SnliReader(DatasetReader):
             self._combine_input_fields = combine_input_fields
         else:
             self._combine_input_fields = isinstance(self._tokenizer, PretrainedTransformerTokenizer)
+        self.collapse_labels = collapse_labels
 
     @overrides
     def _read(self, file_path: str):
         # if `file_path` is a URL, redirect to the cache
         file_path = cached_path(file_path)
-
-        import torch.distributed as dist
-        from allennlp.common.util import is_distributed
-
-        if is_distributed():
-            start_index = dist.get_rank()
-            step_size = dist.get_world_size()
-            logger.info(
-                "Reading SNLI instances %% %d from jsonl dataset at: %s", step_size, file_path
-            )
-        else:
-            start_index = 0
-            step_size = 1
-            logger.info("Reading SNLI instances from jsonl dataset at: %s", file_path)
-
         with open(file_path, "r") as snli_file:
             example_iter = (json.loads(line) for line in snli_file)
             filtered_example_iter = (
                 example for example in example_iter if example["gold_label"] != "-"
             )
-            for example in itertools.islice(filtered_example_iter, start_index, None, step_size):
+            for example in self.shard_iterable(filtered_example_iter):
                 label = example["gold_label"]
                 premise = example["sentence1"]
                 hypothesis = example["sentence2"]
@@ -100,12 +102,12 @@ class SnliReader(DatasetReader):
 
         if self._combine_input_fields:
             tokens = self._tokenizer.add_special_tokens(premise, hypothesis)
-            fields["tokens"] = TextField(tokens, self._token_indexers)
+            fields["tokens"] = TextField(tokens)
         else:
             premise_tokens = self._tokenizer.add_special_tokens(premise)
             hypothesis_tokens = self._tokenizer.add_special_tokens(hypothesis)
-            fields["premise"] = TextField(premise_tokens, self._token_indexers)
-            fields["hypothesis"] = TextField(hypothesis_tokens, self._token_indexers)
+            fields["premise"] = TextField(premise_tokens)
+            fields["hypothesis"] = TextField(hypothesis_tokens)
 
             metadata = {
                 "premise_tokens": [x.text for x in premise_tokens],
@@ -114,6 +116,15 @@ class SnliReader(DatasetReader):
             fields["metadata"] = MetadataField(metadata)
 
         if label:
-            fields["label"] = LabelField(label)
+            maybe_collapsed_label = maybe_collapse_label(label, self.collapse_labels)
+            fields["label"] = LabelField(maybe_collapsed_label)
 
         return Instance(fields)
+
+    @overrides
+    def apply_token_indexers(self, instance: Instance) -> Instance:
+        if "tokens" in instance.fields:
+            instance.fields["tokens"]._token_indexers = self._token_indexers
+        else:
+            instance.fields["premise"]._token_indexers = self._token_indexers
+            instance.fields["hypothesis"]._token_indexers = self._token_indexers

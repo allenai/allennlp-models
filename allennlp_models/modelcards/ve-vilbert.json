@@ -1,0 +1,69 @@
+{
+    "id": "ve-vilbert",
+    "registered_model_name": "visual-entailment",
+    "registered_predictor_name": "vilbert_ve",
+    "display_name": "Visual Entailment",
+    "task_id": "ve",
+    "model_details": {
+        "description": "This model is based on the ViLBERT architecture. The image features are obtained using the ResNet backbone and Faster RCNN (region detection).",
+        "short_description": "ViLBERT-based model for Visual Entailment.",
+        "developed_by": "Lu et al",
+        "contributed_by": "Akshita Bhagia",
+        "date": "2021-03-04",
+        "version": "2",
+        "model_type": "ViLBERT based on BERT large",
+        "paper": {
+            "citation": "\n@inproceedings{Lu2019ViLBERTPT,\ntitle={ViLBERT: Pretraining Task-Agnostic Visiolinguistic Representations for Vision-and-Language Tasks},\nauthor={Jiasen Lu and Dhruv Batra and D. Parikh and Stefan Lee},\nbooktitle={NeurIPS},\nyear={2019}",
+            "title": "ViLBERT: Pretraining Task-Agnostic Visiolinguistic Representations for Vision-and-Language Tasks",
+            "url": "https://api.semanticscholar.org/CorpusID:199453025"
+        },
+        "license": null,
+        "contact": "allennlp-contact@allenai.org"
+    },
+    "intended_use": {
+        "primary_uses": "This model is developed for the AllenNLP demo.",
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "Accuracy and F1-score",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": {
+            "name": "Stanford Natural Language Inference - Visual Entailment(SNLI-VE) dev set",
+            "url": "https://github.com/necla-ml/SNLI-VE",
+            "notes": "Evaluation requires a large amount of images to be accessible locally, so we cannot provide a command you can easily copy and paste."
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": {
+            "name": "Stanford Natural Language Inference - Visual Entailment(SNLI-VE) train set",
+            "url": "https://github.com/necla-ml/SNLI-VE"
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "model_caveats_and_recommendations": {
+        "caveats_and_recommendations": "This model is trained on the original SNLI-VE dataset. [Subsequent work](https://api.semanticscholar.org/CorpusID:215415945) has found that an estimated 31% of `neutral` labels in the dataset are incorrect. The `e-SNLI-VE-2.0` dataset contains the re-annotated validation and test sets."
+    },
+    "model_usage": {
+        "archive_file": "visual-entailment-torchvision-2021.03.04.tar.gz",
+        "training_config": "vilbert_ve_pretrained.jsonnet",
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+    }
+}

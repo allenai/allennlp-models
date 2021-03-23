@@ -7,15 +7,120 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- Evaluating RC task card and associated LERC model card
+- Compatibility with PyTorch 1.8
+- Dataset reader for SuperGLUE BoolQ
+
+### Changed
+
+- Add option `combine_input_fields` in `SnliDatasetReader` to support only having "non-entailment" and "entailment" as output labels.
+- Made all the models run on AllenNLP 2.1
+- Add option `ignore_loss_on_o_tags` in `CrfTagger` to set the flag outside its forward function.
+
+### Fixed
+
+- Fixed https://github.com/allenai/allennlp/issues/4745.
+- Updated `QaNet` and `NumericallyAugmentedQaNet` models to remove bias for layers that are followed by normalization layers.
+- Updated the model cards for `rc-naqanet`, `vqa-vilbert` and `ve-vilbert`.
+- Predictors now work for the vilbert-multitask model.
+
+
+## [v2.1.0](https://github.com/allenai/allennlp-models/releases/tag/v2.1.0) - 2021-02-24
+
+
+### Changed
+
+- `coding_scheme` parameter is now deprecated in `Conll2000DatasetReader`, please use `convert_to_coding_scheme` instead.
+
+### Added
+
+- BART model now adds a `predicted_text` field in `make_output_human_readable` that has the cleaned text corresponding to `predicted_tokens`.
+
+### Fixed
+ 
+- Made `label` parameter in `TransformerMCReader.text_to_instance` optional with default of `None`.
+- Updated many of the models for version 2.1.0. Fixed and re-trained many of the models.
+
+
+## [v2.0.1](https://github.com/allenai/allennlp-models/releases/tag/v2.0.1) - 2021-02-01
+
+### Fixed
+
+- Fixed `OpenIePredictor.predict_json` so it treats auxiliary verbs as verbs
+  when the language is English.
+
+
+## [v2.0.0](https://github.com/allenai/allennlp-models/releases/tag/v2.0.0) - 2021-01-27
+
+### Fixed
+
+- Made the training configs compatible with the tensorboard logging changes in the main repo
+
+
+## [v2.0.0rc1](https://github.com/allenai/allennlp-models/releases/tag/v2.0.0rc1) - 2021-01-21
+
+### Added
+
+- Dataset readers, models, metrics, and training configs for VQAv2, GQA, and Visual Entailment
+
+### Fixed
+
+- Fixed `training_configs/pair_classification/bimpm.jsonnet` and `training_configs/rc/dialog_qa.jsonnet`
+  to work with new data loading API.
+- Fixed the potential for a dead-lock when training the `TransformerQA` model on multiple GPUs
+  when nodes receive different sized batches.
+- Fixed BART. This implementation had some major bugs in it that caused poor performance during prediction.
+
+### Removed
+
+- Moving `ModelCard` and `TaskCard` abstractions out of the models repository.
+
+### Changed
+
+- `master` branch renamed to `main`
+- `SquadEmAndF1` metric can now also accept a batch of predictions and corresponding answers (instead of a single one)
+  in the form of list (for each).
+
+
+## [v1.3.0](https://github.com/allenai/allennlp-models/releases/tag/v1.2.2) - 2020-12-15
+
+### Fixed
+
+- Fix an index bug in  BART prediction.
+- Add `None` check in `PrecoReader`'s `text_to_instance()` method. 
+- Fixed `SemanticRoleLabelerPredictor.tokens_to_instances` so it treats auxiliary verbs as verbs
+  when the language is English
+
+### Added
+
+- Added link to source code to API docs.
+- Information updates for remaining model cards (also includes the ones in demo, but not in the repository).
+
+### Changed
+
+- Updated `Dockerfile.release` and `Dockerfile.commit` to work with different CUDA versions.
+- Changes required for the `transformers` dependency update to version 4.0.1.
+
+### Fixed
+
+- Added missing folder for `taskcards` in setup.py
+
+
+## [v1.2.2](https://github.com/allenai/allennlp-models/releases/tag/v1.2.2) - 2020-11-17
+
 ### Changed
 
 - Changed AllenNLP dependency for releases to allow for a range of versions, instead
   of being pinned to an exact version.
+- There will now be multiple Docker images pushed to Docker Hub for releases, each
+  corresponding to a different supported CUDA version (currently just 10.2 and 11.0).
 
 ### Fixed
 
 - Fixed `pair-classification-esim` pretrained model.
 - Fixed `ValueError` error message in `Seq2SeqDatasetReader`.
+- Better check for start and end symbols in `Seq2SeqDatasetReader` that doesn't fail for BPE-based tokenizers.
 
 ### Added
 

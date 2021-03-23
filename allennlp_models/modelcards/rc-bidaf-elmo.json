@@ -4,30 +4,21 @@
     "registered_predictor_name": null,
     "display_name": "ELMo-BiDAF",
     "task_id": "rc",
-    "archive_file": "bidaf-elmo-model-2020.03.19.tar.gz",
     "model_details": {
-        "description": "This is an implementation of the BiDAF model with ELMo embeddings. The basic layout is pretty simple:
-                        encode words as a combination of word embeddings and a character-level encoder, pass the
-                        word representations through a bi-LSTM/GRU, use a matrix of
-                        attentions to put question information into the passage word representations (this is the only
-                        part that is at all non-standard), pass this through another few layers of bi-LSTMs/GRUs, and
-                        do a softmax over span start and span end.",
+        "description": "This is an implementation of the BiDAF model with ELMo embeddings. The basic layout is pretty simple: encode words as a combination of word embeddings and a character-level encoder, pass the word representations through a bi-LSTM/GRU, use a matrix of attentions to put question information into the passage word representations (this is the only part that is at all non-standard), pass this through another few layers of bi-LSTMs/GRUs, and do a softmax over span start and span end.",
         "short_description": "BiDAF model with ELMo embeddings instead of GloVe.",
         "developed_by": "Seo et al",
         "contributed_by": null,
         "date": "2020-03-19",
         "version": "1",
         "model_type": "BiDAF",
-        "paper": "[Bidirectional Attention Flow for Machine Comprehension](https://api.semanticscholar.org/CorpusID:8535316)",
-        "citation": "@article{Seo2017BidirectionalAF,
-                     title={Bidirectional Attention Flow for Machine Comprehension},
-                     author={Minjoon Seo and Aniruddha Kembhavi and Ali Farhadi and Hannaneh Hajishirzi},
-                     journal={ArXiv},
-                     year={2017},
-                     volume={abs/1611.01603}}",
+        "paper": {
+            "citation": "\n@article{Seo2017BidirectionalAF,\ntitle={Bidirectional Attention Flow for Machine Comprehension},\nauthor={Minjoon Seo and Aniruddha Kembhavi and Ali Farhadi and Hannaneh Hajishirzi},\njournal={ArXiv},\nyear={2017},\nvolume={abs/1611.01603}}\n",
+            "title": "Bidirectional Attention Flow for Machine Comprehension",
+            "url": "https://api.semanticscholar.org/CorpusID:8535316"
+        },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": null,
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -44,23 +35,36 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "SQuAD dev set",
+        "dataset": {
+            "name": "SQuAD dev set",
+            "url": "https://rajpurkar.github.io/SQuAD-explorer/explore/1.1/dev/",
+            "processed_url": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/squad/squad-dev-v1.1.json"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "SQuAD training set",
+        "dataset": {
+            "name": "SQuAD training set",
+            "url": "https://rajpurkar.github.io/SQuAD-explorer/explore/1.1/dev/",
+            "processed_url": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/squad/squad-train-v1.1.json"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "quantitative_analyses": {
-        "unitary_results": null,
+        "unitary_results": "On the validation set:\nStart accuracy: 66%\nEnd accuracy: 69%\nOverall span accuracy: 57%\nExact match: 71%\nF1: 80%",
         "intersectional_results": null
     },
-    "ethical_considerations": {
+    "model_caveats_and_recommendations": {
+        "caveats_and_recommendations": "This model is based on ELMo. ELMo is not deterministic, meaning that you will see slight differences every time you run it. Also, ELMo likes to be warmed up, so we recommend processing dummy input before processing real workloads with it."
+    },
+    "model_ethical_considerations": {
         "ethical_considerations": null
     },
-    "caveats_and_recommendations": {
-        "caveats_and_recommendations": null
+    "model_usage": {
+        "archive_file": "bidaf-elmo.2021-02-11.tar.gz",
+        "training_config": "rc/bidaf_elmo.jsonnet",
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }

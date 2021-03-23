@@ -1,0 +1,9 @@
+{
+    "id": "semparse-visual-reasoning",
+    "name": "NLVR Semantic Parsing",
+    "description": "Semantic parsing maps natural language to machine language. For NLVR, the data parses ",
+    "expected_inputs": "Image, natural language question about the Image.",
+    "expected_outputs": "Natural language answer",
+    "scope_and_limitations": null,
+    "examples": null,
+}

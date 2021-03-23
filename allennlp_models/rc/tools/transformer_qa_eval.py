@@ -14,7 +14,7 @@ from allennlp_models.rc.metrics import SquadEmAndF1
 logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
-    import allennlp_models.rc.transformer_qa  # noqa F401: Needed to register the registrables.
+    import allennlp_models.rc  # noqa F401: Needed to register the registrables.
     import argparse
 
     logging.basicConfig(level=logging.INFO)
@@ -35,7 +35,6 @@ if __name__ == "__main__":
         args.qa_model, predictor_name="transformer_qa", cuda_device=args.cuda_device
     )
     instances = predictor._dataset_reader.read(args.input_file)
-    logger.info("Running on %d instances", len(instances))
 
     # We have to make sure we put instances with the same qid all into the same batch.
     def batch_instances_by_qid(instances: Iterable[Instance]) -> Iterable[List[Instance]]:
@@ -74,10 +73,16 @@ if __name__ == "__main__":
     metric = SquadEmAndF1()
     answers = {}
     for batch in make_batches(tqdm(instances, desc="Evaluating instances")):
+        gold_answers = {
+            instance["metadata"]["id"]: instance["metadata"]["answers"] for instance in batch
+        }
         for result in predictor.predict_batch_instance(batch):
             assert result["id"] not in ids_seen
             ids_seen.add(result["id"])
-            metric(result["best_span_str"], result["answers"])
+            gold_answer = gold_answers[result["id"]]
+            if len(gold_answer) == 0:
+                gold_answer = [""]  # no-answer case
+            metric(result["best_span_str"], gold_answer)
             answers[result["id"]] = result["best_span_str"]
         if time.monotonic() - last_logged_scores_time > 30:
             exact_match, f1_score = metric.get_metric()

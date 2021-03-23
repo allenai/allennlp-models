@@ -90,7 +90,11 @@ setup(
     install_requires=install_requirements,
     include_package_data=True,
     package_data={
-        "allennlp_models": ["modelcards/*.json", "structured_prediction/tools/srl-eval.pl"]
+        "allennlp_models": [
+            "modelcards/*.json",
+            "taskcards/*.json",
+            "structured_prediction/tools/srl-eval.pl",
+        ]
     },
     python_requires=">=3.6.1",
     zip_safe=False,

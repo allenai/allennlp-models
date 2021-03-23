@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Any
+from typing import Dict, Tuple, Any, cast
 from overrides import overrides
 
 from allennlp.data import Vocabulary
@@ -10,11 +10,14 @@ from allennlp.nn.beam_search import BeamSearch
 from allennlp.nn.util import sequence_cross_entropy_with_logits
 from allennlp.training.metrics import ROUGE, BLEU
 
-from transformers import BartModel, BartForConditionalGeneration
+from transformers.models.bart.modeling_bart import BartModel, BartForConditionalGeneration
 
 import torch
 from torch import nn
 import torch.nn.functional as F
+
+
+DecoderCacheType = Tuple[Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor], ...]
 
 
 @Seq2SeqEncoder.register("bart_encoder")
@@ -30,7 +33,7 @@ class BartEncoder(Seq2SeqEncoder):
 
     model_name : `str`, required
         Name of the pre-trained BART model to use. Available options can be found in
-        `transformers.modeling_bart.BART_PRETRAINED_MODEL_ARCHIVE_MAP`.
+        `transformers.models.bart.modeling_bart.BART_PRETRAINED_MODEL_ARCHIVE_MAP`.
     """
 
     def __init__(self, model_name):
@@ -110,9 +113,25 @@ class _BartEncoderWrapper(nn.Module):
 @Model.register("bart")
 class Bart(Model):
     """
-    BART model from the paper "BART: Denosing Sequence-to-Sequence Pre-training for Natural Language Generation,
+    BART model from the paper "BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation,
     Translation, and Comprehension" (https://arxiv.org/abs/1910.13461). The Bart model here uses a language
     modeling head and thus can be used for text generation.
+
+    # Parameters
+
+    model_name : `str`, required
+        Name of the pre-trained BART model to use. Available options can be found in
+        `transformers.models.bart.modeling_bart.BART_PRETRAINED_MODEL_ARCHIVE_MAP`.
+    vocab : `Vocabulary`, required
+        Vocabulary containing source and target vocabularies.
+    indexer : `PretrainedTransformerIndexer`, optional (default = `None`)
+        Indexer to be used for converting decoded sequences of ids to to sequences of tokens.
+    max_decoding_steps : `int`, optional (default = `128`)
+        Number of decoding steps during beam search.
+    beam_size : `int`, optional (default = `4`)
+        Number of beams to use in beam search. The default is from the BART paper.
+    encoder : `Seq2SeqEncoder`, optional (default = `None`)
+        Encoder to used in BART. By default, the original BART encoder is used.
     """
 
     def __init__(
@@ -124,23 +143,6 @@ class Bart(Model):
         beam_size: int = 4,
         encoder: Seq2SeqEncoder = None,
     ):
-        """
-        # Parameters
-
-        model_name : `str`, required
-            Name of the pre-trained BART model to use. Available options can be found in
-            `transformers.modeling_bart.BART_PRETRAINED_MODEL_ARCHIVE_MAP`.
-        vocab : `Vocabulary`, required
-            Vocabulary containing source and target vocabularies.
-        indexer : `PretrainedTransformerIndexer`, optional (default = `None`)
-            Indexer to be used for converting decoded sequences of ids to to sequences of tokens.
-        max_decoding_steps : `int`, optional (default = `128`)
-            Number of decoding steps during beam search.
-        beam_size : `int`, optional (default = `5`)
-            Number of beams to use in beam search. The default is from the BART paper.
-        encoder : `Seq2SeqEncoder`, optional (default = `None`)
-            Encoder to used in BART. By default, the original BART encoder is used.
-        """
         super().__init__(vocab)
         self.bart = BartForConditionalGeneration.from_pretrained(model_name)
         self._indexer = indexer or PretrainedTransformerIndexer(model_name, namespace="tokens")
@@ -209,28 +211,28 @@ class Bart(Model):
             target_mask = input_mask[:, 1:]
 
         if self.training:
-            decoder_logits = self.bart(
+            bart_outputs = self.bart(
                 input_ids=input_ids,
                 attention_mask=input_mask,
                 decoder_input_ids=target_ids[:, :-1].contiguous(),
                 decoder_attention_mask=target_mask[:, :-1].contiguous(),
                 use_cache=False,
-            )[0]
-
-            outputs["decoder_logits"] = decoder_logits
+                return_dict=True,
+            )
+            outputs["decoder_logits"] = bart_outputs.logits
 
             # The BART paper mentions label smoothing of 0.1 for sequence generation tasks
             outputs["loss"] = sequence_cross_entropy_with_logits(
-                decoder_logits,
-                target_ids[:, 1:].contiguous(),
-                target_mask[:, 1:].contiguous(),
+                bart_outputs.logits,
+                cast(torch.LongTensor, target_ids[:, 1:].contiguous()),
+                cast(torch.BoolTensor, target_mask[:, 1:].contiguous()),
                 label_smoothing=0.1,
                 average="token",
             )
         else:
             # Use decoder start id and start of sentence to start decoder
             initial_decoder_ids = torch.tensor(
-                [[self._decoder_start_id, self._start_id]],
+                [[self._decoder_start_id]],
                 dtype=input_ids.dtype,
                 device=input_ids.device,
             ).repeat(input_ids.shape[0], 1)
@@ -238,7 +240,6 @@ class Bart(Model):
             inital_state = {
                 "input_ids": input_ids,
                 "input_mask": input_mask,
-                "encoder_states": None,
             }
             beam_result = self._beam_search.search(
                 initial_decoder_ids, inital_state, self.take_step
@@ -263,29 +264,30 @@ class Bart(Model):
         return outputs
 
     @staticmethod
-    def _decoder_cache_to_dict(decoder_cache):
+    def _decoder_cache_to_dict(decoder_cache: DecoderCacheType) -> Dict[str, torch.Tensor]:
         cache_dict = {}
         for layer_index, layer_cache in enumerate(decoder_cache):
-            for attention_name, attention_cache in layer_cache.items():
-                for tensor_name, cache_value in attention_cache.items():
-                    key = (layer_index, attention_name, tensor_name)
-                    cache_dict[key] = cache_value
+            # Each layer caches the key and value tensors for its self-attention and cross-attention.
+            # Hence the `layer_cache` tuple has 4 elements.
+            assert len(layer_cache) == 4
+            for tensor_index, tensor in enumerate(layer_cache):
+                key = f"decoder_cache_{layer_index}_{tensor_index}"
+                cache_dict[key] = tensor
         return cache_dict
 
-    @staticmethod
-    def _dict_to_decoder_cache(cache_dict):
+    def _dict_to_decoder_cache(self, cache_dict: Dict[str, torch.Tensor]) -> DecoderCacheType:
         decoder_cache = []
-        for key, cache_value in cache_dict.items():
-            # Split key and extract index and dict keys
-            layer_idx, attention_name, tensor_name = key
-            # Extend decoder_cache to fit layer_idx + 1 layers
-            decoder_cache = decoder_cache + [{} for _ in range(layer_idx + 1 - len(decoder_cache))]
-            cache = decoder_cache[layer_idx]
-            if attention_name not in cache:
-                cache[attention_name] = {}
-            assert tensor_name not in cache[attention_name]
-            cache[attention_name][tensor_name] = cache_value
-        return decoder_cache
+        for layer_index in range(len(self.bart.model.decoder.layers)):
+            base_key = f"decoder_cache_{layer_index}_"
+            layer_cache = (
+                cache_dict[base_key + "0"],
+                cache_dict[base_key + "1"],
+                cache_dict[base_key + "2"],
+                cache_dict[base_key + "3"],
+            )
+            decoder_cache.append(layer_cache)
+        assert decoder_cache
+        return tuple(decoder_cache)
 
     def take_step(
         self, last_predictions: torch.Tensor, state: Dict[str, torch.Tensor], step: int
@@ -312,60 +314,35 @@ class Bart(Model):
         if len(last_predictions.shape) == 1:
             last_predictions = last_predictions.unsqueeze(-1)
 
-        # Only the last predictions are needed for the decoder, but we need to pad the decoder ids
-        # to not mess up the positional embeddings in the decoder.
-        padding_size = 0
-        if step > 0:
-            padding_size = step + 1
-            padding = torch.full(
-                (last_predictions.shape[0], padding_size),
-                self._pad_id,
-                dtype=last_predictions.dtype,
-                device=last_predictions.device,
-            )
-            last_predictions = torch.cat([padding, last_predictions], dim=-1)
-
         decoder_cache = None
         decoder_cache_dict = {
-            k: (state[k].contiguous() if state[k] is not None else None)
+            k: state[k].contiguous()
             for k in state
             if k not in {"input_ids", "input_mask", "encoder_states"}
         }
         if len(decoder_cache_dict) != 0:
             decoder_cache = self._dict_to_decoder_cache(decoder_cache_dict)
 
-        log_probabilities = None
-        for i in range(padding_size, last_predictions.shape[1]):
-            encoder_outputs = (
-                (state["encoder_states"],) if state["encoder_states"] is not None else None
-            )
-            outputs = self.bart(
-                input_ids=state["input_ids"],
-                attention_mask=state["input_mask"],
-                encoder_outputs=encoder_outputs,
-                decoder_input_ids=last_predictions[:, : i + 1],
-                past_key_values=decoder_cache,
-                generation_mode=True,
-                use_cache=True,
-            )
+        encoder_outputs = (state["encoder_states"],) if "encoder_states" in state else None
+        outputs = self.bart(
+            input_ids=state["input_ids"] if encoder_outputs is None else None,
+            attention_mask=state["input_mask"],
+            encoder_outputs=encoder_outputs,
+            decoder_input_ids=last_predictions,
+            past_key_values=decoder_cache,
+            use_cache=True,
+            return_dict=True,
+        )
 
-            decoder_log_probabilities = F.log_softmax(outputs[0][:, 0], dim=-1)
+        logits = outputs.logits[:, -1, :]
+        log_probabilities = F.log_softmax(logits, dim=-1)
 
-            if log_probabilities is None:
-                log_probabilities = decoder_log_probabilities
-            else:
-                idx = last_predictions[:, i].view(-1, 1)
-                log_probabilities = decoder_log_probabilities + log_probabilities.gather(
-                    dim=-1, index=idx
-                )
-
-            decoder_cache = outputs[1]
-
-            state["encoder_states"] = outputs[2]
-
+        decoder_cache = outputs.past_key_values
         if decoder_cache is not None:
             decoder_cache_dict = self._decoder_cache_to_dict(decoder_cache)
             state.update(decoder_cache_dict)
+
+        state["encoder_states"] = outputs.encoder_last_hidden_state
 
         return log_probabilities, state
 
@@ -390,9 +367,13 @@ class Bart(Model):
         predicted_tokens = [None] * predictions.shape[0]
         for i in range(predictions.shape[0]):
             predicted_tokens[i] = self._indexer.indices_to_tokens(
-                {"token_ids": predictions[0].tolist()}, self.vocab
+                {"token_ids": predictions[i].tolist()},
+                self.vocab,
             )
-        output_dict["predicted_tokens"] = predicted_tokens
+        output_dict["predicted_tokens"] = predicted_tokens  # type: ignore
+        output_dict["predicted_text"] = self._indexer._tokenizer.batch_decode(
+            predictions.tolist(), skip_special_tokens=True
+        )
 
         return output_dict
 

@@ -1,0 +1,70 @@
+{
+    "id": "semparse-nlvr",
+    "registered_model_name": null,
+    "registered_predictor_name": null,
+    "display_name": "NLVR Semantic Parsing",
+    "task_id": "semparse-nlvr",
+    "model_details": {
+        "description": "The model is a semantic parser trained on Cornell NLVR.",
+        "short_description": "The model is a semantic parser trained on Cornell NLVR.",
+        "developed_by": "Dasigi et al",
+        "contributed_by": null,
+        "date": null,
+        "version": null,
+        "model_type": null,
+        "paper": {
+            "citation": "\n@inproceedings{Dasigi2019IterativeSF,\ntitle={Iterative Search for Weakly Supervised Semantic Parsing},\nauthor={Pradeep Dasigi and Matt Gardner and Shikhar Murty and Luke Zettlemoyer and E. Hovy},\nbooktitle={NAACL-HLT},\nyear={2019}}\n",
+            "title": "Iterative Search for Weakly Supervised Semantic Parsing",
+            "url": "https://api.semanticscholar.org/CorpusID:174799945"
+        },
+        "license": null,
+        "contact": "allennlp-contact@allenai.org"
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "Denotation accuracy and consistency",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": {
+            "name": "Cornell NLVR",
+            "url": "http://lil.nlp.cornell.edu/nlvr/",
+            "notes": "Please download the data from the url provided."
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": {
+            "name": "Cornell NLVR",
+            "url": "http://lil.nlp.cornell.edu/nlvr/",
+            "notes": "Please download the data from the url provided."
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "model_caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "https://allennlp.s3.amazonaws.com/models/nlvr-erm-model-2020.02.10-rule-vocabulary-updated.tar.gz",
+        "training_config": null,
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+    }
+}

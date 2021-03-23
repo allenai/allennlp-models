@@ -4,27 +4,21 @@
     "registered_predictor_name": null,
     "display_name": "ELMo-based Named Entity Recognition",
     "task_id": "ner",
-    "archive_file": "ner-model-2020.02.10.tar.gz",
     "model_details": {
-        "description": "This model is the baseline model described in [Semi-supervised sequence tagging with bidirectional language models](https://api.semanticscholar.org/CorpusID:7197241).
-                        It uses a Gated Recurrent Unit (GRU) character encoder as well as a GRU phrase encoder,
-                        and it starts with pretrained GloVe vectors for its token embeddings. It was trained on
-                        the CoNLL-2003 NER dataset.",
+        "description": "This model is the baseline model described in [Semi-supervised sequence tagging with bidirectional language models](https://api.semanticscholar.org/CorpusID:7197241). It uses a Gated Recurrent Unit (GRU) character encoder as well as a GRU phrase encoder, and it starts with pretrained GloVe vectors for its token embeddings. It was trained on the CoNLL-2003 NER dataset.",
         "short_description": "NER tagger using a Gated Recurrent Unit (GRU) character encoder as well as a GRU phrase encoder, with GloVe embeddings.",
         "developed_by": "Peters et al",
         "contributed_by": null,
         "date": "2020-02-10",
         "version": "1",
         "model_type": "Gated Recurrent Unit (GRU)",
-        "paper": "[Semi-supervised sequence tagging with bidirectional language models](https://api.semanticscholar.org/CorpusID:7197241)",
-        "citation": "@inproceedings{Peters2017SemisupervisedST,
-                     title={Semi-supervised sequence tagging with bidirectional language models},
-                     author={Matthew E. Peters and Waleed Ammar and Chandra Bhagavatula and R. Power},
-                     booktitle={ACL},
-                     year={2017}}",
+        "paper": {
+            "citation": "\n@inproceedings{Peters2017SemisupervisedST,\ntitle={Semi-supervised sequence tagging with bidirectional language models},\nauthor={Matthew E. Peters and Waleed Ammar and Chandra Bhagavatula and R. Power},\nbooktitle={ACL},\nyear={2017}}\n",
+            "title": "Semi-supervised sequence tagging with bidirectional language models",
+            "url": "https://api.semanticscholar.org/CorpusID:7197241"
+        },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": null,
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -36,28 +30,43 @@
         "evaluation_factors": null
     },
     "metrics": {
-        "model_performance_measures": null,
+        "model_performance_measures": "Accuracy and Span-based F1 metric",
         "decision_thresholds": null,
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "[CoNLL-2003 NER dataset](https://www.clips.uantwerpen.be/conll2003/ner/)",
+        "dataset": {
+            "name": "CoNLL-2003 NER dataset",
+            "url": "https://www.clips.uantwerpen.be/conll2003/ner/",
+            "notes": "The NER model was evaluated on the CoNLL-2003 NER dataset. Unfortunately we cannot release this data due to licensing restrictions.",
+            "processed_url": "path/to/dataset"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "[CoNLL-2003 NER dataset](https://www.clips.uantwerpen.be/conll2003/ner/)",
+        "dataset": {
+            "name": "CoNLL-2003 NER dataset",
+            "url": "https://www.clips.uantwerpen.be/conll2003/ner/",
+            "notes": "The NER model was trained on the CoNLL-2003 NER dataset. Unfortunately we cannot release this data due to licensing restrictions.",
+            "processed_url": "/path/to/dataset"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "quantitative_analyses": {
-        "unitary_results": null,
+        "unitary_results": "Achieves 99% accuracy and 96% F1 on the CoNLL-2003 validation set.",
         "intersectional_results": null
     },
-    "ethical_considerations": {
+    "model_caveats_and_recommendations": {
+        "caveats_and_recommendations": "This model is based on ELMo. ELMo is not deterministic, meaning that you will see slight differences every time you run it. Also, ELMo likes to be warmed up, so we recommend processing dummy input before processing real workloads with it."
+    },
+    "model_ethical_considerations": {
         "ethical_considerations": null
     },
-    "caveats_and_recommendations": {
-        "caveats_and_recommendations": null
+    "model_usage": {
+        "archive_file": "ner-elmo.2021-02-12.tar.gz",
+        "training_config": "tagging/ner_elmo.jsonnet",
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }

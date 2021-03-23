@@ -5,8 +5,8 @@ from typing import Dict, Union, Any
 from allennlp.common import Params
 from allennlp.predictors import Predictor
 
-from allennlp_models.common.model_card import ModelCard
-from allennlp_models.common.task_card import TaskCard
+from allennlp.common.model_card import ModelCard
+from allennlp.common.task_card import TaskCard
 
 # These imports are included so that the model cards can be filled with default information
 # obtained from the registered model classes.
@@ -70,10 +70,10 @@ def load_predictor(
     """
     pretrained_models = pretrained_models or get_pretrained_models()
     model_card = pretrained_models[model_id]
-    if model_card.archive_file is None:
+    if model_card.model_usage.archive_file is None:
         raise ValueError(f"archive_file is required in the {model_card}")
     return Predictor.from_path(
-        model_card.archive_file,
+        model_card.model_usage.archive_file,
         predictor_name=model_card.registered_predictor_name,
         overrides=overrides,
     )

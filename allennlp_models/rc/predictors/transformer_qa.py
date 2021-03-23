@@ -61,15 +61,17 @@ class TransformerQAPredictor(Predictor):
         # the 'passage' key was only added to be compatible with the input for other
         # RC models.
         context = json_dict["passage"] if "passage" in json_dict else json_dict["context"]
-        result = list(
-            self._dataset_reader.make_instances(
-                qid=str(self._next_qid),
-                question=json_dict["question"],
-                answers=[],
-                context=context,
-                first_answer_offset=None,
-            )
-        )
+        result: List[Instance] = []
+        for instance in self._dataset_reader.make_instances(
+            qid=str(self._next_qid),
+            question=json_dict["question"],
+            answers=[],
+            context=context,
+            first_answer_offset=None,
+            is_training=False,
+        ):
+            self._dataset_reader.apply_token_indexers(instance)
+            result.append(instance)
         self._next_qid += 1
         return result
 

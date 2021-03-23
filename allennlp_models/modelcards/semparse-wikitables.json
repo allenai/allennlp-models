@@ -1,0 +1,70 @@
+{
+    "id": "semparse-wikitables",
+    "registered_model_name": null,
+    "registered_predictor_name": null,
+    "display_name": "WikiTables Semantic Parsing",
+    "task_id": "semparse-tabular",
+    "model_details": {
+        "description": "The model is a semantic parser trained on WikiTableQuestions.",
+        "short_description": "The model is a semantic parser trained on WikiTableQuestions.",
+        "developed_by": "Dasigi et al",
+        "contributed_by": null,
+        "date": "2020-02-10",
+        "version": "1",
+        "model_type": null,
+        "paper": {
+            "citation": "\n@inproceedings{Dasigi2019IterativeSF,\ntitle={Iterative Search for Weakly Supervised Semantic Parsing},\nauthor={Pradeep Dasigi and Matt Gardner and Shikhar Murty and Luke Zettlemoyer and E. Hovy},\nbooktitle={NAACL-HLT},\nyear={2019}}\n",
+            "title": "Iterative Search for Weakly Supervised Semantic Parsing",
+            "url": "https://api.semanticscholar.org/CorpusID:174799945"
+        },
+        "license": null,
+        "contact": "allennlp-contact@allenai.org"
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "1. `lf_retrieval_acc`; the percentage of the time that our best output action sequence is in the set of action sequences provided by offline search.\n2. `denotation_acc`; the percentage of examples where we get the correct denotation.\n3. `lf_percent`; the percentage of time that decoding actually produces a finished logical form",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": {
+            "name": "WikiTableQuestions",
+            "url": "https://ppasupat.github.io/WikiTableQuestions/",
+            "notes": "Please download the data from the url provided."
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": {
+            "name": "WikiTableQuestions",
+            "url": "https://ppasupat.github.io/WikiTableQuestions/",
+            "notes": "Please download the data from the url provided."
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "model_caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "wikitables-model-2020.02.10.tar.gz",
+        "training_config": null,
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+    }
+}

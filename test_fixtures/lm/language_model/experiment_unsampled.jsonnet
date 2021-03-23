@@ -64,8 +64,13 @@
       "type": "sgd",
       "lr": 0.01
     },
-    "tensorboard_writer": {
-      "batch_size_interval": 1
-    }
+    "callbacks": [
+      {
+        "type": "tensorboard",
+        "tensorboard_writer": {
+            "batch_size_interval": 1,
+        }
+      },
+    ],
   }
 }

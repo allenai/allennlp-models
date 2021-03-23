@@ -46,9 +46,19 @@ class Seq2SeqDatasetReader(DatasetReader):
         Indexers used to define output (target side) token representations. Defaults to
         `source_token_indexers`.
     source_add_start_token : `bool`, (optional, default=`True`)
-        Whether or not to add `START_SYMBOL` to the beginning of the source sequence.
+        Whether or not to add `start_symbol` to the beginning of the source sequence.
     source_add_end_token : `bool`, (optional, default=`True`)
-        Whether or not to add `END_SYMBOL` to the end of the source sequence.
+        Whether or not to add `end_symbol` to the end of the source sequence.
+    target_add_start_token : `bool`, (optional, default=`True`)
+        Whether or not to add `start_symbol` to the beginning of the target sequence.
+    target_add_end_token : `bool`, (optional, default=`True`)
+        Whether or not to add `end_symbol` to the end of the target sequence.
+    start_symbol : `str`, (optional, default=`START_SYMBOL`)
+        The special token to add to the end of the source sequence or the target sequence if
+        `source_add_start_token` or `target_add_start_token` respectively.
+    end_symbol : `str`, (optional, default=`END_SYMBOL`)
+        The special token to add to the end of the source sequence or the target sequence if
+        `source_add_end_token` or `target_add_end_token` respectively.
     delimiter : `str`, (optional, default=`"\t"`)
         Set delimiter for tsv/csv file.
     quoting : `int`, (optional, default=`csv.QUOTE_MINIMAL`)
@@ -73,7 +83,9 @@ class Seq2SeqDatasetReader(DatasetReader):
         quoting: int = csv.QUOTE_MINIMAL,
         **kwargs,
     ) -> None:
-        super().__init__(**kwargs)
+        super().__init__(
+            manual_distributed_sharding=True, manual_multiprocess_sharding=True, **kwargs
+        )
         self._source_tokenizer = source_tokenizer or SpacyTokenizer()
         self._target_tokenizer = target_tokenizer or self._source_tokenizer
         self._source_token_indexers = source_token_indexers or {"tokens": SingleIdTokenIndexer()}
@@ -91,15 +103,22 @@ class Seq2SeqDatasetReader(DatasetReader):
             or target_add_start_token
             or target_add_end_token
         ):
+            # Check that the tokenizer correctly appends the start and end tokens to
+            # the sequence without splitting them.
+            tokens = self._source_tokenizer.tokenize(start_symbol + " " + end_symbol)
+            err_msg = (
+                f"Bad start or end symbol ('{start_symbol}', '{end_symbol}') "
+                f"for tokenizer {self._source_tokenizer}"
+            )
             try:
-                self._start_token, self._end_token = self._source_tokenizer.tokenize(
-                    start_symbol + " " + end_symbol
-                )
-            except ValueError:
-                raise ValueError(
-                    f"Bad start or end symbol ('{start_symbol}', '{end_symbol}') "
-                    f"for tokenizer {self._source_tokenizer}"
-                )
+                start_token, end_token = tokens[0], tokens[-1]
+            except IndexError:
+                raise ValueError(err_msg)
+            if start_token.text != start_symbol or end_token.text != end_symbol:
+                raise ValueError(err_msg)
+
+            self._start_token = start_token
+            self._end_token = end_token
 
         self._delimiter = delimiter
         self._source_max_tokens = source_max_tokens
@@ -115,8 +134,8 @@ class Seq2SeqDatasetReader(DatasetReader):
         self._target_max_exceeded = 0
         with open(cached_path(file_path), "r") as data_file:
             logger.info("Reading instances from lines in file at: %s", file_path)
-            for line_num, row in enumerate(
-                csv.reader(data_file, delimiter=self._delimiter, quoting=self.quoting)
+            for line_num, row in self.shard_iterable(
+                enumerate(csv.reader(data_file, delimiter=self._delimiter, quoting=self.quoting))
             ):
                 if len(row) != 2:
                     raise ConfigurationError(
@@ -151,7 +170,7 @@ class Seq2SeqDatasetReader(DatasetReader):
             tokenized_source.insert(0, copy.deepcopy(self._start_token))
         if self._source_add_end_token:
             tokenized_source.append(copy.deepcopy(self._end_token))
-        source_field = TextField(tokenized_source, self._source_token_indexers)
+        source_field = TextField(tokenized_source)
         if target_string is not None:
             tokenized_target = self._target_tokenizer.tokenize(target_string)
             if self._target_max_tokens and len(tokenized_target) > self._target_max_tokens:
@@ -161,7 +180,13 @@ class Seq2SeqDatasetReader(DatasetReader):
                 tokenized_target.insert(0, copy.deepcopy(self._start_token))
             if self._target_add_end_token:
                 tokenized_target.append(copy.deepcopy(self._end_token))
-            target_field = TextField(tokenized_target, self._target_token_indexers)
+            target_field = TextField(tokenized_target)
             return Instance({"source_tokens": source_field, "target_tokens": target_field})
         else:
             return Instance({"source_tokens": source_field})
+
+    @overrides
+    def apply_token_indexers(self, instance: Instance) -> None:
+        instance.fields["source_tokens"]._token_indexers = self._source_token_indexers  # type: ignore
+        if "target_tokens" in instance.fields:
+            instance.fields["target_tokens"]._token_indexers = self._target_token_indexers  # type: ignore

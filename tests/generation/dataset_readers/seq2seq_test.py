@@ -9,9 +9,8 @@ from tests import FIXTURES_ROOT
 
 
 class TestSeq2SeqDatasetReader:
-    @pytest.mark.parametrize("lazy", (True, False))
-    def test_default_format(self, lazy):
-        reader = Seq2SeqDatasetReader(lazy=lazy)
+    def test_default_format(self):
+        reader = Seq2SeqDatasetReader()
         instances = reader.read(str(FIXTURES_ROOT / "generation" / "seq2seq_copy.tsv"))
         instances = ensure_list(instances)
 
@@ -83,29 +82,6 @@ class TestSeq2SeqDatasetReader:
             "a",
             "sentence",
             "@end@",
-        ]
-        assert [t.text for t in fields["target_tokens"].tokens] == [
-            "@start@",
-            "this",
-            "is",
-            "a",
-            "sentence",
-            "@end@",
-        ]
-
-    def test_source_add_end_token(self):
-        reader = Seq2SeqDatasetReader(source_add_end_token=False)
-        instances = reader.read(str(FIXTURES_ROOT / "generation" / "seq2seq_copy.tsv"))
-        instances = ensure_list(instances)
-
-        assert len(instances) == 3
-        fields = instances[0].fields
-        assert [t.text for t in fields["source_tokens"].tokens] == [
-            "@start@",
-            "this",
-            "is",
-            "a",
-            "sentence",
         ]
         assert [t.text for t in fields["target_tokens"].tokens] == [
             "@start@",
@@ -192,7 +168,7 @@ class TestSeq2SeqDatasetReader:
             fp_tmp.flush()
             reader = Seq2SeqDatasetReader()
             with pytest.raises(ConfigurationError):
-                reader.read(fp_tmp.name)
+                list(reader.read(fp_tmp.name))
 
     @pytest.mark.parametrize("line", (("a b\tc d\n"), ('"a b"\t"c d"\n')))
     def test_correct_quote_handling(self, line):

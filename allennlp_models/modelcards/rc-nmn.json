@@ -1,0 +1,65 @@
+{
+    "id": "rc-nmn",
+    "registered_model_name": null,
+    "registered_predictor_name": null,
+    "display_name": "Neural Module Network (NMN)",
+    "task_id": "rc",
+    "model_details": {
+        "description": "A neural module network trained on DROP.",
+        "short_description": "A neural module network trained on DROP.",
+        "developed_by": "Andreas et al",
+        "contributed_by": null,
+        "date": "2020-04-04",
+        "version": "1",
+        "model_type": "Neural Module Network",
+        "paper": {
+            "citation": "\n@article{Andreas2016NeuralMN,\ntitle={Neural Module Networks},\nauthor={Jacob Andreas and Marcus Rohrbach and Trevor Darrell and D. Klein},\njournal={2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},\nyear={2016},\npages={39-48}}\n",
+            "title": "Neural Module Networks",
+            "url": "https://api.semanticscholar.org/CorpusID:5276660"
+        },
+        "license": null,
+        "contact": "allennlp-contact@allenai.org"
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": null,
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": null,
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": {
+            "name": "DROP",
+            "url": "https://allennlp.org/drop"
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "model_caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "drop-nmn-2020.04.04.tar.gz",
+        "training_config": null,
+        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+    }
+}

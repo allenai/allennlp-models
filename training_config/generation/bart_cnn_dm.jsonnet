@@ -43,10 +43,6 @@ local dev_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_
         "learning_rate_scheduler": {
             "type": "polynomial_decay",
         },
-        "tensorboard_writer": {
-            "summary_interval": 4,
-            "should_log_learning_rate": true
-        },
         "grad_norm": 1.0,
     }
 }

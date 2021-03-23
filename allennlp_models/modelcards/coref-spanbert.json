@@ -4,30 +4,21 @@
     "registered_predictor_name": null,
     "display_name": "Coreference Resolution",
     "task_id": "coref",
-    "archive_file": "coref-spanbert-large-2020.02.27.tar.gz",
     "model_details": {
-        "description": "The basic outline of this model is to get an embedded representation
-                        of each span in the document. These span representations are scored 
-                        and used to prune away spans that are unlikely to occur in a coreference 
-                        cluster. For the remaining spans, the model decides which antecedent
-                        span (if any) they are coreferent with. The resulting coreference links, after applying
-                        transitivity, imply a clustering of the spans in the document.
-                        The GloVe embeddings in the original paper have been substituted with SpanBERT embeddings.",
+        "description": "The basic outline of this model is to get an embedded representation of each span in the document. These span representations are scored  and used to prune away spans that are unlikely to occur in a coreference  cluster. For the remaining spans, the model decides which antecedent span (if any) they are coreferent with. The resulting coreference links, after applying transitivity, imply a clustering of the spans in the document. The GloVe embeddings in the original paper have been substituted with SpanBERT embeddings.",
         "short_description": "Higher-order coref with coarse-to-fine inference (with SpanBERT embeddings).",
         "developed_by": "Lee et al",
         "contributed_by": "Zhaofeng Wu",
         "date": "2020-02-27",
         "version": "2",
         "model_type": "SpanBERT",
-        "paper": "[Higher-order Coreference Resolution with Coarse-to-fine Inference](https://api.semanticscholar.org/CorpusID:4891749)",
-        "citation": "@inproceedings{Lee2018HigherorderCR,
-                     title={Higher-order Coreference Resolution with Coarse-to-fine Inference},
-                     author={Kenton Lee and Luheng He and L. Zettlemoyer},
-                     booktitle={NAACL-HLT},
-                     year={2018}}",
+        "paper": {
+            "citation": "\n@inproceedings{Lee2018HigherorderCR,\ntitle={Higher-order Coreference Resolution with Coarse-to-fine Inference},\nauthor={Kenton Lee and Luheng He and L. Zettlemoyer},\nbooktitle={NAACL-HLT},\nyear={2018}}\n",
+            "title": "Higher-order Coreference Resolution with Coarse-to-fine Inference",
+            "url": "https://api.semanticscholar.org/CorpusID:4891749"
+        },
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
-        "training_config": "coref/coref_spanbert_large.jsonnet"
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,
@@ -44,12 +35,22 @@
         "variation_approaches": null
     },
     "evaluation_data": {
-        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
+        "dataset": {
+            "name": "Ontonotes 5.0",
+            "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
+            "notes": "The Coreference model was evaluated on the CoNLL 2012 dataset. Unfortunately we cannot release this data due to licensing restrictions by the LDC. To compile the data in the right format for evaluating the Coreference model, please see scripts/compile_coref_data.sh. This script requires the Ontonotes 5.0 dataset, available on the LDC website.",
+            "processed_url": "/path/to/dataset"
+        },
         "motivation": null,
         "preprocessing": null
     },
     "training_data": {
-        "dataset": "[Ontonotes 5.0](https://catalog.ldc.upenn.edu/LDC2013T19)",
+        "dataset": {
+            "name": "Ontonotes 5.0",
+            "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
+            "notes": "The Coreference model was evaluated on the CoNLL 2012 dataset. Unfortunately we cannot release this data due to licensing restrictions by the LDC. To compile the data in the right format for evaluating the Coreference model, please see scripts/compile_coref_data.sh. This script requires the Ontonotes 5.0 dataset, available on the LDC website.",
+            "processed_url": "/path/to/dataset"
+        },
         "motivation": null,
         "preprocessing": null
     },
@@ -57,10 +58,15 @@
         "unitary_results": null,
         "intersectional_results": null
     },
-    "ethical_considerations": {
+    "model_caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    },
+    "model_ethical_considerations": {
         "ethical_considerations": null
     },
-    "caveats_and_recommendations": {
-        "caveats_and_recommendations": null
+    "model_usage": {
+        "archive_file": "coref-spanbert-large-2021.03.10.tar.gz",
+        "training_config": "coref/coref_spanbert_large.jsonnet",
+        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
     }
 }
