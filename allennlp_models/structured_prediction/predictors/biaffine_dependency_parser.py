@@ -88,7 +88,7 @@ class BiaffineDependencyParserPredictor(Predictor):
     ) -> None:
         super().__init__(model, dataset_reader)
         # TODO(Mark) Make the language configurable and based on a model attribute.
-        self._tokenizer = SpacyTokenizer(language=language, pos_tags=True)
+        self._tokenizer = SpacyTokenizer(language=language)
 
     def predict(self, sentence: str) -> JsonDict:
         """

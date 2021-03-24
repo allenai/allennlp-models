@@ -3,7 +3,6 @@
     "type": "seq2seq",
     "source_tokenizer": {
       "type": "spacy",
-      "pos_tags": true,
       "parse": true,
       "ner": true
     },

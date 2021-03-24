@@ -22,7 +22,7 @@ class SemanticRoleLabelerPredictor(Predictor):
     ) -> None:
         super().__init__(model, dataset_reader)
         self._language = language
-        self._tokenizer = SpacyTokenizer(language=language, pos_tags=True)
+        self._tokenizer = SpacyTokenizer(language=language)
 
     def predict(self, sentence: str) -> JsonDict:
         """
