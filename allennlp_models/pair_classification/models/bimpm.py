@@ -245,4 +245,27 @@ class BiMpm(Model):
             metric_name: metric.get_metric(reset) for metric_name, metric in self.metrics.items()
         }
 
+    @overrides
+    def make_output_human_readable(
+        self, output_dict: Dict[str, torch.Tensor]
+    ) -> Dict[str, torch.Tensor]:
+        """
+        Does a simple argmax over the probabilities, converts index to string label, and
+        add `"label"` key to the dictionary with the result.
+        """
+        predictions = output_dict["label_probs"]
+        if predictions.dim() == 2:
+            predictions_list = [predictions[i] for i in range(predictions.shape[0])]
+        else:
+            predictions_list = [predictions]
+        classes = []
+        for prediction in predictions_list:
+            label_idx = prediction.argmax(dim=-1).item()
+            label_str = self.vocab.get_index_to_token_vocabulary("labels").get(
+                label_idx, str(label_idx)
+            )
+            classes.append(label_str)
+        output_dict["label"] = classes
+        return output_dict
+
     default_predictor = "textual_entailment"
