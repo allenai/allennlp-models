@@ -227,19 +227,6 @@ class BiMpm(Model):
         return output_dict
 
     @overrides
-    def make_output_human_readable(
-        self, output_dict: Dict[str, torch.Tensor]
-    ) -> Dict[str, torch.Tensor]:
-        """
-        Converts indices to string labels, and adds a `"label"` key to the result.
-        """
-        predictions = output_dict["probs"].cpu().data.numpy()
-        argmax_indices = numpy.argmax(predictions, axis=-1)
-        labels = [self.vocab.get_token_from_index(x, namespace="labels") for x in argmax_indices]
-        output_dict["label"] = labels
-        return output_dict
-
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return {
             metric_name: metric.get_metric(reset) for metric_name, metric in self.metrics.items()
