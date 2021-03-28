@@ -6,7 +6,6 @@ from typing import Dict, List, Any
 
 from overrides import overrides
 import torch
-import numpy
 
 from allennlp.common.checks import check_dimensions_match
 from allennlp.data import TextFieldTensors, Vocabulary
