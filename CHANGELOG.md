@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix bug in `experiment_from_huggingface.jsonnet` by changing `min_count` to have key `labels` instead of `answers`. Resolves failure of model checks that involve calling `_extend` in `vocabulary.py`
 
+### Added
+
+- Added script that produces the coref training data.
+
 
 ## [v2.2.0](https://github.com/allenai/allennlp-models/releases/tag/v2.2.0) - 2021-03-26
 
