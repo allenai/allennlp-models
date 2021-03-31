@@ -5,7 +5,7 @@ import numpy
 from overrides import overrides
 import torch
 from torch.nn.modules.linear import Linear
-from torch.nn.modules.rnn import LSTMCell
+from torch.nn.modules.rnn import LSTMCell, LSTM
 
 from allennlp.common.util import START_SYMBOL, END_SYMBOL
 from allennlp.data import TextFieldTensors, Vocabulary
@@ -68,6 +68,8 @@ class CopyNetSeq2Seq(Model):
         in the batch and the second is a gold sequence for each item in the batch.
     initializer : `InitializerApplicator`, optional
         An initialization strategy for the model weights.
+    target_decoder_layers : `int`, optional (default = `1`)
+        Nums of layer for decoder
     """
 
     def __init__(
@@ -84,6 +86,7 @@ class CopyNetSeq2Seq(Model):
         tensor_based_metric: Metric = None,
         token_based_metric: Metric = None,
         initializer: InitializerApplicator = InitializerApplicator(),
+        target_decoder_layers: int = 1,
     ) -> None:
         super().__init__(vocab)
         self._target_namespace = target_namespace
@@ -101,6 +104,12 @@ class CopyNetSeq2Seq(Model):
         self._token_based_metric = token_based_metric
 
         self._target_vocab_size = self.vocab.get_vocab_size(self._target_namespace)
+
+        self._target_decoder_layers = target_decoder_layers
+        if self._target_decoder_layers > 1:
+            self._has_multiple_target_decoder_layers = True
+        else:
+            self._has_multiple_target_decoder_layers = False
 
         # Encoding modules.
         self._source_embedder = source_embedder
@@ -128,9 +137,16 @@ class CopyNetSeq2Seq(Model):
             target_embedding_dim + self.encoder_output_dim * 2, self.decoder_input_dim
         )
 
-        # We then run the projected decoder input through an LSTM cell to produce
-        # the next hidden state.
-        self._decoder_cell = LSTMCell(self.decoder_input_dim, self.decoder_output_dim)
+        # We then run the projected decoder input through an LSTM cell or LSTM based on target decoder layer
+        # to produce the next hidden state.
+        if self._has_multiple_target_decoder_layers:
+            # Use LSTM for multi layer
+            self._decoder_cell = LSTM(
+                self.decoder_input_dim, self.decoder_output_dim, self._target_decoder_layers
+            )
+        else:
+            # Use LSTMCell for one layer because it is slightly faster
+            self._decoder_cell = LSTMCell(self.decoder_input_dim, self.decoder_output_dim)
 
         # We create a "generation" score for each token in the target vocab
         # with a linear projection of the decoder hidden state.
@@ -299,6 +315,15 @@ class CopyNetSeq2Seq(Model):
             batch_size, self.decoder_output_dim
         )
 
+        if self._has_multiple_target_decoder_layers:
+            # shape: (num_layers, batch_size, decoder_output_dim)
+            state["decoder_hidden"] = (
+                state["decoder_hidden"].unsqueeze(0).repeat(self._target_decoder_layers, 1, 1)
+            )
+            # shape: (num_layers, batch_size, decoder_output_dim)
+            state["decoder_context"] = (
+                state["decoder_context"].unsqueeze(0).repeat(self._target_decoder_layers, 1, 1)
+            )
         return state
 
     def _encode(self, source_tokens: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
@@ -323,10 +348,22 @@ class CopyNetSeq2Seq(Model):
         encoder_outputs_mask = state["source_mask"]
         # shape: (group_size, target_embedding_dim)
         embedded_input = self._target_embedder(last_predictions)
-        # shape: (group_size, source_sequence_length)
-        attentive_weights = self._attention(
-            state["decoder_hidden"], state["encoder_outputs"], encoder_outputs_mask
-        )
+        # shape: (num_layers, group_size, decoder_output_dim)
+        decoder_hidden = state["decoder_hidden"]
+        # shape: (num_layers, group_size, decoder_output_dim)
+        decoder_context = state["decoder_context"]
+
+        if self._has_multiple_target_decoder_layers:
+            # shape: (group_size, source_sequence_length)
+            attentive_weights = self._attention(
+                decoder_hidden[0], state["encoder_outputs"], encoder_outputs_mask
+            )
+        else:
+            # shape: (group_size, source_sequence_length)
+            attentive_weights = self._attention(
+                decoder_hidden, state["encoder_outputs"], encoder_outputs_mask
+            )
+
         # shape: (group_size, encoder_output_dim)
         attentive_read = util.weighted_sum(state["encoder_outputs"], attentive_weights)
         # shape: (group_size, encoder_output_dim)
@@ -336,15 +373,35 @@ class CopyNetSeq2Seq(Model):
         # shape: (group_size, decoder_input_dim)
         projected_decoder_input = self._input_projection_layer(decoder_input)
 
-        state["decoder_hidden"], state["decoder_context"] = self._decoder_cell(
-            projected_decoder_input.float(),
-            (state["decoder_hidden"].float(), state["decoder_context"].float()),
-        )
+        if self._has_multiple_target_decoder_layers:
+            projected_decoder_input = projected_decoder_input.unsqueeze(0)
 
+            # shape (decoder_hidden): (num_layers, batch_size, decoder_output_dim)
+            # shape (decoder_context): (num_layers, batch_size, decoder_output_dim)
+            _, (decoder_hidden, decoder_context) = self._decoder_cell(
+                projected_decoder_input.float(), (decoder_hidden.float(), decoder_context.float())
+            )
+        else:
+            # shape (decoder_hidden): (num_layers, batch_size, decoder_output_dim)
+            # shape (decoder_context): (num_layers, batch_size, decoder_output_dim)
+            decoder_hidden, decoder_context = self._decoder_cell(
+                projected_decoder_input.float(),
+                (decoder_hidden.float(), decoder_context.float()),
+            )
+
+        state["decoder_hidden"] = decoder_hidden
+        state["decoder_context"] = decoder_context
         return state
 
     def _get_generation_scores(self, state: Dict[str, torch.Tensor]) -> torch.Tensor:
-        return self._output_generation_layer(state["decoder_hidden"])
+        decoder_hidden = state["decoder_hidden"]
+        if self._has_multiple_target_decoder_layers:
+            # shape: (batch_size, target_vocab_size)
+            output_projections = self._output_generation_layer(decoder_hidden[-1])
+        else:
+            # shape: (batch_size, target_vocab_size)
+            output_projections = self._output_generation_layer(decoder_hidden)
+        return output_projections
 
     def _get_copy_scores(self, state: Dict[str, torch.Tensor]) -> torch.Tensor:
         # shape: (batch_size, source_sequence_length, encoder_output_dim)
@@ -353,8 +410,13 @@ class CopyNetSeq2Seq(Model):
         copy_projection = self._output_copying_layer(encoder_outputs)
         # shape: (batch_size, source_sequence_length, decoder_output_dim)
         copy_projection = torch.tanh(copy_projection)
-        # shape: (batch_size, source_sequence_length)
-        copy_scores = copy_projection.bmm(state["decoder_hidden"].unsqueeze(-1)).squeeze(-1)
+
+        if self._has_multiple_target_decoder_layers:
+            # shape: (batch_size, source_sequence_length)
+            copy_scores = copy_projection.bmm(state["decoder_hidden"][-1].unsqueeze(-1)).squeeze(-1)
+        else:
+            # shape: (batch_size, source_sequence_length)
+            copy_scores = copy_projection.bmm(state["decoder_hidden"].unsqueeze(-1)).squeeze(-1)
         return copy_scores
 
     def _get_ll_contrib(

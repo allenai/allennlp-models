@@ -1,3 +1,5 @@
+import json
+
 import numpy as np
 from scipy.special import logsumexp
 import torch
@@ -20,6 +22,12 @@ class CopyNetTest(ModelTestCase):
 
     def test_model_can_train_save_load(self):
         self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-2)
+
+    def test_multi_layer_decoder_model_can_train_save_and_load(self):
+        param_overrides = json.dumps({"model": {"target_decoder_layers": 3}})
+        self.ensure_model_can_train_save_and_load(
+            self.param_file, tolerance=1e-2, overrides=param_overrides
+        )
 
     @requires_gpu
     def test_model_can_train_with_amp(self):
@@ -330,3 +338,9 @@ class CopyNetTransformerTest(ModelTestCase):
 
     def test_model_can_train_save_load_predict(self):
         self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-2)
+
+    def test_multi_layer_decoder_model_can_train_save_and_load(self):
+        param_overrides = json.dumps({"model": {"target_decoder_layers": 3}})
+        self.ensure_model_can_train_save_and_load(
+            self.param_file, tolerance=1e-2, overrides=param_overrides
+        )
