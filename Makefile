@@ -58,7 +58,7 @@ format :
 
 .PHONY : typecheck
 typecheck :
-	mypy allennlp_models tests --ignore-missing-imports --no-strict-optional --no-site-packages
+	mypy allennlp_models tests --ignore-missing-imports --no-strict-optional --no-site-packages --cache-dir=/dev/null
 
 .PHONY : test
 test :

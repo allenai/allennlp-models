@@ -1,4 +1,4 @@
-local model_name = "t5-small"; // TODO: change
+local model_name = "t5-small"; // TODO: change to large model
 local data_base_url = "https://storage.googleapis.com/allennlp-public-data/cnndm-combined-data-2020.07.13.tar.gz";
 local train_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_train.txt";
 local dev_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_val.txt";
@@ -19,8 +19,9 @@ local dev_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_
                 "namespace": "tokens",
             }
         },
-        "source_max_tokens": 1022,
+        "source_max_tokens": 512,
         "target_max_tokens": 54,
+        "source_prefix": "summarize: ",
         "max_instances": 1000 // DEBUG setting
     },
     "model": {
