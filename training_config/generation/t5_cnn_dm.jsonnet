@@ -26,10 +26,7 @@ local dev_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_
     },
     "model": {
         "type": "t5",
-        "t5_model": {
-            "type": "from_pretrained",
-            "pretrained_module": model_name,
-        },
+        "model_name": model_name,
     },
     "data_loader": {
         "batch_size": 4,
