@@ -99,6 +99,6 @@ local span_pair_embedding_dim = 3 * span_embedding_dim + feature_size;
         [[".*transformer.*"], {"lr": 1e-5}]
       ]
     },
-    "enable_default_callbacks": false
+    "run_sanity_checks": false
   }
 }
