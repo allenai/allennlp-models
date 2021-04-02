@@ -60,3 +60,9 @@ class TestDecomposableAttention(ModelTestCase):
         params["model"]["aggregate_feedforward"]["output_dim"] = 10
         with pytest.raises(ConfigurationError):
             Model.from_params(vocab=self.vocab, params=params.pop("model"))
+
+    def test_decode_runs_correctly(self):
+        training_tensors = self.dataset.as_tensor_dict()
+        output_dict = self.model(**training_tensors)
+        decode_output_dict = self.model.make_output_human_readable(output_dict)
+        assert "label" in decode_output_dict
