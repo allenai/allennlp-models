@@ -216,7 +216,7 @@ class BiMpm(Model):
         )
         probs = torch.nn.functional.softmax(logits, dim=-1)
 
-        output_dict = {"logits": logits, "probs": probs}
+        output_dict = {"logits": logits, "label_probs": probs}
         if label is not None:
             loss = self.loss(logits, label)
             for metric in self.metrics.values():
