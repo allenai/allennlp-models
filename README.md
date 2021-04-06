@@ -104,7 +104,7 @@ This is an overview of the tasks supported by the AllenNLP Models library along 
 ### Pre-trained models
 
 Every pretrained model in AllenNLP Models has a corresponding [`ModelCard`](https://docs.allennlp.org/main/api/common/model_card/#modelcard) in the [`allennlp_models/modelcards/`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards) folder.
-Many of these models are also hosted on the [AllenNLP Demo](https://demo.allennlp.org).
+Many of these models are also hosted on the [AllenNLP Demo](https://demo.allennlp.org) and the [AllenNLP Project Gallery](https://gallery.allennlp.org/).
 
 To programmatically list the available models, you can run the following from a Python session:
 
