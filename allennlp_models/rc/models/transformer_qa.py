@@ -198,7 +198,8 @@ class TransformerQA(Model):
             "best_span_scores": best_span_scores,
             "span_start_probs": span_start_probs,
             "span_end_probs": span_end_probs,
-            "best_span_probs": best_span_probs,        }
+            "best_span_probs": best_span_probs,
+        }
 
         # Compute the loss.
         if answer_span is not None:
