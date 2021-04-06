@@ -1,6 +1,10 @@
 <div align="center">
     <br>
-    <img src="https://raw.githubusercontent.com/allenai/allennlp/main/docs/img/allennlp-logo-dark.png" width="400"/>
+    <a href="https://github.com/allenai/allennlp">
+      <img src="https://raw.githubusercontent.com/allenai/allennlp/main/docs/img/allennlp-logo-dark.png" width="400"/>
+    </a>
+    <br>
+    <br>
     <p>
     Officially supported AllenNLP models.
     </p>
