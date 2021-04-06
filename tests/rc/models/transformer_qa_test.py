@@ -46,16 +46,22 @@ class TransformerQaTest(ModelTestCase):
 
         output_span_start_probs = output_dict["span_start_probs"][0].data.numpy()
         output_span_end_probs = output_dict["span_end_probs"][0].data.numpy()
+        summed_output_best_span_prob = numpy.sum(output_dict["best_span_probs"][0].data.numpy(), -1)
         assert_almost_equal(numpy.sum(output_span_start_probs, -1), 1, decimal=6)
         assert_almost_equal(numpy.sum(output_span_end_probs, -1), 1, decimal=6)
+        assert summed_output_best_span_prob > 0 and summed_output_best_span_prob <= 1
         span_start_probs = torch.nn.functional.softmax(output_dict["span_start_logits"], dim=-1)[
             0
         ].data.numpy()
         span_end_probs = torch.nn.functional.softmax(output_dict["span_end_logits"], dim=-1)[
             0
         ].data.numpy()
+        best_span_prob = numpy.sum(
+            torch.nn.functional.softmax(output_dict["best_span_scores"], dim=-1)[0].data.numpy(), -1
+        )
         assert_almost_equal(numpy.sum(span_start_probs, -1), 1, decimal=6)
         assert_almost_equal(numpy.sum(span_end_probs, -1), 1, decimal=6)
+        assert best_span_prob > 0 and best_span_prob <= 1
         span_start, span_end = tuple(output_dict["best_span"][0].data.numpy())
         assert span_start >= -1
         assert span_start <= span_end

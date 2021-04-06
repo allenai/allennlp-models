@@ -185,10 +185,9 @@ class TransformerQA(Model):
         ) + torch.gather(span_end_logits, 1, best_spans[:, 1].unsqueeze(1))
         best_span_scores = best_span_scores.squeeze(1)
 
-        best_span_probs = (
-            torch.gather(span_start_probs, 1, best_spans[:, 0].unsqueeze(1))
-            + torch.gather(span_end_probs, 1, best_spans[:, 1].unsqueeze(1))
-        ) / 2
+        best_span_probs = torch.gather(
+            span_start_probs, 1, best_spans[:, 0].unsqueeze(1)
+        ) * torch.gather(span_end_probs, 1, best_spans[:, 1].unsqueeze(1))
         best_span_probs = best_span_probs.squeeze(1)
 
         output_dict = {
