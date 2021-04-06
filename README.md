@@ -37,49 +37,55 @@ This is an overview of the tasks supported by the AllenNLP Models library along 
 
 - [**Classification**](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/classification)
   
-  Classification is a broad category that contains many more specific tasks such as Sentiment Analysis and Binary Question Answering.
+  Classification tasks involve predicting one or more labels from a predefined set to assign to each input. Examples include Sentiment Analysis, where the labels might be `{"positive", "negative", "neutral"}`, and Binary Question Answering, where the labels are `{True, False}`.
 
   🛠 **Components provided:** Dataset readers for various datasets, including [BoolQ](https://docs.allennlp.org/models/main/models/classification/dataset_readers/boolq/) and [SST](https://docs.allennlp.org/models/main/models/classification/dataset_readers/stanford_sentiment_tree_bank/), as well as a [Biattentive Classification Network](https://docs.allennlp.org/models/main/models/classification/models/biattentive_classification_network/) model.
 
 - [**Coreference Resolution**](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/coref)
 
-  Coreference resolution is the task of finding all expressions that refer to the same entity in a text. It is an important step for many higher level NLP tasks that involve natural language understanding such as document summarization, question answering, and information extraction.
+  Coreference resolution tasks require finding all of the expressions in a text that refer to common entities.
+
+  <div align="center">
+  <a href="https://nlp.stanford.edu/projects/coref.shtml"><img src="https://nlp.stanford.edu/projects/corefexample.png" width="300" /></a>
+  </div>
+
+  See [nlp.stanford.edu/projects/coref](https://nlp.stanford.edu/projects/coref.shtml) for more details.
 
   🛠 **Components provided:** A general [Coref](https://docs.allennlp.org/models/main/models/coref/models/coref/) model and several dataset readers.
 
 - [**Generation**](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/generation)
 
-  This is a category for tasks such as Summarization that involve generating unstructered and often variable-length text.
+  This is a broad category for tasks such as Summarization that involve generating unstructered and often variable-length text.
 
   🛠 **Components provided:** Several Seq2Seq models such a [Bart](https://docs.allennlp.org/models/main/models/generation/models/bart/), [CopyNet](https://docs.allennlp.org/models/main/models/generation/models/copynet_seq2seq/), and a general [Composed Seq2Seq](https://docs.allennlp.org/models/main/models/generation/models/copynet_seq2seq/), along with corresponding dataset readers.
 
 - [**Language Modeling**](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/lm)
 
-  Language Modeling tasks involve learning a probability distribution over sequences of tokens.
+  Language modeling tasks involve learning a probability distribution over sequences of tokens.
 
   🛠 **Components provided:** Several language model implementations, such as a [Masked LM](https://docs.allennlp.org/models/main/models/lm/models/masked_language_model/) and a [Next Token LM](https://docs.allennlp.org/models/main/models/lm/models/next_token_lm/).
 
 - [**Multiple Choice**](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/mc)
 
-  Multiple Choice tasks are tasks that involve selecting a correct answer out of a set of possible answers, given some input.
+  Multiple choice tasks require selecting a correct choice among alternatives, where the set of choices may be different for each input. This differs from classification where the set of choices is predefined and fixed across all inputs.
 
   🛠 **Components provided:** A [transformer-based multiple choice model](https://docs.allennlp.org/models/main/models/mc/models/transformer_mc/) and a handful of dataset readers for specific datasets.
 
 - [**Pair Classification**](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/pair_classification)
 
-  Pair classification is another broad category that contains more specific tasks such as Textual Entailment, which is the task to determine whether, for a pair of sentences, the facts in the first sentence imply the facts in the second.
+  Pair classification is another broad category that contains tasks such as Textual Entailment, which is to determine whether, for a pair of sentences, the facts in the first sentence imply the facts in the second.
 
   🛠 **Components provided:** Dataset readers for several datasets, including [SNLI](https://docs.allennlp.org/models/main/models/pair_classification/dataset_readers/snli/) and [Quora Paraphrase](https://docs.allennlp.org/models/main/models/pair_classification/dataset_readers/quora_paraphrase/).
 
 - [**Reading Comprehension**](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/rc)
 
-  Reading comprehension is the task of answering questions about a passage of text to show that the system understands the passage.
+  Reading comprehension tasks involve answering questions about a passage of text to show that the system understands the passage.
 
   🛠 **Components provided:** Models such as [BiDAF](https://docs.allennlp.org/models/main/models/rc/models/bidaf/) and a [transformer-based QA model](https://docs.allennlp.org/models/main/models/rc/models/transformer_qa/), as well as readers for datasets such as [DROP](https://docs.allennlp.org/models/main/models/rc/dataset_readers/drop/), [QuAC](https://docs.allennlp.org/models/main/models/rc/dataset_readers/quac/), and [SQuAD](https://docs.allennlp.org/models/main/models/rc/dataset_readers/squad/).
 
 - [**Structured Prediction**](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/structured_prediction)
 
-  Structured Prediction includes tasks such as Semantic Role Labeling (SRL), which is the task of determining the latent predicate argument structure of a sentence and providing representations that can answer basic questions about sentence meaning, including who did what to whom, etc.
+  Structured prediction includes tasks such as Semantic Role Labeling (SRL), which is for determining the latent predicate argument structure of a sentence and providing representations that can answer basic questions about sentence meaning, including who did what to whom, etc.
 
   🛠 **Components provided:** Dataset readers for [Penn Tree Bank](https://docs.allennlp.org/models/main/models/structured_prediction/dataset_readers/penn_tree_bank/), [OntoNotes](https://docs.allennlp.org/models/main/models/structured_prediction/dataset_readers/srl/), etc., and several models including one for [SRL](https://docs.allennlp.org/models/main/models/structured_prediction/models/srl/) and a very general [graph parser](https://docs.allennlp.org/models/main/models/structured_prediction/models/graph_parser/).
 
