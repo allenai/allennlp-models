@@ -1,6 +1,6 @@
 import jsonlines
 import logging
-from typing import Any, Dict, Iterable
+from typing import Any, Dict
 
 from overrides import overrides
 
@@ -8,9 +8,7 @@ from allennlp.data.fields import MetadataField, TextField, LabelField
 from allennlp.common.file_utils import cached_path
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.instance import Instance
-from allennlp.data.tokenizers import Token, PretrainedTransformerTokenizer
-
-from allennlp_models.rc.dataset_readers.utils import char_span_to_token_span
+from allennlp.data.tokenizers import PretrainedTransformerTokenizer
 
 logger = logging.getLogger(__name__)
 
