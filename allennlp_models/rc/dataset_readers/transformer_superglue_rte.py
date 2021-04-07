@@ -31,14 +31,12 @@ class TransformerSuperGlueRteReader(DatasetReader):
 
     # Parameters
 
-    transformer_model_name : `str`, optional (default=`'bert-base-cased'`)
-        This reader chooses tokenizer and token indexer according to this setting.
+    type : `str`, optional (default=`'roberta-base'`)
+        This reader chooses tokenizer according to this setting.
     """
-
-    # todo: fix init
     def __init__(
         self,
-        transformer_model_name: str = "roberta-base",
+        type: str = "roberta-base",
         tokenizer_kwargs: Dict[str, Any] = None,
         **kwargs
     ) -> None:

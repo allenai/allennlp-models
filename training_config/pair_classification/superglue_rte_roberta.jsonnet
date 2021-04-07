@@ -3,7 +3,7 @@ local transformer_dim = 1024;
 
 {
   "dataset_reader":{
-    "transformer_model_name": "transformer_superglue_rte"
+    "type": "transformer_superglue_rte"
   },
   "train_data_path": "https://dl.fbaipublicfiles.com/glue/superglue/data/v2/RTE.zip!train.jsonl",
   "validation_data_path": "https://dl.fbaipublicfiles.com/glue/superglue/data/v2/RTE.zip!val.jsonl",
