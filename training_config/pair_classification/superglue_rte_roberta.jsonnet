@@ -8,13 +8,6 @@ local transformer_dim = 1024;
       "type": "pretrained_transformer",
       "model_name": transformer_model,
       "add_special_tokens": false
-    },
-    "token_indexers": {
-      "tokens": {
-        "type": "pretrained_transformer",
-        "model_name": transformer_model,
-        "max_length": 512
-      }
     }
   },
   "train_data_path": "https://dl.fbaipublicfiles.com/glue/superglue/data/v2/RTE.zip!train.jsonl",

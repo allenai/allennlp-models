@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 
 @DatasetReader.register("transformer_superglue_rte")
 class TransformerSuperGlueRteReader(DatasetReader):
-    # todo: fix comment
     """
     Dataset reader for the SuperGLUE Recognizing Textual Entailment task, to be used with a transformer
     model such as RoBERTa. The dataset is in the JSON Lines format.
@@ -25,11 +24,10 @@ class TransformerSuperGlueRteReader(DatasetReader):
 
      * `tokens`, a `TextField` that contains the concatenation of premise and hypothesis,
      * `label`, a `LabelField` containing the label, if one exists.
-     * `metadata`, a `MetadataField` that stores the instance's ID, the original question, the original
-       passage text, both of these in tokenized form, and the gold answer strings, accessible as
-       `metadata['id']`, `metadata['question']`, `metadata['context']`, `metadata['question_tokens']`,
-       `metadata['context_tokens']`, and `metadata['answers']`. This is so that we can more easily use the
-       official SQuAD evaluation script to get metrics.
+     * `metadata`, a `MetadataField` that stores the instance's index in the file, the original premise,
+       the original hypothesis, both of these in tokenized form, and the gold label, accessible as
+       `metadata['indexd']`, `metadata['premise']`, `metadata['hypothesis']`, `metadata['tokens']`,
+       and `metadata['label']`.
 
     # Parameters
 
