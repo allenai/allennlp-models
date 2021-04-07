@@ -8,7 +8,7 @@
         "archive_file": null,
         "training_config": null,
         "overrides": null,
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0",
+        "install_instructions": "pip install allennlp==2.2.0 allennlp-models==2.2.0"
     },
     "model_details": {
         "description": null,
@@ -21,7 +21,7 @@
         "paper": null,
         "citation": null,
         "license": null,
-        "contact": "allennlp-contact@allenai.org",
+        "contact": "allennlp-contact@allenai.org"
     },
     "intended_use": {
         "primary_uses": null,

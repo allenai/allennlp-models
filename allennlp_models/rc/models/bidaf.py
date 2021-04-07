@@ -25,8 +25,8 @@ logger = logging.getLogger(__name__)
 @Model.register("bidaf")
 class BidirectionalAttentionFlow(Model):
     """
-    This class implements Minjoon Seo's `Bidirectional Attention Flow model
-    <https://www.semanticscholar.org/paper/Bidirectional-Attention-Flow-for-Machine-Seo-Kembhavi/7586b7cca1deba124af80609327395e613a20e9d>`_
+    This class implements Minjoon Seo's [Bidirectional Attention Flow model]
+    (https://www.semanticscholar.org/paper/Bidirectional-Attention-Flow-for-Machine-Seo-Kembhavi/7586b7cca1deba124af80609327395e613a20e9d)
     for answering reading comprehension questions (ICLR 2017).
 
     The basic layout is pretty simple: encode words as a combination of word embeddings and a
