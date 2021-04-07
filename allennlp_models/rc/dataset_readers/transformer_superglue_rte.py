@@ -52,7 +52,7 @@ class TransformerSuperGlueRteReader(DatasetReader):
     @overrides
     def _read(self, file_path: str):
         # if `file_path` is a URL, redirect to the cache
-        file_path = cached_path(file_path)
+        file_path = cached_path(file_path, extract_archive=True)
 
         logger.info("Reading file at %s", file_path)
         yielded_relation_count = 0
