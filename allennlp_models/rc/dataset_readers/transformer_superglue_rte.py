@@ -36,7 +36,7 @@ class TransformerSuperGlueRteReader(DatasetReader):
     """
     def __init__(
         self,
-        type: str = "roberta-base",
+        transformer_model_name: str = "roberta-base",
         tokenizer_kwargs: Dict[str, Any] = None,
         **kwargs
     ) -> None:
