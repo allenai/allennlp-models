@@ -34,6 +34,20 @@ jobs:
         # file with notes on your contribution.
         git diff --name-only $(git merge-base origin/main HEAD) | grep '^CHANGELOG.md$' && echo "Thanks for helping keep our CHANGELOG up-to-date!"
 
+  readme:
+    name: README
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Check that models list is up-to-date
+      run: |
+        # If this step fails, you need to run `python scripts/update_readme_model_list.py`.
+        python scripts/update_readme_model_list.py
+        git diff --exit-code
+
   checks:
     name: Checks
     runs-on: ubuntu-latest

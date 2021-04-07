@@ -30,6 +30,16 @@
 ❗️ To file an issue, please open a ticket on <a href="https://github.com/allenai/allennlp/issues/new/choose">allenai/allennlp</a> and tag it with "Models". ❗️
 </div>
 
+## In this README
+
+- [About](#about)
+    - [Tasks and components](#tasks-and-components)
+    - [Pre-trained models](#pre-trained-models)
+- [Installing](#installing)
+    - [From PyPI](#from-pypi)
+    - [From source](#from-source)
+    - [Using Docker](#using-docker)
+
 ## About
 
 This repository contains the components - such as [`DatasetReader`](https://docs.allennlp.org/main/api/data/dataset_readers/dataset_reader/#datasetreader), [`Model`](https://docs.allennlp.org/main/api/models/model/#model), and [`Predictor`](https://docs.allennlp.org/main/api/predictors/predictor/#predictor) classes - for applying [AllenNLP](https://github.com/allenai/allennlp) to a wide variety of NLP [tasks](#tasks-and-components).
@@ -129,6 +139,45 @@ For example:
 ```python
 >>> pretrained.load_predictor("mc-roberta-swag")
 ```
+
+Here is a list of pre-trained models currently available.
+
+<!-- This section is automatically generated, do not edit by hand! If you need to udpate it, run the script 'scripts/update_readme_model_list.py' -->
+
+- [`coref-spanbert`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/coref-spanbert.json) - Higher-order coref with coarse-to-fine inference (with SpanBERT embeddings).
+- [`evaluate_rc-lerc`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/evaluate_rc-lerc.json) - A BERT model that scores candidate answers from 0 to 1.
+- [`generation-bart`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/generation-bart.json) - BART with a language model head for generation.
+- [`glove-sst`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/glove-sst.json) - LSTM binary classifier with GloVe embeddings.
+- [`lm-masked-language-model`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/lm-masked-language-model.json) - BERT-based masked language model
+- [`lm-next-token-lm-gpt2`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/lm-next-token-lm-gpt2.json) - OpenAI's GPT-2 language model that generates the next token.
+- [`mc-roberta-commonsenseqa`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/mc-roberta-commonsenseqa.json) - RoBERTa-based multiple choice model for CommonSenseQA.
+- [`mc-roberta-piqa`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/mc-roberta-piqa.json) - RoBERTa-based multiple choice model for PIQA.
+- [`mc-roberta-swag`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/mc-roberta-swag.json) - RoBERTa-based multiple choice model for SWAG.
+- [`pair-classification-decomposable-attention-elmo`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/pair-classification-decomposable-attention-elmo.json) - The decomposable attention model (Parikh et al, 2017) combined with ELMo embeddings trained on SNLI.
+- [`pair-classification-esim`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/pair-classification-esim.json) - Enhanced LSTM trained on SNLI.
+- [`pair-classification-roberta-mnli`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/pair-classification-roberta-mnli.json) - RoBERTa finetuned on MNLI.
+- [`pair-classification-roberta-snli`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/pair-classification-roberta-snli.json) - RoBERTa finetuned on SNLI.
+- [`rc-bidaf-elmo`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/rc-bidaf-elmo.json) - BiDAF model with ELMo embeddings instead of GloVe.
+- [`rc-bidaf`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/rc-bidaf.json) - BiDAF model with GloVe embeddings.
+- [`rc-naqanet`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/rc-naqanet.json) - An augmented version of QANet that adds rudimentary numerical reasoning ability, trained on DROP (Dua et al., 2019), as published in the original DROP paper.
+- [`rc-nmn`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/rc-nmn.json) - A neural module network trained on DROP.
+- [`rc-transformer-qa`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/rc-transformer-qa.json) - A reading comprehension model patterned after the proposed model in Devlin et al, with improvements borrowed from the SQuAD model in the transformers project
+- [`roberta-sst`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/roberta-sst.json) - RoBERTa-based binary classifier for Stanford Sentiment Treebank
+- [`semparse-nlvr`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/semparse-nlvr.json) - The model is a semantic parser trained on Cornell NLVR.
+- [`semparse-text-to-sql`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/semparse-text-to-sql.json) - This model is an implementation of an encoder-decoder architecture with LSTMs and constrained type decoding trained on the ATIS dataset.
+- [`semparse-wikitables`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/semparse-wikitables.json) - The model is a semantic parser trained on WikiTableQuestions.
+- [`structured-prediction-biaffine-parser`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/structured-prediction-biaffine-parser.json) - A neural model for dependency parsing using biaffine classifiers on top of a bidirectional LSTM.
+- [`structured-prediction-constituency-parser`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/structured-prediction-constituency-parser.json) - Constituency parser with character-based ELMo embeddings
+- [`structured-prediction-srl-bert`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/structured-prediction-srl-bert.json) - A BERT based model (Shi et al, 2019) with some modifications (no additional parameters apart from a linear classification layer)
+- [`structured-prediction-srl`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/structured-prediction-srl.json) - A reimplementation of a deep BiLSTM sequence prediction model (Stanovsky et al., 2018)
+- [`tagging-elmo-crf-tagger`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/tagging-elmo-crf-tagger.json) - NER tagger using a Gated Recurrent Unit (GRU) character encoder as well as a GRU phrase encoder, with GloVe embeddings.
+- [`tagging-fine-grained-crf-tagger`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/tagging-fine-grained-crf-tagger.json) - This model identifies a broad range of 16 semantic types in the input text. It is a reimplementation of Lample (2016) and uses a biLSTM with a CRF layer, character embeddings and ELMo embeddings.
+- [`tagging-fine-grained-transformer-crf-tagger`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/tagging-fine-grained-transformer-crf-tagger.json) - Fine-grained NER model
+- [`ve-vilbert`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/ve-vilbert.json) - ViLBERT-based model for Visual Entailment.
+- [`vqa-vilbert`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/vqa-vilbert.json) - ViLBERT (short for Vision-and-Language BERT), is a model for learning task-agnostic joint representations of image content and natural language.
+
+<!-- End automatically generated section -->
+
 
 ## Installing
 
