@@ -23,7 +23,7 @@ def main():
     )
 
     model_list: List[str] = ["\n"]
-    for model_card_path in glob.glob("allennlp_models/modelcards/*.json"):
+    for model_card_path in sorted(glob.glob("allennlp_models/modelcards/*.json")):
         if model_card_path.endswith("modelcard-template.json"):
             continue
         with open(model_card_path) as model_card_file:
