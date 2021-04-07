@@ -14,6 +14,7 @@ from allennlp_models.rc.dataset_readers.utils import char_span_to_token_span
 
 logger = logging.getLogger(__name__)
 
+
 @DatasetReader.register("transformer_superglue_rte")
 class TransformerSuperGlueRteReader(DatasetReader):
     """
@@ -34,6 +35,7 @@ class TransformerSuperGlueRteReader(DatasetReader):
     type : `str`, optional (default=`'roberta-base'`)
         This reader chooses tokenizer according to this setting.
     """
+
     def __init__(
         self,
         transformer_model_name: str = "roberta-base",

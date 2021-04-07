@@ -12,3 +12,6 @@ nltk
 
 # For CNN/DailyMail dataset reader
 ftfy
+
+# For SuperGLUE RTE Reader
+jsonlines
