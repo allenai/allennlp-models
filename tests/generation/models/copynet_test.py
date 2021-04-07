@@ -338,9 +338,3 @@ class CopyNetTransformerTest(ModelTestCase):
 
     def test_model_can_train_save_load_predict(self):
         self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-2)
-
-    def test_multi_layer_decoder_model_can_train_save_and_load(self):
-        param_overrides = json.dumps({"model": {"target_decoder_layers": 3}})
-        self.ensure_model_can_train_save_and_load(
-            self.param_file, tolerance=1e-2, overrides=param_overrides
-        )

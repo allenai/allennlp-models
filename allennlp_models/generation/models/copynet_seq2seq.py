@@ -356,7 +356,7 @@ class CopyNetSeq2Seq(Model):
         if self._has_multiple_target_decoder_layers:
             # shape: (group_size, source_sequence_length)
             attentive_weights = self._attention(
-                decoder_hidden[0], state["encoder_outputs"], encoder_outputs_mask
+                decoder_hidden[-1], state["encoder_outputs"], encoder_outputs_mask
             )
         else:
             # shape: (group_size, source_sequence_length)
