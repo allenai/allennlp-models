@@ -5,9 +5,9 @@ local transformer_dim = 1024;
   "dataset_reader":{
     "type": "transformer_superglue_rte"
   },
-  "train_data_path": "https://dl.fbaipublicfiles.com/glue/superglue/data/v2/RTE.zip!train.jsonl",
-  "validation_data_path": "https://dl.fbaipublicfiles.com/glue/superglue/data/v2/RTE.zip!val.jsonl",
-  "test_data_path": "https://dl.fbaipublicfiles.com/glue/superglue/data/v2/RTE.zip!test.jsonl",
+  "train_data_path": "https://dl.fbaipublicfiles.com/glue/superglue/data/v2/RTE.zip!RTE/train.jsonl",
+  "validation_data_path": "https://dl.fbaipublicfiles.com/glue/superglue/data/v2/RTE.zip!RTE/val.jsonl",
+  "test_data_path": "https://dl.fbaipublicfiles.com/glue/superglue/data/v2/RTE.zip!RTE/test.jsonl",
   "model": {
     "type": "basic_classifier",
     "text_field_embedder": {
