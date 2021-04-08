@@ -13,7 +13,7 @@ class TestTransformerSuperGlueRteReader:
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "superglue_rte.jsonl"))
         assert len(instances) == 4
 
-        token_text = [t.text for t in instances[0].fields["premise_and_hypothesis"].tokens]
+        token_text = [t.text for t in instances[0].fields["tokens"].tokens]
         assert token_text[:3] == ["<s>", "No", "ĠWeapons"]
         assert token_text[10:14] == [".", "</s>", "</s>", "Weapons"]
         assert token_text[-3:] == ["ĠIraq", ".", "</s>"]
@@ -28,7 +28,7 @@ class TestTransformerSuperGlueRteReader:
         instances = ensure_list(reader.read(FIXTURES_ROOT / "rc" / "superglue_rte_no_labels.jsonl"))
         assert len(instances) == 4
 
-        token_text = [t.text for t in instances[0].fields["premise_and_hypothesis"].tokens]
+        token_text = [t.text for t in instances[0].fields["tokens"].tokens]
         assert token_text[:3] == ["<s>", "No", "ĠWeapons"]
         assert token_text[10:14] == [".", "</s>", "</s>", "Weapons"]
         assert token_text[-3:] == ["ĠIraq", ".", "</s>"]
