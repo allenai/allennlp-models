@@ -35,11 +35,11 @@ local transformer_dim = 1024;
   "data_loader": {
     "batch_sampler": {
       "type": "bucket",
-      "batch_size" : 32
+      "batch_size" : 16
     }
   },
   "trainer": {
-    "num_epochs": 3,
+    "num_epochs": 10,
     "validation_metric": "+accuracy",
     "learning_rate_scheduler": {
       "type": "slanted_triangular",
@@ -47,7 +47,7 @@ local transformer_dim = 1024;
     },
     "optimizer": {
       "type": "huggingface_adamw",
-      "lr": 2e-5,
+      "lr": 2e-6,
       "weight_decay": 0.1,
     }
   }
