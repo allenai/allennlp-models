@@ -48,6 +48,11 @@ class TransformerSuperGlueRteReader(DatasetReader):
             add_special_tokens=False,
             tokenizer_kwargs=tokenizer_kwargs,
         )
+        self._token_indexers = {
+            "tokens": PretrainedTransformerIndexer(
+                transformer_model_name, tokenizer_kwargs=tokenizer_kwargs
+            )
+        }
 
     @overrides
     def _read(self, file_path: str):
@@ -103,3 +108,7 @@ class TransformerSuperGlueRteReader(DatasetReader):
         fields["metadata"] = MetadataField(metadata)
 
         return Instance(fields)
+
+    @overrides
+    def apply_token_indexers(self, instance: Instance) -> None:
+        instance["tokens"].token_indexers = self._token_indexers
