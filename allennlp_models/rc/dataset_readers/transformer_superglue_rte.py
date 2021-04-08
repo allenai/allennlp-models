@@ -51,7 +51,7 @@ class TransformerSuperGlueRteReader(DatasetReader):
         )
         self._token_indexers = {
             "tokens": PretrainedTransformerIndexer(
-                transformer_model_name, tokenizer_kwargs=tokenizer_kwargs
+                transformer_model_name, tokenizer_kwargs=tokenizer_kwargs, max_length=512
             )
         }
 
