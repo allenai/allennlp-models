@@ -8,6 +8,7 @@ from allennlp.data.fields import MetadataField, TextField, LabelField
 from allennlp.common.file_utils import cached_path
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.instance import Instance
+from allennlp.data.token_indexers import PretrainedTransformerIndexer
 from allennlp.data.tokenizers import PretrainedTransformerTokenizer
 
 logger = logging.getLogger(__name__)
