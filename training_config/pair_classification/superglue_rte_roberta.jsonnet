@@ -39,7 +39,7 @@ local transformer_dim = 1024;
     }
   },
   "trainer": {
-    "num_epochs": 10,
+    "num_epochs": 3,
     "validation_metric": "+accuracy",
     "learning_rate_scheduler": {
       "type": "slanted_triangular",
