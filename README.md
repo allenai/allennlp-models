@@ -186,16 +186,16 @@ Here is a list of pre-trained models currently available.
 `allennlp-models` is available on PyPI. To install with `pip`, just run
 
 ```bash
-pip install --pre allennlp-models
+pip install allennlp-models
 ```
 
 Note that the `allennlp-models` package is tied to the [`allennlp` core package](https://pypi.org/projects/allennlp-models). Therefore when you install the models package you will get the corresponding version of `allennlp` (if you haven't already installed `allennlp`). For example,
 
 ```bash
-pip install allennlp-models==1.0.0rc3
+pip install allennlp-models==2.2.0
 pip freeze | grep allennlp
-# > allennlp==1.0.0rc3
-# > allennlp-models==1.0.0rc3
+# > allennlp==2.2.0
+# > allennlp-models==2.2.0
 ```
 
 ### From source
@@ -234,7 +234,8 @@ docker build \
     -t allennlp/models - < Dockerfile.release
 ```
 
-Just replace the `RELEASE` and `CUDA` build args what you need. Currently only CUDA 10.2 and 11.0 are officially supported.
+Just replace the `RELEASE` and `CUDA` build args with what you need. You can check [the available tags](https://hub.docker.com/r/allennlp/allennlp/tags)
+on Docker Hub to see which CUDA versions are available for a given `RELEASE`.
 
 Alternatively, you can build against specific commits of `allennlp` and `allennlp-models` with
 
