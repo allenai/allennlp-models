@@ -3,7 +3,7 @@ from allennlp.common.util import ensure_list
 from allennlp.data import DatasetReader
 import pytest
 
-from allennlp_models.rc import TransformerSuperGlueRteReader
+from allennlp_models.pair_classification import TransformerSuperGlueRteReader
 from tests import FIXTURES_ROOT
 
 
