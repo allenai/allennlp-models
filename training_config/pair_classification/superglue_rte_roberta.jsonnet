@@ -1,4 +1,4 @@
-local transformer_model = "roberta-large";
+local transformer_model = "roberta-large-mnli";
 local transformer_dim = 1024;
 
 local epochs = 20;
