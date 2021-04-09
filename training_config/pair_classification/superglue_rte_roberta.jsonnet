@@ -15,28 +15,8 @@ local gradient_accumulation_steps = batch_size / gpu_batch_size;
   "validation_data_path": "https://dl.fbaipublicfiles.com/glue/superglue/data/v2/RTE.zip!RTE/val.jsonl",
   "test_data_path": "https://dl.fbaipublicfiles.com/glue/superglue/data/v2/RTE.zip!RTE/test.jsonl",
   "model": {
-    "type": "basic_classifier",
-    "text_field_embedder": {
-      "token_embedders": {
-        "tokens": {
-          "type": "pretrained_transformer",
-          "model_name": transformer_model,
-          "max_length": 512
-        }
-      }
-    },
-    "seq2vec_encoder": {
-       "type": "cls_pooler",
-       "embedding_dim": transformer_dim,
-    },
-    "feedforward": {
-      "input_dim": transformer_dim,
-      "num_layers": 1,
-      "hidden_dims": transformer_dim,
-      "activations": "tanh"
-    },
-    "dropout": 0.1,
-    "namespace": "tags"
+      "type": "transformer_mc",
+      "transformer_model": transformer_model
   },
   "data_loader": {
     "shuffle": true,
