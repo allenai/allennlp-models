@@ -26,7 +26,7 @@ class TransformerSuperGlueRteReader(DatasetReader):
      * `label`, a `LabelField` containing the label, if one exists.
      * `metadata`, a `MetadataField` that stores the instance's index in the file, the original premise,
        the original hypothesis, both of these in tokenized form, and the gold label, accessible as
-       `metadata['indexd']`, `metadata['premise']`, `metadata['hypothesis']`, `metadata['tokens']`,
+       `metadata['index']`, `metadata['premise']`, `metadata['hypothesis']`, `metadata['tokens']`,
        and `metadata['label']`.
 
     # Parameters
