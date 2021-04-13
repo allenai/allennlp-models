@@ -94,10 +94,10 @@ class TransformerQAPredictor(Predictor):
         context = json_dict["passage"] if "passage" in json_dict else json_dict["context"]
         result: List[Instance] = []
         if qid is None:
-            qid = self._next_qid
+           question_id = self._next_qid
 
         for instance in self._dataset_reader.make_instances(
-            qid=str(qid),
+            qid=str(question_id),
             question=json_dict["question"],
             answers=[],
             context=context,
