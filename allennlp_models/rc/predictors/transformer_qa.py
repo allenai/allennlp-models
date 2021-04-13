@@ -1,11 +1,17 @@
-from typing import List, Dict, Any
+import logging
+from typing import List, Dict, Any, Optional
+
+from overrides import overrides
+import numpy
 
 from allennlp.models import Model
-from overrides import overrides
-
 from allennlp.common.util import JsonDict, sanitize
 from allennlp.data import Instance, DatasetReader
 from allennlp.predictors.predictor import Predictor
+
+from allennlp.data.fields import SpanField
+
+logger = logging.getLogger(__name__)
 
 
 @Predictor.register("transformer_qa")
@@ -48,22 +54,50 @@ class TransformerQAPredictor(Predictor):
         return results[0]
 
     @overrides
-    def _json_to_instance(self, json_dict: JsonDict) -> Instance:
-        raise NotImplementedError(
-            "This predictor maps a question to multiple instances. "
-            "Please use _json_to_instances instead."
+    def predictions_to_labeled_instances(
+        self, instance: Instance, outputs: Dict[str, numpy.ndarray]
+    ) -> List[Instance]:
+        new_instance = instance.duplicate()
+        span_start = int(outputs["best_span"][0])
+        span_end = int(outputs["best_span"][1])
+
+        start_of_context = (
+            len(self._dataset_reader._tokenizer.sequence_pair_start_tokens)
+            + len(instance["metadata"]["question_tokens"])
+            + len(self._dataset_reader._tokenizer.sequence_pair_mid_tokens)
         )
 
-    def _json_to_instances(self, json_dict: JsonDict) -> List[Instance]:
+        answer_span = SpanField(
+            start_of_context + span_start,
+            start_of_context + span_end,
+            instance["question_with_context"],
+        )
+        new_instance.add_field("answer_span", answer_span)
+        return [new_instance]
+
+    @overrides
+    def _json_to_instance(self, json_dict: JsonDict) -> Instance:
+        logger.warning(
+            "This method is implemented only for use in interpret modules."
+            "The predictor maps a question to multiple instances. "
+            "Please use _json_to_instances instead for all non-interpret uses. "
+        )
+        return self._json_to_instances(json_dict, qid=-1)[0]
+
+    def _json_to_instances(self, json_dict: JsonDict, qid: Optional[int] = None) -> List[Instance]:
         # We allow the passage / context to be specified with either key.
         # But we do it this way so that a 'KeyError: context' exception will be raised
         # when neither key is specified, since the 'context' key is the default and
         # the 'passage' key was only added to be compatible with the input for other
         # RC models.
+        # if `qid` is `None`, it is updated using self._next_qid
         context = json_dict["passage"] if "passage" in json_dict else json_dict["context"]
         result: List[Instance] = []
+        if qid is None:
+            qid = self._next_qid
+
         for instance in self._dataset_reader.make_instances(
-            qid=str(self._next_qid),
+            qid=str(qid),
             question=json_dict["question"],
             answers=[],
             context=context,
@@ -72,7 +106,8 @@ class TransformerQAPredictor(Predictor):
         ):
             self._dataset_reader.apply_token_indexers(instance)
             result.append(instance)
-        self._next_qid += 1
+        if qid is None:
+            self._next_qid += 1
         return result
 
     @overrides
