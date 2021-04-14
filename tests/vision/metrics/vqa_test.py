@@ -96,32 +96,13 @@ class VqaMeasureTest(AllenNlpTestCase):
         labels = [torch.tensor([0]), torch.tensor([3])]
         label_weights = [torch.tensor([1 / 3]), torch.tensor([2 / 3])]
         metric_kwargs = {"logits": logits, "labels": labels, "label_weights": label_weights}
-        desired_accuracy = {"score": pytest.approx((1 / 3) / 2)}
+        desired_accuracy = {"score": (1 / 3) / 2}
         run_distributed_test(
             [-1, -1],
-            multiple_runs,
+            global_distributed_metric,
             VqaMeasure(),
             metric_kwargs,
             desired_accuracy,
             exact=True,
+            number_of_runs=200
         )
-
-
-def multiple_runs(
-    global_rank: int,
-    world_size: int,
-    gpu_id: Union[int, torch.device],
-    metric: VqaMeasure,
-    metric_kwargs: Dict[str, List[Any]],
-    desired_values: Dict[str, Any],
-    exact: Union[bool, Tuple[float, float]] = True,
-):
-    kwargs = {}
-    # Use the arguments meant for the process with rank `global_rank`.
-    for argname in metric_kwargs:
-        kwargs[argname] = metric_kwargs[argname][global_rank]
-
-    for i in range(200):
-        metric(**kwargs)
-
-    assert desired_values == metric.get_metric()
