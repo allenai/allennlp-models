@@ -11,10 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed bug in `experiment_from_huggingface.jsonnet` and `experiment.jsonnet` by changing `min_count` to have key `labels` instead of `answers`. Resolves failure of model checks that involve calling `_extend` in `vocabulary.py`
 - `TransformerQA` now outputs span probabilities as well as scores.
+- VQA metric now calculates correctly in the distributed case
 
 ### Added
 
 - Added script that produces the coref training data.
+- Tests for the VQA metric
 
 
 ## [v2.2.0](https://github.com/allenai/allennlp-models/releases/tag/v2.2.0) - 2021-03-26
