@@ -104,5 +104,5 @@ class VqaMeasureTest(AllenNlpTestCase):
             metric_kwargs,
             desired_accuracy,
             exact=True,
-            number_of_runs=200
+            number_of_runs=200,
         )
