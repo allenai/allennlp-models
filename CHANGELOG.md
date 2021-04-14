@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed bug in `experiment_from_huggingface.jsonnet` and `experiment.jsonnet` by changing `min_count` to have key `labels` instead of `answers`. Resolves failure of model checks that involve calling `_extend` in `vocabulary.py`
 - `TransformerQA` now outputs span probabilities as well as scores.
+- `TransformerQAPredictor` now implements `predictions_to_labeled_instances`, which is required for the interpret module.
 
 ### Added
 
