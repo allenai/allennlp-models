@@ -20,7 +20,7 @@ class VqaMeasureTest(AllenNlpTestCase):
             [[0.35, 0.25, 0.1, 0.1, 0.2], [0.1, 0.6, 0.1, 0.2, 0.0]], device=device
         )
         labels = torch.tensor([0, 3], device=device)
-        label_weights = torch.tensor([1 / 3, 2 / 3])
+        label_weights = torch.tensor([1 / 3, 2 / 3], device=device)
         vqa(logits, labels, label_weights)
         vqa_score = vqa.get_metric()["score"]
         assert vqa_score == pytest.approx((1 / 3) / 2)
@@ -33,7 +33,7 @@ class VqaMeasureTest(AllenNlpTestCase):
         )
         labels = torch.tensor([0, 3], device=device)
         labels2 = torch.tensor([4, 4], device=device)
-        label_weights = torch.tensor([1 / 3, 2 / 3])
+        label_weights = torch.tensor([1 / 3, 2 / 3], device=device)
 
         vqa(logits, labels, label_weights)
         vqa(logits, labels, label_weights)
