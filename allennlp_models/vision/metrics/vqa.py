@@ -41,7 +41,9 @@ class VqaMeasure(Metric):
 
         # Sum over dimension 1 gives the score per question. We care about the overall sum though,
         # so we sum over all dimensions.
-        local_sum_of_scores = (label_weights * (labels == predictions.unsqueeze(-1))).sum()
+        local_sum_of_scores = (
+            (label_weights * (labels == predictions.unsqueeze(-1))).sum().to(torch.float32)
+        )
         local_score_count = torch.tensor(labels.size(0), dtype=torch.int32, device=labels.device)
 
         from allennlp.common.util import is_distributed
