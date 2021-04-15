@@ -1,4 +1,3 @@
-import jsonlines
 import logging
 from typing import Any, Dict
 
@@ -62,7 +61,8 @@ class TransformerSuperGlueRteReader(DatasetReader):
 
         logger.info("Reading file at %s", file_path)
         yielded_relation_count = 0
-        for relation in self.shard_iterable(jsonlines.open(file_path)):
+        from allennlp.common.file_utils import json_lines_from_file
+        for relation in self.shard_iterable(json_lines_from_file(file_path)):
             premise = relation["premise"]
             hypothesis = relation["hypothesis"]
             if "label" in relation:
@@ -72,12 +72,13 @@ class TransformerSuperGlueRteReader(DatasetReader):
             index = relation["idx"]
 
             # todo: see if we even need this to be in a separate method
-            instance = self.make_instance(index, label, premise, hypothesis)
+            instance = self.text_to_instance(index, label, premise, hypothesis)
 
             yield instance
             yielded_relation_count += 1
 
-    def make_instance(
+    @overrides
+    def text_to_instance(
         self,
         index: int,
         label: str,

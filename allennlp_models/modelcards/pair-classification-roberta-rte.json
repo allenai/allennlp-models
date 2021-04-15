@@ -6,7 +6,7 @@
     "task_id": "pair_classification",
     "model_details": {
         "description": "The model implements a pair classification model patterned after the proposed model in [BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding (Devlin et al, 2018)](https://api.semanticscholar.org/CorpusID:52967399), fine-tuned on the MultiNLI corpus. It predicts labels with a linear layer on top of word piece embeddings.",
-        "short_description": "A pair classification model patterned after the proposed model in Devlin et al, fine-tuned on the MultiNLI corpus",
+        "short_description": "A pair classification model patterned after the proposed model in Devlin et al, fine-tuned on the SuperGLUE RTE corpus",
         "developed_by": "Devlin et al",
         "contributed_by": "Jacob Morrison",
         "date": "2021-04-09",
