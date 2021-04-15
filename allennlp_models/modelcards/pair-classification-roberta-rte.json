@@ -65,6 +65,6 @@
     "model_usage": {
         "archive_file": "superglue-rte-roberta.2021-04-09.tar.gz",
         "training_config": "pair-classification/superglue_rte_roberta.jsonnet",
-        "install_instructions": "pip install allennlp==2.2.2 allennlp-models==2.2.2"
+        "install_instructions": "pip install allennlp==2.3.1 allennlp-models==2.3.1"
     }
 }
