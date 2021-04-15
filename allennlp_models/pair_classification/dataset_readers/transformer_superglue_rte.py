@@ -62,6 +62,7 @@ class TransformerSuperGlueRteReader(DatasetReader):
         logger.info("Reading file at %s", file_path)
         yielded_relation_count = 0
         from allennlp.common.file_utils import json_lines_from_file
+
         for relation in self.shard_iterable(json_lines_from_file(file_path)):
             premise = relation["premise"]
             hypothesis = relation["hypothesis"]
