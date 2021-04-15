@@ -1,5 +1,3 @@
-from typing import Union
-
 import torch
 from overrides import overrides
 
@@ -21,8 +19,8 @@ class VqaMeasure(Metric):
     """
 
     def __init__(self) -> None:
-        self._sum_of_scores: Union[None, torch.Tensor] = None
-        self._score_count: Union[None, torch.Tensor] = None
+        self._sum_of_scores = 0.0
+        self._score_count = 0
 
     @overrides
     def __call__(self, logits: torch.Tensor, labels: torch.Tensor, label_weights: torch.Tensor):
@@ -38,39 +36,37 @@ class VqaMeasure(Metric):
             every one of the labels.
         """
 
-        device = logits.device
-
-        if self._sum_of_scores is None:
-            self._sum_of_scores = torch.zeros([], device=device, dtype=label_weights.dtype)
-        if self._score_count is None:
-            self._score_count = torch.zeros([], device=device, dtype=torch.int32)
-
         logits, labels, label_weights = self.detach_tensors(logits, labels, label_weights)
         predictions = logits.argmax(dim=1)
 
         # Sum over dimension 1 gives the score per question. We care about the overall sum though,
         # so we sum over all dimensions.
-        self._sum_of_scores += (label_weights * (labels == predictions.unsqueeze(-1))).sum()
-        self._score_count += labels.size(0)
+        local_sum_of_scores = (
+            (label_weights * (labels == predictions.unsqueeze(-1))).sum().to(torch.float32)
+        )
+        local_score_count = torch.tensor(labels.size(0), dtype=torch.int32, device=labels.device)
 
         from allennlp.common.util import is_distributed
 
         if is_distributed():
-            dist.all_reduce(self._sum_of_scores, op=dist.ReduceOp.SUM)
-            dist.all_reduce(self._score_count, op=dist.ReduceOp.SUM)
+            dist.all_reduce(local_sum_of_scores, op=dist.ReduceOp.SUM)
+            dist.all_reduce(local_score_count, op=dist.ReduceOp.SUM)
+
+        self._sum_of_scores += local_sum_of_scores.item()
+        self._score_count += local_score_count.item()
 
     @overrides
     def get_metric(self, reset: bool = False):
-        """
-        # Returns
-
-        score : `float`
-        """
-        from allennlp.common.util import nan_safe_tensor_divide
-
-        return {"score": nan_safe_tensor_divide(self._sum_of_scores, self._score_count).item()}
+        if self._score_count > 0:
+            result = self._sum_of_scores / self._score_count
+        else:
+            result = 0.0
+        result_dict = {"score": result}
+        if reset:
+            self.reset()
+        return result_dict
 
     @overrides
     def reset(self) -> None:
-        self._sum_of_scores = None
-        self._score_count = None
+        self._sum_of_scores = 0.0
+        self._score_count = 0
