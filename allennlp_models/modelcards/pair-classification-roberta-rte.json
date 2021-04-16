@@ -1,0 +1,70 @@
+{
+    "id": "pair-classification-roberta-rte",
+    "registered_model_name": "roberta-rte",
+    "registered_predictor_name": null,
+    "display_name": "RoBERTa RTE",
+    "task_id": "pair_classification",
+    "model_details": {
+        "description": "The model implements a pair classification model patterned after the proposed model in [BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding (Devlin et al, 2018)](https://api.semanticscholar.org/CorpusID:52967399), fine-tuned on the MultiNLI corpus. It predicts labels with a linear layer on top of word piece embeddings.",
+        "short_description": "A pair classification model patterned after the proposed model in Devlin et al, fine-tuned on the SuperGLUE RTE corpus",
+        "developed_by": "Devlin et al",
+        "contributed_by": "Jacob Morrison",
+        "date": "2021-04-09",
+        "version": "1",
+        "model_type": "RoBERTa",
+        "paper": {
+            "citation": "\n@article{Liu2019RoBERTaAR,\ntitle={RoBERTa: A Robustly Optimized BERT Pretraining Approach},\nauthor={Y. Liu and Myle Ott and Naman Goyal and Jingfei Du and Mandar Joshi and Danqi Chen and Omer Levy and M. Lewis and L. Zettlemoyer and V. Stoyanov},\njournal={ArXiv},\nyear={2019},\nvolume={abs/1907.11692}}\n",
+            "title": "RoBERTa: A Robustly Optimized BERT Pretraining Approach",
+            "url": "https://api.semanticscholar.org/CorpusID:198953378"
+        },
+        "license": null,
+        "contact": "allennlp-contact@allenai.org"
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "Accuracy",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": {
+            "name": "SuperGLUE Recognizing Textual Entailment validation set",
+            "url": "https://super.gluebenchmark.com/tasks",
+            "processed_url": "https://dl.fbaipublicfiles.com/glue/superglue/data/v2/RTE.zip!RTE/val.jsonl"
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": {
+            "name": "SuperGLUE Recognizing Textual Entailment training set",
+            "url": "https://super.gluebenchmark.com/tasks",
+            "processed_url": "https://dl.fbaipublicfiles.com/glue/superglue/data/v2/RTE.zip!RTE/train.jsonl"
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": "Accuracy: 89.9% on the SuperGLUE RTE validation dataset.",
+        "intersectional_results": null
+    },
+    "model_caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "superglue-rte-roberta.2021-04-09.tar.gz",
+        "training_config": "pair-classification/superglue_rte_roberta.jsonnet",
+        "install_instructions": "pip install allennlp==2.3.1 allennlp-models==2.3.1"
+    }
+}

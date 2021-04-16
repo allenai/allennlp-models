@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added script that produces the coref training data.
 - Added tests for using `allennlp predict` on multitask models.
-
+- Added reader and training config for RoBERTa on SuperGLUE's Recognizing Textual Entailment task
 
 ## [v2.2.0](https://github.com/allenai/allennlp-models/releases/tag/v2.2.0) - 2021-03-26
 
