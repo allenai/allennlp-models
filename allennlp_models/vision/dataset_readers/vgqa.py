@@ -35,6 +35,195 @@ from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
 
 logger = logging.getLogger(__name__)
 
+contractions = {
+    "aint": "ain't",
+    "arent": "aren't",
+    "cant": "can't",
+    "couldve": "could've",
+    "couldnt": "couldn't",
+    "couldn'tve": "couldn't've",
+    "couldnt've": "couldn't've",
+    "didnt": "didn't",
+    "doesnt": "doesn't",
+    "dont": "don't",
+    "hadnt": "hadn't",
+    "hadnt've": "hadn't've",
+    "hadn'tve": "hadn't've",
+    "hasnt": "hasn't",
+    "havent": "haven't",
+    "hed": "he'd",
+    "hed've": "he'd've",
+    "he'dve": "he'd've",
+    "hes": "he's",
+    "howd": "how'd",
+    "howll": "how'll",
+    "hows": "how's",
+    "Id've": "I'd've",
+    "I'dve": "I'd've",
+    "Im": "I'm",
+    "Ive": "I've",
+    "isnt": "isn't",
+    "itd": "it'd",
+    "itd've": "it'd've",
+    "it'dve": "it'd've",
+    "itll": "it'll",
+    "let's": "let's",
+    "maam": "ma'am",
+    "mightnt": "mightn't",
+    "mightnt've": "mightn't've",
+    "mightn'tve": "mightn't've",
+    "mightve": "might've",
+    "mustnt": "mustn't",
+    "mustve": "must've",
+    "neednt": "needn't",
+    "notve": "not've",
+    "oclock": "o'clock",
+    "oughtnt": "oughtn't",
+    "ow's'at": "'ow's'at",
+    "'ows'at": "'ow's'at",
+    "'ow'sat": "'ow's'at",
+    "shant": "shan't",
+    "shed've": "she'd've",
+    "she'dve": "she'd've",
+    "she's": "she's",
+    "shouldve": "should've",
+    "shouldnt": "shouldn't",
+    "shouldnt've": "shouldn't've",
+    "shouldn'tve": "shouldn't've",
+    "somebody'd": "somebodyd",
+    "somebodyd've": "somebody'd've",
+    "somebody'dve": "somebody'd've",
+    "somebodyll": "somebody'll",
+    "somebodys": "somebody's",
+    "someoned": "someone'd",
+    "someoned've": "someone'd've",
+    "someone'dve": "someone'd've",
+    "someonell": "someone'll",
+    "someones": "someone's",
+    "somethingd": "something'd",
+    "somethingd've": "something'd've",
+    "something'dve": "something'd've",
+    "somethingll": "something'll",
+    "thats": "that's",
+    "thered": "there'd",
+    "thered've": "there'd've",
+    "there'dve": "there'd've",
+    "therere": "there're",
+    "theres": "there's",
+    "theyd": "they'd",
+    "theyd've": "they'd've",
+    "they'dve": "they'd've",
+    "theyll": "they'll",
+    "theyre": "they're",
+    "theyve": "they've",
+    "twas": "'twas",
+    "wasnt": "wasn't",
+    "wed've": "we'd've",
+    "we'dve": "we'd've",
+    "weve": "we've",
+    "werent": "weren't",
+    "whatll": "what'll",
+    "whatre": "what're",
+    "whats": "what's",
+    "whatve": "what've",
+    "whens": "when's",
+    "whered": "where'd",
+    "wheres": "where's",
+    "whereve": "where've",
+    "whod": "who'd",
+    "whod've": "who'd've",
+    "who'dve": "who'd've",
+    "wholl": "who'll",
+    "whos": "who's",
+    "whove": "who've",
+    "whyll": "why'll",
+    "whyre": "why're",
+    "whys": "why's",
+    "wont": "won't",
+    "wouldve": "would've",
+    "wouldnt": "wouldn't",
+    "wouldnt've": "wouldn't've",
+    "wouldn'tve": "wouldn't've",
+    "yall": "y'all",
+    "yall'll": "y'all'll",
+    "y'allll": "y'all'll",
+    "yall'd've": "y'all'd've",
+    "y'alld've": "y'all'd've",
+    "y'all'dve": "y'all'd've",
+    "youd": "you'd",
+    "youd've": "you'd've",
+    "you'dve": "you'd've",
+    "youll": "you'll",
+    "youre": "you're",
+    "youve": "you've",
+}
+manual_map = {
+    "none": "0",
+    "zero": "0",
+    "one": "1",
+    "two": "2",
+    "three": "3",
+    "four": "4",
+    "five": "5",
+    "six": "6",
+    "seven": "7",
+    "eight": "8",
+    "nine": "9",
+    "ten": "10",
+}
+articles = ["a", "an", "the"]
+period_strip = re.compile(r"(?!<=\d)(\.)(?!\d)")
+comma_strip = re.compile(r"(\d)(\,)(\d)")
+punct = [
+    ";",
+    r"/",
+    "[",
+    "]",
+    '"',
+    "{",
+    "}",
+    "(",
+    ")",
+    "=",
+    "+",
+    "\\",
+    "_",
+    "-",
+    ">",
+    "<",
+    "@",
+    "`",
+    ",",
+    "?",
+    "!",
+]
+
+
+def process_punctuation(inText: str) -> str:
+    outText = inText
+    for p in punct:
+        if (p + " " in inText or " " + p in inText) or (comma_strip.search(inText) is not None):
+            outText = outText.replace(p, "")
+        else:
+            outText = outText.replace(p, " ")
+    outText = period_strip.sub("", outText, re.UNICODE)
+    return outText
+
+
+def process_digit_article(input: str) -> str:
+    output = []
+    for word in input.lower().split():
+        word = manual_map.get(word, word)
+        if word not in articles:
+            output.append(word)
+        else:
+            pass
+    for index, word in enumerate(output):
+        if word in contractions:
+            output[index] = contractions[word]
+    return " ".join(output)
+
+
 @lru_cache(maxsize=None)
 def preprocess_answer(answer: str) -> str:
     answer = process_digit_article(process_punctuation(answer))
@@ -107,6 +296,7 @@ class VGQAReader(VisionReader):
     ) -> None:
         run_featurization = image_loader and image_featurizer and region_detector
         if image_dir is None and run_featurization:
+            # todo: update
             raise ValueError(
                 "Because of the size of the image datasets, we don't download them automatically. "
                 "Please go to https://visualqa.org/download.html, download the datasets you need, "
@@ -160,12 +350,8 @@ class VGQAReader(VisionReader):
 
         self.multiple_answers_per_question = multiple_answers_per_question
 
-    # todo: implement this
-    def process_answer(self, answer):
-        return answer
-
     @overrides
-    def _read(self, file_path: str)):
+    def _read(self, file_path: str):
         file_path = cached_path(file_path, extract_archive=True)
 
         logger.info("Reading file at %s", file_path)
@@ -174,7 +360,31 @@ class VGQAReader(VisionReader):
             dataset = json.load(dataset_file)
 
         # todo: process images
-        processed_images = {}
+        processed_images: Iterable[Optional[Tuple[Tensor, Tensor]]]
+        if self.produce_featurized_images:
+            # It would be much easier to just process one image at a time, but it's faster to process
+            # them in batches. So this code gathers up instances until it has enough to fill up a batch
+            # that needs processing, and then processes them all.
+
+            try:
+                image_paths = [
+                    self.images[int(question_dict["image_id"])] for question_dict in question_dicts
+                ]
+            except KeyError as e:
+                missing_id = e.args[0]
+                raise KeyError(
+                    missing_id,
+                    f"We could not find an image with the id {missing_id}. "
+                    "Because of the size of the image datasets, we don't download them automatically. "
+                    "Please go to https://visualqa.org/download.html, download the datasets you need, "
+                    "and set the image_dir parameter to point to your download location. This dataset "
+                    "reader does not care about the exact directory structure. It finds the images "
+                    "wherever they are.",
+                )
+
+            processed_images = self._process_image_paths(image_paths)
+        else:
+            processed_images = [None for _ in range(len(question_dicts))]
 
         logger.info("Reading the dataset")
         for elem in dataset:
@@ -197,19 +407,19 @@ class VGQAReader(VisionReader):
     @overrides
     def text_to_instance(
         self,  # type: ignore
+        qa_id: int,
         question: str,
+        answer: str,
         image: Union[str, Tuple[Tensor, Tensor]],
-        answer_counts: Optional[MutableMapping[str, int]] = None,
-        *,
         use_cache: bool = True,
     ) -> Optional[Instance]:
-        tokenized_question = self._tokenizer.tokenize(question)
-        question_field = TextField(tokenized_question, None)
+        question_field = TextField(self._tokenizer.tokenize(question), None)
 
         fields: Dict[str, Field] = {
             "question": question_field,
         }
 
+        # todo: what to do here
         if image is not None:
             if isinstance(image, str):
                 features, coords = next(self._process_image_paths([image], use_cache=use_cache))
@@ -224,20 +434,8 @@ class VGQAReader(VisionReader):
                 dtype=torch.bool,
             )
 
-        if answer_counts is not None:
-            answer_fields = []
-            weights = []
-
-            for answer, count in answer_counts.items():
-                if self.answer_vocab is None or answer in self.answer_vocab:
-                    answer_fields.append(LabelField(answer, label_namespace="answers"))
-                    weights.append(get_score(count))
-
-            if len(answer_fields) <= 0:
-                return None
-
-            fields["labels"] = ListField(answer_fields)
-            fields["label_weights"] = ArrayField(torch.tensor(weights))
+        if self.answer_vocab is None or answer in self.answer_vocab:
+            fields["label"] = LabelField(answer, label_namespace="answers")
 
         return Instance(fields)
 
@@ -245,6 +443,7 @@ class VGQAReader(VisionReader):
     def apply_token_indexers(self, instance: Instance) -> None:
         instance["question"].token_indexers = self._token_indexers  # type: ignore
 
+    # todo: fix
     def _get_answers_by_question_id(self, split):
         answers_by_question_id = {}
         if split.annotations is not None:
@@ -276,3 +475,4 @@ class VGQAReader(VisionReader):
                     with cache.writer() as f:
                         json.dump(answers_by_question_id, f)
         return answers_by_question_id
+    
