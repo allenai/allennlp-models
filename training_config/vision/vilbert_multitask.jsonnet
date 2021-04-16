@@ -40,8 +40,8 @@ local reader_common = {
     "readers": {
       "vqa": reader_common {
         "type": "vqav2",
-        "image_dir": "/mnt/tank/dirkg/data/vision/vqa/balanced_real",
-        [if !construct_vocab then "feature_cache_dir"]: "/mnt/tank/dirkg/data/vision/vqa/balanced_real/feature_cache",
+        "image_dir": "/net/nfs2.allennlp/data/vision/vqa/balanced_real",
+        [if !construct_vocab then "feature_cache_dir"]: "/net/nfs2.allennlp/data/vision/vqa/balanced_real/feature_cache",
         #"image_dir": "/Users/dirkg/Documents/data/vision/vqa/balanced_real",
         #[if !construct_vocab then "feature_cache_dir"]: "/Users/dirkg/Documents/data/vision/vqa/balanced_real/feature_cache",
         "answer_vocab": if construct_vocab then null else vocabulary,
@@ -49,16 +49,16 @@ local reader_common = {
       },
       "gqa": reader_common {
         "type": "gqa",
-        "image_dir": "/mnt/tank/dirkg/data/vision/gqa",
-        [if !construct_vocab then "feature_cache_dir"]: "/mnt/tank/dirkg/data/vision/gqa/feature_cache",
+        "image_dir": "/net/nfs2.allennlp/data/vision/gqa",
+        [if !construct_vocab then "feature_cache_dir"]: "/net/nfs2.allennlp/data/vision/gqa/feature_cache",
         #"image_dir": "/Users/dirkg/Documents/data/vision/gqa",
         #[if !construct_vocab then "feature_cache_dir"]: "/Users/dirkg/Documents/data/vision/gqa/feature_cache",
         "answer_vocab": if construct_vocab then null else vocabulary
       },
       "ve": reader_common {
         "type": "visual-entailment",
-        "image_dir": "/mnt/tank/dirkg/data/vision/SNLI-VE/data/Flickr30K/flickr30k_images",
-        [if !construct_vocab then "feature_cache_dir"]: "/mnt/tank/dirkg/data/vision/SNLI-VE/data/feature_cache",
+        "image_dir": "/net/nfs2.allennlp/data/vision/SNLI-VE/data/Flickr30K/flickr30k_images",
+        [if !construct_vocab then "feature_cache_dir"]: "/net/nfs2.allennlp/data/vision/SNLI-VE/data/feature_cache",
         #"image_dir": "/Users/dirkg/Documents/data/vision/SNLI-VE/data/Flickr30K/flickr30k_images",
         #[if !construct_vocab then "feature_cache_dir"]: "/Users/dirkg/Documents/data/vision/SNLI-VE/data/feature_cache",
       }
