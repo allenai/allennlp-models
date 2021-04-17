@@ -14,6 +14,9 @@ from allennlp.training.metrics.metric import Metric
 
 @Metric.register("conll_coref_scores")
 class ConllCorefScores(Metric):
+
+    supports_distributed = True
+
     def __init__(self) -> None:
         self.scorers = [Scorer(m) for m in (Scorer.muc, Scorer.b_cubed, Scorer.ceafe)]
 
