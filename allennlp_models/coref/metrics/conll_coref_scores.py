@@ -8,10 +8,6 @@ import torch
 
 from allennlp.nn.util import dist_reduce_sum
 
-# import torch.distributed as dist
-
-# from allennlp.common.util import is_distributed
-
 from allennlp.training.metrics.metric import Metric
 
 
