@@ -47,7 +47,7 @@ class SnliReader(DatasetReader):
         If False, represent the premise and the hypothesis as separate fields in the instance.
         If True, tokenize them together using `tokenizer.tokenize_sentence_pair()`
         and provide a single `tokens` field in the instance.
-    combine_input_fields : `bool`, optional (default=`False`)
+    collapse_labels : `bool`, optional (default=`False`)
         If `True`, the "neutral" and "contradiction" labels will be collapsed into "non-entailment";
         "entailment" will be left unchanged.
     """
