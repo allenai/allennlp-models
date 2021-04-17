@@ -5,9 +5,12 @@ from overrides import overrides
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 import torch
-import torch.distributed as dist
 
-from allennlp.common.util import is_distributed
+from allennlp.nn.util import dist_reduce_sum
+
+# import torch.distributed as dist
+
+# from allennlp.common.util import is_distributed
 
 from allennlp.training.metrics.metric import Metric
 
@@ -153,25 +156,10 @@ class Scorer:
             p_num, p_den = self.metric(predicted, mention_to_gold)
             r_num, r_den = self.metric(gold, mention_to_predicted)
 
-        if is_distributed():
-            device = torch.device("cuda" if dist.get_backend() == "nccl" else "cpu")
-            _p_num = torch.tensor(p_num, device=device)
-            _p_den = torch.tensor(p_den, device=device)
-            _r_num = torch.tensor(r_num, device=device)
-            _r_den = torch.tensor(r_den, device=device)
-            dist.all_reduce(_p_num, op=dist.ReduceOp.SUM)
-            dist.all_reduce(_p_den, op=dist.ReduceOp.SUM)
-            dist.all_reduce(_r_num, op=dist.ReduceOp.SUM)
-            dist.all_reduce(_r_den, op=dist.ReduceOp.SUM)
-            p_num = _p_num.item()
-            p_den = _p_den.item()
-            r_num = _r_num.item()
-            r_den = _r_den.item()
-
-        self.precision_numerator += p_num
-        self.precision_denominator += p_den
-        self.recall_numerator += r_num
-        self.recall_denominator += r_den
+        self.precision_numerator += dist_reduce_sum(p_num)
+        self.precision_denominator += dist_reduce_sum(p_den)
+        self.recall_numerator += dist_reduce_sum(r_num)
+        self.recall_denominator += dist_reduce_sum(r_den)
 
     def get_f1(self):
         precision = self.get_precision()
