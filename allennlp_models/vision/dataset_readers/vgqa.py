@@ -224,6 +224,7 @@ def process_digit_article(input: str) -> str:
     return " ".join(output)
 
 
+# todo: also remove words like a/the/an/etc?
 @lru_cache(maxsize=None)
 def preprocess_answer(answer: str) -> str:
     answer = process_digit_article(process_punctuation(answer))
@@ -291,7 +292,7 @@ class VGQAReader(VisionReader):
         cuda_device: Optional[Union[int, torch.device]] = None,
         max_instances: Optional[int] = None,
         image_processing_batch_size: int = 8,
-        multiple_answers_per_question: bool = True,
+        multiple_answers_per_question: bool = False,
         write_to_cache: bool = True,
     ) -> None:
         run_featurization = image_loader and image_featurizer and region_detector
@@ -342,9 +343,6 @@ class VGQAReader(VisionReader):
                     return None
                 return int(match.group(1))
 
-            self.images = {
-                id_from_filename(name): full_path for name, full_path in self.images.items()
-            }
             if None in self.images:
                 del self.images[None]
 
@@ -355,22 +353,28 @@ class VGQAReader(VisionReader):
         file_path = cached_path(file_path, extract_archive=True)
 
         logger.info("Reading file at %s", file_path)
-        yielded_relation_count = 0
-        with open_compressed(file_path) as dataset_file:
+        questions = []
+        with open(file_path) as dataset_file:
             dataset = json.load(dataset_file)
+        for data in dataset:
+            for qa in data["qas"]:
+                questions.append(qa)
 
         # todo: process images
+        question_dicts = list(self.shard_iterable(questions))
         processed_images: Iterable[Optional[Tuple[Tensor, Tensor]]]
         if self.produce_featurized_images:
             # It would be much easier to just process one image at a time, but it's faster to process
             # them in batches. So this code gathers up instances until it has enough to fill up a batch
             # that needs processing, and then processes them all.
 
+            filenames = [f"{question_dict['image_id']}.jpg" for question_dict in question_dicts]
             try:
-                image_paths = [
-                    self.images[int(question_dict["image_id"])] for question_dict in question_dicts
-                ]
+                processed_images = self._process_image_paths(
+                    self.images[filename] for filename in filenames
+                )
             except KeyError as e:
+                print(self.images)
                 missing_id = e.args[0]
                 raise KeyError(
                     missing_id,
@@ -381,28 +385,23 @@ class VGQAReader(VisionReader):
                     "reader does not care about the exact directory structure. It finds the images "
                     "wherever they are.",
                 )
-
-            processed_images = self._process_image_paths(image_paths)
         else:
             processed_images = [None for _ in range(len(question_dicts))]
 
         logger.info("Reading the dataset")
-        for elem in dataset:
-            for qa in self.shard_iterable(elem["qas"]):
-                question = qa['question']
-                answer = self.process_answer(qa['answer'])
-                qa_id = qa['qa_id']
-                processed_image = processed_images[qa['image_id']]
+        for qa, processed_image in zip(question_dicts, processed_images):
+            question = qa["question"]
+            answer = preprocess_answer(qa["answer"])
+            qa_id = qa["qa_id"]
 
-                instance = self.text_to_instance(
-                    qa_id,
-                    question,
-                    answer,
-                    processed_image,
-                    is_training=True,
-                )
+            instance = self.text_to_instance(
+                qa_id,
+                question,
+                answer,
+                processed_image,
+            )
 
-                yield instance
+            yield instance
 
     @overrides
     def text_to_instance(
@@ -434,45 +433,21 @@ class VGQAReader(VisionReader):
                 dtype=torch.bool,
             )
 
-        if self.answer_vocab is None or answer in self.answer_vocab:
-            fields["label"] = LabelField(answer, label_namespace="answers")
+        if answer is not None:
+            labels_fields = []
+            weights = []
+            if not self.answer_vocab or answer["answer"] in self.answer_vocab:
+                labels_fields.append(LabelField(answer, label_namespace="answers"))
+                weights.append(1.0)
+
+            if len(labels_fields) <= 0:
+                return None
+
+            fields["label_weights"] = ArrayField(torch.tensor(weights))
+            fields["labels"] = ListField(labels_fields)
 
         return Instance(fields)
 
     @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
         instance["question"].token_indexers = self._token_indexers  # type: ignore
-
-    # todo: fix
-    def _get_answers_by_question_id(self, split):
-        answers_by_question_id = {}
-        if split.annotations is not None:
-            # Pre-processing the annotations is time-consuming, so we don't want to
-            # have to re-do it each time we call read(). So we cache this result.
-            annotations_path = cached_path(split.annotations, extract_archive=True)
-            with LocalCacheResource(split.annotations + "-cache", annotations_path) as cache:
-                if cache.cached():
-                    logger.info(
-                        "Reading annotation answer counts from cache at %s",
-                        cache.path,
-                    )
-                    with cache.reader() as f:
-                        answers_by_question_id = json.load(f)
-                else:
-                    logger.info("Calculating annotation answer counts...")
-                    with open(annotations_path) as f:
-                        annotations = json.load(f)
-                    for a in annotations["annotations"]:
-                        qid = a["question_id"]
-                        answer_counts: MutableMapping[str, int] = Counter()
-                        if self.multiple_answers_per_question:
-                            for answer in (answer_dict["answer"] for answer_dict in a["answers"]):
-                                answer_counts[preprocess_answer(answer)] += 1
-                        else:
-                            answer_counts[preprocess_answer(a["multiple_choice_answer"])] = 1
-                        answers_by_question_id[str(qid)] = answer_counts
-                    logger.info("Caching annotation answer counts to %s", cache.path)
-                    with cache.writer() as f:
-                        json.dump(answers_by_question_id, f)
-        return answers_by_question_id
-    
