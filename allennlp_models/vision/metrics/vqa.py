@@ -2,7 +2,7 @@ import torch
 from overrides import overrides
 
 from allennlp.training.metrics.metric import Metric
-from allennlp.nn.util import dist_reduce_sum
+import torch.distributed as dist
 
 
 @Metric.register("vqa")
@@ -46,8 +46,14 @@ class VqaMeasure(Metric):
         )
         local_score_count = torch.tensor(labels.size(0), dtype=torch.int32, device=labels.device)
 
-        self._sum_of_scores += dist_reduce_sum(local_sum_of_scores)
-        self._score_count += dist_reduce_sum(local_score_count)
+        from allennlp.common.util import is_distributed
+
+        if is_distributed():
+            dist.all_reduce(local_sum_of_scores, op=dist.ReduceOp.SUM)
+            dist.all_reduce(local_score_count, op=dist.ReduceOp.SUM)
+
+        self._sum_of_scores += local_sum_of_scores.item()
+        self._score_count += local_score_count.item()
 
     @overrides
     def get_metric(self, reset: bool = False):
