@@ -362,7 +362,6 @@ class VGQAReader(VisionReader):
 
         file_path = cached_path(file_path.split("[")[0], extract_archive=True)
 
-
         logger.info("Reading file at %s", file_path)
         questions = []
         with open(file_path) as dataset_file:
@@ -401,6 +400,7 @@ class VGQAReader(VisionReader):
 
         logger.info("Reading the dataset")
         failed_instances_count = 0
+        attempted_instances_count = 0
         for qa, processed_image in zip(question_dicts, processed_images):
             question = qa["question"]
             answer = preprocess_answer(qa["answer"])
@@ -418,6 +418,9 @@ class VGQAReader(VisionReader):
             else:
                 failed_instances_count += 1
 
+        failed_instances_fraction = failed_instances_count / attempted_instances_count
+        logger.warning(f"{failed_instances_fraction*100:.0f}% of instances failed.")
+
     @overrides
     def text_to_instance(
         self,  # type: ignore
@@ -432,7 +435,7 @@ class VGQAReader(VisionReader):
         fields: Dict[str, Field] = {
             "question": question_field,
         }
-        
+
         if image is None or answer is None:
             return None
 
