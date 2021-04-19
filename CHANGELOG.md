@@ -10,11 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- VQA metric now calculates correctly in the distributed case
+- `VqaMeasure` now calculates correctly in the distributed case.
+- `ConllCorefScores` now calculates correctly in the distributed case.
+- `SrlEvalScorer` raises an appropriate error if run in the distributed setting.
 
 ### Added
 
-- Tests for the VQA metric
+- Tests for `VqaMeasure`.
+- Distributed tests for `ConllCorefScores` and `SrlEvalScorer` metrics.
 
 ### Changed
 

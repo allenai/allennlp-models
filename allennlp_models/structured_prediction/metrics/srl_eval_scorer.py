@@ -8,6 +8,7 @@ import shutil
 
 from overrides import overrides
 
+from allennlp.common.util import is_distributed
 from allennlp.common.checks import ConfigurationError
 from allennlp.training.metrics.metric import Metric
 
@@ -122,6 +123,10 @@ class SrlEvalScorer(Metric):
                 self._true_positives[tag] += num_correct
                 self._false_positives[tag] += num_excess
                 self._false_negatives[tag] += num_missed
+
+        # Note: we cannot aggregate across distributed workers because each worker
+        # may end up with different tags, and in such a case, the reduce operation
+        # will stall, or return with inaccurate values.
         shutil.rmtree(tempdir)
 
     def get_metric(self, reset: bool = False):
@@ -137,6 +142,10 @@ class SrlEvalScorer(Metric):
         Additionally, an `overall` key is included, which provides the precision,
         recall and f1-measure for all spans.
         """
+        if is_distributed():
+            raise RuntimeError(
+                "Distributed aggregation for `SrlEvalScorer` is currently not supported."
+            )
         all_tags: Set[str] = set()
         all_tags.update(self._true_positives.keys())
         all_tags.update(self._false_positives.keys())
