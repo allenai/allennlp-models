@@ -400,6 +400,7 @@ class VGQAReader(VisionReader):
             processed_images = [None for _ in range(len(question_dicts))]
 
         logger.info("Reading the dataset")
+        failed_instances_count = 0
         for qa, processed_image in zip(question_dicts, processed_images):
             question = qa["question"]
             answer = preprocess_answer(qa["answer"])
@@ -412,7 +413,10 @@ class VGQAReader(VisionReader):
                 processed_image,
             )
 
-            yield instance
+            if instance is not None:
+                yield instance
+            else:
+                failed_instances_count += 1
 
     @overrides
     def text_to_instance(
@@ -428,6 +432,9 @@ class VGQAReader(VisionReader):
         fields: Dict[str, Field] = {
             "question": question_field,
         }
+        
+        if image is None or answer is None:
+            return None
 
         if image is not None:
             if isinstance(image, str):
