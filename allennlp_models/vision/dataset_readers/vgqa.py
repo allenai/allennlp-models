@@ -351,7 +351,17 @@ class VGQAReader(VisionReader):
 
     @overrides
     def _read(self, file_path: str):
-        file_path = cached_path(file_path, extract_archive=True)
+        # if the splits are using slicing syntax, honor it
+        slice_match = re.match(r"(.*)\[([0123456789:]*)]", file_path)
+        if slice_match is None:
+            question_slice = slice(None, None, None)
+        else:
+            split_name = slice_match[1]
+            slice_args = [int(a) if len(a) > 0 else None for a in slice_match[2].split(":")]
+            question_slice = slice(*slice_args)
+
+        file_path = cached_path(file_path.split("[")[0], extract_archive=True)
+
 
         logger.info("Reading file at %s", file_path)
         questions = []
@@ -360,6 +370,7 @@ class VGQAReader(VisionReader):
         for data in dataset:
             for qa in data["qas"]:
                 questions.append(qa)
+        questions = questions[question_slice]
 
         question_dicts = list(self.shard_iterable(questions))
         processed_images: Iterable[Optional[Tuple[Tensor, Tensor]]]

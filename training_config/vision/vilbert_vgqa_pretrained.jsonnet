@@ -6,7 +6,7 @@ local gpu_batch_size = 128;
 local num_gpus = 1;
 
 local construct_vocab = true; # false;
-local dataset = "balanced_real";
+local dataset = "data";
 
 local vocabulary = if construct_vocab then {
       // read the files to construct the vocab
@@ -49,8 +49,8 @@ local vocabulary = if construct_vocab then {
     "answer_vocab": null    // make sure we don't skip unanswerable questions during validation
   },
   "vocabulary": vocabulary,
-  "train_data_path": [std.format("%s_train", dataset), std.format("%s_val[1000:]", dataset)],
-  "validation_data_path": std.format("%s_val[:1000]", dataset),
+  "train_data_path": "https://visualgenome.org/static/data/dataset/question_answers.json.zip!question_answers.json[5000:]",
+  "validation_data_path": "https://visualgenome.org/static/data/dataset/question_answers.json.zip!question_answers.json[:5000]",
   "model": {
     "type": "vqa_vilbert_from_huggingface",
     "model_name": model_name,
