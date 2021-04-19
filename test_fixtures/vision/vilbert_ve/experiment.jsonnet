@@ -23,7 +23,7 @@ local model_name = "epwalsh/bert-xsmall-dummy";
   },
   "train_data_path": "test_fixtures/vision/visual_entailment/sample_pairs.jsonl",
   "validation_data_path": "test_fixtures/vision/visual_entailment/sample_pairs.jsonl",
-  "vocabulary": {"min_count": {"answers": 2}},
+  "vocabulary": {"min_count": {"labels": 2}},
   "datasets_for_vocab_creation": ["train"],
   "model": {
     "type": "ve_vilbert",

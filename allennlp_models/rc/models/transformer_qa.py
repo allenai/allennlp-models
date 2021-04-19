@@ -5,6 +5,7 @@ import numpy as np
 import torch
 from torch import nn
 from torch.nn.functional import cross_entropy
+from torch.nn.functional import softmax
 
 from allennlp.common.util import sanitize_wordpiece
 from allennlp.modules.text_field_embedders import BasicTextFieldEmbedder
@@ -157,6 +158,12 @@ class TransformerQA(Model):
             # the question is impossible.
             possible_answer_mask[i, 0 if cls_index is None else cls_index[i]] = True
 
+        # Calculate span start and end probabilities
+        # shape: (batch_size, sequence_length)
+        span_start_probs = softmax(span_start_logits, dim=-1)
+        # shape: (batch_size, sequence_length)
+        span_end_probs = softmax(span_end_logits, dim=-1)
+
         # Replace the masked values with a very negative constant since we're in log-space.
         # shape: (batch_size, sequence_length)
         span_start_logits = replace_masked_values_with_big_negative_number(
@@ -178,10 +185,18 @@ class TransformerQA(Model):
         ) + torch.gather(span_end_logits, 1, best_spans[:, 1].unsqueeze(1))
         best_span_scores = best_span_scores.squeeze(1)
 
+        best_span_probs = torch.gather(
+            span_start_probs, 1, best_spans[:, 0].unsqueeze(1)
+        ) * torch.gather(span_end_probs, 1, best_spans[:, 1].unsqueeze(1))
+        best_span_probs = best_span_probs.squeeze(1)
+
         output_dict = {
             "span_start_logits": span_start_logits,
             "span_end_logits": span_end_logits,
             "best_span_scores": best_span_scores,
+            "span_start_probs": span_start_probs,
+            "span_end_probs": span_end_probs,
+            "best_span_probs": best_span_probs,
         }
 
         # Compute the loss.

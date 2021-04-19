@@ -80,10 +80,10 @@ class SnliReader(DatasetReader):
         with open(file_path, "r") as snli_file:
             example_iter = (json.loads(line) for line in snli_file)
             filtered_example_iter = (
-                example for example in example_iter if example["gold_label"] != "-"
+                example for example in example_iter if example.get("gold_label") != "-"
             )
             for example in self.shard_iterable(filtered_example_iter):
-                label = example["gold_label"]
+                label = example.get("gold_label")
                 premise = example["sentence1"]
                 hypothesis = example["sentence2"]
                 yield self.text_to_instance(premise, hypothesis, label)

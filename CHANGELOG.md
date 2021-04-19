@@ -5,8 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
 ## Unreleased
 
+### Fixed
+
+- VQA metric now calculates correctly in the distributed case
+
+### Added
+
+- Tests for the VQA metric
+
+
+## [v2.3.0](https://github.com/allenai/allennlp-models/releases/tag/v2.3.0) - 2021-04-14
+
+### Fixed
+
+- Fixed bug in `experiment_from_huggingface.jsonnet` and `experiment.jsonnet` by changing `min_count` to have key `labels` instead of `answers`. Resolves failure of model checks that involve calling `_extend` in `vocabulary.py`
+- `TransformerQA` now outputs span probabilities as well as scores.
+- `TransformerQAPredictor` now implements `predictions_to_labeled_instances`, which is required for the interpret module.
+
+### Added
+
+- Added script that produces the coref training data.
+- Added tests for using `allennlp predict` on multitask models.
+- Added reader and training config for RoBERTa on SuperGLUE's Recognizing Textual Entailment task
 
 ## [v2.2.0](https://github.com/allenai/allennlp-models/releases/tag/v2.2.0) - 2021-03-26
 
@@ -22,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add option `combine_input_fields` in `SnliDatasetReader` to support only having "non-entailment" and "entailment" as output labels.
 - Made all the models run on AllenNLP 2.1
 - Add option `ignore_loss_on_o_tags` in `CrfTagger` to set the flag outside its forward function.
+- Add `make_output_human_readable` for pair classification models (`BiMpm`, `DecomposableAttention`, and `ESIM`).
 
 ### Fixed
 
@@ -29,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `QaNet` and `NumericallyAugmentedQaNet` models to remove bias for layers that are followed by normalization layers.
 - Updated the model cards for `rc-naqanet`, `vqa-vilbert` and `ve-vilbert`.
 - Predictors now work for the vilbert-multitask model.
+- Support unlabeled instances in `SnliDatasetReader`.
 
 
 ## [v2.1.0](https://github.com/allenai/allennlp-models/releases/tag/v2.1.0) - 2021-02-24
