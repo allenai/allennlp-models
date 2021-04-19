@@ -35,6 +35,7 @@ from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
 
 logger = logging.getLogger(__name__)
 
+# todo: put these in utils
 contractions = {
     "aint": "ain't",
     "arent": "aren't",
@@ -360,7 +361,6 @@ class VGQAReader(VisionReader):
             for qa in data["qas"]:
                 questions.append(qa)
 
-        # todo: process images
         question_dicts = list(self.shard_iterable(questions))
         processed_images: Iterable[Optional[Tuple[Tensor, Tensor]]]
         if self.produce_featurized_images:
@@ -418,7 +418,6 @@ class VGQAReader(VisionReader):
             "question": question_field,
         }
 
-        # todo: what to do here
         if image is not None:
             if isinstance(image, str):
                 features, coords = next(self._process_image_paths([image], use_cache=use_cache))
