@@ -413,6 +413,7 @@ class VGQAReader(VisionReader):
                 processed_image,
             )
 
+            attempted_instances_count += 1
             if instance is not None:
                 yield instance
             else:
