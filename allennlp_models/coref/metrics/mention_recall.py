@@ -2,9 +2,7 @@ from typing import Any, Dict, List, Set, Tuple
 from overrides import overrides
 
 import torch
-import torch.distributed as dist
-
-from allennlp.common.util import is_distributed
+from allennlp.nn.util import dist_reduce_sum
 
 from allennlp.training.metrics.metric import Metric
 
@@ -33,17 +31,8 @@ class MentionRecall(Metric):
             num_gold_mentions += len(gold_mentions)
             num_recalled_mentions += len(gold_mentions & predicted_spans)
 
-        if is_distributed():
-            device = batched_top_spans.device
-            _num_gold_mentions = torch.tensor(num_gold_mentions).to(device)
-            _num_recalled_mentions = torch.tensor(num_recalled_mentions).to(device)
-            dist.all_reduce(_num_gold_mentions, op=dist.ReduceOp.SUM)
-            dist.all_reduce(_num_recalled_mentions, op=dist.ReduceOp.SUM)
-            num_gold_mentions = _num_gold_mentions.item()
-            num_recalled_mentions = _num_recalled_mentions.item()
-
-        self._num_gold_mentions += num_gold_mentions
-        self._num_recalled_mentions += num_recalled_mentions
+        self._num_gold_mentions += dist_reduce_sum(num_gold_mentions)
+        self._num_recalled_mentions += dist_reduce_sum(num_recalled_mentions)
 
     @overrides
     def get_metric(self, reset: bool = False) -> float:

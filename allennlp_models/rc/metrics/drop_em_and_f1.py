@@ -1,9 +1,6 @@
 from typing import Tuple, List, Union
 
-import torch
-import torch.distributed as dist
-
-from allennlp.common.util import is_distributed
+from allennlp.nn.util import dist_reduce_sum
 
 from allennlp.training.metrics.metric import Metric
 from overrides import overrides
@@ -48,27 +45,11 @@ class DropEmAndF1(Metric):
         exact_match, f1_score = metric_max_over_ground_truths(
             drop_em_and_f1, prediction, ground_truth_answer_strings
         )
-        count = 1
 
-        if is_distributed():
-            if dist.get_backend() == "nccl":
-                device = torch.cuda.current_device()
-            else:
-                device = torch.device("cpu")
-            # Converting to int here, since we want to count the number of exact matches.
-            _exact_match = torch.tensor(int(exact_match), dtype=torch.int).to(device)
-            _f1_score = torch.tensor(f1_score).to(device)
-            _count = torch.tensor(count).to(device)
-            dist.all_reduce(_exact_match, op=dist.ReduceOp.SUM)
-            dist.all_reduce(_f1_score, op=dist.ReduceOp.SUM)
-            dist.all_reduce(_count, op=dist.ReduceOp.SUM)
-            exact_match = _exact_match.item()
-            f1_score = _f1_score.item()
-            count = _count.item()
-
-        self._total_em += exact_match
-        self._total_f1 += f1_score
-        self._count += count
+        # Converting to int here, since we want to count the number of exact matches.
+        self._total_em += dist_reduce_sum(int(exact_match))
+        self._total_f1 += dist_reduce_sum(f1_score)
+        self._count += dist_reduce_sum(1)
 
     @overrides
     def get_metric(self, reset: bool = False) -> Tuple[float, float]:
