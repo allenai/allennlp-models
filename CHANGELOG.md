@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Tests for the VQA metric
 
+### Changed
+
+- Updated `registered_predictor_name` to `null` in model cards for the models where it was the same as the default predictor.
+
 
 ## [v2.3.0](https://github.com/allenai/allennlp-models/releases/tag/v2.3.0) - 2021-04-14
 
