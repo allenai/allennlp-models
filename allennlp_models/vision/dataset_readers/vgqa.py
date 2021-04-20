@@ -461,7 +461,7 @@ class VGQAReader(VisionReader):
         if answer is not None:
             labels_fields = []
             weights = []
-            if not self.answer_vocab or answer["answer"] in self.answer_vocab:
+            if not self.answer_vocab or answer in self.answer_vocab:
                 labels_fields.append(LabelField(answer, label_namespace="answers"))
                 weights.append(1.0)
 
