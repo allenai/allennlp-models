@@ -439,8 +439,8 @@ class VGQAReader(VisionReader):
             "question": question_field,
         }
 
-        if image is None:
-            return None
+        # if image is None:
+            # return None
 
         if image is not None:
             if isinstance(image, str):
