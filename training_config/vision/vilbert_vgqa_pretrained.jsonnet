@@ -82,8 +82,8 @@ local vocabulary = if construct_vocab then {
     #"cuda_devices": std.repeat([-1], num_gpus)  # Use this for debugging on CPU
   },
   // Don't train if we're just constructing vocab. The results would be confusing.
-  // [if !construct_vocab then "trainer"]: {
-  "trainer": {
+  [if !construct_vocab then "trainer"]: {
+  // "trainer": {
     "optimizer": {
       "type": "huggingface_adamw",
       "lr": 4e-5,
