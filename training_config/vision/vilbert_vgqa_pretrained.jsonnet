@@ -22,7 +22,7 @@ local vocabulary = if construct_vocab then {
 {
   "dataset_reader": {
     "type": "vgqa",
-    "image_dir": "/net/nfs2.allennlp/data/vision/visual_genome/1.2/VG_100K",
+    "image_dir": "/net/nfs2.allennlp/data/vision/visual_genome/1.2",
     // [if !construct_vocab then "feature_cache_dir"]: std.format("/net/nfs2.allennlp/data/vision/vqa/%s/feature_cache", dataset),
     #"image_dir": std.format("/Users/dirkg/Documents/data/vision/vqa/%s", dataset),
     #[if !construct_vocab then "feature_cache_dir"]: std.format("/Users/dirkg/Documents/data/vision/vqa/%s/feature_cache", dataset),
