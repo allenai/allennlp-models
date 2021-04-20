@@ -1,7 +1,7 @@
 {
     "id": "mc-roberta-piqa",
     "registered_model_name": "transformer_mc",
-    "registered_predictor_name": "transformer_mc",
+    "registered_predictor_name": null,
     "display_name": "Physical Interaction Question Answering",
     "task_id": "mc",
     "model_details": {
