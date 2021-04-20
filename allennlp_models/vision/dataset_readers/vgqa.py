@@ -379,9 +379,10 @@ class VGQAReader(VisionReader):
             # that needs processing, and then processes them all.
 
             filenames = [f"{question_dict['image_id']}.jpg" for question_dict in question_dicts]
-            try:
+            for filename in filenames:
                 logger.info("Reading file at %s", filename)
                 logger.info("Reading file at %s", self.images[filename])
+            try:
                 processed_images = self._process_image_paths(
                     self.images[filename] for filename in filenames
                 )
