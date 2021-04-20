@@ -5,19 +5,18 @@ local effective_batch_size = 128;
 local gpu_batch_size = 128;
 local num_gpus = 1;
 
-local construct_vocab = true; # false;
+local construct_vocab = false;
 local dataset = "data";
 
 local vocabulary = if construct_vocab then {
       // read the files to construct the vocab
       "min_count": {"answers": 9}
     } else {
-      // todo: fix
       // read the constructed vocab
       "type": "from_files",
-      "directory": std.format(
-        "https://storage.googleapis.com/allennlp-public-data/vqav2/vilbert_vqa_%s.%s.vocab.tar.gz",
-        [dataset, model_name])
+      # todo: upload vocab to google
+      // "directory": "https://storage.googleapis.com/allennlp-public-data/vqav2/vilbert_vqa_%s.%s.vocab.tar.gz",
+      "directory": "/home/jacobm/model-output/vgqa-vocab/output.tar.gz",
     };
 
 {

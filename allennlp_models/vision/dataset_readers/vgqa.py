@@ -380,8 +380,8 @@ class VGQAReader(VisionReader):
 
             filenames = [f"{question_dict['image_id']}.jpg" for question_dict in question_dicts]
             try:
-                logger.info("Reading file at %s", filename)
-                logger.info("Reading file at %s", self.images[filename])
+                # logger.info("Reading file at %s", filename)
+                # logger.info("Reading file at %s", self.images[filename])
                 processed_images = self._process_image_paths(
                     self.images[filename] for filename in filenames
                 )
@@ -439,8 +439,8 @@ class VGQAReader(VisionReader):
             "question": question_field,
         }
 
-        # if image is None:
-            # return None
+        if image is None:
+            return None
 
         if image is not None:
             if isinstance(image, str):
