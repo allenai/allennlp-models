@@ -2,7 +2,7 @@ local model_name = "bert-base-uncased";
 local vocab_size = 30522;     // for bert-*-uncased models
 //local vocab_size = 28996;   // for bert-*-cased models
 local effective_batch_size = 128;
-local gpu_batch_size = 128;
+local gpu_batch_size = 32; # 128;
 local num_gpus = 4;
 
 local construct_vocab = false;
@@ -23,7 +23,7 @@ local vocabulary = if construct_vocab then {
   "dataset_reader": {
     "type": "vgqa",
     "image_dir": "/net/nfs2.allennlp/data/vision/visual_genome/1.2",
-    // [if !construct_vocab then "feature_cache_dir"]: std.format("/net/nfs2.allennlp/data/vision/vqa/%s/feature_cache", dataset),
+    [if !construct_vocab then "feature_cache_dir"]: "/net/nfs2.allennlp/data/vision/visual_genome/1.2/feature_cache",
     #"image_dir": std.format("/Users/dirkg/Documents/data/vision/vqa/%s", dataset),
     #[if !construct_vocab then "feature_cache_dir"]: std.format("/Users/dirkg/Documents/data/vision/vqa/%s/feature_cache", dataset),
     [if !construct_vocab then "image_loader"]: "torch",
