@@ -52,3 +52,6 @@ class TestVGQA2Reader(AllenNlpTestCase):
         # Nothing should be masked out since the number of fake boxes is the same
         # for each item in the batch.
         assert tensors["box_mask"].all()
+
+
+        # todo: test for impossible questions?

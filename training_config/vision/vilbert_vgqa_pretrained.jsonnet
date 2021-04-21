@@ -3,7 +3,7 @@ local vocab_size = 30522;     // for bert-*-uncased models
 //local vocab_size = 28996;   // for bert-*-cased models
 local effective_batch_size = 128;
 local gpu_batch_size = 128;
-local num_gpus = 1;
+local num_gpus = 4;
 
 local construct_vocab = false;
 local dataset = "data";

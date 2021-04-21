@@ -434,6 +434,7 @@ class VGQAReader(VisionReader):
         answer: str,
         image: Union[str, Tuple[Tensor, Tensor]],
         use_cache: bool = True,
+        keep_impossible_questions: bool = True,
     ) -> Optional[Instance]:
         question_field = TextField(self._tokenizer.tokenize(question), None)
 
@@ -458,10 +459,11 @@ class VGQAReader(VisionReader):
                 dtype=torch.bool,
             )
 
+        # todo: remove impossible answers from training, but not validation
         if answer is not None:
             labels_fields = []
             weights = []
-            if not self.answer_vocab or answer in self.answer_vocab:
+            if keep_impossible_questions and (not self.answer_vocab or answer in self.answer_vocab):
                 labels_fields.append(LabelField(answer, label_namespace="answers"))
                 weights.append(1.0)
 
