@@ -13,17 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `T5` model for generation.
 - Added a classmethod constructor on `Seq2SeqPredictor`: `.pretrained_t5_for_generation()`.
 - Added a parameter called `source_prefix` to `CNNDailyMailDatasetReader`. This is useful with T5, for example, by setting `source_prefix` to "summarization: ".
+- Tests for `VqaMeasure`.
+- Distributed tests for `ConllCorefScores` and `SrlEvalScorer` metrics.
 
 ### Fixed
 
 - `VqaMeasure` now calculates correctly in the distributed case.
 - `ConllCorefScores` now calculates correctly in the distributed case.
 - `SrlEvalScorer` raises an appropriate error if run in the distributed setting.
-
-### Added
-
-- Tests for `VqaMeasure`.
-- Distributed tests for `ConllCorefScores` and `SrlEvalScorer` metrics.
 
 ### Changed
 
