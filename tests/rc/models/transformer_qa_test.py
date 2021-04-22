@@ -44,14 +44,25 @@ class TransformerQaTest(ModelTestCase):
         # script.
         assert metrics["per_instance_f1"] > 0
 
+        output_span_start_probs = output_dict["span_start_probs"][0].data.numpy()
+        output_span_end_probs = output_dict["span_end_probs"][0].data.numpy()
+        output_best_span_probs = output_dict["best_span_probs"][0].data.numpy()
+        assert_almost_equal(numpy.sum(output_span_start_probs, -1), 1, decimal=6)
+        assert_almost_equal(numpy.sum(output_span_end_probs, -1), 1, decimal=6)
+        assert output_best_span_probs > 0 and numpy.sum(output_best_span_probs, -1) <= 1
         span_start_probs = torch.nn.functional.softmax(output_dict["span_start_logits"], dim=-1)[
             0
         ].data.numpy()
         span_end_probs = torch.nn.functional.softmax(output_dict["span_end_logits"], dim=-1)[
             0
         ].data.numpy()
+        best_span_probs = (
+            torch.nn.functional.softmax(output_dict["best_span_scores"], dim=-1)[0].data.numpy(),
+            0,
+        )
         assert_almost_equal(numpy.sum(span_start_probs, -1), 1, decimal=6)
         assert_almost_equal(numpy.sum(span_end_probs, -1), 1, decimal=6)
+        assert numpy.sum(best_span_probs, -1) > 0 and numpy.sum(best_span_probs, -1) <= 1
         span_start, span_end = tuple(output_dict["best_span"][0].data.numpy())
         assert span_start >= -1
         assert span_start <= span_end

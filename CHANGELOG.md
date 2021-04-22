@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
 ## Unreleased
 
 ### Added
@@ -15,12 +16,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `VqaMeasure` now calculates correctly in the distributed case.
+- `ConllCorefScores` now calculates correctly in the distributed case.
+- `SrlEvalScorer` raises an appropriate error if run in the distributed setting.
+
+### Added
+
+- Tests for `VqaMeasure`.
+- Distributed tests for `ConllCorefScores` and `SrlEvalScorer` metrics.
+
+### Changed
+
+- Updated `registered_predictor_name` to `null` in model cards for the models where it was the same as the default predictor.
+
+
+## [v2.3.0](https://github.com/allenai/allennlp-models/releases/tag/v2.3.0) - 2021-04-14
+
+### Fixed
+
 - Fixed bug in `experiment_from_huggingface.jsonnet` and `experiment.jsonnet` by changing `min_count` to have key `labels` instead of `answers`. Resolves failure of model checks that involve calling `_extend` in `vocabulary.py`
+- `TransformerQA` now outputs span probabilities as well as scores.
+- `TransformerQAPredictor` now implements `predictions_to_labeled_instances`, which is required for the interpret module.
 
 ### Added
 
 - Added script that produces the coref training data.
-
+- Added tests for using `allennlp predict` on multitask models.
+- Added reader and training config for RoBERTa on SuperGLUE's Recognizing Textual Entailment task
 
 ## [v2.2.0](https://github.com/allenai/allennlp-models/releases/tag/v2.2.0) - 2021-03-26
 
@@ -36,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add option `combine_input_fields` in `SnliDatasetReader` to support only having "non-entailment" and "entailment" as output labels.
 - Made all the models run on AllenNLP 2.1
 - Add option `ignore_loss_on_o_tags` in `CrfTagger` to set the flag outside its forward function.
+- Add `make_output_human_readable` for pair classification models (`BiMpm`, `DecomposableAttention`, and `ESIM`).
 
 ### Fixed
 

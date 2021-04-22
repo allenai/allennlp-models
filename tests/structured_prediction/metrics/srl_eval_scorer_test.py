@@ -1,6 +1,11 @@
+import pytest
 from numpy.testing import assert_allclose
 
-from allennlp.common.testing import AllenNlpTestCase
+from allennlp.common.testing import (
+    AllenNlpTestCase,
+    global_distributed_metric,
+    run_distributed_test,
+)
 
 from allennlp_models.structured_prediction.metrics.srl_eval_scorer import SrlEvalScorer
 
@@ -185,3 +190,45 @@ class SrlEvalScorerTest(AllenNlpTestCase):
         assert_allclose(
             metrics["f1-measure-overall"], (2 * (1 / 3) * (1 / 2)) / ((1 / 3) + (1 / 2))
         )
+
+    def test_distributed_setting_throws_an_error(self):
+        from allennlp_models.structured_prediction.models.srl import (
+            convert_bio_tags_to_conll_format,
+        )
+
+        batch_verb_indices = [2]
+        batch_sentences = [["The", "cat", "loves", "hats", "."]]
+        batch_bio_predicted_tags = [["B-ARG0", "B-ARG1", "B-V", "B-ARG1", "O"]]
+        batch_conll_predicted_tags = [
+            convert_bio_tags_to_conll_format(tags) for tags in batch_bio_predicted_tags
+        ]
+        batch_bio_gold_tags = [["B-ARG0", "I-ARG0", "B-V", "B-ARG1", "O"]]
+        batch_conll_gold_tags = [
+            convert_bio_tags_to_conll_format(tags) for tags in batch_bio_gold_tags
+        ]
+
+        metric_kwargs = {
+            "batch_verb_indices": [batch_verb_indices, batch_verb_indices],
+            "batch_sentences": [batch_sentences, batch_sentences],
+            "batch_conll_formatted_predicted_tags": [
+                batch_conll_predicted_tags,
+                batch_conll_predicted_tags,
+            ],
+            "batch_conll_formatted_gold_tags": [batch_conll_gold_tags, batch_conll_gold_tags],
+        }
+
+        desired_values = {}  # it does not matter, we expect the run to fail.
+
+        with pytest.raises(Exception) as exc:
+            run_distributed_test(
+                [-1, -1],
+                global_distributed_metric,
+                SrlEvalScorer(ignore_classes=["V"]),
+                metric_kwargs,
+                desired_values,
+                exact=True,
+            )
+            assert (
+                "RuntimeError: Distributed aggregation for `SrlEvalScorer` is currently not supported."
+                in str(exc.value)
+            )

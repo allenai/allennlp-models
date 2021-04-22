@@ -1,7 +1,7 @@
 {
     "id": "ve-vilbert",
-    "registered_model_name": "visual-entailment",
-    "registered_predictor_name": "vilbert_ve",
+    "registered_model_name": "ve_vilbert",
+    "registered_predictor_name": null,
     "display_name": "Visual Entailment",
     "task_id": "ve",
     "model_details": {
