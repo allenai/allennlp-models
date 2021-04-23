@@ -32,7 +32,8 @@ def get_sentence_data(fn):
     with open(fn, 'r') as f:
         sentences = f.read().split('\n')
 
-    annotations = []
+    image_id = filename.split('.')[0]
+    result_sentences = []
     for sentence in sentences:
         if not sentence:
             continue
@@ -66,16 +67,10 @@ def get_sentence_data(fn):
                 else:
                     words.append(token)
 
-        sentence_data = {'sentence' : ' '.join(words), 'phrases' : []}
-        for index, phrase, p_id, p_type in zip(first_word, phrases, phrase_id, phrase_type):
-            sentence_data['phrases'].append({'first_word_index' : index,
-                                             'phrase' : phrase,
-                                             'phrase_id' : p_id,
-                                             'phrase_type' : p_type})
+        result_sentences.append(' '.join(words))
 
-        annotations.append(sentence_data)
-
-    return annotations
+    sentence_data = {'image_id' : image_id, 'sentences': result_sentences}
+    return sentence_data
 
 
 @DatasetReader.register("flickr30k")
@@ -170,19 +165,13 @@ class Flickr30kReader(VisionReader):
 
         file_path = cached_path(file_path.split("[")[0], extract_archive=True)
 
-        # todo: change to work with the flickr dataset
         logger.info("Reading file at %s", file_path)
-        questions = []
+        sentences = []
         for filename in os.listdir(file_path):
-            # with open(os.path.join(file_path, filename)) as dataset_file:
-            sentence_data = get_sentence_data(open(os.path.join(file_path, filename)))
-        #         dataset = json.load(dataset_file)
-        #     for data in dataset:
-        #         for qa in data["qas"]:
-        #             questions.append(qa)
-        # questions = questions[question_slice]
+            full_file_path = open(os.path.join(file_path, filename))
+            sentences.append(get_sentence_data(full_file_path))
 
-        question_dicts = list(self.shard_iterable(questions))
+        sentence_dicts = list(self.shard_iterable(sentences))
 
         # todo: probably move this to a utils file?
         processed_images: Iterable[Optional[Tuple[Tensor, Tensor]]]
@@ -212,8 +201,18 @@ class Flickr30kReader(VisionReader):
                     "reader does not care about the exact directory structure. It finds the images "
                     "wherever they are.",
                 )
+
+        # TODO: zipping will NOT work in this situation, because sentence_dicts and processed_images could be in
+        # different orders
+        for sentence_dict, processed_image in zip(sentence_dicts, processed_images):
+            answer = {
+                "answer": sentence_dict["answer"],
+            }
+            instance = self.text_to_instance(question_dict["question"], processed_image, answer)
+            if instance is not None:
+                yield instance
         else:
-            processed_images = [None for _ in range(len(question_dicts))]
+            processed_images = [None for _ in range(len(sentence_dicts))]
 
     # todo: implement
     @overrides
