@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `pretrained.load_predictor()` now allows for loading model onto GPU.
 - `VqaMeasure` now calculates correctly in the distributed case.
 - `ConllCorefScores` now calculates correctly in the distributed case.
 - `SrlEvalScorer` raises an appropriate error if run in the distributed setting.
