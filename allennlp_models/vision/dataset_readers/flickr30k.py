@@ -144,9 +144,21 @@ class Flickr30kReader(VisionReader):
 
     # todo: implement
     @overrides
-    def _read(self, split_or_filename: str):
-    @overrides
     def _read(self, file_path: str):
+        # idea:
+        # 1. Read in sentences
+            # Have a directory with all of the data -> each file corresponds to one image
+            # Filter out unrelated sentences?
+        # 2. Process images
+        # 3. Create instances
+            # Instance structure:
+                # Image id
+                # Sentence tokens (only one, or all 5?)
+                # Image features
+                # ?
+
+        # TODO: I don't think we need this, because there are test and train/val files
+            # Maybe we need to know how many of the train_and_val are training, and how many are validation
         # if the splits are using slicing syntax, honor it
         slice_match = re.match(r"(.*)\[([0123456789:]*)]", file_path)
         if slice_match is None:
@@ -161,12 +173,14 @@ class Flickr30kReader(VisionReader):
         # todo: change to work with the flickr dataset
         logger.info("Reading file at %s", file_path)
         questions = []
-        with open(file_path) as dataset_file:
-            dataset = json.load(dataset_file)
-        for data in dataset:
-            for qa in data["qas"]:
-                questions.append(qa)
-        questions = questions[question_slice]
+        for filename in os.listdir(file_path):
+            # with open(os.path.join(file_path, filename)) as dataset_file:
+            sentence_data = get_sentence_data(open(os.path.join(file_path, filename)))
+        #         dataset = json.load(dataset_file)
+        #     for data in dataset:
+        #         for qa in data["qas"]:
+        #             questions.append(qa)
+        # questions = questions[question_slice]
 
         question_dicts = list(self.shard_iterable(questions))
 
