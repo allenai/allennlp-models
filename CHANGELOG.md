@@ -6,7 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## Unreleased
+## [v2.4.0](https://github.com/allenai/allennlp-models/releases/tag/v2.4.0) - 2021-04-22
+
+### Added
+
+- Added `T5` model for generation.
+- Added a classmethod constructor on `Seq2SeqPredictor`: `.pretrained_t5_for_generation()`.
+- Added a parameter called `source_prefix` to `CNNDailyMailDatasetReader`. This is useful with T5, for example, by setting `source_prefix` to "summarization: ".
+- Tests for `VqaMeasure`.
+- Distributed tests for `ConllCorefScores` and `SrlEvalScorer` metrics.
 
 ### Fixed
 
@@ -15,10 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ConllCorefScores` now calculates correctly in the distributed case.
 - `SrlEvalScorer` raises an appropriate error if run in the distributed setting.
 
-### Added
+### Changed
 
-- Tests for `VqaMeasure`.
-- Distributed tests for `ConllCorefScores` and `SrlEvalScorer` metrics.
+- Updated `registered_predictor_name` to `null` in model cards for the models where it was the same as the default predictor.
 
 
 ## [v2.3.0](https://github.com/allenai/allennlp-models/releases/tag/v2.3.0) - 2021-04-14

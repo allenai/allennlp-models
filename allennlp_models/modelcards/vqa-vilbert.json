@@ -1,7 +1,7 @@
 {
     "id": "vqa-vilbert",
     "registered_model_name": "vqa_vilbert",
-    "registered_predictor_name": "vilbert_vqa",
+    "registered_predictor_name": null,
     "display_name": "ViLBERT - Visual Question Answering",
     "task_id": "vqa",
     "model_details": {
