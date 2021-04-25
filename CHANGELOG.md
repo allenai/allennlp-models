@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Tests for `VqaMeasure`.
 - Distributed tests for `ConllCorefScores` and `SrlEvalScorer` metrics.
+- Added tests for running checklist suites for SQuAD-style reading comprehension models (`bidaf`), and textual entailment models (`decomposable_attention` and `esim`).
 
 ### Changed
 
