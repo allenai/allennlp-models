@@ -5,11 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## Unreleased
+
+### Added
+
+- Added tests for checklist suites for SQuAD-style reading comprehension models (`bidaf`), and textual entailment models (`decomposable_attention` and `esim`).
+
+
+## [v2.4.0](https://github.com/allenai/allennlp-models/releases/tag/v2.4.0) - 2021-04-22
+
+### Added
+
+- Added `T5` model for generation.
+- Added a classmethod constructor on `Seq2SeqPredictor`: `.pretrained_t5_for_generation()`.
+- Added a parameter called `source_prefix` to `CNNDailyMailDatasetReader`. This is useful with T5, for example, by setting `source_prefix` to "summarization: ".
+- Tests for `VqaMeasure`.
+- Distributed tests for `ConllCorefScores` and `SrlEvalScorer` metrics.
 
 ### Fixed
 
+- `pretrained.load_predictor()` now allows for loading model onto GPU.
 - `VqaMeasure` now calculates correctly in the distributed case.
 - `ConllCorefScores` now calculates correctly in the distributed case.
 - `SrlEvalScorer` raises an appropriate error if run in the distributed setting.
@@ -18,7 +33,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Tests for `VqaMeasure`.
 - Distributed tests for `ConllCorefScores` and `SrlEvalScorer` metrics.
-- Added tests for running checklist suites for SQuAD-style reading comprehension models (`bidaf`), and textual entailment models (`decomposable_attention` and `esim`).
 
 ### Changed
 

@@ -46,6 +46,9 @@ class CNNDailyMailDatasetReader(DatasetReader):
         Maximum number of tokens in source sequence.
     target_max_tokens : `int`, optional
         Maximum number of tokens in target sequence.
+    source_prefix : `str`, optional
+        An optional prefix to prepend to source strings. For example, with a T5 model,
+        you want to set the `source_prefix` to "summarize: ".
     """
 
     def __init__(
@@ -56,6 +59,7 @@ class CNNDailyMailDatasetReader(DatasetReader):
         target_token_indexers: Dict[str, TokenIndexer] = None,
         source_max_tokens: Optional[int] = None,
         target_max_tokens: Optional[int] = None,
+        source_prefix: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -67,6 +71,7 @@ class CNNDailyMailDatasetReader(DatasetReader):
         self._target_token_indexers = target_token_indexers or self._source_token_indexers
         self._source_max_tokens = source_max_tokens
         self._target_max_tokens = target_max_tokens
+        self._source_prefix = source_prefix
 
     @staticmethod
     def _hashhex(url):
@@ -155,7 +160,12 @@ class CNNDailyMailDatasetReader(DatasetReader):
     def text_to_instance(
         self, source_sequence: str, target_sequence: str = None
     ) -> Instance:  # type: ignore
-        tokenized_source = self._source_tokenizer.tokenize(source_sequence)
+        if self._source_prefix is not None:
+            tokenized_source = self._source_tokenizer.tokenize(
+                self._source_prefix + source_sequence
+            )
+        else:
+            tokenized_source = self._source_tokenizer.tokenize(source_sequence)
         if self._source_max_tokens is not None and len(tokenized_source) > self._source_max_tokens:
             tokenized_source = tokenized_source[: self._source_max_tokens]
 

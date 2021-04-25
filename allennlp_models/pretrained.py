@@ -61,6 +61,7 @@ def get_pretrained_models() -> Dict[str, ModelCard]:
 def load_predictor(
     model_id: str,
     pretrained_models: Dict[str, ModelCard] = None,
+    cuda_device: int = -1,
     overrides: Union[str, Dict[str, Any]] = None,
 ) -> Predictor:
     """
@@ -76,5 +77,6 @@ def load_predictor(
     return Predictor.from_path(
         model_card.model_usage.archive_file,
         predictor_name=model_card.registered_predictor_name,
+        cuda_device=cuda_device,
         overrides=overrides,
     )
