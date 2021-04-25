@@ -29,11 +29,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ConllCorefScores` now calculates correctly in the distributed case.
 - `SrlEvalScorer` raises an appropriate error if run in the distributed setting.
 
-### Added
-
-- Tests for `VqaMeasure`.
-- Distributed tests for `ConllCorefScores` and `SrlEvalScorer` metrics.
-
 ### Changed
 
 - Updated `registered_predictor_name` to `null` in model cards for the models where it was the same as the default predictor.
