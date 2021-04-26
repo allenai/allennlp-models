@@ -26,16 +26,20 @@ from allennlp.modules.vision.grid_embedder import GridEmbedder
 from allennlp.modules.vision.region_detector import RegionDetector
 from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
 
+# TODO: implement this, filter based on that one paper (use vocab)
+def filter_caption(caption):
+    return caption
+
 # Borrowed
-# parse sentence file for a given image
-def get_sentence_data(fn):
+# parse caption file for a given image
+def get_caption_data(fn):
     with open(fn, 'r') as f:
-        sentences = f.read().split('\n')
+        captions = f.read().split('\n')
 
     image_id = filename.split('.')[0]
-    result_sentences = []
-    for sentence in sentences:
-        if not sentence:
+    result_captions = []
+    for caption in captions:
+        if not caption:
             continue
 
         first_word = []
@@ -45,7 +49,7 @@ def get_sentence_data(fn):
         words = []
         current_phrase = []
         add_to_phrase = False
-        for token in sentence.split():
+        for token in caption.split():
             if add_to_phrase:
                 if token[-1] == ']':
                     add_to_phrase = False
@@ -67,10 +71,10 @@ def get_sentence_data(fn):
                 else:
                     words.append(token)
 
-        result_sentences.append(' '.join(words))
+        result_captions.append(filter_caption(' '.join(words)))
 
-    sentence_data = {'image_id' : image_id, 'sentences': result_sentences}
-    return sentence_data
+    caption_data = {'image_id' : image_id, 'captions': result_captions}
+    return caption_data
 
 
 @DatasetReader.register("flickr30k")
@@ -89,7 +93,7 @@ class Flickr30kReader(VisionReader):
         downstream models.
     data_dir: `str`
         Path to directory containing text files for each dataset split. These files contain
-        the sentences and metadata for each task instance.
+        the captions and metadata for each task instance.
     tokenizer: `Tokenizer`, optional
     token_indexers: `Dict[str, TokenIndexer]`
     """
@@ -137,20 +141,21 @@ class Flickr30kReader(VisionReader):
                 answer_vocab.get_token_to_index_vocabulary("answers").keys()
             )
 
-    # todo: implement
+    # TODO: somehow take "hard negatives" into account?
     @overrides
     def _read(self, file_path: str):
         # idea:
-        # 1. Read in sentences
+        # 1. Read in captions
             # Have a directory with all of the data -> each file corresponds to one image
-            # Filter out unrelated sentences?
+            # Filter out unrelated captions?
         # 2. Process images
         # 3. Create instances
             # Instance structure:
                 # Image id
-                # Sentence tokens (only one, or all 5?)
+                # caption tokens (only one, or all 5?)
                 # Image features
-                # ?
+                # Maybe hard negative?
+                # TODO: What's the label?
 
         # TODO: I don't think we need this, because there are test and train/val files
             # Maybe we need to know how many of the train_and_val are training, and how many are validation
@@ -166,12 +171,12 @@ class Flickr30kReader(VisionReader):
         file_path = cached_path(file_path.split("[")[0], extract_archive=True)
 
         logger.info("Reading file at %s", file_path)
-        sentences = []
+        captions = []
         for filename in os.listdir(file_path):
             full_file_path = open(os.path.join(file_path, filename))
-            sentences.append(get_sentence_data(full_file_path))
+            captions.append(get_caption_data(full_file_path))
 
-        sentence_dicts = list(self.shard_iterable(sentences))
+        caption_dicts = list(self.shard_iterable(captions))
 
         # todo: probably move this to a utils file?
         processed_images: Iterable[Optional[Tuple[Tensor, Tensor]]]
@@ -180,7 +185,7 @@ class Flickr30kReader(VisionReader):
             # them in batches. So this code gathers up instances until it has enough to fill up a batch
             # that needs processing, and then processes them all.
 
-            filenames = [f"{question_dict['image_id']}.jpg" for question_dict in question_dicts]
+            filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in caption_dicts]
             # for filename in filenames:
                 # logger.info("Reading file at %s", filename)
                 # logger.info("Reading file at %s", self.images[filename])
@@ -201,32 +206,55 @@ class Flickr30kReader(VisionReader):
                     "reader does not care about the exact directory structure. It finds the images "
                     "wherever they are.",
                 )
-
-        # TODO: zipping will NOT work in this situation, because sentence_dicts and processed_images could be in
-        # different orders
-        for sentence_dict, processed_image in zip(sentence_dicts, processed_images):
-            answer = {
-                "answer": sentence_dict["answer"],
-            }
-            instance = self.text_to_instance(question_dict["question"], processed_image, answer)
-            if instance is not None:
-                yield instance
         else:
-            processed_images = [None for _ in range(len(sentence_dicts))]
+            processed_images = [None for _ in range(len(caption_dicts))]
+
+        for caption_dict, processed_image in zip(caption_dicts, processed_images):
+            for caption in caption_dict['captions']:
+                # TODO: read in unrelated_captions? maybe ignore this?
+                if caption not in unrelated_captions:
+                    instance = self.text_to_instance(caption, processed_image)
+                    if instance is not None:
+                        yield instance
 
     # todo: implement
     @overrides
     def text_to_instance(
         self,  # type: ignore
-        question: str,
+        caption: str,
         image: Optional[Union[str, Tuple[Tensor, Tensor]]],
-        answer: Optional[Dict[str, str]] = None,
         *,
         use_cache: bool = True,
     ) -> Optional[Instance]:
-        pass
+        caption_field = TextField(self._tokenizer.tokenize(caption), None)
+
+        fields: Dict[str, Field] = {
+            "caption": caption_field,
+        }
+
+        if image is None:
+            return None
+
+        if image is not None:
+            if isinstance(image, str):
+                features, coords = next(self._process_image_paths([image], use_cache=use_cache))
+            else:
+                features, coords = image
+
+            fields["box_features"] = ArrayField(features)
+            fields["box_coordinates"] = ArrayField(coords)
+            fields["box_mask"] = ArrayField(
+                features.new_ones((features.shape[0],), dtype=torch.bool),
+                padding_value=False,
+                dtype=torch.bool,
+            )
+
+        # TODO: Should images actually be the labels? Ask Dirk
+        # fields["caption"] = LabelField(caption, label_namespace="captions")
+
+        return Instance(fields)
 
     # todo: fix
     @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
-        instance["question"].token_indexers = self._token_indexers  # type: ignore
+        instance["caption"].token_indexers = self._token_indexers  # type: ignore
