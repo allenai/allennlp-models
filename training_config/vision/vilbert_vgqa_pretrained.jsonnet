@@ -93,8 +93,7 @@ local vocabulary = if construct_vocab then {
             "should_log_learning_rate": true,
             "should_log_parameter_statistics": true,
             "summary_interval": 1,
-            "type": "wandb",
-            "WANDB_API_KEY": "6e82521b65857fa1dd865b3d228d699b5e43f3d3"
+            "type": "wandb"
         }
     ],
     "optimizer": {
