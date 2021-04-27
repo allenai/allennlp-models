@@ -2,8 +2,8 @@ local model_name = "bert-base-uncased";
 local vocab_size = 30522;     // for bert-*-uncased models
 //local vocab_size = 28996;   // for bert-*-cased models
 local effective_batch_size = 128;
-local gpu_batch_size = 64;
-local num_gpus = 2;
+local num_gpus = 4;
+local gpu_batch_size = effective_batch_size / num_gpus;
 
 local construct_vocab = false;
 local dataset = "data";
