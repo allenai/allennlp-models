@@ -4,6 +4,7 @@ local vocab_size = 30522;     // for bert-*-uncased models
 local effective_batch_size = 128;
 local num_gpus = 4;
 local gpu_batch_size = effective_batch_size / num_gpus;
+local num_epochs = 20;
 
 local construct_vocab = false;
 local dataset = "data";
@@ -88,35 +89,36 @@ local vocabulary = if construct_vocab then {
   // Don't train if we're just constructing vocab. The results would be confusing.
   [if !construct_vocab then "trainer"]: {
   // "trainer": {
-    // "callbacks": [
-    //     {
-    //         "batch_size_interval": 1,
-    //         "project": "allennlp-testing",
-    //         "should_log_learning_rate": true,
-    //         "should_log_parameter_statistics": true,
-    //         "summary_interval": 1,
-    //         "type": "wandb"
-    //     }
-    // ],
+    "callbacks": [
+        {
+            // "batch_size_interval": 100,
+            "project": "allennlp-testing",
+            "should_log_learning_rate": true,
+            "should_log_parameter_statistics": true,
+            "summary_interval": 100,
+            "type": "wandb"
+        }
+    ],
     "optimizer": {
       "type": "huggingface_adamw",
-      "lr": 2e-2,
+      "lr": 4e-5,
       "correct_bias": true,
       "weight_decay": 0.01,
       "parameter_groups": [
         // [["bias", "LayerNorm\\.weight", "layer_norm\\.weight"], {"weight_decay": 0}], // can't use both at the same time
         // smaller learning rate for the pretrained weights
-        [["^embeddings\\.", "^encoder.layers1\\.", "^t_pooler\\."], {"lr": 2e-3}]
+        [["^embeddings\\.", "^encoder.layers1\\.", "^t_pooler\\."], {"lr": 4e-6}]
       ],
     },
     "learning_rate_scheduler": {
       "type": "linear_with_warmup",
       // "num_steps_per_epoch": std.ceil(1062451 / $["data_loader"]["batch_size"] / $["trainer"]["num_gradient_accumulation_steps"]),
-      "warmup_steps": 5000
+      "warmup_steps" : 0.1 * 1062451 * num_epochs
+      // "warmup_steps": 5000
     },
     "validation_metric": "+vqa_score",
     "patience": 5,
-    "num_epochs": 40,
+    "num_epochs": num_epochs,
     "num_gradient_accumulation_steps": effective_batch_size / gpu_batch_size / std.max(1, num_gpus),
   },
   "random_seed": 876170670,
