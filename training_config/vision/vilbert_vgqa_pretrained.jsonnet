@@ -74,9 +74,11 @@ local vocabulary = if construct_vocab then {
   "data_loader": {
     "batch_size": gpu_batch_size,
     "shuffle": true,
-    "max_instances_in_memory": gpu_batch_size * 100,
-    "start_method": "spawn",   # "fork"
-    "num_workers": 1,
+    // "max_instances_in_memory": gpu_batch_size * 100,
+    // "start_method": "spawn",   # "fork"
+    // "num_workers": 1,
+
+
     //[if !construct_vocab then "max_instances_in_memory"]: 10240
   },
   [if num_gpus > 1 then "distributed"]: {
@@ -109,7 +111,7 @@ local vocabulary = if construct_vocab then {
     },
     "learning_rate_scheduler": {
       "type": "linear_with_warmup",
-      "num_steps_per_epoch": std.ceil(1062451 / $["data_loader"]["batch_size"] / $["trainer"]["num_gradient_accumulation_steps"]),
+      // "num_steps_per_epoch": std.ceil(1062451 / $["data_loader"]["batch_size"] / $["trainer"]["num_gradient_accumulation_steps"]),
       "warmup_steps": 5000
     },
     "validation_metric": "+vqa_score",
