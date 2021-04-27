@@ -88,16 +88,16 @@ local vocabulary = if construct_vocab then {
   // Don't train if we're just constructing vocab. The results would be confusing.
   [if !construct_vocab then "trainer"]: {
   // "trainer": {
-    "callbacks": [
-        {
-            "batch_size_interval": 1,
-            "project": "allennlp-testing",
-            "should_log_learning_rate": true,
-            "should_log_parameter_statistics": true,
-            "summary_interval": 1,
-            "type": "wandb"
-        }
-    ],
+    // "callbacks": [
+    //     {
+    //         "batch_size_interval": 1,
+    //         "project": "allennlp-testing",
+    //         "should_log_learning_rate": true,
+    //         "should_log_parameter_statistics": true,
+    //         "summary_interval": 1,
+    //         "type": "wandb"
+    //     }
+    // ],
     "optimizer": {
       "type": "huggingface_adamw",
       "lr": 2e-2,
