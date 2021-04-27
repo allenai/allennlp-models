@@ -2,8 +2,8 @@ local model_name = "bert-base-uncased";
 local vocab_size = 30522;     // for bert-*-uncased models
 //local vocab_size = 28996;   // for bert-*-cased models
 local effective_batch_size = 128;
-local gpu_batch_size = 128;
-local num_gpus = 1; # 4;
+local gpu_batch_size = 64;
+local num_gpus = 2;
 
 local construct_vocab = false;
 local dataset = "data";
@@ -83,9 +83,19 @@ local vocabulary = if construct_vocab then {
   // Don't train if we're just constructing vocab. The results would be confusing.
   [if !construct_vocab then "trainer"]: {
   // "trainer": {
+    "callbacks": [
+        {
+            "batch_size_interval": 1,
+            "project": "allennlp-testing",
+            "should_log_learning_rate": true,
+            "should_log_parameter_statistics": true,
+            "summary_interval": 1,
+            "type": "wandb"
+        }
+    ],
     "optimizer": {
       "type": "huggingface_adamw",
-      "lr": 4e-5,
+      "lr": 2e-2,
       "correct_bias": true,
       "weight_decay": 0.01,
       "parameter_groups": [
