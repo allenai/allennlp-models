@@ -117,11 +117,11 @@ local vocabulary = if construct_vocab then {
       // "warmup_steps": 5000
     },
     "validation_metric": "+vqa_score",
-    "patience": 5,
+    // "patience": 5,
     "num_epochs": num_epochs,
     "num_gradient_accumulation_steps": effective_batch_size / gpu_batch_size / std.max(1, num_gpus),
   },
-  "random_seed": 876170670,
-  "numpy_seed": 876170670,
-  "pytorch_seed": 876170670,
+  "random_seed": 13034431,
+  "numpy_seed": 13034431,
+  "pytorch_seed": 13034431,
 }
