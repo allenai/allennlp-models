@@ -26,6 +26,14 @@ from allennlp.modules.vision.grid_embedder import GridEmbedder
 from allennlp.modules.vision.region_detector import RegionDetector
 from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
 
+def calculate_hard_negatives(caption_dicts, processed_images):
+    # for each image, find the 100 nearest neighbors
+    # then, find 3 images with best l2 distances
+    for caption_dict, processed_image in zip(caption_dicts, processed_images):
+        for candidate_image in processed_images:
+            if candidate_image != processed_image:
+
+
 # TODO: implement this, filter based on that one paper (use vocab)
 def filter_caption(caption):
     return caption
@@ -108,6 +116,7 @@ class Flickr30kReader(VisionReader):
         answer_vocab: Optional[Union[str, Vocabulary]] = None,
         feature_cache_dir: Optional[Union[str, PathLike]] = None,
         data_dir: Optional[Union[str, PathLike]] = None,
+        hard_negatives_dir: Optional[Union[str, PathLike]] = None,
         tokenizer: Tokenizer = None,
         token_indexers: Dict[str, TokenIndexer] = None,
         cuda_device: Optional[Union[int, torch.device]] = None,
@@ -129,6 +138,7 @@ class Flickr30kReader(VisionReader):
             write_to_cache=write_to_cache,
         )
         self.data_dir = data_dir
+        self.hard_negatives_dir = hard_negatives_dir
 
         # read answer vocab
         if answer_vocab is None:
@@ -152,10 +162,9 @@ class Flickr30kReader(VisionReader):
         # 3. Create instances
             # Instance structure:
                 # Image id
-                # caption tokens (only one, or all 5?)
-                # Image features
-                # Maybe hard negative?
-                # TODO: What's the label?
+                # caption tokens (only one caption)
+                # correct image
+                # 3 hard negatives
 
         # TODO: I don't think we need this, because there are test and train/val files
             # Maybe we need to know how many of the train_and_val are training, and how many are validation
@@ -209,11 +218,18 @@ class Flickr30kReader(VisionReader):
         else:
             processed_images = [None for _ in range(len(caption_dicts))]
 
-        for caption_dict, processed_image in zip(caption_dicts, processed_images):
+        if self.hard_negatives_dir is not None:
+            # read in hard negatives
+            pass
+        else:
+            # calculate hard negatives
+            hard_negatives = calculate_hard_negatives(caption_dicts, processed_images)
+
+        for caption_dict, processed_image, current_hard_negatives in zip(caption_dicts, processed_images, hard_negatives):
             for caption in caption_dict['captions']:
                 # TODO: read in unrelated_captions? maybe ignore this?
                 if caption not in unrelated_captions:
-                    instance = self.text_to_instance(caption, processed_image)
+                    instance = self.text_to_instance(caption, processed_image, current_hard_negatives)
                     if instance is not None:
                         yield instance
 
@@ -222,7 +238,10 @@ class Flickr30kReader(VisionReader):
     def text_to_instance(
         self,  # type: ignore
         caption: str,
-        image: Optional[Union[str, Tuple[Tensor, Tensor]]],
+        correct_image: Optional[Union[str, Tuple[Tensor, Tensor]]],
+        hard_negatives: Optional[List[Union[str, Tuple[Tensor, Tensor]]]],
+        # images: Optional[List[Union[str, Tuple[Tensor, Tensor]]]],
+        # label: Optional[int] = None,
         *,
         use_cache: bool = True,
     ) -> Optional[Instance]:
@@ -232,14 +251,14 @@ class Flickr30kReader(VisionReader):
             "caption": caption_field,
         }
 
-        if image is None:
+        if correct_image is None:
             return None
 
-        if image is not None:
-            if isinstance(image, str):
-                features, coords = next(self._process_image_paths([image], use_cache=use_cache))
+        if correct_image is not None:
+            if isinstance(correct_image, str):
+                features, coords = next(self._process_image_paths([correct_image], use_cache=use_cache))
             else:
-                features, coords = image
+                features, coords = correct_image
 
             fields["box_features"] = ArrayField(features)
             fields["box_coordinates"] = ArrayField(coords)
@@ -248,6 +267,34 @@ class Flickr30kReader(VisionReader):
                 padding_value=False,
                 dtype=torch.bool,
             )
+        
+        # alternative_features = []
+        # alternative_coordinates = []
+        # alternative_masks = []
+        # if hard_negatives is not None:
+        #     for image in hard_negatives:
+        #         if isinstance(image, str):
+        #             features, coords = next(self._process_image_paths([image], use_cache=use_cache))
+        #         else:
+        #             features, coords = image
+
+        #         alternative_features.append(TensorField(features))
+        #         alternative_coordinates.append(TensorField(coords))
+        #         alternative_masks.append(TensorField(
+        #             features.new_ones((features.shape[0],), dtype=torch.bool),
+        #             padding_value=False,
+        #             dtype=torch.bool,
+        #         ))
+        #     fields["alternative_features"] = ListField(alternative_features)
+        #     fields["alternative_coordinates"] = ListField(alternative_coordinates)
+        #     fields["alternative_masks"] = ListField(alternative_masks)
+
+        # if label is not None:
+        #     if label < 0 or label >= len(sequences):
+        #         raise ValueError("Image %d does not exist", label)
+        #     from allennlp.data.fields import IndexField
+
+        #     fields["correct_image"] = IndexField(label, sequences)
 
         # TODO: Should images actually be the labels? Ask Dirk
         # fields["caption"] = LabelField(caption, label_namespace="captions")
