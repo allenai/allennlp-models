@@ -113,7 +113,7 @@ local vocabulary = if construct_vocab then {
     "learning_rate_scheduler": {
       "type": "linear_with_warmup",
       // "num_steps_per_epoch": std.ceil(1062451 / $["data_loader"]["batch_size"] / $["trainer"]["num_gradient_accumulation_steps"]),
-      "warmup_steps" : 0.1 * 1062451 * num_epochs / gpu_batch_size
+      "warmup_steps" : 0.1 * 1062451 * num_epochs / effective_batch_size
       // "warmup_steps": 5000
     },
     "validation_metric": "+vqa_score",
