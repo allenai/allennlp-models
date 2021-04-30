@@ -146,7 +146,10 @@ class CopyNetDatasetReader(DatasetReader):
 
     @overrides
     def text_to_instance(
-        self, source_string: str, target_string: str = None
+        self,
+        source_string: str,
+        target_string: str = None,
+        weight: float = None,
     ) -> Instance:  # type: ignore
         """
         Turn raw source string and target string into an `Instance`.
@@ -155,6 +158,7 @@ class CopyNetDatasetReader(DatasetReader):
 
         source_string : `str`, required
         target_string : `str`, optional (default = `None`)
+        weight : `float`, optional (default = `None`)
 
         # Returns
 
@@ -193,6 +197,9 @@ class CopyNetDatasetReader(DatasetReader):
             fields_dict["source_token_ids"] = ArrayField(np.array(source_token_ids))
 
         fields_dict["metadata"] = MetadataField(meta_fields)
+
+        if weight is not None:
+            fields_dict["weight"] = ArrayField(np.array([float(weight)]))
 
         return Instance(fields_dict)
 
