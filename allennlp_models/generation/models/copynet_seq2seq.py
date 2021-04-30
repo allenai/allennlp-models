@@ -536,7 +536,7 @@ class CopyNetSeq2Seq(Model):
         if weight is None:
             loss = -log_likelihood.sum() / batch_size
         else:
-            loss = -(weight @ log_likelihood) / batch_size
+            loss = -(weight @ log_likelihood) / weight.sum()
 
         return {"loss": loss}
 
