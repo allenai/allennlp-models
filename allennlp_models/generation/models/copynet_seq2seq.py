@@ -539,7 +539,7 @@ class CopyNetSeq2Seq(Model):
         else:
             if len(weight.shape) > 1:
                 weight = weight.squeeze()
-            loss = -(weight @ log_likelihood) / weight.sum()
+            loss = -(weight * log_likelihood).sum() / weight.sum()
 
         return {"loss": loss}
 
