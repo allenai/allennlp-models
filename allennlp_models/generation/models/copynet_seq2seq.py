@@ -185,9 +185,10 @@ class CopyNetSeq2Seq(Model):
             A tensor of shape `(batch_size, target_sequence_length)` which indicates which
             tokens in the target sequence match tokens in the source sequence.
         weight : `torch.Tensor`, optional (default = `None`)
-           A optional tensor of shape `(batch_size,)` which determines how to weight
-           each instance in the batch when calculating the loss. The default of `None`
-           is equivalent to `weights = torch.tensor([1.0] * batch_size)`.
+           A optional tensor of shape `(batch_size,)` or `(batch_size, 1)` which determines
+           how to weight each instance in the batch when calculating the loss.
+           The default of `None` is equivalent to `weights = torch.tensor([1.0] * batch_size)`,
+           which results in a simple unweighted (or equal-weighted) average.
 
         # Returns
 
