@@ -66,6 +66,10 @@ class CopyNetSeq2Seq(Model):
         as input. This metric must accept two arguments when called, both
         of type `List[List[str]]`. The first is a predicted sequence for each item
         in the batch and the second is a gold sequence for each item in the batch.
+    normalize_weights : `bool`, optional (default = `True`)
+        If `True` and `weight` is used in the forward pass, the weights will be normalized
+        to sum to 1 before being applied. Otherwise the weights will be used as-is, although
+        the final loss will be divided by `batch_size`.
     initializer : `InitializerApplicator`, optional
         An initialization strategy for the model weights.
     """
@@ -83,6 +87,7 @@ class CopyNetSeq2Seq(Model):
         target_namespace: str = "target_tokens",
         tensor_based_metric: Metric = None,
         token_based_metric: Metric = None,
+        normalize_weights: bool = True,
         initializer: InitializerApplicator = InitializerApplicator(),
     ) -> None:
         super().__init__(vocab)
@@ -94,6 +99,7 @@ class CopyNetSeq2Seq(Model):
             self.vocab._padding_token, self._target_namespace
         )
         self._copy_index = self.vocab.add_token_to_namespace(copy_token, self._target_namespace)
+        self._normalize_weights = normalize_weights
 
         self._tensor_based_metric = tensor_based_metric or BLEU(
             exclude_indices={self._pad_index, self._end_index, self._start_index}
@@ -537,9 +543,11 @@ class CopyNetSeq2Seq(Model):
         if weight is None:
             loss = -log_likelihood.sum() / batch_size
         else:
+            # shape: (batch_size,)
             if len(weight.shape) > 1:
                 weight = weight.squeeze()
-            loss = -(weight * log_likelihood).sum() / weight.sum()
+            denominator = batch_size if not self._normalize_weights else weight.sum()
+            loss = -(weight * log_likelihood).sum() / denominator
 
         return {"loss": loss}
 
