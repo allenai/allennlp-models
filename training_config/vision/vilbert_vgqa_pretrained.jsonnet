@@ -4,7 +4,8 @@ local vocab_size = 30522;     // for bert-*-uncased models
 local effective_batch_size = 128;
 local num_gpus = 4;
 local gpu_batch_size = effective_batch_size / num_gpus;
-local num_epochs = 20;
+local num_epochs = 30;
+local patience = 5;
 
 local construct_vocab = false;
 local dataset = "data";
