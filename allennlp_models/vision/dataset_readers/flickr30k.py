@@ -12,6 +12,7 @@ import os
 from overrides import overrides
 import torch
 from torch import Tensor
+import faiss
 
 from allennlp.common.file_utils import cached_path
 from allennlp.common.lazy import Lazy
@@ -26,25 +27,18 @@ from allennlp.modules.vision.grid_embedder import GridEmbedder
 from allennlp.modules.vision.region_detector import RegionDetector
 from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
 
-def calculate_hard_negatives(caption_dicts, processed_images):
-    # for each image, find the 100 nearest neighbors
-    # then, find 3 images with best l2 distances
-    for caption_dict, processed_image in zip(caption_dicts, processed_images):
-        for candidate_image in processed_images:
-            if candidate_image != processed_image:
-
-
 # TODO: implement this, filter based on that one paper (use vocab)
 def filter_caption(caption):
     return caption
 
+
 # Borrowed
 # parse caption file for a given image
 def get_caption_data(fn):
-    with open(fn, 'r') as f:
-        captions = f.read().split('\n')
+    with open(fn, "r") as f:
+        captions = f.read().split("\n")
 
-    image_id = filename.split('.')[0]
+    image_id = filename.split(".")[0]
     result_captions = []
     for caption in captions:
         if not caption:
@@ -59,29 +53,29 @@ def get_caption_data(fn):
         add_to_phrase = False
         for token in caption.split():
             if add_to_phrase:
-                if token[-1] == ']':
+                if token[-1] == "]":
                     add_to_phrase = False
                     token = token[:-1]
                     current_phrase.append(token)
-                    phrases.append(' '.join(current_phrase))
+                    phrases.append(" ".join(current_phrase))
                     current_phrase = []
                 else:
                     current_phrase.append(token)
 
                 words.append(token)
             else:
-                if token[0] == '[':
+                if token[0] == "[":
                     add_to_phrase = True
                     first_word.append(len(words))
-                    parts = token.split('/')
+                    parts = token.split("/")
                     phrase_id.append(parts[1][3:])
                     phrase_type.append(parts[2:])
                 else:
                     words.append(token)
 
-        result_captions.append(filter_caption(' '.join(words)))
+        result_captions.append(filter_caption(" ".join(words)))
 
-    caption_data = {'image_id' : image_id, 'captions': result_captions}
+    caption_data = {"image_id": image_id, "captions": result_captions}
     return caption_data
 
 
@@ -156,18 +150,18 @@ class Flickr30kReader(VisionReader):
     def _read(self, file_path: str):
         # idea:
         # 1. Read in captions
-            # Have a directory with all of the data -> each file corresponds to one image
-            # Filter out unrelated captions?
+        # Have a directory with all of the data -> each file corresponds to one image
+        # Filter out unrelated captions?
         # 2. Process images
         # 3. Create instances
-            # Instance structure:
-                # Image id
-                # caption tokens (only one caption)
-                # correct image
-                # 3 hard negatives
+        # Instance structure:
+        # Image id
+        # caption tokens (only one caption)
+        # correct image
+        # 3 hard negatives
 
         # TODO: I don't think we need this, because there are test and train/val files
-            # Maybe we need to know how many of the train_and_val are training, and how many are validation
+        # Maybe we need to know how many of the train_and_val are training, and how many are validation
         # if the splits are using slicing syntax, honor it
         slice_match = re.match(r"(.*)\[([0123456789:]*)]", file_path)
         if slice_match is None:
@@ -196,8 +190,8 @@ class Flickr30kReader(VisionReader):
 
             filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in caption_dicts]
             # for filename in filenames:
-                # logger.info("Reading file at %s", filename)
-                # logger.info("Reading file at %s", self.images[filename])
+            # logger.info("Reading file at %s", filename)
+            # logger.info("Reading file at %s", self.images[filename])
             logger.info("images size: %s", len(self.images))
             try:
                 processed_images = self._process_image_paths(
@@ -218,28 +212,18 @@ class Flickr30kReader(VisionReader):
         else:
             processed_images = [None for _ in range(len(caption_dicts))]
 
-        if self.hard_negatives_dir is not None:
-            # read in hard negatives
-            pass
-        else:
-            # calculate hard negatives
-            hard_negatives = calculate_hard_negatives(caption_dicts, processed_images)
-
-        for caption_dict, processed_image, current_hard_negatives in zip(caption_dicts, processed_images, hard_negatives):
-            for caption in caption_dict['captions']:
-                # TODO: read in unrelated_captions? maybe ignore this?
-                if caption not in unrelated_captions:
-                    instance = self.text_to_instance(caption, processed_image, current_hard_negatives)
-                    if instance is not None:
-                        yield instance
+        for caption_dict, processed_image in zip(caption_dicts, processed_images):
+            for caption in caption_dict["captions"]:
+                instance = self.text_to_instance(caption, processed_image)
+                if instance is not None:
+                    yield instance
 
     # todo: implement
     @overrides
     def text_to_instance(
         self,  # type: ignore
         caption: str,
-        correct_image: Optional[Union[str, Tuple[Tensor, Tensor]]],
-        hard_negatives: Optional[List[Union[str, Tuple[Tensor, Tensor]]]],
+        image: Optional[Union[str, Tuple[Tensor, Tensor]]],
         # images: Optional[List[Union[str, Tuple[Tensor, Tensor]]]],
         # label: Optional[int] = None,
         *,
@@ -251,14 +235,14 @@ class Flickr30kReader(VisionReader):
             "caption": caption_field,
         }
 
-        if correct_image is None:
+        if image is None:
             return None
 
-        if correct_image is not None:
-            if isinstance(correct_image, str):
-                features, coords = next(self._process_image_paths([correct_image], use_cache=use_cache))
+        if image is not None:
+            if isinstance(image, str):
+                features, coords = next(self._process_image_paths([image], use_cache=use_cache))
             else:
-                features, coords = correct_image
+                features, coords = image
 
             fields["box_features"] = ArrayField(features)
             fields["box_coordinates"] = ArrayField(coords)
@@ -267,7 +251,7 @@ class Flickr30kReader(VisionReader):
                 padding_value=False,
                 dtype=torch.bool,
             )
-        
+
         # alternative_features = []
         # alternative_coordinates = []
         # alternative_masks = []
