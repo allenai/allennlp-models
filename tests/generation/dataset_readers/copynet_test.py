@@ -1,9 +1,11 @@
 import numpy as np
+import torch
 
 from allennlp.common import Params
 from allennlp.common.testing import AllenNlpTestCase
 from allennlp.common.util import ensure_list
 from allennlp.data import DatasetReader
+from allennlp.data.fields import TensorField
 from allennlp.data.vocabulary import Vocabulary, DEFAULT_OOV_TOKEN
 
 from allennlp_models.generation.dataset_readers import CopyNetDatasetReader
@@ -131,3 +133,9 @@ class TestCopyNetReader(AllenNlpTestCase):
         )
         np.testing.assert_equal(tensor.numpy(), check)
         assert tensor[1].item() != self.vocab.get_token_index(DEFAULT_OOV_TOKEN, "target_tokens")
+
+    def test_text_to_instance_with_weight(self):
+        instance = self.reader.text_to_instance("Hello,", "World!", weight=0.5)
+        assert "weight" in instance.fields
+        assert isinstance(instance.fields["weight"], TensorField)
+        assert instance.fields["weight"].tensor.dtype == torch.float

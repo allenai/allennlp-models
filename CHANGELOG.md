@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added tests for checklist suites for SQuAD-style reading comprehension models (`bidaf`), and textual entailment models (`decomposable_attention` and `esim`).
+- Added an optional "weight" parameter to `CopyNetSeq2Seq.forward()` for calculating a weighted loss instead of the simple average over the
+  the negative log likelihoods for each instance in the batch.
 
 
 ## [v2.4.0](https://github.com/allenai/allennlp-models/releases/tag/v2.4.0) - 2021-04-22

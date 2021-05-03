@@ -157,8 +157,12 @@ class CopyNetDatasetReader(DatasetReader):
         # Parameters
 
         source_string : `str`, required
+
         target_string : `str`, optional (default = `None`)
+
         weight : `float`, optional (default = `None`)
+            An optional weight to assign to this instance when calculating the loss in
+            [CopyNetSeq2Seq.forward()](../../models/copynet_seq2seq/#forward.parameters).
 
         # Returns
 
@@ -199,7 +203,7 @@ class CopyNetDatasetReader(DatasetReader):
         fields_dict["metadata"] = MetadataField(meta_fields)
 
         if weight is not None:
-            fields_dict["weight"] = ArrayField(np.array([float(weight)]))
+            fields_dict["weight"] = ArrayField(np.array([float(weight)], dtype=np.single))
 
         return Instance(fields_dict)
 
