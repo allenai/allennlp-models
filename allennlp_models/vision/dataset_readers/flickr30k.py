@@ -3,6 +3,7 @@ from typing import (
     Dict,
     Union,
     Optional,
+    Set,
     Tuple,
     Iterable,
 )
@@ -34,11 +35,11 @@ def filter_caption(caption):
 
 # Borrowed
 # parse caption file for a given image
-def get_caption_data(file_path):
-    with open(file_path, "r") as f:
+def get_caption_data(filename):
+    with open(filename, "r") as f:
         captions = f.read().split("\n")
 
-    image_id = filename.split(".")[0]
+    image_id = filename[filename.rfind("/") + 1 :].split(".")[0]
     result_captions = []
     for caption in captions:
         if not caption:
@@ -56,20 +57,11 @@ def get_caption_data(file_path):
                 if token[-1] == "]":
                     add_to_phrase = False
                     token = token[:-1]
-                    current_phrase.append(token)
-                    phrases.append(" ".join(current_phrase))
-                    current_phrase = []
-                else:
-                    current_phrase.append(token)
 
                 words.append(token)
             else:
                 if token[0] == "[":
                     add_to_phrase = True
-                    first_word.append(len(words))
-                    parts = token.split("/")
-                    phrase_id.append(parts[1][3:])
-                    phrase_type.append(parts[2:])
                 else:
                     words.append(token)
 
@@ -169,16 +161,16 @@ class Flickr30kReader(VisionReader):
         #     question_slice = slice(*slice_args)
 
         file_path = cached_path(file_path, extract_archive=True)
-        files_in_split = {}
+        files_in_split = set()
         with open(file_path, "r") as f:
             for line in f:
-                files_in_split.add(line)
+                files_in_split.add(line.rstrip("\n"))
 
-        logger.info("Reading file at %s", file_path)
+        # logger.info("Reading file at %s", file_path)
         captions = []
         for filename in os.listdir(self.data_dir):  # file_path):
             if filename.split(".")[0] in files_in_split:
-                full_file_path = open(os.path.join(self.data_dir, filename))
+                full_file_path = os.path.join(self.data_dir, filename)
                 captions.append(get_caption_data(full_file_path))
 
         caption_dicts = list(self.shard_iterable(captions))
@@ -189,18 +181,17 @@ class Flickr30kReader(VisionReader):
             # It would be much easier to just process one image at a time, but it's faster to process
             # them in batches. So this code gathers up instances until it has enough to fill up a batch
             # that needs processing, and then processes them all.
-
             filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in caption_dicts]
             # for filename in filenames:
             # logger.info("Reading file at %s", filename)
             # logger.info("Reading file at %s", self.images[filename])
-            logger.info("images size: %s", len(self.images))
+            # logger.info("images size: %s", len(self.images))
             try:
                 processed_images = self._process_image_paths(
                     self.images[filename] for filename in filenames
                 )
             except KeyError as e:
-                print(self.images)
+                # print(self.images)
                 missing_id = e.args[0]
                 raise KeyError(
                     missing_id,
@@ -253,37 +244,6 @@ class Flickr30kReader(VisionReader):
                 padding_value=False,
                 dtype=torch.bool,
             )
-
-        # alternative_features = []
-        # alternative_coordinates = []
-        # alternative_masks = []
-        # if hard_negatives is not None:
-        #     for image in hard_negatives:
-        #         if isinstance(image, str):
-        #             features, coords = next(self._process_image_paths([image], use_cache=use_cache))
-        #         else:
-        #             features, coords = image
-
-        #         alternative_features.append(TensorField(features))
-        #         alternative_coordinates.append(TensorField(coords))
-        #         alternative_masks.append(TensorField(
-        #             features.new_ones((features.shape[0],), dtype=torch.bool),
-        #             padding_value=False,
-        #             dtype=torch.bool,
-        #         ))
-        #     fields["alternative_features"] = ListField(alternative_features)
-        #     fields["alternative_coordinates"] = ListField(alternative_coordinates)
-        #     fields["alternative_masks"] = ListField(alternative_masks)
-
-        # if label is not None:
-        #     if label < 0 or label >= len(sequences):
-        #         raise ValueError("Image %d does not exist", label)
-        #     from allennlp.data.fields import IndexField
-
-        #     fields["correct_image"] = IndexField(label, sequences)
-
-        # TODO: Should images actually be the labels? Ask Dirk
-        # fields["caption"] = LabelField(caption, label_namespace="captions")
 
         return Instance(fields)
 

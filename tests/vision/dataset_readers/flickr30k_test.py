@@ -19,7 +19,7 @@ class TestFlickr30kReader(AllenNlpTestCase):
             image_dir=FIXTURES_ROOT / "vision" / "images" / "flickr30k",
             image_loader=TorchImageLoader(),
             image_featurizer=Lazy(NullGridEmbedder),
-            data_dir=FIXTURES_ROOT / "vision" / "images" / "flickr30k" / "sentences",
+            data_dir=FIXTURES_ROOT / "vision" / "flickr30k" / "sentences",
             region_detector=Lazy(RandomRegionDetector),
             tokenizer=WhitespaceTokenizer(),
             token_indexers={"tokens": SingleIdTokenIndexer()},
@@ -27,60 +27,40 @@ class TestFlickr30kReader(AllenNlpTestCase):
 
     def test_read(self):
         instances = list(self.reader.read("test_fixtures/vision/flickr30k/test.txt"))
-        assert len(instances) == 1
+        assert len(instances) == 10
 
-        instance = instances[0]
-        assert len(instance.fields) == 6
-        assert len(instance["question"]) == 6
-        question_tokens = [t.text for t in instance["question"]]
-        assert question_tokens == ["What", "is", "hanging", "above", "the", "chalkboard?"]
-        assert instance["labels"][0].label == "picture"
-
-        batch = Batch(instances)
-        batch.index_instances(Vocabulary())
-        tensors = batch.as_tensor_dict()
-
-        # (batch size, num boxes (fake), num features (fake))
-        assert tensors["box_features"].size() == (1, 2, 10)
-
-        # (batch size, num boxes (fake), 4 coords)
-        assert tensors["box_coordinates"].size() == (1, 2, 4)
-
-        # (batch size, num boxes (fake),)
-        assert tensors["box_mask"].size() == (1, 2)
-
-    def test_read_from_dir(self):
-        # Test reading from multiple files in a directory
-        instances = list(self.reader.read("test_fixtures/vision/gqa/question_dir/"))
-        assert len(instances) == 2
-
-        instance = instances[1]
-        assert len(instance.fields) == 6
-        assert len(instance["question"]) == 10
-        question_tokens = [t.text for t in instance["question"]]
+        instance = instances[5]
+        assert len(instance.fields) == 4
+        assert len(instance["caption"]) == 16
+        question_tokens = [t.text for t in instance["caption"]]
         assert question_tokens == [
-            "Does",
+            "A",
+            "girl",
+            "with",
+            "brown",
+            "hair",
+            "sits",
+            "on",
             "the",
-            "table",
-            "below",
-            "the",
+            "edge",
+            "of",
+            "a",
+            "cement",
+            "area",
+            "overlooking",
             "water",
-            "look",
-            "wooden",
-            "and",
-            "round?",
+            ".",
         ]
-        assert instance["labels"][0].label == "yes"
 
         batch = Batch(instances)
         batch.index_instances(Vocabulary())
         tensors = batch.as_tensor_dict()
 
         # (batch size, num boxes (fake), num features (fake))
-        assert tensors["box_features"].size() == (2, 2, 10)
+        assert tensors["box_features"].size() == (10, 2, 10)
 
         # (batch size, num boxes (fake), 4 coords)
-        assert tensors["box_coordinates"].size() == (2, 2, 4)
+        assert tensors["box_coordinates"].size() == (10, 2, 4)
 
         # (batch size, num boxes (fake),)
-        assert tensors["box_mask"].size() == (2, 2)
+        assert tensors["box_mask"].size() == (10, 2)
