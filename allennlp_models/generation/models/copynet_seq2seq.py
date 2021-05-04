@@ -157,6 +157,7 @@ class CopyNetSeq2Seq(Model):
         metadata: List[Dict[str, Any]],
         target_tokens: TextFieldTensors = None,
         target_token_ids: torch.Tensor = None,
+        weight: torch.Tensor = None,
     ) -> Dict[str, torch.Tensor]:
         """
         Make foward pass with decoder logic for producing the entire target sequence.
@@ -183,6 +184,13 @@ class CopyNetSeq2Seq(Model):
         target_token_ids : `torch.Tensor`, optional (default = `None`)
             A tensor of shape `(batch_size, target_sequence_length)` which indicates which
             tokens in the target sequence match tokens in the source sequence.
+        weight : `torch.Tensor`, optional (default = `None`)
+            A optional tensor of shape `(batch_size,)` or `(batch_size, 1)` which determines
+            how to weight each instance in the batch when calculating the loss.
+            The default of `None` is equivalent to `weights = torch.tensor([1.0] * batch_size)`.
+            The final loss is calculated as `-(weight * log_likelihood).sum() / batch_size`,
+            where `log_likelihood` is a tensor of shape `(batch_size,)`, representing the overall
+            log likelihood of the gold target sequence.
 
         # Returns
 
@@ -194,7 +202,7 @@ class CopyNetSeq2Seq(Model):
 
         if target_tokens:
             state = self._init_decoder_state(state)
-            output_dict = self._forward_loss(target_tokens, target_token_ids, state)
+            output_dict = self._forward_loss(target_tokens, target_token_ids, state, weight=weight)
         else:
             output_dict = {}
 
@@ -440,6 +448,7 @@ class CopyNetSeq2Seq(Model):
         target_tokens: TextFieldTensors,
         target_token_ids: torch.Tensor,
         state: Dict[str, torch.Tensor],
+        weight: torch.Tensor = None,
     ) -> Dict[str, torch.Tensor]:
         """
         Calculate the loss against gold targets.
@@ -527,7 +536,13 @@ class CopyNetSeq2Seq(Model):
         # shape: (batch_size,)
         log_likelihood = (log_likelihoods * target_mask).sum(dim=-1)
         # The loss is the negative log-likelihood, averaged over the batch.
-        loss = -log_likelihood.sum() / batch_size
+        if weight is None:
+            loss = -log_likelihood.sum() / batch_size
+        else:
+            # shape: (batch_size,)
+            if len(weight.shape) > 1:
+                weight = weight.squeeze()
+            loss = -(weight * log_likelihood).sum() / batch_size
 
         return {"loss": loss}
 

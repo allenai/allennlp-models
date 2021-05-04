@@ -4,7 +4,9 @@ import torch
 import pytest
 
 from allennlp.commands.train import train_model_from_file
+from allennlp.common import Params
 from allennlp.common.testing import ModelTestCase, requires_gpu
+from allennlp.data import DatasetReader, Batch
 
 from allennlp_models.generation import CopyNetDatasetReader, CopyNetSeq2Seq  # noqa: F401
 from tests import FIXTURES_ROOT
@@ -318,6 +320,23 @@ class CopyNetTest(ModelTestCase):
         assert len(predicted_tokens) == 2
         assert predicted_tokens[0] == ["tokens", "hello", "world"]
         assert predicted_tokens[1] == ["tokens", "tokens", "tokens"]
+
+    def test_forward_with_weights(self):
+        params = Params.from_file(self.param_file)
+        reader: CopyNetDatasetReader = DatasetReader.from_params(
+            params["dataset_reader"], serialization_dir=self.TEST_DIR
+        )
+        instances = [
+            reader.text_to_instance("hello hello world", "hello world", weight=0.9),
+            reader.text_to_instance("hello world", "hello world world", weight=0.5),
+        ]
+        for instance in instances:
+            reader.apply_token_indexers(instance)
+        batch = Batch(instances)
+        batch.index_instances(self.model.vocab)
+        inputs = batch.as_tensor_dict()
+        assert "weight" in inputs
+        _ = self.model(**inputs)
 
 
 class CopyNetTransformerTest(ModelTestCase):
