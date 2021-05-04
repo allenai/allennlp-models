@@ -31,10 +31,11 @@ from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
 def filter_caption(caption):
     return caption
 
+
 # Borrowed
 # parse caption file for a given image
-def get_caption_data(fn):
-    with open(fn, "r") as f:
+def get_caption_data(file_path):
+    with open(file_path, "r") as f:
         captions = f.read().split("\n")
 
     image_id = filename.split(".")[0]
@@ -109,7 +110,6 @@ class Flickr30kReader(VisionReader):
         answer_vocab: Optional[Union[str, Vocabulary]] = None,
         feature_cache_dir: Optional[Union[str, PathLike]] = None,
         data_dir: Optional[Union[str, PathLike]] = None,
-        hard_negatives_dir: Optional[Union[str, PathLike]] = None,
         tokenizer: Tokenizer = None,
         token_indexers: Dict[str, TokenIndexer] = None,
         cuda_device: Optional[Union[int, torch.device]] = None,
@@ -131,7 +131,6 @@ class Flickr30kReader(VisionReader):
             write_to_cache=write_to_cache,
         )
         self.data_dir = data_dir
-        self.hard_negatives_dir = hard_negatives_dir
 
         # read answer vocab
         if answer_vocab is None:
@@ -144,7 +143,6 @@ class Flickr30kReader(VisionReader):
                 answer_vocab.get_token_to_index_vocabulary("answers").keys()
             )
 
-    # TODO: somehow take "hard negatives" into account?
     @overrides
     def _read(self, file_path: str):
         # idea:
@@ -159,24 +157,29 @@ class Flickr30kReader(VisionReader):
         # correct image
         # 3 hard negatives
 
-        # TODO: I don't think we need this, because there are test and train/val files
-        # Maybe we need to know how many of the train_and_val are training, and how many are validation
-        # if the splits are using slicing syntax, honor it
-        slice_match = re.match(r"(.*)\[([0123456789:]*)]", file_path)
-        if slice_match is None:
-            question_slice = slice(None, None, None)
-        else:
-            split_name = slice_match[1]
-            slice_args = [int(a) if len(a) > 0 else None for a in slice_match[2].split(":")]
-            question_slice = slice(*slice_args)
+        # # TODO: I don't think we need this, because there are test and train/val files
+        # # Maybe we need to know how many of the train_and_val are training, and how many are validation
+        # # if the splits are using slicing syntax, honor it
+        # slice_match = re.match(r"(.*)\[([0123456789:]*)]", file_path)
+        # if slice_match is None:
+        #     question_slice = slice(None, None, None)
+        # else:
+        #     split_name = slice_match[1]
+        #     slice_args = [int(a) if len(a) > 0 else None for a in slice_match[2].split(":")]
+        #     question_slice = slice(*slice_args)
 
-        file_path = cached_path(file_path.split("[")[0], extract_archive=True)
+        file_path = cached_path(file_path, extract_archive=True)
+        files_in_split = {}
+        with open(file_path, "r") as f:
+            for line in f:
+                files_in_split.add(line)
 
         logger.info("Reading file at %s", file_path)
         captions = []
-        for filename in os.listdir(file_path):
-            full_file_path = open(os.path.join(file_path, filename))
-            captions.append(get_caption_data(full_file_path))
+        for filename in os.listdir(self.data_dir):  # file_path):
+            if filename.split(".")[0] in files_in_split:
+                full_file_path = open(os.path.join(self.data_dir, filename))
+                captions.append(get_caption_data(full_file_path))
 
         caption_dicts = list(self.shard_iterable(captions))
 

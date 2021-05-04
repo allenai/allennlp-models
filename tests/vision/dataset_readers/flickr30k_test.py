@@ -19,13 +19,14 @@ class TestFlickr30kReader(AllenNlpTestCase):
             image_dir=FIXTURES_ROOT / "vision" / "images" / "flickr30k",
             image_loader=TorchImageLoader(),
             image_featurizer=Lazy(NullGridEmbedder),
+            data_dir=FIXTURES_ROOT / "vision" / "images" / "flickr30k" / "sentences",
             region_detector=Lazy(RandomRegionDetector),
             tokenizer=WhitespaceTokenizer(),
             token_indexers={"tokens": SingleIdTokenIndexer()},
         )
 
     def test_read(self):
-        instances = list(self.reader.read("test_fixtures/vision/flickr30k/questions.json"))
+        instances = list(self.reader.read("test_fixtures/vision/flickr30k/test.txt"))
         assert len(instances) == 1
 
         instance = instances[0]
