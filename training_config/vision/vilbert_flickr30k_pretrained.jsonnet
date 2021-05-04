@@ -24,7 +24,7 @@ local vocabulary = if construct_vocab then {
 
 {
   "dataset_reader": {
-    "type": "vgqa",
+    "type": "flickr30k",
     "image_dir": "/net/nfs2.allennlp/data/vision/flickr30k_images/",
     [if !construct_vocab then "feature_cache_dir"]: "/net/nfs2.allennlp/data/vision/flickr30k_images/feature_cache",
     #"image_dir": std.format("/Users/dirkg/Documents/data/vision/vqa/%s", dataset),
