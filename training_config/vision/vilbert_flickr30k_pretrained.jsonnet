@@ -52,7 +52,7 @@ local dataset = "data";
     // "answer_vocab": null    // make sure we don't skip unanswerable questions during validation
   // },
   // "vocabulary": vocabulary,
-  "captions_data_path": "/net/nfs2.allennlp/data/vision/flickr30k_images/Sentences/",
+  "data_dir": "/net/nfs2.allennlp/data/vision/flickr30k_images/Sentences/",
   "train_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/train.txt",
   "validation_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/val.txt",
   "test_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/test.txt",
