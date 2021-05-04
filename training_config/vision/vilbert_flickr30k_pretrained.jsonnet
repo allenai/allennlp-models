@@ -26,6 +26,7 @@ local dataset = "data";
   "dataset_reader": {
     "type": "flickr30k",
     "image_dir": "/net/nfs2.allennlp/data/vision/flickr30k_images/",
+    "data_dir": "/net/nfs2.allennlp/data/vision/flickr30k_images/Sentences/",
     [if !construct_vocab then "feature_cache_dir"]: "/net/nfs2.allennlp/data/vision/flickr30k_images/feature_cache",
     #"image_dir": std.format("/Users/dirkg/Documents/data/vision/vqa/%s", dataset),
     #[if !construct_vocab then "feature_cache_dir"]: std.format("/Users/dirkg/Documents/data/vision/vqa/%s/feature_cache", dataset),
@@ -52,7 +53,6 @@ local dataset = "data";
     // "answer_vocab": null    // make sure we don't skip unanswerable questions during validation
   // },
   // "vocabulary": vocabulary,
-  // "data_dir": "/net/nfs2.allennlp/data/vision/flickr30k_images/Sentences/",
   "train_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/train.txt",
   "validation_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/val.txt",
   "test_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/test.txt",
