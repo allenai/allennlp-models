@@ -9,7 +9,7 @@ from allennlp.data import Instance
 from allennlp.predictors.predictor import Predictor
 
 
-@Predictor.register("vilbert_vqa")
+@Predictor.register("vilbert_ir")
 class VilbertImageRetrievalPredictor(Predictor):
     def predict(self, image: str, question: str) -> JsonDict:
         image = cached_path(image)
