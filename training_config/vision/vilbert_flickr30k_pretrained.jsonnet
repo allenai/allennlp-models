@@ -21,9 +21,9 @@ local vocabulary = if construct_vocab then {
 
 {
   "dataset_reader": {
-    "type": "vqav2",
-    "image_dir": std.format("/net/nfs2.allennlp/data/vision/vqa/%s", dataset),
-    [if !construct_vocab then "feature_cache_dir"]: std.format("/net/nfs2.allennlp/data/vision/vqa/%s/feature_cache", dataset),
+    "type": "flickr30k",
+    "image_dir": "/net/nfs2.allennlp/data/vision/flickr30k_images/",
+    [if !construct_vocab then "feature_cache_dir"]: "/net/nfs2.allennlp/data/vision/flickr30k_images/feature_cache",
     #"image_dir": std.format("/Users/dirkg/Documents/data/vision/vqa/%s", dataset),
     #[if !construct_vocab then "feature_cache_dir"]: std.format("/Users/dirkg/Documents/data/vision/vqa/%s/feature_cache", dataset),
     [if !construct_vocab then "image_loader"]: "torch",
@@ -98,9 +98,9 @@ local vocabulary = if construct_vocab then {
       //"num_steps_per_epoch": std.ceil(0 / $["data_loader"]["batch_size"] / $["trainer"]["num_gradient_accumulation_steps"]),
       "warmup_steps": 5000
     },
-    "validation_metric": "+vqa_score",
+    "validation_metric": "+accuracy",
     "patience": 5,
-    "num_epochs": 40,
+    "num_epochs": 20,
     "num_gradient_accumulation_steps": effective_batch_size / gpu_batch_size / std.max(1, num_gpus),
   },
   "random_seed": 876170670,

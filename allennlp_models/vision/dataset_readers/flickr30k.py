@@ -31,7 +31,6 @@ from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
 def filter_caption(caption):
     return caption
 
-
 # Borrowed
 # parse caption file for a given image
 def get_caption_data(fn):

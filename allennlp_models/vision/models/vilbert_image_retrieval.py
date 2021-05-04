@@ -24,6 +24,7 @@ from typing import Dict, Optional
 
 from overrides import overrides
 import faiss
+import numpy as np
 import torch
 
 from allennlp.data import TextFieldTensors, Vocabulary
@@ -42,16 +43,17 @@ logger = logging.getLogger(__name__)
 # TODO: I think we might actually want to use the output of vilbert, maybe?
 # IE calculate h_img and h_cls (like in the paper), and then do these calculations using those vectors?
 # input shapes: (batch_size, embedding_dim)
-# output shape: (batch_size, )
-def calculate_hard_negatives(image_embeddings, text_embeddings):
+# output shape: (batch_size, num_neighbors)
+def calculate_hard_negatives(image_embeddings, text_embeddings, num_neighbors: int = 3):
     # for each image, find the 100 nearest neighbors
     # then, find 3 images with best l2 distances
     index = faiss.IndexFlatL2(list(image_embeddings)[1])
-    index.add(processed_images)
-    k = 5  # 100
-    D, neighbors = index.search(processed_images, k)
-    for caption_dict, processed_image, curr_neighbors in zip(
-        caption_dicts, processed_images, neighbors
+    index.add(image_embeddings)  # TODO: I think we need to rotate this input
+    k = 10
+    # D, neighbors = index.search(processed_images, k)
+    D, neighbors = index.search(text_embeddings, k)
+    for image_embedding, text_embedding, curr_neighbors in zip(
+        image_embeddings, text_embeddings, neighbors
     ):
         for neighbor in curr_neighbors:
             # calculate L2 distance between neighbor and caption tokens
@@ -108,6 +110,8 @@ class ImageRetrievalVilbert(VisionTextModel):
         from allennlp.training.metrics import F1MultiLabelMeasure
         from allennlp_models.vision.metrics.vqa import VqaMeasure
 
+        self.classifier = torch.nn.Linear(pooled_output_dim, 1)
+
         self.f1_metric = F1MultiLabelMeasure(average="micro")
         self.vqa_metric = VqaMeasure()
 
@@ -123,31 +127,42 @@ class ImageRetrievalVilbert(VisionTextModel):
         label_weights: Optional[torch.Tensor] = None,
     ) -> Dict[str, torch.Tensor]:
 
+        batch_size = box_features.size(0)
+
         # collect outputs for this batch
         backbone_outputs = self.backbone(box_features, box_coordinates, box_mask, text)
 
-        # calculate hard negatives for this batch
-        # Shape: (batch_size, 4)
-        candidate_images = calculate_hard_negatives(
-            torch.mean(backbone_outputs["encoded_text"], 1),
-            torch.mean(backbone_outputs["encoded_boxes"], 1),
-        )
+        # Get embeddings (do we want to just take the mean?)
+        # Shape: (batch_size, pooled_output_dim)
+        text_embeddings = backbone_outputs["encoded_text_pooled"]
+        # Shape: (batch_size, pooled_output_dim)
+        image_embeddings = backbone_outputs["encoded_boxes_pooled"]
 
-        # then, use them to do the normal calculations
+        # TODO: do stuff with this
+        logits = self.classifier(
+            text_embeddings.unsqueeze(0) * image_embeddings.unsqueeze(1)
+        ).squeeze(-1)
+        probs = torch.softmax(logits, dim=-1)
+        # for text_embedding in text_embeddings:
+        #     curr_logits = self.classifier(text_embedding * image_embeddings)
+        #     curr_probs = torch.softmax(curr_logits, dim=0)
+
+        # Multiply each text embedding te_i by each image embedding ie_j
+        # and then by weights w to get a score for each text/image pair
 
         # TODO: this is copied, change to fit this model
-        # Shape: (batch_size, num_labels)
+        # Shape: (batch_size, batch_size)?
         # TODO: change `backbone_outputs["pooled_boxes_and_text"]` to use backbone_output embeddings + hard negative info
-        logits = self.classifier(backbone_outputs["pooled_boxes_and_text"])
+        # logits = self.classifier(backbone_outputs["pooled_boxes_and_text"])
 
-        # Shape: (batch_size, num_labels)
-        if self.is_multilabel:
-            probs = torch.sigmoid(logits)
-        else:
-            probs = torch.softmax(logits, dim=-1)
+        # # Shape: (batch_size, num_labels)
+        # if self.is_multilabel:
+        #     probs = torch.sigmoid(logits)
+        # else:
+        #     probs = torch.softmax(logits, dim=-1)
 
         outputs = {"logits": logits, "probs": probs}
-        outputs = self._compute_loss_and_metrics(batch_size, outputs, labels, label_weights)
+        outputs = self._compute_loss_and_metrics(batch_size, outputs)
 
         return outputs
 
@@ -157,20 +172,23 @@ class ImageRetrievalVilbert(VisionTextModel):
         self,
         batch_size: int,
         outputs: torch.Tensor,
-        label: torch.Tensor,
-        label_weights: Optional[torch.Tensor] = None,
     ):
+        # TODO: make sure this is right
+        # idea: the correct image for a caption i is image_i
+        labels = torch.from_numpy(np.arange(0, batch_size))
 
-        # TODO: implement loss and metrics
-
+        outputs["loss"] = torch.nn.functional.cross_entropy(outputs["logits"], label) / batch_size
+        self.accuracy(outputs["logits"], label)
+        self.fbeta(outputs["probs"], label)
         return outputs
 
     # TODO: fix
     @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
-        result = self.f1_metric.get_metric(reset)
-        result["vqa_score"] = self.vqa_metric.get_metric(reset)["score"]
-        return result
+        metrics = self.fbeta.get_metric(reset)
+        accuracy = self.accuracy.get_metric(reset)
+        metrics.update({"accuracy": accuracy})
+        return metrics
 
     # TODO: fix
     @overrides
@@ -186,4 +204,4 @@ class ImageRetrievalVilbert(VisionTextModel):
         output_dict["tokens"] = batch_tokens
         return output_dict
 
-    default_predictor = "vilbert_vqa"
+    default_predictor = "vilbert_ir"
