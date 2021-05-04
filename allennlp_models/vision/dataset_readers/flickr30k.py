@@ -160,6 +160,9 @@ class Flickr30kReader(VisionReader):
         #     slice_args = [int(a) if len(a) > 0 else None for a in slice_match[2].split(":")]
         #     question_slice = slice(*slice_args)
 
+        if self.data_dir is None:
+            self.data_dir = "/net/nfs2.allennlp/data/vision/flickr30k_images/Sentences/"
+
         file_path = cached_path(file_path, extract_archive=True)
         files_in_split = set()
         with open(file_path, "r") as f:
