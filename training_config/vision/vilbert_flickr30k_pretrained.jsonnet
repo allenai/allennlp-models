@@ -7,20 +7,20 @@ local gpu_batch_size = effective_batch_size / num_gpus;
 local num_epochs = 20;
 local patience = 5;
 
-local construct_vocab = true;
+local construct_vocab = false;
 local dataset = "data";
 
-local vocabulary = if construct_vocab then {
-      // read the files to construct the vocab
-      "min_count": {"answers": 5}
-    } else {
-      // TODO: update
-      // read the constructed vocab
-      "type": "from_files",
-      # todo: upload vocab to google
-      // "directory": "https://storage.googleapis.com/allennlp-public-data/vqav2/vilbert_vqa_%s.%s.vocab.tar.gz",
-      "directory": "/home/jacobm/model-output/vgqa-vocab/output.tar.gz",
-    };
+// local vocabulary = if construct_vocab then {
+//       // read the files to construct the vocab
+//       "min_count": {"answers": 5}
+//     } else {
+//       // TODO: update
+//       // read the constructed vocab
+//       "type": "from_files",
+//       # todo: upload vocab to google
+//       // "directory": "https://storage.googleapis.com/allennlp-public-data/vqav2/vilbert_vqa_%s.%s.vocab.tar.gz",
+//       "directory": "/home/jacobm/model-output/vgqa-vocab/output.tar.gz",
+//     };
 
 {
   "dataset_reader": {
@@ -45,13 +45,13 @@ local vocabulary = if construct_vocab then {
     // TODO: comment this out
     "max_instances": 1000,
     "image_processing_batch_size": 16,
-    "answer_vocab": if construct_vocab then null else vocabulary,
+    // "answer_vocab": if construct_vocab then null else vocabulary,
     // "multiple_answers_per_question": !construct_vocab,
   },
-  "validation_dataset_reader": self.dataset_reader {
-    "answer_vocab": null    // make sure we don't skip unanswerable questions during validation
-  },
-  "vocabulary": vocabulary,
+  // "validation_dataset_reader": self.dataset_reader {
+    // "answer_vocab": null    // make sure we don't skip unanswerable questions during validation
+  // },
+  // "vocabulary": vocabulary,
   "captions_data_path": "/net/nfs2.allennlp/data/vision/flickr30k_images/Sentences/",
   "train_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/train.txt",
   "validation_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/val.txt",
