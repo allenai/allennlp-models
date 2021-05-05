@@ -122,15 +122,13 @@ class ImageRetrievalVilbert(VisionTextModel):
         box_features: torch.Tensor,
         box_coordinates: torch.Tensor,
         box_mask: torch.Tensor,
-        question: TextFieldTensors,
-        labels: Optional[torch.Tensor] = None,
-        label_weights: Optional[torch.Tensor] = None,
+        caption: TextFieldTensors,
     ) -> Dict[str, torch.Tensor]:
 
         batch_size = box_features.size(0)
 
         # collect outputs for this batch
-        backbone_outputs = self.backbone(box_features, box_coordinates, box_mask, text)
+        backbone_outputs = self.backbone(box_features, box_coordinates, box_mask, caption)
 
         # Get embeddings (do we want to just take the mean?)
         # Shape: (batch_size, pooled_output_dim)
