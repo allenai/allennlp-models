@@ -60,7 +60,8 @@ def calculate_hard_negatives(image_embeddings, text_embeddings, num_neighbors: i
             caption_vec = caption_dict["caption"]
 
 
-@Model.register("image_retrieval_vilbert")
+@Model.register("vilbert_ir")
+@Model.register("ve_vilbert_from_huggingface", constructor="from_huggingface_model_name")
 class ImageRetrievalVilbert(VisionTextModel):
     # TODO: fix
     """

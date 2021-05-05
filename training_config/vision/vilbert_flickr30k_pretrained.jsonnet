@@ -57,25 +57,64 @@ local dataset = "data";
   "validation_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/val.txt",
   "test_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/test.txt",
   "model": {
-    "type": "image_retrieval_vilbert",
-    "model_name": model_name,
-    "image_feature_dim": 1024,
-    "image_hidden_size": 1024,
-    "image_num_attention_heads": 8,
-    "image_num_hidden_layers": 6,
-    "combined_hidden_size": 1024,
-    "combined_num_attention_heads": 8,
+    "type": "vilbert_ir",
+    // "model_name": model_name,
+    // "image_feature_dim": 1024,
+    // "image_hidden_size": 1024,
+    // "image_num_attention_heads": 8,
+    // "image_num_hidden_layers": 6,
+    // "combined_hidden_size": 1024,
+    // "combined_num_attention_heads": 8,
+    // "pooled_output_dim": 1024,
+    // "image_intermediate_size": 1024,
+    // "image_attention_dropout": 0.1,
+    // "image_hidden_dropout": 0.1,
+    // "image_biattention_id": [0, 1, 2, 3, 4, 5],
+    // "text_biattention_id": [6, 7, 8, 9, 10, 11],
+    // "text_fixed_layer": 0,
+    // "image_fixed_layer": 0,
+    // "fusion_method": "mul",
+    // "ignore_text": false, # debug setting
+    // "ignore_image": false, # debug setting
+    "text_embeddings": {
+      "vocab_size": vocab_size,
+      "embedding_size": 1024,
+      "pad_token_id": 0,
+      "max_position_embeddings": 512,
+      "type_vocab_size": 2,
+      "dropout": 0.1
+    },
+    "image_embeddings": {
+      "feature_size": 1024,
+      "embedding_size": 1024
+    },
+    "encoder": {
+      # text
+      "hidden_size1": 1024,
+      "num_hidden_layers1": 24,
+      "intermediate_size1": 4096,
+      "num_attention_heads1": 16,
+      "attention_dropout1": 0.1,
+      "hidden_dropout1": 0.1,
+      "biattention_id1": [18, 19, 20, 21, 22, 23],
+      "fixed_layer1": 0,
+
+      # vision
+      "hidden_size2": 1024,
+      "num_hidden_layers2": 6,
+      "intermediate_size2": 1024,
+      "num_attention_heads2": 8,
+      "attention_dropout2": 0.1,
+      "hidden_dropout2": 0.1,
+      "biattention_id2": [0, 1, 2, 3, 4, 5],
+      "fixed_layer2": 0,
+
+      "combined_num_attention_heads": 8,
+      "combined_hidden_size": 1024,
+      "activation": "gelu",
+    },
     "pooled_output_dim": 1024,
-    "image_intermediate_size": 1024,
-    "image_attention_dropout": 0.1,
-    "image_hidden_dropout": 0.1,
-    "image_biattention_id": [0, 1, 2, 3, 4, 5],
-    "text_biattention_id": [6, 7, 8, 9, 10, 11],
-    "text_fixed_layer": 0,
-    "image_fixed_layer": 0,
-    "fusion_method": "mul",
-    "ignore_text": false, # debug setting
-    "ignore_image": false, # debug setting
+    "fusion_method": "mul"
   },
   "data_loader": {
     "batch_size": gpu_batch_size,
