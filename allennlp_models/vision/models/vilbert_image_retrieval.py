@@ -185,7 +185,7 @@ class ImageRetrievalVilbert(VisionTextModel):
         outputs["loss"] = torch.nn.functional.cross_entropy(outputs["logits"], labels) / batch_size
         self.accuracy(outputs["logits"], labels)
         print("fbeta info:")
-        print(output["probs"].size())
+        print(outputs["probs"].size())
         print(labels.size())
         # self.fbeta(outputs["probs"], labels)
         return outputs
