@@ -161,7 +161,7 @@ local dataset = "data";
       // "warmup_steps" : std.ceil(0.1 * 1062451 * num_epochs / effective_batch_size)
       "warmup_steps": 5000
     },
-    "validation_metric": "+vqa_score",
+    "validation_metric": "+accuracy",
     // "patience": 5,
     "num_epochs": num_epochs,
     "num_gradient_accumulation_steps": effective_batch_size / gpu_batch_size / std.max(1, num_gpus),
