@@ -35,6 +35,7 @@ from allennlp.modules.transformer import (
     BiModalEncoder,
 )
 from allennlp.nn import util
+from allennlp.training.metrics import CategoricalAccuracy
 
 from allennlp_models.vision.models.vision_text_model import VisionTextModel
 
