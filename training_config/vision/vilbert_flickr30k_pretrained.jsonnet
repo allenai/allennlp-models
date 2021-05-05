@@ -44,7 +44,7 @@ local dataset = "data";
       }
     },
     // TODO: comment this out
-    "max_instances": 1000,
+    // "max_instances": 1000,
     "image_processing_batch_size": 16,
     // "answer_vocab": if construct_vocab then null else vocabulary,
     // "multiple_answers_per_question": !construct_vocab,
@@ -145,7 +145,7 @@ local dataset = "data";
     // ],
     "optimizer": {
       "type": "huggingface_adamw",
-      "lr": 4e-5,
+      "lr": 2e-5,
       "correct_bias": true,
       "weight_decay": 0.01,
       "parameter_groups": [
@@ -156,13 +156,12 @@ local dataset = "data";
     },
     "learning_rate_scheduler": {
       "type": "linear_with_warmup",
-      // "num_steps_per_epoch": std.ceil(1062451 / $["data_loader"]["batch_size"] / $["trainer"]["num_gradient_accumulation_steps"]),
       // Use this, but calculate the right # of instances
       // "warmup_steps" : std.ceil(0.1 * 1062451 * num_epochs / effective_batch_size)
       "warmup_steps": 5000
     },
     "validation_metric": "+accuracy",
-    // "patience": 5,
+    "patience": patience,
     "num_epochs": num_epochs,
     "num_gradient_accumulation_steps": effective_batch_size / gpu_batch_size / std.max(1, num_gpus),
   },
