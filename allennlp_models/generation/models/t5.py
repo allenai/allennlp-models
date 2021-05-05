@@ -14,13 +14,24 @@ from allennlp.training.metrics import ROUGE, BLEU
 @Model.register("t5")
 class T5(Model):
     def __init__(
-        self, vocab: Vocabulary, model_name: str, ddp_wrapper: Optional[DdpWrapper] = None, **kwargs
+        self,
+        vocab: Vocabulary,
+        model_name: str,
+        ddp_wrapper: Optional[DdpWrapper] = None,
+        beam_size: int = 3,
+        max_decoding_steps: int = 50,
+        **kwargs
     ) -> None:
         super().__init__(vocab, **kwargs)
         self._model_name = model_name
         # We only instantiate this when we need it.
         self._tokenizer: Optional[PretrainedTransformerTokenizer] = None
-        self.t5 = T5Module.from_pretrained_module(model_name, ddp_wrapper=ddp_wrapper)
+        self.t5 = T5Module.from_pretrained_module(
+            model_name,
+            ddp_wrapper=ddp_wrapper,
+            beam_size=beam_size,
+            max_decoding_steps=max_decoding_steps,
+        )
 
         exclude_indices = {
             self.t5.pad_token_id,
