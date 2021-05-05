@@ -133,8 +133,8 @@ class ImageRetrievalVilbert(VisionTextModel):
 
         # Get embeddings (do we want to just take the mean?)
         # Shape: (batch_size, pooled_output_dim)
-        print(text_embeddings.size())
         text_embeddings = backbone_outputs["encoded_text_pooled"]
+        print(text_embeddings.size())
         # Shape: (batch_size, pooled_output_dim)
         image_embeddings = backbone_outputs["encoded_boxes_pooled"]
 
@@ -179,7 +179,7 @@ class ImageRetrievalVilbert(VisionTextModel):
 
         print(labels.device)
         print(outputs["logits"].device)
-        labels.to(outputs["logits"].device)
+        labels = labels.to(outputs["logits"].device)
         print(labels.device)
         print(outputs["logits"].device)
 
