@@ -25,9 +25,9 @@ local dataset = "data";
 {
   "dataset_reader": {
     "type": "flickr30k",
-    "image_dir": "/net/nfs2.allennlp/data/vision/flickr30k_images/",
-    "data_dir": "/net/nfs2.allennlp/data/vision/flickr30k_images/Sentences/",
-    [if !construct_vocab then "feature_cache_dir"]: "/net/nfs2.allennlp/data/vision/flickr30k_images/feature_cache",
+    "image_dir": "/net/nfs2.allennlp/data/vision/flickr30k/images/",
+    "data_dir": "/net/nfs2.allennlp/data/vision/flickr30k/captions/",
+    [if !construct_vocab then "feature_cache_dir"]: "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache",
     #"image_dir": std.format("/Users/dirkg/Documents/data/vision/vqa/%s", dataset),
     #[if !construct_vocab then "feature_cache_dir"]: std.format("/Users/dirkg/Documents/data/vision/vqa/%s/feature_cache", dataset),
     [if !construct_vocab then "image_loader"]: "torch",
