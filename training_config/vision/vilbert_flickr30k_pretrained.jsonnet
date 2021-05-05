@@ -57,7 +57,7 @@ local dataset = "data";
   "validation_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/val.txt",
   "test_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/test.txt",
   "model": {
-    "type": "vqa_vilbert_from_huggingface",
+    "type": "image_retrieval_vilbert",
     "model_name": model_name,
     "image_feature_dim": 1024,
     "image_hidden_size": 1024,
