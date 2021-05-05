@@ -176,6 +176,8 @@ class ImageRetrievalVilbert(VisionTextModel):
         # idea: the correct image for a caption i is image_i
         labels = torch.from_numpy(np.arange(0, batch_size))
 
+        labels.to(outputs["logits"].device)
+
         outputs["loss"] = torch.nn.functional.cross_entropy(outputs["logits"], labels) / batch_size
         self.accuracy(outputs["logits"], labels)
         self.fbeta(outputs["probs"], labels)
