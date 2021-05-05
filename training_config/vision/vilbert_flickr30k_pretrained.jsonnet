@@ -131,18 +131,18 @@ local dataset = "data";
     #"cuda_devices": std.repeat([-1], num_gpus)  # Use this for debugging on CPU
   },
   // Don't train if we're just constructing vocab. The results would be confusing.
-  [if !construct_vocab then "trainer"]: {
-  // "trainer": {
-    "callbacks": [
-        {
-            // "batch_size_interval": 100,
-            "project": "allennlp-testing",
-            "should_log_learning_rate": true,
-            "should_log_parameter_statistics": true,
-            "summary_interval": 100,
-            "type": "wandb"
-        }
-    ],
+  // [if !construct_vocab then "trainer"]: {
+  "trainer": {
+    // "callbacks": [
+    //     {
+    //         // "batch_size_interval": 100,
+    //         "project": "allennlp-testing",
+    //         "should_log_learning_rate": true,
+    //         "should_log_parameter_statistics": true,
+    //         "summary_interval": 100,
+    //         "type": "wandb"
+    //     }
+    // ],
     "optimizer": {
       "type": "huggingface_adamw",
       "lr": 4e-5,
