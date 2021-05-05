@@ -187,7 +187,7 @@ class ImageRetrievalVilbert(VisionTextModel):
         print("fbeta info:")
         print(outputs["probs"].size())
         print(labels.size())
-        # self.fbeta(outputs["probs"], labels)
+        self.fbeta(outputs["probs"], labels)
         return outputs
 
     # TODO: fix
