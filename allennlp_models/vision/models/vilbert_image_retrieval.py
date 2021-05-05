@@ -36,6 +36,7 @@ from allennlp.modules.transformer import (
 )
 from allennlp.nn import util
 from allennlp.training.metrics import CategoricalAccuracy
+from allennlp.training.metrics import FBetaMeasure
 
 from allennlp_models.vision.models.vision_text_model import VisionTextModel
 
@@ -115,8 +116,9 @@ class ImageRetrievalVilbert(VisionTextModel):
         self.classifier = torch.nn.Linear(pooled_output_dim, 1)
 
         self.accuracy = CategoricalAccuracy()
-        self.f1_metric = F1MultiLabelMeasure(average="micro")
-        self.vqa_metric = VqaMeasure()
+        self.fbeta = FBetaMeasure(beta=1.0, average="macro")
+        # self.f1_metric = F1MultiLabelMeasure(average="micro")
+        # self.vqa_metric = VqaMeasure()
 
     # TODO: fix
     @overrides
