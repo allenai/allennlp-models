@@ -113,6 +113,7 @@ class ImageRetrievalVilbert(VisionTextModel):
 
         self.classifier = torch.nn.Linear(pooled_output_dim, 1)
 
+        self.accuracy = CategoricalAccuracy()
         self.f1_metric = F1MultiLabelMeasure(average="micro")
         self.vqa_metric = VqaMeasure()
 
