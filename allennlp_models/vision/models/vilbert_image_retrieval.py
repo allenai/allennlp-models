@@ -184,19 +184,22 @@ class ImageRetrievalVilbert(VisionTextModel):
 
         outputs["loss"] = torch.nn.functional.cross_entropy(outputs["logits"], labels) / batch_size
         self.accuracy(outputs["logits"], labels)
-        print("fbeta info:")
-        print(outputs["probs"].size())
-        print(labels.size())
-        self.fbeta(outputs["probs"], labels)
+        # print("fbeta info:")
+        # print(outputs["probs"].size())
+        # print(labels.size())
+        # self.fbeta(outputs["probs"], labels)
         return outputs
 
     # TODO: fix
     @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
-        metrics = self.fbeta.get_metric(reset)
-        accuracy = self.accuracy.get_metric(reset)
-        metrics.update({"accuracy": accuracy})
-        return metrics
+        # metrics = self.fbeta.get_metric(reset)
+        # accuracy = self.accuracy.get_metric(reset)
+        # metrics.update({"accuracy": accuracy})
+        # return metrics
+        return {
+            "accuracy": self.accuracy.get_metric(reset),
+        }
 
     # TODO: fix
     @overrides
