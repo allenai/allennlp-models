@@ -177,8 +177,10 @@ class ImageRetrievalVilbert(VisionTextModel):
         labels = torch.from_numpy(np.arange(0, batch_size))
 
         print(labels.device)
+        print(outputs["logits"].device)
         labels.to(outputs["logits"].device)
         print(labels.device)
+        print(outputs["logits"].device)
 
         outputs["loss"] = torch.nn.functional.cross_entropy(outputs["logits"], labels) / batch_size
         self.accuracy(outputs["logits"], labels)
