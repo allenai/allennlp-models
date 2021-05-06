@@ -142,33 +142,24 @@ class ImageRetrievalVilbert(VisionTextModel):
         image_embeddings = backbone_outputs["encoded_boxes_pooled"]
 
         # TODO: do stuff with this
+        # Shape: (batch_size, batch_size)
         logits = self.classifier(
+            # Output shape: (batch_size, batch_size, pooled_output_dim)
+            # Input shape: (1, batch_size, pooled_output_dim), and (batch_size, 1, pooled_output_dim)
             text_embeddings.unsqueeze(0) * image_embeddings.unsqueeze(1)
         ).squeeze(-1)
         # probs = torch.softmax(logits, dim=-1)
         probs = torch.sigmoid(logits)
 
-
-        # for text_embedding in text_embeddings:
-        #     curr_logits = self.classifier(text_embedding * image_embeddings)
-        #     curr_probs = torch.softmax(curr_logits, dim=0)
-
-        # Multiply each text embedding te_i by each image embedding ie_j
-        # and then by weights w to get a score for each text/image pair
-
-        # TODO: this is copied, change to fit this model
-        # Shape: (batch_size, batch_size)?
-        # TODO: change `backbone_outputs["pooled_boxes_and_text"]` to use backbone_output embeddings + hard negative info
-        # logits = self.classifier(backbone_outputs["pooled_boxes_and_text"])
-
-        # # Shape: (batch_size, num_labels)
-        # if self.is_multilabel:
-        #     probs = torch.sigmoid(logits)
-        # else:
-        #     probs = torch.softmax(logits, dim=-1)
-
         outputs = {"logits": logits, "probs": probs}
         outputs = self._compute_loss_and_metrics(batch_size, outputs)
+        if get_metrics(False)["accuracy"] > 0.999:
+            print("text embeddings")
+            print(text_embeddings)
+            print("image embeddings")
+            print(image_embeddings)
+            print("probabilities")
+            print(probs)
 
         return outputs
 
