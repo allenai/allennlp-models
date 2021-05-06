@@ -24,7 +24,7 @@ class TestVGQA2Reader(AllenNlpTestCase):
             tokenizer=WhitespaceTokenizer(),
             token_indexers={"tokens": SingleIdTokenIndexer()},
         )
-        instances = list(reader.read(FIXTURES_ROOT / "vision" / "vgqa" / "question_answers.json"))
+        instances = list(reader.read("test_fixtures/vision/vgqa/question_answers.json"))
         assert len(instances) == 8
 
         instance = instances[0]
@@ -52,6 +52,5 @@ class TestVGQA2Reader(AllenNlpTestCase):
         # Nothing should be masked out since the number of fake boxes is the same
         # for each item in the batch.
         assert tensors["box_mask"].all()
-
 
         # todo: test for impossible questions?
