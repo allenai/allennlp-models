@@ -153,7 +153,7 @@ class ImageRetrievalVilbert(VisionTextModel):
 
         outputs = {"logits": logits, "probs": probs}
         outputs = self._compute_loss_and_metrics(batch_size, outputs)
-        if get_metrics(False)["accuracy"] > 0.999:
+        if self.get_metrics(False)["accuracy"] > 0.999:
             print("text embeddings")
             print(text_embeddings)
             print("image embeddings")
