@@ -56,6 +56,7 @@ local dataset = "data";
   "train_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/train.txt",
   "validation_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/val.txt",
   "test_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/test.txt",
+  "evaluate_on_test": true,
   "model": {
     "type": "vilbert_ir",
     // "model_name": model_name,
