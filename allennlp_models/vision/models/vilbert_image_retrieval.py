@@ -140,7 +140,8 @@ class ImageRetrievalVilbert(VisionTextModel):
         text_embeddings = backbone_outputs["encoded_text_pooled"]
         # Shape: (batch_size, pooled_output_dim)
         # image_embeddings = backbone_outputs["encoded_boxes_pooled"]
-        image_embeddings = torch.mean(backbone_outputs["encoded_boxes"], dim=1)
+        # image_embeddings = torch.mean(backbone_outputs["encoded_boxes"], dim=1)
+        image_embeddings = torch.mean(box_features, dim=1)
 
         # TODO: do stuff with this
         # Shape: (batch_size, batch_size)
