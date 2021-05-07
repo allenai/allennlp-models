@@ -42,7 +42,6 @@ local vocabulary = if construct_vocab then {
     #"max_instances": 1000,
     "image_processing_batch_size": 16,
     "answer_vocab": if construct_vocab then null else vocabulary,
-    "multiple_answers_per_question": !construct_vocab,
   },
   "validation_dataset_reader": self.dataset_reader {
     "answer_vocab": null    // make sure we don't skip unanswerable questions during validation
