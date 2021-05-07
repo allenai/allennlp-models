@@ -4,8 +4,10 @@ local vocab_size = 30522;     // for bert-*-uncased models
 local effective_batch_size = 128;
 local num_gpus = 4;
 local gpu_batch_size = effective_batch_size / num_gpus;
-local num_epochs = 30;
+local num_epochs = 20;
 local patience = 5;
+local num_instances = 1062451;
+local num_gradient_accumulation_steps = effective_batch_size / gpu_batch_size / std.max(1, num_gpus);
 
 local construct_vocab = false;
 local dataset = "data";
@@ -16,9 +18,7 @@ local vocabulary = if construct_vocab then {
     } else {
       // read the constructed vocab
       "type": "from_files",
-      # todo: upload vocab to google
-      // "directory": "https://storage.googleapis.com/allennlp-public-data/vqav2/vilbert_vqa_%s.%s.vocab.tar.gz",
-      "directory": "/home/jacobm/model-output/vgqa-vocab/output.tar.gz",
+      "directory": "https://storage.googleapis.com/allennlp-public-data/vgqa/vilbert_vgqa_bert-base-uncased.vocab.tar.gz",
     };
 
 {
@@ -26,8 +26,6 @@ local vocabulary = if construct_vocab then {
     "type": "vgqa",
     "image_dir": "/net/nfs2.allennlp/data/vision/visual_genome/1.2",
     [if !construct_vocab then "feature_cache_dir"]: "/net/nfs2.allennlp/data/vision/visual_genome/1.2/feature_cache",
-    #"image_dir": std.format("/Users/dirkg/Documents/data/vision/vqa/%s", dataset),
-    #[if !construct_vocab then "feature_cache_dir"]: std.format("/Users/dirkg/Documents/data/vision/vqa/%s/feature_cache", dataset),
     [if !construct_vocab then "image_loader"]: "torch",
     [if !construct_vocab then "image_featurizer"]: "resnet_backbone",
     [if !construct_vocab then "region_detector"]: "faster_rcnn",
@@ -76,12 +74,6 @@ local vocabulary = if construct_vocab then {
   "data_loader": {
     "batch_size": gpu_batch_size,
     "shuffle": true,
-    // "max_instances_in_memory": gpu_batch_size * 100,
-    // "start_method": "spawn",   # "fork"
-    // "num_workers": 1,
-
-
-    //[if !construct_vocab then "max_instances_in_memory"]: 10240
   },
   [if num_gpus > 1 then "distributed"]: {
     "cuda_devices": std.range(0, num_gpus - 1)
@@ -89,17 +81,16 @@ local vocabulary = if construct_vocab then {
   },
   // Don't train if we're just constructing vocab. The results would be confusing.
   [if !construct_vocab then "trainer"]: {
-  // "trainer": {
-    "callbacks": [
-        {
-            // "batch_size_interval": 100,
-            "project": "allennlp-testing",
-            "should_log_learning_rate": true,
-            "should_log_parameter_statistics": true,
-            "summary_interval": 100,
-            "type": "wandb"
-        }
-    ],
+    // "callbacks": [
+    //     {
+    //         "batch_size_interval": 100,
+    //         "project": "allennlp-testing",
+    //         "should_log_learning_rate": true,
+    //         "should_log_parameter_statistics": true,
+    //         "summary_interval": 100,
+    //         "type": "wandb"
+    //     }
+    // ],
     "optimizer": {
       "type": "huggingface_adamw",
       "lr": 4e-5,
@@ -113,14 +104,12 @@ local vocabulary = if construct_vocab then {
     },
     "learning_rate_scheduler": {
       "type": "linear_with_warmup",
-      // "num_steps_per_epoch": std.ceil(1062451 / $["data_loader"]["batch_size"] / $["trainer"]["num_gradient_accumulation_steps"]),
-      "warmup_steps" : std.ceil(0.1 * 1062451 * num_epochs / effective_batch_size)
-      // "warmup_steps": 5000
+      "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size)
     },
     "validation_metric": "+vqa_score",
-    // "patience": 5,
+    // "patience": patience,
     "num_epochs": num_epochs,
-    "num_gradient_accumulation_steps": effective_batch_size / gpu_batch_size / std.max(1, num_gpus),
+    "num_gradient_accumulation_steps": num_gradient_accumulation_steps,
   },
   "random_seed": 13034431,
   "numpy_seed": 13034431,
