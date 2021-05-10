@@ -1,6 +1,5 @@
 import logging
 from collections import Counter
-from functools import lru_cache
 from os import PathLike
 from typing import (
     Dict,

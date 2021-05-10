@@ -208,8 +208,9 @@ def get_data_slice(file_path: str) -> slice:
     slice_match = re.match(r"(.*)\[([0123456789:]*)]", file_path)
     if slice_match is None:
         question_slice = slice(None, None, None)
+        return question_slice, file_path
     else:
         split_name = slice_match[1]
         slice_args = [int(a) if len(a) > 0 else None for a in slice_match[2].split(":")]
         question_slice = slice(*slice_args)
-    return question_slice, split_name
+        return question_slice, split_name

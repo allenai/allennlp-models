@@ -1,6 +1,8 @@
 import logging
+from os import PathLike
 from typing import (
     Dict,
+    # List,
     Union,
     Optional,
     Tuple,
@@ -138,9 +140,9 @@ class VGQAReader(VisionReader):
     @overrides
     def _read(self, file_path: str):
         # if the splits are using slicing syntax, honor it
-        question_slice = utils.get_data_slice(file_path)
+        question_slice, _ = utils.get_data_slice(file_path)
 
-        file_path, _ = cached_path(file_path.split("[")[0], extract_archive=True)
+        file_path = cached_path(file_path.split("[")[0], extract_archive=True)
 
         logger.info("Reading file at %s", file_path)
         questions = []
