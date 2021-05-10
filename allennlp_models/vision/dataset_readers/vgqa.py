@@ -9,7 +9,6 @@ from typing import (
     Iterable,
 )
 import json
-import re
 
 from overrides import overrides
 import torch
