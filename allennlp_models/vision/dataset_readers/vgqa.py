@@ -123,26 +123,12 @@ class VGQAReader(VisionReader):
                 for a in answer_vocab.get_token_to_index_vocabulary("answers").keys()
             )
 
-        if self.produce_featurized_images:
-            # normalize self.images some more
-            # At this point, self.images maps filenames to full paths, but we want to map image ids to full paths.
-            filename_re = re.compile(r".*(\d{12})\.((jpg)|(png))")
-
-            def id_from_filename(filename: str) -> Optional[int]:
-                match = filename_re.fullmatch(filename)
-                if match is None:
-                    return None
-                return int(match.group(1))
-
-            if None in self.images:
-                del self.images[None]
-
     @overrides
     def _read(self, file_path: str):
         # if the splits are using slicing syntax, honor it
-        question_slice, _ = utils.get_data_slice(file_path)
+        question_slice, file_path = utils.get_data_slice(file_path)
 
-        file_path = cached_path(file_path.split("[")[0], extract_archive=True)
+        file_path = cached_path(file_path, extract_archive=True)
 
         logger.info("Reading file at %s", file_path)
         questions = []
@@ -210,7 +196,7 @@ class VGQAReader(VisionReader):
         self,  # type: ignore
         qa_id: int,
         question: str,
-        answer: str,
+        answer: Optional[str],
         image: Union[str, Tuple[Tensor, Tensor]],
         use_cache: bool = True,
         keep_impossible_questions: bool = True,
@@ -221,22 +207,18 @@ class VGQAReader(VisionReader):
             "question": question_field,
         }
 
-        if image is None:
-            return None
+        if isinstance(image, str):
+            features, coords = next(self._process_image_paths([image], use_cache=use_cache))
+        else:
+            features, coords = image
 
-        if image is not None:
-            if isinstance(image, str):
-                features, coords = next(self._process_image_paths([image], use_cache=use_cache))
-            else:
-                features, coords = image
-
-            fields["box_features"] = ArrayField(features)
-            fields["box_coordinates"] = ArrayField(coords)
-            fields["box_mask"] = ArrayField(
-                features.new_ones((features.shape[0],), dtype=torch.bool),
-                padding_value=False,
-                dtype=torch.bool,
-            )
+        fields["box_features"] = ArrayField(features)
+        fields["box_coordinates"] = ArrayField(coords)
+        fields["box_mask"] = ArrayField(
+            features.new_ones((features.shape[0],), dtype=torch.bool),
+            padding_value=False,
+            dtype=torch.bool,
+        )
 
         if answer is not None:
             labels_fields = []
