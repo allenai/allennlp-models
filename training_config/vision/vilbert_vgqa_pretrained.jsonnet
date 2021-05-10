@@ -106,7 +106,7 @@ local vocabulary = if construct_vocab then {
       "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size)
     },
     "validation_metric": "+vqa_score",
-    // "patience": patience,
+    "patience": patience,
     "num_epochs": num_epochs,
     "num_gradient_accumulation_steps": num_gradient_accumulation_steps,
   },
