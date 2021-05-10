@@ -197,9 +197,19 @@ def process_digit_article(input: str) -> str:
     return " ".join(output)
 
 
-# todo: also remove words like a/the/an/etc?
 @lru_cache(maxsize=None)
 def preprocess_answer(answer: str) -> str:
     answer = process_digit_article(process_punctuation(answer))
     answer = answer.replace(",", "")
     return answer
+
+
+def get_data_slice(file_path: str) -> slice:
+    slice_match = re.match(r"(.*)\[([0123456789:]*)]", file_path)
+    if slice_match is None:
+        question_slice = slice(None, None, None)
+    else:
+        split_name = slice_match[1]
+        slice_args = [int(a) if len(a) > 0 else None for a in slice_match[2].split(":")]
+        question_slice = slice(*slice_args)
+    return question_slice

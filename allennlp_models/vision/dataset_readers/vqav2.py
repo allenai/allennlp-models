@@ -166,13 +166,7 @@ class VQAv2Reader(VisionReader):
             return
 
         # if the splits are using slicing syntax, honor it
-        slice_match = re.match(r"(.*)\[([0123456789:]*)]", split_name)
-        if slice_match is None:
-            question_slice = slice(None, None, None)
-        else:
-            split_name = slice_match[1]
-            slice_args = [int(a) if len(a) > 0 else None for a in slice_match[2].split(":")]
-            question_slice = slice(*slice_args)
+        question_slice = utils.get_data_slice(split_name)
 
         class Split(NamedTuple):
             annotations: Optional[str]

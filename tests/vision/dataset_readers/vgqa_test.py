@@ -12,7 +12,7 @@ from allennlp.modules.vision.region_detector import RandomRegionDetector
 from tests import FIXTURES_ROOT
 
 
-class TestVGQA2Reader(AllenNlpTestCase):
+class TestVGQAReader(AllenNlpTestCase):
     def test_read(self):
         from allennlp_models.vision.dataset_readers.vgqa import VGQAReader
 
@@ -52,5 +52,3 @@ class TestVGQA2Reader(AllenNlpTestCase):
         # Nothing should be masked out since the number of fake boxes is the same
         # for each item in the batch.
         assert tensors["box_mask"].all()
-
-        # todo: test for impossible questions?

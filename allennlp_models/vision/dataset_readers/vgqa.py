@@ -93,10 +93,9 @@ class VGQAReader(VisionReader):
     ) -> None:
         run_featurization = image_loader and image_featurizer and region_detector
         if image_dir is None and run_featurization:
-            # todo: update
             raise ValueError(
                 "Because of the size of the image datasets, we don't download them automatically. "
-                "Please go to https://visualqa.org/download.html, download the datasets you need, "
+                "Please go to https://visualgenome.org/api/v0/api_home.html, download the datasets you need, "
                 "and set the image_dir parameter to point to your download location. This dataset "
                 "reader does not care about the exact directory structure. It finds the images "
                 "wherever they are."
@@ -145,13 +144,7 @@ class VGQAReader(VisionReader):
     @overrides
     def _read(self, file_path: str):
         # if the splits are using slicing syntax, honor it
-        slice_match = re.match(r"(.*)\[([0123456789:]*)]", file_path)
-        if slice_match is None:
-            question_slice = slice(None, None, None)
-        else:
-            split_name = slice_match[1]
-            slice_args = [int(a) if len(a) > 0 else None for a in slice_match[2].split(":")]
-            question_slice = slice(*slice_args)
+        question_slice = utils.get_data_slice(file_path)
 
         file_path = cached_path(file_path.split("[")[0], extract_archive=True)
 
@@ -249,11 +242,10 @@ class VGQAReader(VisionReader):
                 dtype=torch.bool,
             )
 
-        # todo: remove impossible answers from training, but not validation
         if answer is not None:
             labels_fields = []
             weights = []
-            if keep_impossible_questions and (not self.answer_vocab or answer in self.answer_vocab):
+            if (not self.answer_vocab or answer in self.answer_vocab) or keep_impossible_questions:
                 labels_fields.append(LabelField(answer, label_namespace="answers"))
                 weights.append(1.0)
 
