@@ -175,6 +175,7 @@ Here is a list of pre-trained models currently available.
 - [`tagging-fine-grained-crf-tagger`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/tagging-fine-grained-crf-tagger.json) - This model identifies a broad range of 16 semantic types in the input text. It is a reimplementation of Lample (2016) and uses a biLSTM with a CRF layer, character embeddings and ELMo embeddings.
 - [`tagging-fine-grained-transformer-crf-tagger`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/tagging-fine-grained-transformer-crf-tagger.json) - Fine-grained NER model
 - [`ve-vilbert`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/ve-vilbert.json) - ViLBERT-based model for Visual Entailment.
+- [`vgqa-vilbert`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/vgqa-vilbert.json) - ViLBERT (short for Vision-and-Language BERT), is a model for learning task-agnostic joint representations of image content and natural language.
 - [`vqa-vilbert`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/vqa-vilbert.json) - ViLBERT (short for Vision-and-Language BERT), is a model for learning task-agnostic joint representations of image content and natural language.
 
 <!-- End automatically generated section -->
