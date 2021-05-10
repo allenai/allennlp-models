@@ -46,7 +46,7 @@ class TestVGQAReader(AllenNlpTestCase):
         # (batch size, num boxes (fake), 4 coords)
         assert tensors["box_coordinates"].size() == (8, 2, 4)
 
-        # (batch size, num boxes (fake),)
+        # (batch size, num boxes (fake))
         assert tensors["box_mask"].size() == (8, 2)
 
         # Nothing should be masked out since the number of fake boxes is the same
