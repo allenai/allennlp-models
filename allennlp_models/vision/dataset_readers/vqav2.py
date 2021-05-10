@@ -166,7 +166,7 @@ class VQAv2Reader(VisionReader):
             return
 
         # if the splits are using slicing syntax, honor it
-        question_slice = utils.get_data_slice(split_name)
+        question_slice, split_name = utils.get_data_slice(split_name)
 
         class Split(NamedTuple):
             annotations: Optional[str]

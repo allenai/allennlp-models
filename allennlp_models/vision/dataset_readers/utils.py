@@ -212,4 +212,4 @@ def get_data_slice(file_path: str) -> slice:
         split_name = slice_match[1]
         slice_args = [int(a) if len(a) > 0 else None for a in slice_match[2].split(":")]
         question_slice = slice(*slice_args)
-    return question_slice
+    return question_slice, split_name

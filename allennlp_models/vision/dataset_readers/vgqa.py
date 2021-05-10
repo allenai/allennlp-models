@@ -1,14 +1,8 @@
 import logging
-from collections import Counter
-from functools import lru_cache
-from os import PathLike
 from typing import (
     Dict,
-    List,
     Union,
     Optional,
-    MutableMapping,
-    NamedTuple,
     Tuple,
     Iterable,
 )
@@ -20,7 +14,7 @@ import torch
 from torch import Tensor
 
 from allennlp.common.lazy import Lazy
-from allennlp.common.file_utils import cached_path, LocalCacheResource
+from allennlp.common.file_utils import cached_path
 from allennlp.data.vocabulary import Vocabulary
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.fields import Field, ArrayField, LabelField, ListField, TextField
@@ -146,7 +140,7 @@ class VGQAReader(VisionReader):
         # if the splits are using slicing syntax, honor it
         question_slice = utils.get_data_slice(file_path)
 
-        file_path = cached_path(file_path.split("[")[0], extract_archive=True)
+        file_path, _ = cached_path(file_path.split("[")[0], extract_archive=True)
 
         logger.info("Reading file at %s", file_path)
         questions = []
