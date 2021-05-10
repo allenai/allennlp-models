@@ -4,6 +4,7 @@ Utilities for vision dataset readers.
 
 import logging
 from functools import lru_cache
+from typing import Tuple
 import re
 
 logger = logging.getLogger(__name__)
@@ -204,7 +205,7 @@ def preprocess_answer(answer: str) -> str:
     return answer
 
 
-def get_data_slice(file_path: str) -> slice:
+def get_data_slice(file_path: str) -> Tuple[slice, str]:
     slice_match = re.match(r"(.*)\[([0123456789:]*)]", file_path)
     if slice_match is None:
         question_slice = slice(None, None, None)
