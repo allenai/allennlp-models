@@ -1,7 +1,7 @@
 {
     "id": "pair-classification-decomposable-attention-elmo",
     "registered_model_name": "decomposable_attention",
-    "registered_predictor_name": "textual_entailment",
+    "registered_predictor_name": null,
     "display_name": "ELMo-based Decomposable Attention",
     "task_id": "textual_entailment",
     "model_details": {

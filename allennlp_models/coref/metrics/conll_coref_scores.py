@@ -6,11 +6,16 @@ from scipy.optimize import linear_sum_assignment
 import numpy as np
 import torch
 
+from allennlp.nn.util import dist_reduce_sum
+
 from allennlp.training.metrics.metric import Metric
 
 
 @Metric.register("conll_coref_scores")
 class ConllCorefScores(Metric):
+
+    supports_distributed = True
+
     def __init__(self) -> None:
         self.scorers = [Scorer(m) for m in (Scorer.muc, Scorer.b_cubed, Scorer.ceafe)]
 
@@ -146,10 +151,11 @@ class Scorer:
         else:
             p_num, p_den = self.metric(predicted, mention_to_gold)
             r_num, r_den = self.metric(gold, mention_to_predicted)
-        self.precision_numerator += p_num
-        self.precision_denominator += p_den
-        self.recall_numerator += r_num
-        self.recall_denominator += r_den
+
+        self.precision_numerator += dist_reduce_sum(p_num)
+        self.precision_denominator += dist_reduce_sum(p_den)
+        self.recall_numerator += dist_reduce_sum(r_num)
+        self.recall_denominator += dist_reduce_sum(r_den)
 
     def get_f1(self):
         precision = self.get_precision()

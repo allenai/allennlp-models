@@ -5,17 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## Unreleased
-
-### Fixed
-
-- VQA metric now calculates correctly in the distributed case
 
 ### Added
 
-- Tests for the VQA metric
-- Added dataset reader for visual genome QA
+- Added tests for checklist suites for SQuAD-style reading comprehension models (`bidaf`), and textual entailment models (`decomposable_attention` and `esim`).
+- Added an optional "weight" parameter to `CopyNetSeq2Seq.forward()` for calculating a weighted loss instead of the simple average over the
+  the negative log likelihoods for each instance in the batch.
+- Added a way to initialize the `SrlBert` model without caching/loading pretrained transformer weights.
+  You need to set the `bert_model` parameter to the dictionary form of the corresponding `BertConfig` from HuggingFace.
+  See [PR #257](https://github.com/allenai/allennlp-models/pull/257) for more details.
+
+
+## [v2.4.0](https://github.com/allenai/allennlp-models/releases/tag/v2.4.0) - 2021-04-22
+
+### Added
+
+- Added `T5` model for generation.
+- Added a classmethod constructor on `Seq2SeqPredictor`: `.pretrained_t5_for_generation()`.
+- Added a parameter called `source_prefix` to `CNNDailyMailDatasetReader`. This is useful with T5, for example, by setting `source_prefix` to "summarization: ".
+- Tests for `VqaMeasure`.
+- Distributed tests for `ConllCorefScores` and `SrlEvalScorer` metrics.
+- Added dataset reader for visual genome QA.
+
+### Fixed
+
+- `pretrained.load_predictor()` now allows for loading model onto GPU.
+- `VqaMeasure` now calculates correctly in the distributed case.
+- `ConllCorefScores` now calculates correctly in the distributed case.
+- `SrlEvalScorer` raises an appropriate error if run in the distributed setting.
+
+### Changed
+
+- Updated `registered_predictor_name` to `null` in model cards for the models where it was the same as the default predictor.
 
 
 ## [v2.3.0](https://github.com/allenai/allennlp-models/releases/tag/v2.3.0) - 2021-04-14

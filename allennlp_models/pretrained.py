@@ -19,6 +19,7 @@ from allennlp_models.pair_classification.models import *  # noqa: F401, F403
 from allennlp_models.rc.models import *  # noqa: F401, F403
 from allennlp_models.structured_prediction.models import *  # noqa: F401, F403
 from allennlp_models.tagging.models import *  # noqa: F401, F403
+from allennlp_models.vision.models import *  # noqa: F401, F403
 
 
 def get_tasks() -> Dict[str, TaskCard]:
@@ -60,6 +61,7 @@ def get_pretrained_models() -> Dict[str, ModelCard]:
 def load_predictor(
     model_id: str,
     pretrained_models: Dict[str, ModelCard] = None,
+    cuda_device: int = -1,
     overrides: Union[str, Dict[str, Any]] = None,
 ) -> Predictor:
     """
@@ -75,5 +77,6 @@ def load_predictor(
     return Predictor.from_path(
         model_card.model_usage.archive_file,
         predictor_name=model_card.registered_predictor_name,
+        cuda_device=cuda_device,
         overrides=overrides,
     )
