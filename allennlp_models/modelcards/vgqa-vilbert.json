@@ -65,7 +65,7 @@
         "caveats_and_recommendations": null
     },
     "model_usage": {
-        "archive_file": "vilbert-vgqa-pretrained.2021-05-07.tar.gz",
+        "archive_file": "vilbert-vgqa-pretrained.2021-05-10.tar.gz",
         "training_config": "vision/vilbert_vgqa_pretrained.jsonnet",
         "install_instructions": "pip install allennlp==2.5.0 allennlp-models==2.5.0"
     }
