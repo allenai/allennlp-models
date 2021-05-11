@@ -26,8 +26,7 @@ class TestNlvr2Reader(AllenNlpTestCase):
         assert len(instances) == 8
 
         instance = instances[0]
-        print(instance)
-        assert len(instance.fields) == 5
+        assert len(instance.fields) == 6
         assert len(instance["hypothesis"]) == 18
         hypothesis_tokens = [t.text for t in instance["hypothesis"]]
         assert hypothesis_tokens[:6] == ["The", "right", "image", "shows", "a", "curving"]
@@ -43,3 +42,6 @@ class TestNlvr2Reader(AllenNlpTestCase):
 
         # (batch size, 2 images per instance, num boxes (fake), 4 coords)
         assert tensors["box_coordinates"].size() == (8, 2, 2, 4)
+
+        # (batch size, 2 images per instance, num boxes (fake))
+        assert tensors["box_mask"].size() == (8, 2, 2)
