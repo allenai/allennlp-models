@@ -67,12 +67,12 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
             is_multilabel=False,
         )
 
-        num_labels = vocab.get_vocab_size(label_namespace)
+        self.num_labels = vocab.get_vocab_size(label_namespace)
 
         self.pooled_output_dim = pooled_output_dim
         self.layer1 = torch.nn.Linear(pooled_output_dim * 2, pooled_output_dim)
         self.activation = torch.nn.ReLU()  # TODO: test different ones
-        self.layer2 = torch.nn.Linear(pooled_output_dim, num_labels)
+        self.layer2 = torch.nn.Linear(pooled_output_dim, self.num_labels)
 
         self.accuracy = CategoricalAccuracy()
         self.fbeta = FBetaMeasure(beta=1.0, average="macro")
@@ -133,8 +133,12 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         probs = torch.softmax(logits, dim=-1)
 
         outputs = {"logits": logits, "probs": probs}
-        print(label)
-        logger.info(label)
+        print("label stuff")
+        logger.info("label stuff")
+        print(self.num_labels)
+        logger.info(self.num_labels)
+        print(label.shape)
+        logger.info(label.shape)
         outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
 
         return outputs
