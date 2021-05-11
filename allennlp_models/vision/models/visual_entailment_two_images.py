@@ -96,8 +96,8 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         # 5. Done?
 
         # Size: (batch_size, pooled_output_dim)
-        pooled_outputs1 = self.backbone(box_features[0], box_coordinates[0], box_mask[0], text)["pooled_boxes_and_text"]
-        pooled_outputs2 = self.backbone(box_features[1], box_coordinates[1], box_mask[1], text)["pooled_boxes_and_text"]
+        pooled_outputs1 = self.backbone(box_features[0], box_coordinates[0], box_mask[0], hypothesis)["pooled_boxes_and_text"]
+        pooled_outputs2 = self.backbone(box_features[1], box_coordinates[1], box_mask[1], hypothesis)["pooled_boxes_and_text"]
 
         # TODO: concatenate these correctly
         hidden = self.layer1(torch.cat((pooled_outputs1, pooled_outputs2), dim=-1))
