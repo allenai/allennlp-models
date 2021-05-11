@@ -70,7 +70,7 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         num_labels = vocab.get_vocab_size(label_namespace)
 
         self.layer1 = torch.nn.Linear(pooled_output_dim * 2, pooled_output_dim)
-        self.activation = torch.nn.ReLU() # TODO: test different ones
+        self.activation = torch.nn.ReLU()  # TODO: test different ones
         self.layer2 = torch.nn.Linear(pooled_output_dim, num_labels)
 
         self.accuracy = CategoricalAccuracy()
@@ -99,16 +99,28 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         batch_size, num_images, num_boxes, num_features = box_features.shape
         _, _, _, num_coordinates = box_coordinates.shape
 
-        box_features = torch.reshape(box_features, (num_images, batch_size, num_boxes, num_features))
-        box_coordinates = torch.reshape(box_coordinates, (num_images, batch_size, num_boxes, num_coordinates))
-        box_mask = torch.reshape(box_mask, (num_images, batch_size, num_boxes))
+        reshaped_box_features = torch.reshape(
+            box_features, (num_images, batch_size, num_boxes, num_features)
+        )
+        reshaped_box_coordinates = torch.reshape(
+            box_coordinates, (num_images, batch_size, num_boxes, num_coordinates)
+        )
+        reshaped_box_mask = torch.reshape(box_mask, (num_images, batch_size, num_boxes))
 
-        pooled_outputs1 = self.backbone(box_features[0], box_coordinates[0], box_mask[0], hypothesis)["pooled_boxes_and_text"]
-        pooled_outputs2 = self.backbone(box_features[1], box_coordinates[1], box_mask[1], hypothesis)["pooled_boxes_and_text"]
+        print(reshaped_box_features.shape)
+        print(reshaped_box_coordinates.shape)
+        print(reshaped_box_mask.shape)
+
+        pooled_outputs1 = self.backbone(
+            reshaped_box_features[0], reshaped_box_coordinates[0], reshaped_box_mask[0], hypothesis
+        )["pooled_boxes_and_text"]
+        pooled_outputs2 = self.backbone(
+            reshaped_box_features[1], reshaped_box_coordinates[1], reshaped_box_mask[1], hypothesis
+        )["pooled_boxes_and_text"]
 
         # TODO: concatenate these correctly
         hidden = self.layer1(torch.cat((pooled_outputs1, pooled_outputs2), dim=-1))
-        
+
         # Shape: (batch_size, num_labels)
         logits = self.layer2(self.activation(hidden))
 
