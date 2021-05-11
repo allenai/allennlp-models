@@ -83,7 +83,7 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         box_coordinates: List[torch.Tensor],
         box_mask: List[torch.Tensor],
         hypothesis: TextFieldTensors,
-        labels: Optional[torch.Tensor] = None,
+        label: Optional[torch.Tensor] = None,
         identifier: List[Dict[str, Any]] = None,
     ) -> Dict[str, torch.Tensor]:
 
@@ -112,7 +112,7 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         probs = torch.softmax(logits, dim=-1)
 
         outputs = {"logits": logits, "probs": probs}
-        outputs = self._compute_loss_and_metrics(batch_size, outputs, labels, label_weights)
+        outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
 
         return outputs
 
@@ -122,9 +122,7 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         batch_size: int,
         outputs: torch.Tensor,
         label: torch.Tensor,
-        label_weights: Optional[torch.Tensor] = None,
     ):
-        assert label_weights is None
         if label is not None:
             outputs["loss"] = (
                 torch.nn.functional.cross_entropy(outputs["logits"], label) / batch_size
