@@ -84,6 +84,7 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         box_mask: List[torch.Tensor],
         hypothesis: TextFieldTensors,
         labels: Optional[torch.Tensor] = None,
+        identifier: List[Dict[str, Any]] = None,
     ) -> Dict[str, torch.Tensor]:
 
         # TODO: figure out how to handle both images - just feed them in twice?
