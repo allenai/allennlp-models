@@ -79,9 +79,9 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
     @overrides
     def forward(
         self,  # type: ignore
-        box_features: List[torch.Tensor],
-        box_coordinates: List[torch.Tensor],
-        box_mask: List[torch.Tensor],
+        box_features: torch.Tensor,
+        box_coordinates: torch.Tensor,
+        box_mask: torch.Tensor,
         hypothesis: TextFieldTensors,
         label: Optional[torch.Tensor] = None,
         identifier: List[Dict[str, Any]] = None,
@@ -96,8 +96,14 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         # 5. Done?
 
         # Size: (batch_size, pooled_output_dim)
-        print(box_features[0].size())
-        print(box_coordinates[0].size())
+        batch_size, num_images, num_boxes, num_features = box_features.shape
+        _, _, _, num_coordinates = box_coordinates.shape
+        _, _, _, num_masks = box_mask.shape
+
+        box_features = torch.reshape(box_features, (num_images, batch_size, num_boxes, num_features))
+        box_coordinates = torch.reshape(box_coordinates, (num_images, batch_size, num_boxes, num_coordinates))
+        box_mask = torch.reshape(box_mask, (num_images, batch_size, num_boxes, num_masks))
+
         pooled_outputs1 = self.backbone(box_features[0], box_coordinates[0], box_mask[0], hypothesis)["pooled_boxes_and_text"]
         pooled_outputs2 = self.backbone(box_features[1], box_coordinates[1], box_mask[1], hypothesis)["pooled_boxes_and_text"]
 
