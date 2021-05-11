@@ -98,11 +98,10 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         # Size: (batch_size, pooled_output_dim)
         batch_size, num_images, num_boxes, num_features = box_features.shape
         _, _, _, num_coordinates = box_coordinates.shape
-        _, _, _, num_masks = box_mask.shape
 
         box_features = torch.reshape(box_features, (num_images, batch_size, num_boxes, num_features))
         box_coordinates = torch.reshape(box_coordinates, (num_images, batch_size, num_boxes, num_coordinates))
-        box_mask = torch.reshape(box_mask, (num_images, batch_size, num_boxes, num_masks))
+        box_mask = torch.reshape(box_mask, (num_images, batch_size, num_boxes))
 
         pooled_outputs1 = self.backbone(box_features[0], box_coordinates[0], box_mask[0], hypothesis)["pooled_boxes_and_text"]
         pooled_outputs2 = self.backbone(box_features[1], box_coordinates[1], box_mask[1], hypothesis)["pooled_boxes_and_text"]
