@@ -112,7 +112,6 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         print(reshaped_box_features[0].shape)
         print(reshaped_box_coordinates[0].shape)
         print(reshaped_box_mask[0].shape)
-        print(hypothesis.shape)
 
         pooled_outputs1 = self.backbone(
             reshaped_box_features[0], reshaped_box_coordinates[0], reshaped_box_mask[0], hypothesis
