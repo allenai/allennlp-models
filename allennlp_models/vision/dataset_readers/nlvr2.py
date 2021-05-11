@@ -1,3 +1,4 @@
+import logging
 from os import PathLike
 from typing import Any, Dict, Tuple, Union, Optional
 
@@ -19,6 +20,8 @@ from allennlp.modules.vision.region_detector import RegionDetector
 
 from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
 
+logger = logging.getLogger(__name__)
+
 
 def extract_image_features(image: Union[str, Tuple[Tensor, Tensor]], use_cache: bool):
     if isinstance(image, str):
@@ -27,6 +30,8 @@ def extract_image_features(image: Union[str, Tuple[Tensor, Tensor]], use_cache: 
         features, coords = image
 
     print(features.shape)
+    logger.log("features shape:")
+    logger.log(features.shape)
 
     return (
         ArrayField(features),
@@ -202,8 +207,12 @@ class Nlvr2Reader(VisionReader):
     ) -> Instance:
         hypothesis_field = TextField(self._tokenizer.tokenize(hypothesis), None)
         print(image1)
+        logger.log("image1:")
+        logger.log(image1)
         box_features1, box_coordinates1, box_mask1 = extract_image_features(image1, False) # use_cache)
         print(image2)
+        logger.log("image2:")
+        logger.log(image2)
         box_features2, box_coordinates2, box_mask2 = extract_image_features(image2, False) # use_cache)
 
         fields = {
