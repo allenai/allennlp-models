@@ -1,37 +1,22 @@
-import glob
-import os
 from os import PathLike
-from typing import Any, Dict, Tuple, Union, MutableMapping, Optional
+from typing import Any, Dict, Tuple, Union, Optional
 
 from overrides import overrides
 import torch
 from torch import Tensor
 
-from allennlp.common.file_utils import cached_path, json_lines_from_file, TensorCache, logger
-from allennlp.data.dataset_readers.dataset_reader import DatasetReader
-from allennlp.data.fields import TensorField, LabelField, ListField, MetadataField, TextField
-from allennlp.data.image_loader import ImageLoader
-from allennlp.data.instance import Instance
-from allennlp.data.token_indexers import PretrainedTransformerIndexer
-from allennlp.data.token_indexers import TokenIndexer
-from allennlp.data.tokenizers import PretrainedTransformerTokenizer
-from allennlp.data.tokenizers import Tokenizer
-from allennlp.modules.vision.grid_embedder import GridEmbedder
-from allennlp.modules.vision.region_detector import RegionDetector
-
+from allennlp.common.file_utils import cached_path, json_lines_from_file
 from allennlp.common.lazy import Lazy
-from allennlp.common.file_utils import cached_path
-from allennlp.data.vocabulary import Vocabulary
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
-from allennlp.data.fields import Field, ArrayField, LabelField, ListField, TextField
+from allennlp.data.fields import ArrayField, LabelField, ListField, MetadataField, TextField
 from allennlp.data.image_loader import ImageLoader
 from allennlp.data.instance import Instance
 from allennlp.data.token_indexers import TokenIndexer
 from allennlp.data.tokenizers import Tokenizer
+from allennlp.data.vocabulary import Vocabulary
 from allennlp.modules.vision.grid_embedder import GridEmbedder
 from allennlp.modules.vision.region_detector import RegionDetector
 
-# from allennlp_models.vision.dataset_readers import utils
 from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
 
 
@@ -41,15 +26,15 @@ def extract_image_features(image: Union[str, Tuple[Tensor, Tensor]], use_cache: 
     else:
         features, coords = image
 
-    return {
-        "box_features": ArrayField(features),
-        "box_coordinates": ArrayField(coords),
-        "box_mask": ArrayField(
+    return (
+        ArrayField(features),
+        ArrayField(coords),
+        ArrayField(
             features.new_ones((features.shape[0],), dtype=torch.bool),
             padding_value=False,
             dtype=torch.bool,
         ),
-    }
+    )
 
 
 @DatasetReader.register("nlvr2")
@@ -135,43 +120,6 @@ class Nlvr2Reader(VisionReader):
             write_to_cache=write_to_cache,
         )
 
-        # def __init__(
-        #     self,
-        #     image_dir: Union[str, PathLike],
-        #     image_loader: ImageLoader,
-        #     image_featurizer: GridEmbedder,
-        #     region_detector: RegionDetector,
-        #     *,
-        #     feature_cache_dir: Optional[Union[str, PathLike]] = None,
-        #     data_dir: Optional[Union[str, PathLike]] = None,
-        #     tokenizer: Optional[Tokenizer] = None,
-        #     token_indexers: Optional[Dict[str, TokenIndexer]] = None,
-        #     cuda_device: Optional[Union[int, torch.device]] = None,
-        #     max_instances: Optional[int] = None,
-        # ) -> None:
-        #     super().__init__(
-        #         max_instances=max_instances,
-        #         manual_distributed_sharding=True,
-        #         manual_multi_process_sharding=True,
-        #     )
-
-        # if cuda_device is None:
-        #     from torch import cuda
-
-        #     if cuda.device_count() > 0:
-        #         cuda_device = 0
-        #     else:
-        #         cuda_device = -1
-        # from allennlp.common.checks import check_for_gpu
-
-        # check_for_gpu(cuda_device)
-        # from allennlp.common.util import int_to_device
-
-        # self.cuda_device = int_to_device(cuda_device)
-
-        # Paths to data
-        # if not data_dir:
-
         # TODO: fix this?
         github_url = "https://raw.githubusercontent.com/lil-lab/nlvr/"
         nlvr_commit = "68a11a766624a5b665ec7594982b8ecbedc728c7"
@@ -186,44 +134,6 @@ class Nlvr2Reader(VisionReader):
             "unbalanced_test": f"{data_dir}/balanced/unbalanced_test1.json",
         }
         # end TODO
-
-        # from tqdm import tqdm
-
-        # logger.info("Discovering images ...")
-        # self.images = {
-        #     os.path.basename(filename): filename
-        #     for filename in tqdm(
-        #         glob.iglob(os.path.join(image_dir, "**", "*.png"), recursive=True),
-        #         desc="Discovering images",
-        #     )
-        # }
-        # logger.info("Done discovering images")
-
-        # TODO: make sure these are accurate
-
-        # tokenizers and indexers
-        # if not tokenizer:
-        #     tokenizer = PretrainedTransformerTokenizer("bert-base-uncased")
-        # self._tokenizer = tokenizer
-        # if token_indexers is None:
-        #     token_indexers = {"tokens": PretrainedTransformerIndexer("bert-base-uncased")}
-        # self._token_indexers = token_indexers
-
-        # # image loading
-        # self.image_loader = image_loader
-        # self.image_featurizer = image_featurizer.to(self.cuda_device)
-        # self.region_detector = region_detector.to(self.cuda_device)
-
-        # # feature cache
-        # if feature_cache_dir is None:
-        #     self._features_cache: MutableMapping[str, Tensor] = {}
-        #     self._coordinates_cache: MutableMapping[str, Tensor] = {}
-        # else:
-        #     os.makedirs(feature_cache_dir, exist_ok=True)
-        #     self._features_cache = TensorCache(os.path.join(feature_cache_dir, "features"))
-        #     self._coordinates_cache = TensorCache(os.path.join(feature_cache_dir, "coordinates"))
-
-        # TODO: end TODO
 
     @overrides
     def _read(self, split_or_filename: str):
@@ -247,7 +157,6 @@ class Nlvr2Reader(VisionReader):
             try:
                 image_paths1 = []
                 image_paths2 = []
-                print(self.images)
                 for blob in blobs:
                     identifier = blob["identifier"]
                     image_name_base = identifier[: identifier.rindex("-")]
@@ -289,18 +198,20 @@ class Nlvr2Reader(VisionReader):
         label: bool,  # type: ignore
         use_cache: bool = True,
     ) -> Instance:
-        tokenized_sentence = self._tokenizer.tokenize(sentence)
+        sentence_field = TextField(self._tokenizer.tokenize(sentence), None)
+        box_features1, box_coordinates1, box_mask1 = extract_image_features(image1, use_cache)
+        box_features2, box_coordinates2, box_mask2 = extract_image_features(image2, use_cache)
 
         fields = {
-            "sentence": TextField(tokenized_sentence, None),
+            "sentence": sentence_field,
+            "box_features": ListField([box_features1, box_features2]),
+            "box_coordinates": ListField([box_coordinates1, box_coordinates2]),
+            "box_mask": ListField([box_mask1, box_mask2]),
             "identifier": MetadataField(identifier),
         }
 
         if label is not None:
             fields["label"] = LabelField(int(label), skip_indexing=True)
-
-        fields["image1"] = extract_image_features(image1, use_cache)
-        fields["image2"] = extract_image_features(image2, use_cache)
 
         return Instance(fields)
 
