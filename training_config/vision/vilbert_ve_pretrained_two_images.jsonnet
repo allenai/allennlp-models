@@ -8,7 +8,7 @@ local num_epochs = 20;
   "dataset_reader": {
     "type": "nlvr2",
     "image_dir": "/net/nfs2.allennlp/data/vision/nlvr2/images",
-    "feature_cache_dir": "/net/nfs2.allennlp/data/vision/nlvr2/feature_cache",
+    "feature_cache_dir": "/net/nfs2.allennlp/data/vision/nlvr2/feature_cache_test",
     "image_loader": "torch",
     "image_featurizer": "resnet_backbone",
     "region_detector": "faster_rcnn",
