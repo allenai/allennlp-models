@@ -30,7 +30,8 @@ class TestNlvr2Reader(AllenNlpTestCase):
         assert len(instance["hypothesis"]) == 18
         hypothesis_tokens = [t.text for t in instance["hypothesis"]]
         assert hypothesis_tokens[:6] == ["The", "right", "image", "shows", "a", "curving"]
-        assert instance["label"].label == 1
+        assert instance["label"].label == 0
+        assert instances[1]["label"].label == 1
         assert instance["identifier"].metadata == "dev-850-0-0"
 
         batch = Batch(instances)

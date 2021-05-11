@@ -190,7 +190,7 @@ class Nlvr2Reader(VisionReader):
         for json_blob, image1, image2 in zip(blob_dicts, processed_images1, processed_images2):
             identifier = json_blob["identifier"]
             hypothesis = json_blob["sentence"]
-            label = bool(json_blob["label"])
+            label = json_blob["label"] == 'True'
             instance = self.text_to_instance(identifier, hypothesis, image1, image2, label)
             if instance is not None:
                 yield instance
