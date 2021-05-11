@@ -69,6 +69,7 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
 
         num_labels = vocab.get_vocab_size(label_namespace)
 
+        self.pooled_output_dim = pooled_output_dim
         self.layer1 = torch.nn.Linear(pooled_output_dim * 2, pooled_output_dim)
         self.activation = torch.nn.ReLU()  # TODO: test different ones
         self.layer2 = torch.nn.Linear(pooled_output_dim, num_labels)
@@ -107,9 +108,11 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         )
         reshaped_box_mask = torch.reshape(box_mask, (num_images, batch_size, num_boxes))
 
-        print(reshaped_box_features.shape)
-        print(reshaped_box_coordinates.shape)
-        print(reshaped_box_mask.shape)
+        print(self.pooled_output_dim)
+        print(reshaped_box_features[0].shape)
+        print(reshaped_box_coordinates[0].shape)
+        print(reshaped_box_mask[0].shape)
+        print(hypothesis.shape)
 
         pooled_outputs1 = self.backbone(
             reshaped_box_features[0], reshaped_box_coordinates[0], reshaped_box_mask[0], hypothesis
