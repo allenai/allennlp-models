@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a parameter called `source_prefix` to `CNNDailyMailDatasetReader`. This is useful with T5, for example, by setting `source_prefix` to "summarization: ".
 - Tests for `VqaMeasure`.
 - Distributed tests for `ConllCorefScores` and `SrlEvalScorer` metrics.
+- Added dataset reader for visual genome QA.
 
 ### Fixed
 
