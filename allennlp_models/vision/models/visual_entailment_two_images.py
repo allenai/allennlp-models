@@ -96,6 +96,8 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         # 5. Done?
 
         # Size: (batch_size, pooled_output_dim)
+        print(box_features[0].size())
+        print(box_coordinates[0].size())
         pooled_outputs1 = self.backbone(box_features[0], box_coordinates[0], box_mask[0], hypothesis)["pooled_boxes_and_text"]
         pooled_outputs2 = self.backbone(box_features[1], box_coordinates[1], box_mask[1], hypothesis)["pooled_boxes_and_text"]
 
