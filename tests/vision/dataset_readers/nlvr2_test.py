@@ -26,10 +26,11 @@ class TestNlvr2Reader(AllenNlpTestCase):
         assert len(instances) == 8
 
         instance = instances[0]
-        assert len(instance.fields) == 6
-        assert len(instance["sentence"]) == 18
-        sentence_tokens = [t.text for t in instance["sentence"]]
-        assert sentence_tokens[:6] == ["The", "right", "image", "shows", "a", "curving"]
+        print(instance)
+        assert len(instance.fields) == 5
+        assert len(instance["hypothesis"]) == 18
+        hypothesis_tokens = [t.text for t in instance["hypothesis"]]
+        assert hypothesis_tokens[:6] == ["The", "right", "image", "shows", "a", "curving"]
         assert instance["label"].label == 1
         assert instance["identifier"].metadata == "dev-850-0-0"
 

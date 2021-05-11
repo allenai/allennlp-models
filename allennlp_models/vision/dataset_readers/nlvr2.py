@@ -42,11 +42,11 @@ class Nlvr2Reader(VisionReader):
     # TODO: update comment
     """
     Reads the NLVR2 dataset from http://lil.nlp.cornell.edu/nlvr/.
-    In this task, the model is presented with two images and a sentence referring to those images.
-    The task for the model is to identify whether the sentence is true or false.
+    In this task, the model is presented with two images and a hypothesis referring to those images.
+    The task for the model is to identify whether the hypothesis is true or false.
     Accordingly, the instances produced by this reader contain two images, featurized into the
     fields "box_features" and "box_coordinates". In addition to that, it produces a `TextField`
-    called "sentence", and a `MetadataField` called "identifier". The latter contains the question
+    called "hypothesis", and a `MetadataField` called "identifier". The latter contains the question
     id from the question set.
     Parameters
     ----------
@@ -66,7 +66,7 @@ class Nlvr2Reader(VisionReader):
         recommended to set this.
     data_dir: `str`
         Path to directory containing text files for each dataset split. These files contain
-        the sentences and metadata for each task instance.  If this is `None`, we will grab the
+        the hypotheses and metadata for each task instance.  If this is `None`, we will grab the
         files from the official NLVR github repository.
     feature_cache_dir: `str`, optional
         Path to a directory that will contain a cache of featurized images.
@@ -182,9 +182,9 @@ class Nlvr2Reader(VisionReader):
 
         for json_blob, image1, image2 in zip(blob_dicts, processed_images1, processed_images2):
             identifier = json_blob["identifier"]
-            sentence = json_blob["sentence"]
+            hypothesis = json_blob["sentence"]
             label = bool(json_blob["label"])
-            instance = self.text_to_instance(identifier, sentence, image1, image2, label)
+            instance = self.text_to_instance(identifier, hypothesis, image1, image2, label)
             if instance is not None:
                 yield instance
 
@@ -192,18 +192,18 @@ class Nlvr2Reader(VisionReader):
     def text_to_instance(
         self,
         identifier: str,
-        sentence: str,
+        hypothesis: str,
         image1: Union[str, Tuple[Tensor, Tensor]],
         image2: Union[str, Tuple[Tensor, Tensor]],
         label: bool,  # type: ignore
         use_cache: bool = True,
     ) -> Instance:
-        sentence_field = TextField(self._tokenizer.tokenize(sentence), None)
+        hypothesis_field = TextField(self._tokenizer.tokenize(hypothesis), None)
         box_features1, box_coordinates1, box_mask1 = extract_image_features(image1, use_cache)
         box_features2, box_coordinates2, box_mask2 = extract_image_features(image2, use_cache)
 
         fields = {
-            "sentence": sentence_field,
+            "hypothesis": hypothesis_field,
             "box_features": ListField([box_features1, box_features2]),
             "box_coordinates": ListField([box_coordinates1, box_coordinates2]),
             "box_mask": ListField([box_mask1, box_mask2]),
@@ -217,4 +217,4 @@ class Nlvr2Reader(VisionReader):
 
     @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
-        instance["sentence"].token_indexers = self._token_indexers  # type: ignore
+        instance["hypothesis"].token_indexers = self._token_indexers  # type: ignore

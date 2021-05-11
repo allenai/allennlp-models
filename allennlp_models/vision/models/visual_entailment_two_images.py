@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 from overrides import overrides
 import numpy as np
@@ -20,9 +20,9 @@ from allennlp_models.vision.models.vision_text_model import VisionTextModel
 logger = logging.getLogger(__name__)
 
 
-@Model.register("ve_vilbert")
-@Model.register("ve_vilbert_from_huggingface", constructor="from_huggingface_model_name")
-class VisualEntailmentModel(VisionTextModel):
+@Model.register("ve2_vilbert")
+@Model.register("ve2_vilbert_from_huggingface", constructor="from_huggingface_model_name")
+class VisualEntailmentTwoImagesModel(VisionTextModel):
     """
     Model for visual entailment task based on the paper
     [Visual Entailment: A Novel Task for Fine-Grained Image Understanding]
@@ -35,7 +35,7 @@ class VisualEntailmentModel(VisionTextModel):
     image_embeddings : `ImageFeatureEmbeddings`
     encoder : `BiModalEncoder`
     pooled_output_dim : `int`
-    fusion_method : `str`, optional (default = `"sum"`)
+    fusion_method : `str`, optional (default = `"mul"`)
     dropout : `float`, optional (default = `0.1`)
     label_namespace : `str`, optional (default = `labels`)
     """
@@ -47,7 +47,7 @@ class VisualEntailmentModel(VisionTextModel):
         image_embeddings: ImageFeatureEmbeddings,
         encoder: BiModalEncoder,
         pooled_output_dim: int,
-        fusion_method: str = "sum",
+        fusion_method: str = "mul",
         dropout: float = 0.1,
         label_namespace: str = "labels",
         *,
@@ -67,15 +67,21 @@ class VisualEntailmentModel(VisionTextModel):
             is_multilabel=False,
         )
 
+        num_labels = vocab.get_vocab_size(label_namespace)
+
+        self.layer1 = torch.nn.Linear(pooled_output_dim * 2, pooled_output_dim)
+        self.activation = torch.nn.ReLU() # TODO: test different ones
+        self.layer2 = torch.nn.Linear(pooled_output_dim, num_labels)
+
         self.accuracy = CategoricalAccuracy()
         self.fbeta = FBetaMeasure(beta=1.0, average="macro")
 
     @overrides
     def forward(
         self,  # type: ignore
-        box_features: torch.Tensor,
-        box_coordinates: torch.Tensor,
-        box_mask: torch.Tensor,
+        box_features: List[torch.Tensor],
+        box_coordinates: List[torch.Tensor],
+        box_mask: List[torch.Tensor],
         hypothesis: TextFieldTensors,
         labels: Optional[torch.Tensor] = None,
     ) -> Dict[str, torch.Tensor]:
@@ -87,16 +93,22 @@ class VisualEntailmentModel(VisionTextModel):
         # 3. Feed into an MLP (multi-layer perceptron)
         # 4. Softmax to get logits
         # 5. Done?
-        backbone_outputs1 = self.backbone(box_features, box_coordinates, box_mask, text)
+
+        # Size: (batch_size, pooled_output_dim)
+        pooled_outputs1 = self.backbone(box_features[0], box_coordinates[0], box_mask[0], text)["pooled_boxes_and_text"]
+        pooled_outputs2 = self.backbone(box_features[1], box_coordinates[1], box_mask[1], text)["pooled_boxes_and_text"]
+
+        # TODO: concatenate these correctly
+        hidden = self.layer1(torch.cat((pooled_outputs1, pooled_outputs2), dim=-1))
+        
+        # Shape: (batch_size, num_labels)
+        logits = self.layer2(self.activation(hidden))
+
+        # # Shape: (batch_size, num_labels)
+        # logits = self.classifier(backbone_outputs["pooled_boxes_and_text"])
 
         # Shape: (batch_size, num_labels)
-        logits = self.classifier(backbone_outputs["pooled_boxes_and_text"])
-
-        # Shape: (batch_size, num_labels)
-        if self.is_multilabel:
-            probs = torch.sigmoid(logits)
-        else:
-            probs = torch.softmax(logits, dim=-1)
+        probs = torch.softmax(logits, dim=-1)
 
         outputs = {"logits": logits, "probs": probs}
         outputs = self._compute_loss_and_metrics(batch_size, outputs, labels, label_weights)
