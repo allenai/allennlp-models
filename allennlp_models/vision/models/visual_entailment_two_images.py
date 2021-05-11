@@ -109,6 +109,7 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         reshaped_box_mask = torch.reshape(box_mask, (num_images, batch_size, num_boxes))
 
         print(self.pooled_output_dim)
+        print(self.activation)
         print(reshaped_box_features[0].shape)
         print(reshaped_box_coordinates[0].shape)
         print(reshaped_box_mask[0].shape)
