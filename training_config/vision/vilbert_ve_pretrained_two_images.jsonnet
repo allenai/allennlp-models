@@ -23,6 +23,7 @@ local num_epochs = 20;
       }
     },
     "image_processing_batch_size": 16,
+    "max_instances": 1000
   },
   "train_data_path": "train",
   "validation_data_path": "dev",
