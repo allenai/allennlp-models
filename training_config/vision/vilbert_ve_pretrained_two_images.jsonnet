@@ -30,8 +30,8 @@ local num_instances = 86036;
     "max_instances": 5 * gpu_batch_size
   },
   "train_data_path": "train",
-  "validation_data_path": "dev",
-  "test_data_path": "test",
+  // "validation_data_path": "dev",
+  // "test_data_path": "test",
   "evaluate_on_test": true,
   "model": {
     "type": "ve2_vilbert_from_huggingface",
