@@ -29,10 +29,6 @@ def extract_image_features(image: Union[str, Tuple[Tensor, Tensor]], use_cache: 
     else:
         features, coords = image
 
-    # print(features.shape)
-    # logger.info("features shape:")
-    # logger.info(features.shape)
-
     return (
         ArrayField(features),
         ArrayField(coords),
@@ -206,13 +202,7 @@ class Nlvr2Reader(VisionReader):
         use_cache: bool = True,
     ) -> Instance:
         hypothesis_field = TextField(self._tokenizer.tokenize(hypothesis), None)
-        # print(image1)
-        # logger.info("image1:")
-        # logger.info(image1[0].shape)
         box_features1, box_coordinates1, box_mask1 = extract_image_features(image1, False) # use_cache)
-        # print(image2)
-        # logger.info("image2:")
-        # logger.info(image2[0].shape)
         box_features2, box_coordinates2, box_mask2 = extract_image_features(image2, False) # use_cache)
 
         fields = {
@@ -225,7 +215,7 @@ class Nlvr2Reader(VisionReader):
 
         if label is not None:
             fields["label"] = LabelField(int(label), skip_indexing=True)
-            logger.info(int(label))
+
         return Instance(fields)
 
     @overrides
