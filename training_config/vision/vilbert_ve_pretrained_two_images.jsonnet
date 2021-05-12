@@ -1,5 +1,5 @@
 local model_name = "bert-large-uncased";
-local num_gpus = 4;
+local num_gpus = 1;
 local effective_batch_size = 64;
 local gpu_batch_size = effective_batch_size / num_gpus;
 local num_epochs = 20;
@@ -69,7 +69,7 @@ local patience = 5;
       // "num_steps_per_epoch": std.ceil(529527 / $["data_loader"]["batch_size"] / $["trainer"]["num_gradient_accumulation_steps"]),
       
       # TODO: fix this, make it 10% of all steps
-      // "warmup_steps": std.ceil(self.num_steps_per_epoch / 2),
+      // "warmup_steps": std.ceil(86036 * num_epochs),
       "warmup_steps": 5000
     },
     "validation_metric": "+accuracy",
