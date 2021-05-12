@@ -76,6 +76,6 @@ local num_instances = 86036;
     "num_gradient_accumulation_steps": num_gradient_accumulation_steps,
     "validation_metric": "+accuracy",
     "num_epochs": num_epochs,
-    "patience": patience
+    // "patience": patience
   },
 }
