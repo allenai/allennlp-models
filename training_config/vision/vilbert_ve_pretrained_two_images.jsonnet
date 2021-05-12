@@ -3,6 +3,7 @@ local num_gpus = 1;
 local effective_batch_size = 64;
 local gpu_batch_size = effective_batch_size / num_gpus;
 local num_epochs = 20;
+local patience = 5;
 
 {
   "dataset_reader": {
@@ -23,7 +24,7 @@ local num_epochs = 20;
       }
     },
     "image_processing_batch_size": 16,
-    "max_instances": 100
+    // "max_instances": 1000
   },
   "train_data_path": "train",
   "validation_data_path": "dev",
@@ -72,6 +73,7 @@ local num_epochs = 20;
     },
     "validation_metric": "+accuracy",
     "num_epochs": num_epochs,
+    "patience": patience,
     "num_gradient_accumulation_steps": effective_batch_size / gpu_batch_size / std.max(1, num_gpus)
   },
 }
