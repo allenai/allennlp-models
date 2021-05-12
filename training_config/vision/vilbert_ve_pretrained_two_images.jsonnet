@@ -1,5 +1,5 @@
 local model_name = "bert-large-uncased";
-local num_gpus = 1;
+local num_gpus = 4;
 local effective_batch_size = 64;
 local gpu_batch_size = effective_batch_size / num_gpus;
 local num_epochs = 20;
