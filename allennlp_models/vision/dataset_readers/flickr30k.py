@@ -14,6 +14,7 @@ from overrides import overrides
 import torch
 from torch import Tensor
 import faiss
+import transformers
 
 from allennlp.common.file_utils import cached_path
 from allennlp.common.lazy import Lazy
@@ -31,6 +32,14 @@ from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
 # TODO: implement this, filter based on that one paper (use vocab)
 def filter_caption(caption):
     return caption
+
+
+def get_image_features(image):
+    if isinstance(image, str):
+        features, coords = next(self._process_image_paths([image], use_cache=use_cache))
+    else:
+        features, coords = image
+    return features, coords
 
 
 # Borrowed
@@ -124,6 +133,10 @@ class Flickr30kReader(VisionReader):
         )
         self.data_dir = data_dir
 
+        # TODO: do I need the model itself or just the tokenizer?
+        self.model = transformers.AutoModel.from_pretrained("bert-large-uncased")
+        self.tokenizer = transformers.AutoTokenizer.from_pretrained("bert-large-uncased")
+
         # read answer vocab
         if answer_vocab is None:
             self.answer_vocab = None
@@ -207,7 +220,7 @@ class Flickr30kReader(VisionReader):
 
         for caption_dict, processed_image in zip(caption_dicts, processed_images):
             for caption in caption_dict["captions"]:
-                instance = self.text_to_instance(caption, processed_image)
+                instance = self.text_to_instance(caption, processed_image, processed_images)
                 if instance is not None:
                     yield instance
 
@@ -217,6 +230,7 @@ class Flickr30kReader(VisionReader):
         self,  # type: ignore
         caption: str,
         image: Optional[Union[str, Tuple[Tensor, Tensor]]],
+        other_images: List[Optional[Union[str, Tuple[Tensor, Tensor]]]],
         # images: Optional[List[Union[str, Tuple[Tensor, Tensor]]]],
         # label: Optional[int] = None,
         *,
@@ -231,21 +245,40 @@ class Flickr30kReader(VisionReader):
         if image is None:
             return None
 
-        if image is not None:
-            if isinstance(image, str):
-                features, coords = next(self._process_image_paths([image], use_cache=use_cache))
-            else:
-                features, coords = image
+        features, coords = get_image_features(image)
 
-            fields["box_features"] = ArrayField(features)
-            fields["box_coordinates"] = ArrayField(coords)
-            fields["box_mask"] = ArrayField(
-                features.new_ones((features.shape[0],), dtype=torch.bool),
-                padding_value=False,
-                dtype=torch.bool,
-            )
+        hard_negatives = self.get_hard_negatives(caption, features, other_images)
+
+        fields["box_features"] = ArrayField(features)
+        fields["box_coordinates"] = ArrayField(coords)
+        fields["box_mask"] = ArrayField(
+            features.new_ones((features.shape[0],), dtype=torch.bool),
+            padding_value=False,
+            dtype=torch.bool,
+        )
 
         return Instance(fields)
+
+    def get_hard_negatives(
+        self,
+        caption: str,
+        image_features: Tuple[Tensor, Tensor],
+        other_images: List[Optional[Union[str, Tuple[Tensor, Tensor]]]],
+    ) -> List[Tuple[Tensor, Tensor]]:
+        batch = self.tokenizer.encode_plus(caption, return_tensors="pt")
+        # Shape: (1, 1024)? # TODO: should I squeeze this?
+        caption_encoding = self.model(**batch).pooler_output
+        
+        hard_negatives = []
+        for image in other_images:
+            features, _ = get_image_features(image)
+            if features != image_features:
+                # do some calcs
+                pass
+
+
+
+        return hard_negatives
 
     # todo: fix
     @overrides

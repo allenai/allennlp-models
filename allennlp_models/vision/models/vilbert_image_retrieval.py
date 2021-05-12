@@ -148,7 +148,8 @@ class ImageRetrievalVilbert(VisionTextModel):
         logits = self.classifier(
             # Output shape: (batch_size, batch_size, pooled_output_dim)
             # Input shape: (1, batch_size, pooled_output_dim), and (batch_size, 1, pooled_output_dim)
-            text_embeddings.unsqueeze(0) * image_embeddings.unsqueeze(1)
+            text_embeddings.unsqueeze(0)
+            * image_embeddings.unsqueeze(1)
         ).squeeze(-1)
         probs = torch.softmax(logits, dim=1)
         # probs = torch.sigmoid(logits)
