@@ -106,11 +106,6 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         )
         reshaped_box_mask = torch.reshape(box_mask, (num_images, batch_size, num_boxes))
 
-        print(self.pooled_output_dim)
-        print(reshaped_box_features[0].shape)
-        print(reshaped_box_coordinates[0].shape)
-        print(reshaped_box_mask[0].shape)
-
         pooled_outputs1 = self.backbone(
             reshaped_box_features[0], reshaped_box_coordinates[0], reshaped_box_mask[0], hypothesis
         )["pooled_boxes_and_text"]
@@ -131,15 +126,6 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         probs = torch.softmax(logits, dim=-1)
 
         outputs = {"logits": logits, "probs": probs}
-        # print("label stuff")
-        # logger.info("label stuff")
-        # print(self.num_labels)
-        # logger.info(self.num_labels)
-        # print(label.shape)
-        # logger.info(label.shape)
-        # print(batch_size)
-        # print(outputs)
-        # print(label)
         outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
 
         return outputs
