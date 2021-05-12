@@ -72,7 +72,8 @@ local num_instances = 86036;
       # TODO: fix this, make it 10% of all steps
       // "warmup_steps": std.ceil(86036 * num_epochs),
       // "num_steps_per_epoch": std.ceil(529527 / $["data_loader"]["batch_size"] / $["trainer"]["num_gradient_accumulation_steps"]),
-      "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size)
+      // "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size)
+      "warmup_steps": 5000
     },
     "num_gradient_accumulation_steps": num_gradient_accumulation_steps,
     "validation_metric": "+accuracy",
