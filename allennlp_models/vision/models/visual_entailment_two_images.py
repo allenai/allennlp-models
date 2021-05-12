@@ -67,12 +67,10 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
             is_multilabel=False,
         )
 
-        self.num_labels = vocab.get_vocab_size(label_namespace)
-
         self.pooled_output_dim = pooled_output_dim
         self.layer1 = torch.nn.Linear(pooled_output_dim * 2, pooled_output_dim)
         self.activation = torch.nn.ReLU()  # TODO: test different ones
-        self.layer2 = torch.nn.Linear(pooled_output_dim, self.num_labels)
+        self.layer2 = torch.nn.Linear(pooled_output_dim, 2) # TODO: 1 or 2 outputs?
 
         self.accuracy = CategoricalAccuracy()
         self.fbeta = FBetaMeasure(beta=1.0, average="macro")
