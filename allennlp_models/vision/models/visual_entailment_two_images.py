@@ -131,15 +131,15 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         probs = torch.softmax(logits, dim=-1)
 
         outputs = {"logits": logits, "probs": probs}
-        print("label stuff")
-        logger.info("label stuff")
-        print(self.num_labels)
-        logger.info(self.num_labels)
-        print(label.shape)
-        logger.info(label.shape)
-        print(batch_size)
-        print(outputs)
-        print(label)
+        # print("label stuff")
+        # logger.info("label stuff")
+        # print(self.num_labels)
+        # logger.info(self.num_labels)
+        # print(label.shape)
+        # logger.info(label.shape)
+        # print(batch_size)
+        # print(outputs)
+        # print(label)
         outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
 
         return outputs
