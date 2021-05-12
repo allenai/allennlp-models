@@ -186,7 +186,7 @@ class Nlvr2Reader(VisionReader):
         for json_blob, image1, image2 in zip(blob_dicts, processed_images1, processed_images2):
             identifier = json_blob["identifier"]
             hypothesis = json_blob["sentence"]
-            label = json_blob["label"] == 'True'
+            label = json_blob["label"] == "True"
             instance = self.text_to_instance(identifier, hypothesis, image1, image2, label)
             if instance is not None:
                 yield instance
@@ -202,14 +202,21 @@ class Nlvr2Reader(VisionReader):
         use_cache: bool = True,
     ) -> Instance:
         hypothesis_field = TextField(self._tokenizer.tokenize(hypothesis), None)
-        box_features1, box_coordinates1, box_mask1 = extract_image_features(image1, False) # use_cache)
-        box_features2, box_coordinates2, box_mask2 = extract_image_features(image2, False) # use_cache)
+        box_features1, box_coordinates1, box_mask1 = extract_image_features(
+            image1, False
+        )  # use_cache)
+        box_features2, box_coordinates2, box_mask2 = extract_image_features(
+            image2, False
+        )  # use_cache)
 
         fields = {
             "hypothesis": hypothesis_field,
-            "box_features": ListField([box_features1, box_features2]),
-            "box_coordinates": ListField([box_coordinates1, box_coordinates2]),
-            "box_mask": ListField([box_mask1, box_mask2]),
+            "box_features1": box_features1,
+            "box_coordinates1": box_coordinates1,
+            "box_mask1": box_mask1,
+            "box_features2": box_features2,
+            "box_coordinates2": box_coordinates2,
+            "box_mask2": box_mask2,
             "identifier": MetadataField(identifier),
         }
 

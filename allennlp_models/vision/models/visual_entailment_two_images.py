@@ -79,9 +79,12 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
     @overrides
     def forward(
         self,  # type: ignore
-        box_features: torch.Tensor,
-        box_coordinates: torch.Tensor,
-        box_mask: torch.Tensor,
+        box_features1: torch.Tensor,
+        box_coordinates1: torch.Tensor,
+        box_mask1: torch.Tensor,
+        box_features2: torch.Tensor,
+        box_coordinates2: torch.Tensor,
+        box_mask2: torch.Tensor,
         hypothesis: TextFieldTensors,
         label: Optional[torch.Tensor] = None,
         identifier: List[Dict[str, Any]] = None,
@@ -96,23 +99,30 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         # 5. Done?
 
         # Size: (batch_size, pooled_output_dim)
-        batch_size, num_images, num_boxes, num_features = box_features.shape
-        _, _, _, num_coordinates = box_coordinates.shape
+        # batch_size, num_images, num_boxes, num_features = box_features.shape
+        # _, _, _, num_coordinates = box_coordinates.shape
 
-        reshaped_box_features = torch.reshape(
-            box_features, (num_images, batch_size, num_boxes, num_features)
-        )
-        reshaped_box_coordinates = torch.reshape(
-            box_coordinates, (num_images, batch_size, num_boxes, num_coordinates)
-        )
-        reshaped_box_mask = torch.reshape(box_mask, (num_images, batch_size, num_boxes))
+        # reshaped_box_features = torch.reshape(
+        #     box_features, (num_images, batch_size, num_boxes, num_features)
+        # )
+        # reshaped_box_coordinates = torch.reshape(
+        #     box_coordinates, (num_images, batch_size, num_boxes, num_coordinates)
+        # )
+        # reshaped_box_mask = torch.reshape(box_mask, (num_images, batch_size, num_boxes))
 
-        pooled_outputs1 = self.backbone(
-            reshaped_box_features[0], reshaped_box_coordinates[0], reshaped_box_mask[0], hypothesis
-        )["pooled_boxes_and_text"]
-        pooled_outputs2 = self.backbone(
-            reshaped_box_features[1], reshaped_box_coordinates[1], reshaped_box_mask[1], hypothesis
-        )["pooled_boxes_and_text"]
+        # pooled_outputs1 = self.backbone(
+        #     reshaped_box_features[0], reshaped_box_coordinates[0], reshaped_box_mask[0], hypothesis
+        # )["pooled_boxes_and_text"]
+        # pooled_outputs2 = self.backbone(
+        #     reshaped_box_features[1], reshaped_box_coordinates[1], reshaped_box_mask[1], hypothesis
+        # )["pooled_boxes_and_text"]
+
+        pooled_outputs1 = self.backbone(box_features1, box_coordinates1, box_mask1, hypothesis)[
+            "pooled_boxes_and_text"
+        ]
+        pooled_outputs2 = self.backbone(box_features2, box_coordinates2, box_mask2, hypothesis)[
+            "pooled_boxes_and_text"
+        ]
 
         # TODO: concatenate these correctly
         # hidden = self.layer1(torch.cat((pooled_outputs1, pooled_outputs2), dim=-1))
