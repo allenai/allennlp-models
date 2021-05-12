@@ -99,7 +99,7 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         # 5. Done?
 
         # Size: (batch_size, pooled_output_dim)
-        # batch_size, num_images, num_boxes, num_features = box_features.shape
+        batch_size, _, _ = box_features1.shape
         # _, _, _, num_coordinates = box_coordinates.shape
 
         # reshaped_box_features = torch.reshape(
