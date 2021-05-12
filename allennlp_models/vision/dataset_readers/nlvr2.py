@@ -225,7 +225,7 @@ class Nlvr2Reader(VisionReader):
 
         if label is not None:
             fields["label"] = LabelField(int(label), skip_indexing=True)
-
+            logger.info(int(label))
         return Instance(fields)
 
     @overrides
