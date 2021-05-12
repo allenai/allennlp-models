@@ -139,6 +139,9 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         logger.info(self.num_labels)
         print(label.shape)
         logger.info(label.shape)
+        print(batch_size)
+        print(outputs)
+        print(label)
         outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
 
         return outputs
