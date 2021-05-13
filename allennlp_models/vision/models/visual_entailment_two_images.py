@@ -69,10 +69,10 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         )
 
         self.pooled_output_dim = pooled_output_dim
-        self.testLayer = self.layer1 = torch.nn.Linear(pooled_output_dim * 2, 2)
-        # self.layer1 = torch.nn.Linear(pooled_output_dim * 2, pooled_output_dim)
-        # self.activation = torch.nn.ReLU()  # TODO: test different ones
-        # self.layer2 = torch.nn.Linear(pooled_output_dim, 2) # TODO: 1 or 2 outputs?
+        # self.testLayer = self.layer1 = torch.nn.Linear(pooled_output_dim * 2, 2)
+        self.layer1 = torch.nn.Linear(pooled_output_dim * 2, pooled_output_dim)
+        self.activation = torch.nn.ReLU()  # TODO: test different ones
+        self.layer2 = torch.nn.Linear(pooled_output_dim, 2) # TODO: 1 or 2 outputs?
 
         self.accuracy = CategoricalAccuracy()
         self.fbeta = FBetaMeasure(beta=1.0, average="macro")
@@ -126,11 +126,11 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         ]
 
         # TODO: concatenate these correctly
-        # hidden = self.layer1(torch.cat((pooled_outputs1, pooled_outputs2), dim=-1))
+        hidden = self.layer1(torch.cat((pooled_outputs1, pooled_outputs2), dim=-1))
 
         # # Shape: (batch_size, num_labels)
-        # logits = self.layer2(self.activation(hidden))
-        logits = self.testLayer(torch.cat((pooled_outputs1, pooled_outputs2), dim=-1))
+        logits = self.layer2(self.activation(hidden))
+        # logits = self.testLayer(torch.cat((pooled_outputs1, pooled_outputs2), dim=-1))
 
         # Shape: (batch_size, num_labels)
         probs = torch.softmax(logits, dim=-1)
