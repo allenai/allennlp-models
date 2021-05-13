@@ -65,9 +65,14 @@ local num_instances = 86036;
   },
   "trainer": {
     "optimizer": {
-        "type": "huggingface_adamw",
-        "lr": 2e-5,
-        "weight_decay": 0.01
+      "type": "huggingface_adamw",
+      "lr": 2e-5,
+      "weight_decay": 0.01,
+      "parameter_groups": [
+        // [["bias", "LayerNorm\\.weight", "layer_norm\\.weight"], {"weight_decay": 0}], // can't use both at the same time
+        // smaller learning rate for the pretrained weights
+        [["^embeddings\\.", "^encoder.layers1\\.", "^t_pooler\\."], {"lr": 2e-6}]
+      ],
     },
     "learning_rate_scheduler": {
       "type": "linear_with_warmup",
@@ -75,12 +80,7 @@ local num_instances = 86036;
       // "warmup_steps": std.ceil(86036 * num_epochs),
       // "num_steps_per_epoch": std.ceil(529527 / $["data_loader"]["batch_size"] / $["trainer"]["num_gradient_accumulation_steps"]),
       // "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size)
-      "warmup_steps": 5000,
-      "parameter_groups": [
-        // [["bias", "LayerNorm\\.weight", "layer_norm\\.weight"], {"weight_decay": 0}], // can't use both at the same time
-        // smaller learning rate for the pretrained weights
-        [["^embeddings\\.", "^encoder.layers1\\.", "^t_pooler\\."], {"lr": 2e-6}]
-      ],
+      "warmup_steps": 5000
     },
     "num_gradient_accumulation_steps": num_gradient_accumulation_steps,
     "validation_metric": "+accuracy",
