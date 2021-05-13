@@ -2,7 +2,7 @@ local model_name = "bert-large-uncased";
 local num_gpus = 1;
 local effective_batch_size = 64;
 local gpu_batch_size = effective_batch_size / num_gpus;
-local num_epochs = 200;
+local num_epochs = 100;
 local patience = 5;
 local num_gradient_accumulation_steps = effective_batch_size / gpu_batch_size / std.max(1, num_gpus);
 local num_instances = 86036;
@@ -75,7 +75,12 @@ local num_instances = 86036;
       // "warmup_steps": std.ceil(86036 * num_epochs),
       // "num_steps_per_epoch": std.ceil(529527 / $["data_loader"]["batch_size"] / $["trainer"]["num_gradient_accumulation_steps"]),
       // "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size)
-      "warmup_steps": 5000
+      "warmup_steps": 5000,
+      "parameter_groups": [
+        // [["bias", "LayerNorm\\.weight", "layer_norm\\.weight"], {"weight_decay": 0}], // can't use both at the same time
+        // smaller learning rate for the pretrained weights
+        [["^embeddings\\.", "^encoder.layers1\\.", "^t_pooler\\."], {"lr": 2e-6}]
+      ],
     },
     "num_gradient_accumulation_steps": num_gradient_accumulation_steps,
     "validation_metric": "+accuracy",
