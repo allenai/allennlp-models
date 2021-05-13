@@ -71,7 +71,7 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         # self.testLayer = self.layer1 = torch.nn.Linear(pooled_output_dim * 2, 2)
         self.layer1 = torch.nn.Linear(pooled_output_dim * 2, pooled_output_dim)
         self.activation = torch.nn.ReLU()  # TODO: test different ones
-        self.layer2 = torch.nn.Linear(pooled_output_dim, 2) # TODO: 1 or 2 outputs?
+        self.layer2 = torch.nn.Linear(pooled_output_dim, 2)  # TODO: 1 or 2 outputs?
 
         self.accuracy = CategoricalAccuracy()
         self.fbeta = FBetaMeasure(beta=1.0, average="macro")
