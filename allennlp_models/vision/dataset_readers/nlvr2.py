@@ -203,11 +203,9 @@ class Nlvr2Reader(VisionReader):
     ) -> Instance:
         hypothesis_field = TextField(self._tokenizer.tokenize(hypothesis), None)
         box_features1, box_coordinates1, box_mask1 = extract_image_features(
-            image1, False
-        )  # use_cache)
+            image1, use_cache)
         box_features2, box_coordinates2, box_mask2 = extract_image_features(
-            image2, False
-        )  # use_cache)
+            image2, use_cache)
 
         fields = {
             "hypothesis": hypothesis_field,

@@ -27,11 +27,11 @@ local num_instances = 86036;
     },
     "image_processing_batch_size": 16,
     // "max_instances": 1000
-    "max_instances": 5 * gpu_batch_size
+    // "max_instances": 5 * gpu_batch_size
   },
   "train_data_path": "train",
-  // "validation_data_path": "dev",
-  // "test_data_path": "test",
+  "validation_data_path": "dev",
+  "test_data_path": "test",
   "evaluate_on_test": true,
   "model": {
     "type": "ve2_vilbert_from_huggingface",
@@ -44,10 +44,8 @@ local num_instances = 86036;
     "combined_num_attention_heads": 8,
     "pooled_output_dim": 1024,
     "image_intermediate_size": 1024,
-    // "image_attention_dropout": 0.1,
-    // "image_hidden_dropout": 0.1,
-    "image_attention_dropout": 0.0,
-    "image_hidden_dropout": 0.0,
+    "image_attention_dropout": 0.1,
+    "image_hidden_dropout": 0.1,
     "image_biattention_id": [0, 1, 2, 3, 4, 5],
     "text_biattention_id": [6, 7, 8, 9, 10, 11],
     "text_fixed_layer": 0,
@@ -68,23 +66,18 @@ local num_instances = 86036;
       "type": "huggingface_adamw",
       "lr": 2e-5,
       "weight_decay": 0.01,
-      "parameter_groups": [
-        // [["bias", "LayerNorm\\.weight", "layer_norm\\.weight"], {"weight_decay": 0}], // can't use both at the same time
-        // smaller learning rate for the pretrained weights
-        [["^embeddings\\.", "^encoder.layers1\\.", "^t_pooler\\."], {"lr": 2e-6}]
-      ],
     },
     "learning_rate_scheduler": {
       "type": "linear_with_warmup",
       # TODO: fix this, make it 10% of all steps
       // "warmup_steps": std.ceil(86036 * num_epochs),
       // "num_steps_per_epoch": std.ceil(529527 / $["data_loader"]["batch_size"] / $["trainer"]["num_gradient_accumulation_steps"]),
-      // "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size)
-      "warmup_steps": 5000
+      "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size)
+      // "warmup_steps": 5000
     },
     "num_gradient_accumulation_steps": num_gradient_accumulation_steps,
     "validation_metric": "+accuracy",
     "num_epochs": num_epochs,
-    // "patience": patience
+    "patience": patience
   },
 }
