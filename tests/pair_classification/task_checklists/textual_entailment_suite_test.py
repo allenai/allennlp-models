@@ -1,5 +1,5 @@
 import pytest
-from allennlp.sanity_checks.task_checklists.textual_entailment_suite import TextualEntailmentSuite
+from allennlp.confidence_checks.task_checklists.textual_entailment_suite import TextualEntailmentSuite
 from allennlp.common.testing import AllenNlpTestCase
 from allennlp.models.archival import load_archive
 from allennlp.predictors import Predictor
