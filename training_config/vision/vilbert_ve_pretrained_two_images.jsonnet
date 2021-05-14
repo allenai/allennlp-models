@@ -2,7 +2,7 @@ local model_name = "bert-large-uncased";
 local num_gpus = 1;
 local effective_batch_size = 64;
 local gpu_batch_size = effective_batch_size / num_gpus;
-local num_epochs = 100;
+local num_epochs = 10;
 local patience = 5;
 local num_gradient_accumulation_steps = effective_batch_size / gpu_batch_size / std.max(1, num_gpus);
 local num_instances = 86036;
@@ -27,7 +27,6 @@ local num_instances = 86036;
     },
     "image_processing_batch_size": 16,
     // "max_instances": 1000
-    // "max_instances": 5 * gpu_batch_size
   },
   "train_data_path": "train",
   "validation_data_path": "dev",
@@ -55,7 +54,6 @@ local num_instances = 86036;
   "data_loader": {
     "batch_size": gpu_batch_size,
     "shuffle": true,
-    // "max_instances_in_memory": 1024
   },
   [if num_gpus > 1 then "distributed"]: {
     "cuda_devices": std.range(0, num_gpus - 1)
@@ -69,15 +67,12 @@ local num_instances = 86036;
     },
     "learning_rate_scheduler": {
       "type": "linear_with_warmup",
-      # TODO: fix this, make it 10% of all steps
-      // "warmup_steps": std.ceil(86036 * num_epochs),
-      // "num_steps_per_epoch": std.ceil(529527 / $["data_loader"]["batch_size"] / $["trainer"]["num_gradient_accumulation_steps"]),
       "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size)
       // "warmup_steps": 5000
     },
     "num_gradient_accumulation_steps": num_gradient_accumulation_steps,
     "validation_metric": "+accuracy",
     "num_epochs": num_epochs,
-    // "patience": patience
+    "patience": patience
   },
 }

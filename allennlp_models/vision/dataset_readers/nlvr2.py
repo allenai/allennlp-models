@@ -183,13 +183,16 @@ class Nlvr2Reader(VisionReader):
             processed_images1 = [None for _ in range(len(blob_dicts))]
             processed_images2 = [None for _ in range(len(blob_dicts))]
 
+        attempted_instances = 0
         for json_blob, image1, image2 in zip(blob_dicts, processed_images1, processed_images2):
             identifier = json_blob["identifier"]
             hypothesis = json_blob["sentence"]
             label = json_blob["label"] == "True"
             instance = self.text_to_instance(identifier, hypothesis, image1, image2, label)
             if instance is not None:
+                attempted_instances += 1
                 yield instance
+        logger.info(f"Successfully yielded {attempted_instances} instances")
 
     @overrides
     def text_to_instance(
