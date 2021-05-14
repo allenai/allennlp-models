@@ -341,7 +341,8 @@ class Flickr30kReader(VisionReader):
 
         heap = []
         heapq.heapify(heap)
-        for image in other_images:
+        # TODO: see if we don't have to sample? the cache might not be working for hard negatives
+        for image in sample(other_images, min(len(other_images), 500)):
             # Calculate the 3 closest hard negatives:
             # 1. Calculate mean of all boxes
             # 2. Find the ~100 nearest neighbors of the input image
