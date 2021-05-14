@@ -223,9 +223,12 @@ class Flickr30kReader(VisionReader):
         else:
             processed_images = [None for _ in range(len(caption_dicts))]
 
+        hard_negatives_cache = {}
         for caption_dict, processed_image in zip(caption_dicts, processed_images):
             for caption in caption_dict["captions"]:
-                instance = self.text_to_instance(caption, processed_image, processed_images)
+                instance = self.text_to_instance(
+                    caption, processed_image, processed_images, hard_negatives_cache
+                )
                 if instance is not None:
                     yield instance
 
@@ -236,6 +239,7 @@ class Flickr30kReader(VisionReader):
         caption: str,
         image: Optional[Union[str, Tuple[Tensor, Tensor]]],
         other_images: List[Optional[Union[str, Tuple[Tensor, Tensor]]]],
+        hard_negatives_cache=Dict[Tensor, List[Tuple[Tensor, Tensor]]],
         # images: Optional[List[Union[str, Tuple[Tensor, Tensor]]]],
         # label: Optional[int] = None,
         *,
@@ -252,7 +256,9 @@ class Flickr30kReader(VisionReader):
 
         features, coords = get_image_features(image)
 
-        hard_negatives = self.get_hard_negatives(caption, features, other_images)
+        hard_negatives = self.get_hard_negatives(
+            caption, features, other_images, hard_negatives_cache
+        )
 
         # fields["box_features"] = ArrayField(features)
         # fields["box_coordinates"] = ArrayField(coords)
@@ -318,8 +324,11 @@ class Flickr30kReader(VisionReader):
         caption: str,
         image_features: Tensor,
         other_images: List[Optional[Union[str, Tuple[Tensor, Tensor]]]],
+        hard_negatives_cache=Dict[Tensor, List[Tuple[Tensor, Tensor]]],
     ) -> List[Tuple[Tensor, Tensor]]:
         image_embedding = torch.mean(image_features, dim=0)
+        if image_embedding in hard_negatives_cache:
+            return hard_negatives_cache[image_embedding]
         if self.is_test:
             caption_encoding = torch.randn((10))
         else:
@@ -352,7 +361,9 @@ class Flickr30kReader(VisionReader):
         for _, curr_image_features, curr_image_coords in heap:
             hard_negative_features.append((curr_image_features, curr_image_coords))
 
-        return hard_negative_features
+        hard_negatives_cache[image_embedding] = hard_negative_features
+
+        return hard_negatives_cache[image_embedding]
 
     # todo: fix
     @overrides

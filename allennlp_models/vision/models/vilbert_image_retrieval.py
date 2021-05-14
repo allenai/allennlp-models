@@ -150,10 +150,18 @@ class ImageRetrievalVilbert(VisionTextModel):
         logits = self.classifier(
             torch.stack(
                 [
-                    self.backbone(box_features[0], box_coordinates[0], box_mask[0], caption)["pooled_output"],
-                    self.backbone(box_features[1], box_coordinates[1], box_mask[1], caption)["pooled_output"],
-                    self.backbone(box_features[2], box_coordinates[2], box_mask[2], caption)["pooled_output"],
-                    self.backbone(box_features[3], box_coordinates[3], box_mask[3], caption)["pooled_output"],
+                    self.backbone(box_features[0], box_coordinates[0], box_mask[0], caption)[
+                        "pooled_output"
+                    ],
+                    self.backbone(box_features[1], box_coordinates[1], box_mask[1], caption)[
+                        "pooled_output"
+                    ],
+                    self.backbone(box_features[2], box_coordinates[2], box_mask[2], caption)[
+                        "pooled_output"
+                    ],
+                    self.backbone(box_features[3], box_coordinates[3], box_mask[3], caption)[
+                        "pooled_output"
+                    ],
                 ],
                 dim=1,
             )
