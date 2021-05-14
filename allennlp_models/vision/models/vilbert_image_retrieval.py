@@ -127,6 +127,9 @@ class ImageRetrievalVilbert(VisionTextModel):
         box_features: torch.Tensor,
         box_coordinates: torch.Tensor,
         box_mask: torch.Tensor,
+        hard_negative_features: torch.Tensor,
+        hard_negative_coordinates: torch.Tensor,
+        hard_negative_masks: torch.Tensor,
         caption: TextFieldTensors,
     ) -> Dict[str, torch.Tensor]:
 

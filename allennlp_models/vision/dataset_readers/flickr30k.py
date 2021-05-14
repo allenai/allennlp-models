@@ -6,9 +6,11 @@ from typing import (
     Set,
     Tuple,
     Iterable,
+    List,
 )
 import json
 import os
+import heapq
 
 from overrides import overrides
 import torch
@@ -117,6 +119,7 @@ class Flickr30kReader(VisionReader):
         max_instances: Optional[int] = None,
         image_processing_batch_size: int = 8,
         write_to_cache: bool = True,
+        is_test: bool = False,
     ) -> None:
         super().__init__(
             image_dir,
@@ -132,10 +135,12 @@ class Flickr30kReader(VisionReader):
             write_to_cache=write_to_cache,
         )
         self.data_dir = data_dir
+        self.is_test = is_test
 
-        # TODO: do I need the model itself or just the tokenizer?
-        self.model = transformers.AutoModel.from_pretrained("bert-large-uncased")
-        self.tokenizer = transformers.AutoTokenizer.from_pretrained("bert-large-uncased")
+        if not is_test:
+            # TODO: do I need the model itself or just the tokenizer?
+            self.model = transformers.AutoModel.from_pretrained("bert-large-uncased")
+            self.tokenizer = transformers.AutoTokenizer.from_pretrained("bert-large-uncased")
 
         # read answer vocab
         if answer_vocab is None:
@@ -200,9 +205,9 @@ class Flickr30kReader(VisionReader):
             # logger.info("Reading file at %s", self.images[filename])
             # logger.info("images size: %s", len(self.images))
             try:
-                processed_images = self._process_image_paths(
+                processed_images = list(self._process_image_paths(
                     self.images[filename] for filename in filenames
-                )
+                ))
             except KeyError as e:
                 # print(self.images)
                 missing_id = e.args[0]
@@ -257,28 +262,88 @@ class Flickr30kReader(VisionReader):
             dtype=torch.bool,
         )
 
+        fields["hard_negative_features"] = ListField(
+            [
+                ArrayField(hard_negatives[0][0]),
+                ArrayField(hard_negatives[1][0]),
+                ArrayField(hard_negatives[2][0]),
+            ]
+        )
+        fields["hard_negative_coordinates"] = ListField(
+            [
+                ArrayField(hard_negatives[0][1]),
+                ArrayField(hard_negatives[1][1]),
+                ArrayField(hard_negatives[2][1]),
+            ]
+        )
+        fields["hard_negative_masks"] = ListField(
+            [
+                ArrayField(
+                    hard_negatives[0][0].new_ones(
+                        (hard_negatives[0][0].shape[0],), dtype=torch.bool
+                    ),
+                    padding_value=False,
+                    dtype=torch.bool,
+                ),
+                ArrayField(
+                    hard_negatives[1][0].new_ones(
+                        (hard_negatives[1][0].shape[0],), dtype=torch.bool
+                    ),
+                    padding_value=False,
+                    dtype=torch.bool,
+                ),
+                ArrayField(
+                    hard_negatives[1][0].new_ones(
+                        (hard_negatives[1][0].shape[0],), dtype=torch.bool
+                    ),
+                    padding_value=False,
+                    dtype=torch.bool,
+                ),
+            ]
+        )
+
         return Instance(fields)
 
     def get_hard_negatives(
         self,
         caption: str,
-        image_features: Tuple[Tensor, Tensor],
+        image_features: Tensor,
         other_images: List[Optional[Union[str, Tuple[Tensor, Tensor]]]],
     ) -> List[Tuple[Tensor, Tensor]]:
-        batch = self.tokenizer.encode_plus(caption, return_tensors="pt")
-        # Shape: (1, 1024)? # TODO: should I squeeze this?
-        caption_encoding = self.model(**batch).pooler_output
-        
-        hard_negatives = []
+        image_embedding = torch.mean(image_features, dim=0)
+        if self.is_test:
+            caption_encoding = torch.randn((10))
+        else:
+            batch = self.tokenizer.encode_plus(caption, return_tensors="pt")
+            # Shape: (1, 1024)? # TODO: should I squeeze this?
+            caption_encoding = self.model(**batch).pooler_output.squeeze(0)
+        image_caption_embedding = caption_encoding * image_embedding
+
+        heap = []
+        heapq.heapify(heap)
         for image in other_images:
-            features, _ = get_image_features(image)
-            if features != image_features:
-                # do some calcs
-                pass
+            # Calculate the 3 closest hard negatives:
+            # 1. Calculate mean of all boxes
+            # 2. Find the ~100 nearest neighbors of the input image
+            curr_image_features, curr_image_coords = get_image_features(image)
+            averaged_features = torch.mean(curr_image_features, dim=0)
+            if not torch.equal(averaged_features, image_embedding):
+                # Find 3 nearest neighbors
+                neg_dist = (
+                    -1
+                    * torch.dist(
+                        image_caption_embedding, averaged_features * caption_encoding
+                    ).item()
+                )
+                heapq.heappush(heap, (neg_dist, curr_image_features, curr_image_coords))
+                if len(heap) > 3:
+                    heapq.heappop(heap)
 
+        hard_negative_features = []
+        for _, curr_image_features, curr_image_coords in heap:
+            hard_negative_features.append((curr_image_features, curr_image_coords))
 
-
-        return hard_negatives
+        return hard_negative_features
 
     # todo: fix
     @overrides

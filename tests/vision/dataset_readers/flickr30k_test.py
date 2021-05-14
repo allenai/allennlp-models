@@ -23,14 +23,15 @@ class TestFlickr30kReader(AllenNlpTestCase):
             region_detector=Lazy(RandomRegionDetector),
             tokenizer=WhitespaceTokenizer(),
             token_indexers={"tokens": SingleIdTokenIndexer()},
+            is_test=True,
         )
 
     def test_read(self):
         instances = list(self.reader.read("test_fixtures/vision/flickr30k/test.txt"))
-        assert len(instances) == 10
+        assert len(instances) == 25
 
         instance = instances[5]
-        assert len(instance.fields) == 4
+        assert len(instance.fields) == 7
         assert len(instance["caption"]) == 16
         question_tokens = [t.text for t in instance["caption"]]
         assert question_tokens == [
@@ -57,10 +58,13 @@ class TestFlickr30kReader(AllenNlpTestCase):
         tensors = batch.as_tensor_dict()
 
         # (batch size, num boxes (fake), num features (fake))
-        assert tensors["box_features"].size() == (10, 2, 10)
+        assert tensors["box_features"].size() == (25, 2, 10)
 
         # (batch size, num boxes (fake), 4 coords)
-        assert tensors["box_coordinates"].size() == (10, 2, 4)
+        assert tensors["box_coordinates"].size() == (25, 2, 4)
 
         # (batch size, num boxes (fake),)
-        assert tensors["box_mask"].size() == (10, 2)
+        assert tensors["box_mask"].size() == (25, 2)
+
+        # (batch size, num_hard_negatives, num boxes (fake), num features (fake))
+        assert tensors["hard_negative_features"].size() == (25, 3, 2, 10)
