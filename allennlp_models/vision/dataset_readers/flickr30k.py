@@ -306,8 +306,8 @@ class Flickr30kReader(VisionReader):
                     dtype=torch.bool,
                 ),
                 ArrayField(
-                    hard_negatives[1][0].new_ones(
-                        (hard_negatives[1][0].shape[0],), dtype=torch.bool
+                    hard_negatives[2][0].new_ones(
+                        (hard_negatives[2][0].shape[0],), dtype=torch.bool
                     ),
                     padding_value=False,
                     dtype=torch.bool,
