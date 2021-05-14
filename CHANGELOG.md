@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- Updated all instances of `sanity_checks` to `confidence_checks`.
+
 ### Added
 
 - Added tests for checklist suites for SQuAD-style reading comprehension models (`bidaf`), and textual entailment models (`decomposable_attention` and `esim`).
