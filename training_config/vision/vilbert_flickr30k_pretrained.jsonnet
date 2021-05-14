@@ -1,11 +1,13 @@
 local model_name = "bert-base-uncased";
 local vocab_size = 30522;     // for bert-*-uncased models
 //local vocab_size = 28996;   // for bert-*-cased models
-local effective_batch_size = 32;
 local num_gpus = 1;
-local gpu_batch_size = effective_batch_size / num_gpus;
+local gpu_batch_size = 32;
+local effective_batch_size = gpu_batch_size * num_gpus;
 local num_epochs = 20;
 local patience = 5;
+local num_instances = 158915;
+local num_gradient_accumulation_steps = 1;
 
 local construct_vocab = false;
 local dataset = "data";
@@ -44,7 +46,7 @@ local dataset = "data";
       }
     },
     // TODO: comment this out
-    "max_instances": 128,
+    // "max_instances": 128,
     "image_processing_batch_size": 16,
     // "answer_vocab": if construct_vocab then null else vocabulary,
     // "multiple_answers_per_question": !construct_vocab,
@@ -120,19 +122,11 @@ local dataset = "data";
   "data_loader": {
     "batch_size": gpu_batch_size,
     "shuffle": true,
-    // "max_instances_in_memory": gpu_batch_size * 100,
-    // "start_method": "spawn",   # "fork"
-    // "num_workers": 1,
-
-
-    //[if !construct_vocab then "max_instances_in_memory"]: 10240
   },
   [if num_gpus > 1 then "distributed"]: {
     "cuda_devices": std.range(0, num_gpus - 1)
     #"cuda_devices": std.repeat([-1], num_gpus)  # Use this for debugging on CPU
   },
-  // Don't train if we're just constructing vocab. The results would be confusing.
-  // [if !construct_vocab then "trainer"]: {
   "trainer": {
     // "callbacks": [
     //     {
@@ -157,14 +151,13 @@ local dataset = "data";
     },
     "learning_rate_scheduler": {
       "type": "linear_with_warmup",
-      // Use this, but calculate the right # of instances
-      // "warmup_steps" : std.ceil(0.1 * 1062451 * num_epochs / effective_batch_size)
-      "warmup_steps": 5000
+      "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size)
+      // "warmup_steps": 5000
     },
     "validation_metric": "+accuracy",
     "patience": patience,
     "num_epochs": num_epochs,
-    "num_gradient_accumulation_steps": effective_batch_size / gpu_batch_size / std.max(1, num_gpus),
+    "num_gradient_accumulation_steps": num_gradient_accumulation_steps,
   },
   "random_seed": 13034431,
   "numpy_seed": 13034431,
