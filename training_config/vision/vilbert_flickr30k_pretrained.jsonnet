@@ -46,7 +46,7 @@ local dataset = "data";
       }
     },
     // TODO: comment this out
-    "max_instances": 128,
+    // "max_instances": 128,
     "image_processing_batch_size": 16,
     // "answer_vocab": if construct_vocab then null else vocabulary,
     // "multiple_answers_per_question": !construct_vocab,
