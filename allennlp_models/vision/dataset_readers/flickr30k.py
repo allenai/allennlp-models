@@ -17,6 +17,7 @@ import torch
 from torch import Tensor
 import faiss
 import transformers
+from random import sample
 
 from allennlp.common.file_utils import cached_path
 from allennlp.common.lazy import Lazy
@@ -229,6 +230,7 @@ class Flickr30kReader(VisionReader):
                 instance = self.text_to_instance(
                     caption, processed_image, processed_images, hard_negatives_cache
                 )
+                print(len(hard_negatives_cache))
                 if instance is not None:
                     yield instance
 
