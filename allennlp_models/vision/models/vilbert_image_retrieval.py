@@ -190,7 +190,7 @@ class ImageRetrievalVilbert(VisionTextModel):
         # TODO: OLD
 
         outputs = {"logits": logits, "probs": probs}
-        outputs = self._compute_loss_and_metrics(batch_size, outputs)
+        outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
 
         return outputs
 
@@ -199,8 +199,8 @@ class ImageRetrievalVilbert(VisionTextModel):
     def _compute_loss_and_metrics(
         self,
         batch_size: int,
-        labels: torch.Tensor,
         outputs: torch.Tensor,
+        labels: torch.Tensor,
     ):
         # TODO: make sure this is right
         # idea: the correct image for a caption i is image_i
