@@ -137,11 +137,24 @@ class ImageRetrievalVilbert(VisionTextModel):
         batch_size, num_images, num_boxes, num_features = box_features.shape
 
         # Reshape inputs to feed into VilBERT
+        # print(shapes)
+        # print(box_features.shape)
+        # box_features = torch.reshape(
+        #     box_features, (num_images, batch_size, num_boxes, num_features)
+        # )
         box_features = torch.reshape(
-            box_features, (num_images, batch_size, num_boxes, num_features)
+            box_features, (box_features.shape[1], box_features.shape[0], box_features.shape[2], box_features.shape[3])
         )
-        box_coordinates = torch.reshape(box_coordinates, (num_images, batch_size, num_boxes, 4))
-        box_mask = torch.reshape(box_mask, (num_images, batch_size, num_boxes))
+        # print(box_coordinates.shape)
+        # box_coordinates = torch.reshape(
+        #     box_coordinates, (num_images_coords, batch_size_coords, num_boxes_coords, num_coords)
+        # )
+        box_coordinates = torch.reshape(
+            box_coordinates, (box_coordinates.shape[1], box_coordinates.shape[0], box_coordinates.shape[2], box_coordinates.shape[3])
+        )
+        # print(box_mask.shape)
+        # box_mask = torch.reshape(box_mask, (num_images_masks, batch_size_masks, num_masks))
+        box_mask = torch.reshape(box_mask, (box_mask.shape[1], box_mask.shape[0], box_mask.shape[2]))
 
         # collect outputs for this batch
         # gold_outputs = self.backbone(box_features, box_coordinates, box_mask, caption)
