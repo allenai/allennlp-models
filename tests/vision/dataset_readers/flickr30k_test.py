@@ -31,7 +31,7 @@ class TestFlickr30kReader(AllenNlpTestCase):
         assert len(instances) == 25
 
         instance = instances[5]
-        assert len(instance.fields) == 7
+        assert len(instance.fields) == 5
         assert len(instance["caption"]) == 16
         question_tokens = [t.text for t in instance["caption"]]
         assert question_tokens == [
@@ -57,14 +57,14 @@ class TestFlickr30kReader(AllenNlpTestCase):
         batch.index_instances(Vocabulary())
         tensors = batch.as_tensor_dict()
 
-        # (batch size, num boxes (fake), num features (fake))
-        assert tensors["box_features"].size() == (25, 2, 10)
+        # (batch size, num images, num boxes (fake), num features (fake))
+        assert tensors["box_features"].size() == (25, 4, 2, 10)
 
-        # (batch size, num boxes (fake), 4 coords)
-        assert tensors["box_coordinates"].size() == (25, 2, 4)
+        # (batch size, num images, num boxes (fake), 4 coords)
+        assert tensors["box_coordinates"].size() == (25, 4, 2, 4)
 
-        # (batch size, num boxes (fake),)
-        assert tensors["box_mask"].size() == (25, 2)
+        # (batch size, num images, num boxes (fake),)
+        assert tensors["box_mask"].size() == (25, 4, 2)
 
-        # (batch size, num_hard_negatives, num boxes (fake), num features (fake))
-        assert tensors["hard_negative_features"].size() == (25, 3, 2, 10)
+        # (batch size)
+        assert tensors["label"].size() == (25,)

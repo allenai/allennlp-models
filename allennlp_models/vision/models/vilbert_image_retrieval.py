@@ -89,7 +89,7 @@ class ImageRetrievalVilbert(VisionTextModel):
         image_embeddings: ImageFeatureEmbeddings,
         encoder: BiModalEncoder,
         pooled_output_dim: int,
-        fusion_method: str = "sum",
+        fusion_method: str = "mul",
         dropout: float = 0.1,
         label_namespace: str = "answers",
         *,
@@ -105,7 +105,7 @@ class ImageRetrievalVilbert(VisionTextModel):
             fusion_method,
             dropout,
             label_namespace,
-            is_multilabel=True,
+            is_multilabel=False,
             ignore_text=ignore_text,
             ignore_image=ignore_image,
         )
@@ -127,45 +127,62 @@ class ImageRetrievalVilbert(VisionTextModel):
         box_features: torch.Tensor,
         box_coordinates: torch.Tensor,
         box_mask: torch.Tensor,
-        hard_negative_features: torch.Tensor,
-        hard_negative_coordinates: torch.Tensor,
-        hard_negative_masks: torch.Tensor,
+        # hard_negative_features: torch.Tensor,
+        # hard_negative_coordinates: torch.Tensor,
+        # hard_negative_masks: torch.Tensor,
         caption: TextFieldTensors,
+        label: torch.Tensor,
     ) -> Dict[str, torch.Tensor]:
 
-        batch_size = box_features.size(0)
+        batch_size, num_images, num_boxes, num_features = box_features.shape
+
+        # Reshape inputs to feed into VilBERT
+        box_features = torch.reshape(
+            box_features, (num_images, batch_size, num_boxes, num_features)
+        )
+        box_coordinates = torch.reshape(box_coordinates, (num_images, batch_size, num_boxes, 4))
+        box_mask = torch.reshape(box_mask, (num_images, batch_size, num_boxes))
 
         # collect outputs for this batch
-        backbone_outputs = self.backbone(box_features, box_coordinates, box_mask, caption)
+        # gold_outputs = self.backbone(box_features, box_coordinates, box_mask, caption)
+        # gold_text_embeddings = gold_outputs["encoded_text_pooled"]
 
+        logits = self.classifier(
+            torch.stack(
+                [
+                    self.backbone(box_features[0], box_coordinates[0], box_mask[0], caption)["pooled_output"],
+                    self.backbone(box_features[1], box_coordinates[1], box_mask[1], caption)["pooled_output"],
+                    self.backbone(box_features[2], box_coordinates[2], box_mask[2], caption)["pooled_output"],
+                    self.backbone(box_features[3], box_coordinates[3], box_mask[3], caption)["pooled_output"],
+                ],
+                dim=1,
+            )
+        ).squeeze(-1)
+
+        probs = torch.softmax(logits, dim=1)
+
+        # TODO: OLD
         # Get embeddings (do we want to just take the mean?)
         # Shape: (batch_size, pooled_output_dim)
-        text_embeddings = backbone_outputs["encoded_text_pooled"]
+        # text_embeddings = backbone_outputs["encoded_text_pooled"]
         # Shape: (batch_size, pooled_output_dim)
         # image_embeddings = backbone_outputs["encoded_boxes_pooled"]
         # image_embeddings = torch.mean(backbone_outputs["encoded_boxes"], dim=1)
-        image_embeddings = torch.mean(box_features, dim=1)
+        # image_embeddings = torch.mean(box_features, dim=1)
 
         # TODO: do stuff with this
         # Shape: (batch_size, batch_size)
-        logits = self.classifier(
-            # Output shape: (batch_size, batch_size, pooled_output_dim)
-            # Input shape: (1, batch_size, pooled_output_dim), and (batch_size, 1, pooled_output_dim)
-            text_embeddings.unsqueeze(0)
-            * image_embeddings.unsqueeze(1)
-        ).squeeze(-1)
-        probs = torch.softmax(logits, dim=1)
-        # probs = torch.sigmoid(logits)
+        # logits = self.classifier(
+        #     # Output shape: (batch_size, batch_size, pooled_output_dim)
+        #     # Input shape: (1, batch_size, pooled_output_dim), and (batch_size, 1, pooled_output_dim)
+        #     text_embeddings.unsqueeze(0)
+        #     * image_embeddings.unsqueeze(1)
+        # ).squeeze(-1)
+        # probs = torch.softmax(logits, dim=1)
+        # TODO: OLD
 
         outputs = {"logits": logits, "probs": probs}
         outputs = self._compute_loss_and_metrics(batch_size, outputs)
-        if self.get_metrics(False)["accuracy"] > 0.999:
-            print("text embeddings")
-            print(text_embeddings)
-            print("image embeddings")
-            print(image_embeddings)
-            print("probabilities")
-            print(probs)
 
         return outputs
 
@@ -174,12 +191,13 @@ class ImageRetrievalVilbert(VisionTextModel):
     def _compute_loss_and_metrics(
         self,
         batch_size: int,
+        labels: torch.Tensor,
         outputs: torch.Tensor,
     ):
         # TODO: make sure this is right
         # idea: the correct image for a caption i is image_i
-        labels = torch.from_numpy(np.arange(0, batch_size))
-        labels = labels.to(outputs["logits"].device)
+        # labels = torch.from_numpy(np.arange(0, batch_size))
+        # labels = labels.to(outputs["logits"].device)
 
         outputs["loss"] = torch.nn.functional.cross_entropy(outputs["logits"], labels) / batch_size
         self.accuracy(outputs["logits"], labels)

@@ -205,9 +205,9 @@ class Flickr30kReader(VisionReader):
             # logger.info("Reading file at %s", self.images[filename])
             # logger.info("images size: %s", len(self.images))
             try:
-                processed_images = list(self._process_image_paths(
-                    self.images[filename] for filename in filenames
-                ))
+                processed_images = list(
+                    self._process_image_paths(self.images[filename] for filename in filenames)
+                )
             except KeyError as e:
                 # print(self.images)
                 missing_id = e.args[0]
@@ -254,30 +254,37 @@ class Flickr30kReader(VisionReader):
 
         hard_negatives = self.get_hard_negatives(caption, features, other_images)
 
-        fields["box_features"] = ArrayField(features)
-        fields["box_coordinates"] = ArrayField(coords)
-        fields["box_mask"] = ArrayField(
-            features.new_ones((features.shape[0],), dtype=torch.bool),
-            padding_value=False,
-            dtype=torch.bool,
-        )
+        # fields["box_features"] = ArrayField(features)
+        # fields["box_coordinates"] = ArrayField(coords)
+        # fields["box_mask"] = ArrayField(
+        #     features.new_ones((features.shape[0],), dtype=torch.bool),
+        #     padding_value=False,
+        #     dtype=torch.bool,
+        # )
 
-        fields["hard_negative_features"] = ListField(
+        fields["box_features"] = ListField(
             [
+                ArrayField(features),
                 ArrayField(hard_negatives[0][0]),
                 ArrayField(hard_negatives[1][0]),
                 ArrayField(hard_negatives[2][0]),
             ]
         )
-        fields["hard_negative_coordinates"] = ListField(
+        fields["box_coordinates"] = ListField(
             [
+                ArrayField(coords),
                 ArrayField(hard_negatives[0][1]),
                 ArrayField(hard_negatives[1][1]),
                 ArrayField(hard_negatives[2][1]),
             ]
         )
-        fields["hard_negative_masks"] = ListField(
+        fields["box_mask"] = ListField(
             [
+                ArrayField(
+                    features.new_ones((features.shape[0],), dtype=torch.bool),
+                    padding_value=False,
+                    dtype=torch.bool,
+                ),
                 ArrayField(
                     hard_negatives[0][0].new_ones(
                         (hard_negatives[0][0].shape[0],), dtype=torch.bool
@@ -301,6 +308,8 @@ class Flickr30kReader(VisionReader):
                 ),
             ]
         )
+
+        fields["label"] = LabelField(0, skip_indexing=True)
 
         return Instance(fields)
 
