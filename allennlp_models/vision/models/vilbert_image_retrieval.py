@@ -115,10 +115,6 @@ class ImageRetrievalVilbert(VisionTextModel):
         label: torch.Tensor,
     ) -> Dict[str, torch.Tensor]:
 
-        print(box_features.device)
-        print(box_coordinates.device)
-        print(box_mask.device)
-
         batch_size, num_images, num_boxes, num_features = box_features.shape
 
         # Reshape inputs to feed into VilBERT
