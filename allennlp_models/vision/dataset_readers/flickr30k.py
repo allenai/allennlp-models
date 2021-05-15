@@ -367,9 +367,11 @@ class Flickr30kReader(VisionReader):
                         # image_embedding, averaged_features
                     ).item()
                 )
-                logger.info("curr stuff")
-                logger.info(curr_image_features)
-                logger.info(curr_image_coords)
+                # logger.info("curr stuff")
+                # logger.info(curr_image_features)
+                # logger.info(curr_image_coords)
+                logger.info(dist)
+                logger.info(neg_dist)
                 heapq.heappush(heap, (neg_dist, curr_image_features, curr_image_coords))
                 if len(heap) > 3:
                     heapq.heappop(heap)
