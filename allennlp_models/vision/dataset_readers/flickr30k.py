@@ -217,14 +217,14 @@ class Flickr30kReader(VisionReader):
             processed_images = [None for _ in range(len(caption_dicts))]
 
         hard_negatives_cache = {}
-        image_subset = processed_images[:100]
         for caption_dict, filename, processed_image in zip(caption_dicts, filenames, processed_images):
         # for i in range(len(caption_dicts)):
             # caption_dict = caption_dicts[i]
             # filename = filenames
+
             for caption in caption_dict["captions"]:
                 instance = self.text_to_instance(
-                    caption, filename, processed_image, image_subset, hard_negatives_cache
+                    caption, filename, processed_image, processed_images, hard_negatives_cache
                 )
                 print(len(hard_negatives_cache))
                 if instance is not None:
@@ -337,11 +337,11 @@ class Flickr30kReader(VisionReader):
             return hard_negatives_cache[filename]
         if self.is_test:
             caption_encoding = torch.randn((10))
-        else:
-            batch = self.tokenizer.encode_plus(caption, return_tensors="pt")
-            # Shape: (1, 1024)? # TODO: should I squeeze this?
-            caption_encoding = self.model(**batch).pooler_output.squeeze(0).to(device=self.cuda_device)
-        image_caption_embedding = caption_encoding * image_embedding
+        # else:
+        #     batch = self.tokenizer.encode_plus(caption, return_tensors="pt")
+        #     # Shape: (1, 1024)? # TODO: should I squeeze this?
+        #     caption_encoding = self.model(**batch).pooler_output.squeeze(0).to(device=self.cuda_device)
+        # image_caption_embedding = caption_encoding * image_embedding
 
         heap = []
         heapq.heapify(heap)
@@ -360,8 +360,8 @@ class Flickr30kReader(VisionReader):
                 neg_dist = (
                     -1
                     * torch.dist(
-                        image_caption_embedding, averaged_features * caption_encoding
-                        # image_embedding, averaged_features
+                        # image_caption_embedding, averaged_features * caption_encoding
+                        image_embedding, averaged_features
                     ).item()
                 )
                 heapq.heappush(heap, (neg_dist, curr_image_features, curr_image_coords))
