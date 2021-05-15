@@ -1,4 +1,3 @@
-import logging
 from os import PathLike
 from typing import (
     Dict,
@@ -32,8 +31,6 @@ from allennlp.data.tokenizers import Tokenizer
 from allennlp.modules.vision.grid_embedder import GridEmbedder
 from allennlp.modules.vision.region_detector import RegionDetector
 from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
-
-logger = logging.getLogger(__name__)
 
 # TODO: implement this, filter based on that one paper (use vocab)
 def filter_caption(caption):
@@ -258,8 +255,8 @@ class Flickr30kReader(VisionReader):
 
         features, coords = self.get_image_features(image)
 
-        # print("features device:")
-        # print(features.device)
+        print("features device:")
+        print(features.device)
         hard_negatives = self.get_hard_negatives(
             caption, filename, features, other_images, hard_negatives_cache
         )
@@ -332,8 +329,8 @@ class Flickr30kReader(VisionReader):
         hard_negatives_cache=Dict[Tensor, List[Tuple[Tensor, Tensor]]],
     ) -> List[Tuple[Tensor, Tensor]]:
         print("features device2:")
-        # print(image_features.device)
-        # print("image embedding device:")
+        print(image_features.device)
+        print("image embedding device:")
         image_embedding = torch.mean(image_features, dim=0)
         print(image_embedding.device)
         if filename in hard_negatives_cache:
@@ -352,10 +349,7 @@ class Flickr30kReader(VisionReader):
         # print(len(other_images))
         sampled_images = choices(other_images, k=min(len(other_images), 500))
         # print(len(sampled_images))
-        # for image in sampled_images: # other_images: # sample(other_images, min(len(other_images), 100)):
-        features_dict = {}
-        for i in range(len(sampled_images)):
-            image = sampled_images[i]
+        for image in sampled_images: # other_images: # sample(other_images, min(len(other_images), 100)):
             # Calculate the 3 closest hard negatives:
             # 1. Calculate mean of all boxes
             # 2. Find the ~100 nearest neighbors of the input image
@@ -370,25 +364,13 @@ class Flickr30kReader(VisionReader):
                         # image_embedding, averaged_features
                     ).item()
                 )
-                # logger.info("curr stuff")
-                # logger.info(curr_image_features)
-                # logger.info(curr_image_coords)
-                # logger.info("dist")
-                # logger.info(neg_dist)
-                # heapq.heappush(heap, (neg_dist, curr_image_features, curr_image_coords))
-                heapq.heappush(heap, (neg_dist, i))
-                features_dict[i] = (curr_image_features, curr_image_coords)
+
+                heapq.heappush(heap, (neg_dist, curr_image_features, curr_image_coords))
                 if len(heap) > 3:
                     heapq.heappop(heap)
 
         hard_negative_features = []
-        # for _, curr_image_features, curr_image_coords in heap:
-        for _, i in heap:
-            # hard_negative_features.append((curr_image_features, curr_image_coords))
-            curr_image_features, curr_image_coords = features_dict[i]
-            print("curr devices:")
-            print(curr_image_features.device)
-            print(curr_image_coords.device)
+        for _, curr_image_features, curr_image_coords in heap:
             hard_negative_features.append((curr_image_features, curr_image_coords))
 
         hard_negatives_cache[filename] = hard_negative_features
