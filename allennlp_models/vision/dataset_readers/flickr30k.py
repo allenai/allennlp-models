@@ -221,10 +221,10 @@ class Flickr30kReader(VisionReader):
         # for i in range(len(caption_dicts)):
             # caption_dict = caption_dicts[i]
             # filename = filenames
-
+            image_subset = choices(processed_images, k=100)
             for caption in caption_dict["captions"]:
                 instance = self.text_to_instance(
-                    caption, filename, processed_image, processed_images, hard_negatives_cache
+                    caption, filename, processed_image, image_subset, hard_negatives_cache
                 )
                 # print(len(hard_negatives_cache))
                 if instance is not None:
