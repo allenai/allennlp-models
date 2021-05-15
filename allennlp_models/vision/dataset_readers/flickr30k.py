@@ -381,7 +381,8 @@ class Flickr30kReader(VisionReader):
             features, coords = next(self._process_image_paths([image], use_cache=use_cache))
         else:
             features, coords = image
-        return features.to(device=self.cuda_device), coords.to(device=self.cuda_device)
+        # return features.to(device=self.cuda_device), coords.to(device=self.cuda_device)
+        return features, coords
 
     # todo: fix
     @overrides
