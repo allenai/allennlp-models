@@ -1,3 +1,4 @@
+import logging
 from os import PathLike
 from typing import (
     Dict,
@@ -31,6 +32,8 @@ from allennlp.data.tokenizers import Tokenizer
 from allennlp.modules.vision.grid_embedder import GridEmbedder
 from allennlp.modules.vision.region_detector import RegionDetector
 from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
+
+logger = logging.getLogger(__name__)
 
 # TODO: implement this, filter based on that one paper (use vocab)
 def filter_caption(caption):
