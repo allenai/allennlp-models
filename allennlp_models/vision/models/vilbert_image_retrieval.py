@@ -42,25 +42,6 @@ from allennlp_models.vision.models.vision_text_model import VisionTextModel
 
 logger = logging.getLogger(__name__)
 
-# TODO: I think we might actually want to use the output of vilbert, maybe?
-# IE calculate h_img and h_cls (like in the paper), and then do these calculations using those vectors?
-# input shapes: (batch_size, embedding_dim)
-# output shape: (batch_size, num_neighbors)
-def calculate_hard_negatives(image_embeddings, text_embeddings, num_neighbors: int = 3):
-    # for each image, find the 100 nearest neighbors
-    # then, find 3 images with best l2 distances
-    index = faiss.IndexFlatL2(list(image_embeddings)[1])
-    index.add(image_embeddings)  # TODO: I think we need to rotate this input
-    k = 10
-    # D, neighbors = index.search(processed_images, k)
-    D, neighbors = index.search(text_embeddings, k)
-    for image_embedding, text_embedding, curr_neighbors in zip(
-        image_embeddings, text_embeddings, neighbors
-    ):
-        for neighbor in curr_neighbors:
-            # calculate L2 distance between neighbor and caption tokens
-            caption_vec = caption_dict["caption"]
-
 
 @Model.register("vilbert_ir")
 @Model.register("ir_vilbert_from_huggingface", constructor="from_huggingface_model_name")
@@ -133,6 +114,10 @@ class ImageRetrievalVilbert(VisionTextModel):
         caption: TextFieldTensors,
         label: torch.Tensor,
     ) -> Dict[str, torch.Tensor]:
+
+        print(box_features.device)
+        print(box_coordinates.device)
+        print(box_mask.device)
 
         batch_size, num_images, num_boxes, num_features = box_features.shape
 

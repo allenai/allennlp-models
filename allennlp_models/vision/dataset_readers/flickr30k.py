@@ -32,6 +32,12 @@ from allennlp.modules.vision.grid_embedder import GridEmbedder
 from allennlp.modules.vision.region_detector import RegionDetector
 from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
 
+# TODO: Things slowing this down
+# 1. Too big of a set of images to search through
+# 2. Model DRASTICALLY slows it down (probably wrong device?)
+# 3. Not being able to load hard negatives (json file?)
+
+
 # TODO: implement this, filter based on that one paper (use vocab)
 def filter_caption(caption):
     return caption
