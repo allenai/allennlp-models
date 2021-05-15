@@ -226,7 +226,7 @@ class Flickr30kReader(VisionReader):
                 instance = self.text_to_instance(
                     caption, filename, processed_image, processed_images, hard_negatives_cache
                 )
-                print(len(hard_negatives_cache))
+                # print(len(hard_negatives_cache))
                 if instance is not None:
                     yield instance
 
