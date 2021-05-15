@@ -346,9 +346,9 @@ class Flickr30kReader(VisionReader):
         heap = []
         heapq.heapify(heap)
         # TODO: see if we don't have to sample? the cache might not be working for hard negatives
-        print(len(other_images))
+        # print(len(other_images))
         sampled_images = choices(other_images, k=min(len(other_images), 500))
-        print(len(sampled_images))
+        # print(len(sampled_images))
         for image in sampled_images: # other_images: # sample(other_images, min(len(other_images), 100)):
             # Calculate the 3 closest hard negatives:
             # 1. Calculate mean of all boxes
@@ -364,6 +364,9 @@ class Flickr30kReader(VisionReader):
                         # image_embedding, averaged_features
                     ).item()
                 )
+                print("curr stuff")
+                print(curr_image_features)
+                print(curr_image_coords)
                 heapq.heappush(heap, (neg_dist, curr_image_features, curr_image_coords))
                 if len(heap) > 3:
                     heapq.heappop(heap)
