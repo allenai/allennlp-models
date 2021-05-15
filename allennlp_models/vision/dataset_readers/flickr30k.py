@@ -225,10 +225,10 @@ class Flickr30kReader(VisionReader):
             processed_images = [None for _ in range(len(caption_dicts))]
 
         hard_negatives_cache = {}
-        for caption_dict, processed_image in zip(caption_dicts, processed_images):
+        for caption_dict, filename, processed_image in zip(caption_dicts, filenames, processed_images):
             for caption in caption_dict["captions"]:
                 instance = self.text_to_instance(
-                    caption, processed_image, processed_images, hard_negatives_cache
+                    caption, filename, processed_image, processed_images, hard_negatives_cache
                 )
                 print(len(hard_negatives_cache))
                 if instance is not None:
@@ -239,6 +239,7 @@ class Flickr30kReader(VisionReader):
     def text_to_instance(
         self,  # type: ignore
         caption: str,
+        filename: str,
         image: Optional[Union[str, Tuple[Tensor, Tensor]]],
         other_images: List[Optional[Union[str, Tuple[Tensor, Tensor]]]],
         hard_negatives_cache=Dict[Tensor, List[Tuple[Tensor, Tensor]]],
@@ -259,7 +260,7 @@ class Flickr30kReader(VisionReader):
         features, coords = get_image_features(image)
 
         hard_negatives = self.get_hard_negatives(
-            caption, features, other_images, hard_negatives_cache
+            caption, filename, features, other_images, hard_negatives_cache
         )
 
         # fields["box_features"] = ArrayField(features)
@@ -324,13 +325,14 @@ class Flickr30kReader(VisionReader):
     def get_hard_negatives(
         self,
         caption: str,
+        filename: str,
         image_features: Tensor,
         other_images: List[Optional[Union[str, Tuple[Tensor, Tensor]]]],
         hard_negatives_cache=Dict[Tensor, List[Tuple[Tensor, Tensor]]],
     ) -> List[Tuple[Tensor, Tensor]]:
         image_embedding = torch.mean(image_features, dim=0)
-        if image_embedding in hard_negatives_cache:
-            return hard_negatives_cache[image_embedding]
+        if filename in hard_negatives_cache:
+            return hard_negatives_cache[filename]
         if self.is_test:
             caption_encoding = torch.randn((10))
         else:
@@ -342,7 +344,7 @@ class Flickr30kReader(VisionReader):
         heap = []
         heapq.heapify(heap)
         # TODO: see if we don't have to sample? the cache might not be working for hard negatives
-        for image in sample(other_images, min(len(other_images), 500)):
+        for image in sample(other_images, min(len(other_images), 100)):
             # Calculate the 3 closest hard negatives:
             # 1. Calculate mean of all boxes
             # 2. Find the ~100 nearest neighbors of the input image
@@ -364,9 +366,9 @@ class Flickr30kReader(VisionReader):
         for _, curr_image_features, curr_image_coords in heap:
             hard_negative_features.append((curr_image_features, curr_image_coords))
 
-        hard_negatives_cache[image_embedding] = hard_negative_features
+        hard_negatives_cache[filename] = hard_negative_features
 
-        return hard_negatives_cache[image_embedding]
+        return hard_negatives_cache[filename]
 
     # todo: fix
     @overrides
