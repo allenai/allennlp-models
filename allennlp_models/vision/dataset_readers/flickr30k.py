@@ -339,7 +339,7 @@ class Flickr30kReader(VisionReader):
             return hard_negatives_cache[filename]
         if self.is_test:
             caption_encoding = torch.randn((10))
-        # else:
+        else:
             batch = self.tokenizer.encode_plus(caption, return_tensors="pt")
             # Shape: (1, 1024)? # TODO: should I squeeze this?
             caption_encoding = self.model(**batch).pooler_output.squeeze(0).to(device=self.cuda_device)
