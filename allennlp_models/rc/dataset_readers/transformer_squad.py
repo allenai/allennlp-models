@@ -146,6 +146,7 @@ class TransformerSquadReader(DatasetReader):
         for article in dataset:
             for paragraph_json in article["paragraphs"]:
                 context = paragraph_json["context"]
+                cached_tokenized_context = self._tokenize_context(context)
                 for question_answer in self.shard_iterable(paragraph_json["qas"]):
                     answers = [answer_json["text"] for answer_json in question_answer["answers"]]
 
@@ -163,6 +164,7 @@ class TransformerSquadReader(DatasetReader):
                         first_answer_offset=first_answer_offset,
                         always_add_answer_span=True,
                         is_training=True,
+                        cached_tokenized_context=cached_tokenized_context,
                     )
                     instances_yielded = 0
                     for instance in instances:
@@ -179,19 +181,7 @@ class TransformerSquadReader(DatasetReader):
                 100 * questions_with_more_than_one_instance / yielded_question_count,
             )
 
-    def make_instances(
-        self,
-        qid: str,
-        question: str,
-        answers: List[str],
-        context: str,
-        first_answer_offset: Optional[int],
-        always_add_answer_span: bool = False,
-        is_training: bool = False,
-    ) -> Iterable[Instance]:
-        """
-        Create training instances from a SQuAD example.
-        """
+    def _tokenize_context(self, context: str) -> List[Token]:
         # tokenize context by spaces first, and then with the wordpiece tokenizer
         # For RoBERTa, this produces a bug where every token is marked as beginning-of-sentence. To fix it, we
         # detect whether a space comes before a word, and if so, add "a " in front of the word.
@@ -220,6 +210,29 @@ class TransformerSquadReader(DatasetReader):
             if wordpiece.idx is not None:
                 wordpiece.idx += token_start
             tokenized_context.append(wordpiece)
+        return tokenized_context
+
+    def make_instances(
+        self,
+        qid: str,
+        question: str,
+        answers: List[str],
+        context: str,
+        first_answer_offset: Optional[int],
+        always_add_answer_span: bool = False,
+        is_training: bool = False,
+        cached_tokenized_context: Optional[List[Token]] = None,
+    ) -> Iterable[Instance]:
+        """
+        Create training instances from a SQuAD example.
+        """
+        if cached_tokenized_context is not None:
+            # In training, we will use the same context in multiple instances, so we use
+            # cached_tokenized_context to avoid duplicate tokenization
+            tokenized_context = cached_tokenized_context
+        else:
+            # In prediction, no cached_tokenized_context is provided, so we tokenize context here
+            tokenized_context = self._tokenize_context(context)
 
         if first_answer_offset is None:
             (token_answer_span_start, token_answer_span_end) = (-1, -1)
