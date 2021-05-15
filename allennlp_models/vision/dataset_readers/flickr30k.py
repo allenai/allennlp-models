@@ -258,8 +258,8 @@ class Flickr30kReader(VisionReader):
 
         features, coords = self.get_image_features(image)
 
-        print("features device:")
-        print(features.device)
+        # print("features device:")
+        # print(features.device)
         hard_negatives = self.get_hard_negatives(
             caption, filename, features, other_images, hard_negatives_cache
         )
@@ -331,11 +331,11 @@ class Flickr30kReader(VisionReader):
         other_images: List[Optional[Union[str, Tuple[Tensor, Tensor]]]],
         hard_negatives_cache=Dict[Tensor, List[Tuple[Tensor, Tensor]]],
     ) -> List[Tuple[Tensor, Tensor]]:
-        print("features device2:")
-        print(image_features.device)
-        print("image embedding device:")
+        # print("features device2:")
+        # print(image_features.device)
+        # print("image embedding device:")
         image_embedding = torch.mean(image_features, dim=0)
-        print(image_embedding.device)
+        # print(image_embedding.device)
         if filename in hard_negatives_cache:
             return hard_negatives_cache[filename]
         if self.is_test:
@@ -374,7 +374,7 @@ class Flickr30kReader(VisionReader):
                 # logger.info(curr_image_features)
                 # logger.info(curr_image_coords)
                 # logger.info("dist")
-                # logger.info(neg_dist)
+                logger.info(neg_dist)
                 # heapq.heappush(heap, (neg_dist, curr_image_features, curr_image_coords))
                 heapq.heappush(heap, (neg_dist, i))
                 features_dict[i] = (curr_image_features, curr_image_coords)
@@ -385,7 +385,11 @@ class Flickr30kReader(VisionReader):
         # for _, curr_image_features, curr_image_coords in heap:
         for _, i in heap:
             # hard_negative_features.append((curr_image_features, curr_image_coords))
-            hard_negative_features.append(features_dict[i])
+            curr_image_features, curr_image_coords = features_dict[i]
+            print("curr devices:")
+            print(curr_image_features.device)
+            print(curr_image_coords.device)
+            hard_negative_features.append((curr_image_features, curr_image_coords))
 
         hard_negatives_cache[filename] = hard_negative_features
 
