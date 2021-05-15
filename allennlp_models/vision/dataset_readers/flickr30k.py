@@ -363,6 +363,10 @@ class Flickr30kReader(VisionReader):
             averaged_features = torch.mean(curr_image_features, dim=0)
             if not torch.equal(averaged_features, image_embedding):
                 # Find 3 nearest neighbors
+                print("dist devices:")
+                print(image_caption_embedding.device)
+                print(averaged_features.device)
+                print(caption_encoding.device)
                 neg_dist = (
                     -1
                     * torch.dist(
@@ -370,6 +374,7 @@ class Flickr30kReader(VisionReader):
                         # image_embedding, averaged_features
                     ).item()
                 )
+                print(neg_dist.device)
                 # logger.info("curr stuff")
                 # logger.info(curr_image_features)
                 # logger.info(curr_image_coords)
