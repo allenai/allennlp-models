@@ -352,7 +352,10 @@ class Flickr30kReader(VisionReader):
         # print(len(other_images))
         sampled_images = choices(other_images, k=min(len(other_images), 500))
         # print(len(sampled_images))
-        for image in sampled_images: # other_images: # sample(other_images, min(len(other_images), 100)):
+        # for image in sampled_images: # other_images: # sample(other_images, min(len(other_images), 100)):
+        features_dict = {}
+        for i in range(len(sampled_images)):
+            image = sampled_images[i]
             # Calculate the 3 closest hard negatives:
             # 1. Calculate mean of all boxes
             # 2. Find the ~100 nearest neighbors of the input image
@@ -370,15 +373,19 @@ class Flickr30kReader(VisionReader):
                 # logger.info("curr stuff")
                 # logger.info(curr_image_features)
                 # logger.info(curr_image_coords)
-                logger.info(dist)
+                logger.info("dist")
                 logger.info(neg_dist)
-                heapq.heappush(heap, (neg_dist, curr_image_features, curr_image_coords))
+                # heapq.heappush(heap, (neg_dist, curr_image_features, curr_image_coords))
+                heapq.heappush(heap, (neg_dist, i))
+                features_dict[i] = (curr_image_features, curr_image_coords)
                 if len(heap) > 3:
                     heapq.heappop(heap)
 
         hard_negative_features = []
-        for _, curr_image_features, curr_image_coords in heap:
-            hard_negative_features.append((curr_image_features, curr_image_coords))
+        # for _, curr_image_features, curr_image_coords in heap:
+        for _, i in heap:
+            # hard_negative_features.append((curr_image_features, curr_image_coords))
+            hard_negative_features.append(features_dict[i])
 
         hard_negatives_cache[filename] = hard_negative_features
 
