@@ -263,6 +263,8 @@ class Flickr30kReader(VisionReader):
 
         features, coords = get_image_features(image)
 
+        print("features device:")
+        print(features.device)
         hard_negatives = self.get_hard_negatives(
             caption, filename, features, other_images, hard_negatives_cache
         )
@@ -334,7 +336,11 @@ class Flickr30kReader(VisionReader):
         other_images: List[Optional[Union[str, Tuple[Tensor, Tensor]]]],
         hard_negatives_cache=Dict[Tensor, List[Tuple[Tensor, Tensor]]],
     ) -> List[Tuple[Tensor, Tensor]]:
+        print("features device2:")
+        print(image_features.device)
+        print("image embedding device:")
         image_embedding = torch.mean(image_features, dim=0)
+        print(image_embedding.device)
         if filename in hard_negatives_cache:
             return hard_negatives_cache[filename]
         if self.is_test:
