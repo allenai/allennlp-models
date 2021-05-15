@@ -232,7 +232,7 @@ class Flickr30kReader(VisionReader):
 
             for caption in caption_dict["captions"]:
                 instance = self.text_to_instance(
-                    caption, filename, processed_image, processed_images, hard_negatives_cache
+                    caption, filename, processed_image, processed_images[:100], hard_negatives_cache
                 )
                 print(len(hard_negatives_cache))
                 if instance is not None:
@@ -351,7 +351,7 @@ class Flickr30kReader(VisionReader):
         print(len(other_images))
         sampled_images = choices(other_images, k=min(len(other_images), 500))
         print(len(sampled_images))
-        for image in sampled_images: # other_images: # sample(other_images, min(len(other_images), 100)):
+        for image in other_images: # sample(other_images, min(len(other_images), 100)):
             # Calculate the 3 closest hard negatives:
             # 1. Calculate mean of all boxes
             # 2. Find the ~100 nearest neighbors of the input image
