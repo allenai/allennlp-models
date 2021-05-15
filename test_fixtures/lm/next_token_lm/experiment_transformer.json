@@ -48,6 +48,6 @@
       "type": "sgd",
       "lr": 0.01
     },
-    "run_sanity_checks": false
+    "run_confidence_checks": false
   }
 }
