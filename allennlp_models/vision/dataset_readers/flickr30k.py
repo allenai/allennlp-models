@@ -374,7 +374,7 @@ class Flickr30kReader(VisionReader):
                 # logger.info(curr_image_features)
                 # logger.info(curr_image_coords)
                 # logger.info("dist")
-                logger.info(neg_dist)
+                # logger.info(neg_dist)
                 # heapq.heappush(heap, (neg_dist, curr_image_features, curr_image_coords))
                 heapq.heappush(heap, (neg_dist, i))
                 features_dict[i] = (curr_image_features, curr_image_coords)
