@@ -331,11 +331,11 @@ class Flickr30kReader(VisionReader):
         other_images: List[Optional[Union[str, Tuple[Tensor, Tensor]]]],
         hard_negatives_cache=Dict[Tensor, List[Tuple[Tensor, Tensor]]],
     ) -> List[Tuple[Tensor, Tensor]]:
-        # print("features device2:")
+        print("features device2:")
         # print(image_features.device)
         # print("image embedding device:")
         image_embedding = torch.mean(image_features, dim=0)
-        # print(image_embedding.device)
+        print(image_embedding.device)
         if filename in hard_negatives_cache:
             return hard_negatives_cache[filename]
         if self.is_test:
@@ -363,10 +363,6 @@ class Flickr30kReader(VisionReader):
             averaged_features = torch.mean(curr_image_features, dim=0)
             if not torch.equal(averaged_features, image_embedding):
                 # Find 3 nearest neighbors
-                print("dist devices:")
-                print(image_caption_embedding.device)
-                print(averaged_features.device)
-                print(caption_encoding.device)
                 neg_dist = (
                     -1
                     * torch.dist(
@@ -374,7 +370,6 @@ class Flickr30kReader(VisionReader):
                         # image_embedding, averaged_features
                     ).item()
                 )
-                print(neg_dist.device)
                 # logger.info("curr stuff")
                 # logger.info(curr_image_features)
                 # logger.info(curr_image_coords)
