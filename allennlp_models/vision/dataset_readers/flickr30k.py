@@ -258,8 +258,8 @@ class Flickr30kReader(VisionReader):
 
         features, coords = self.get_image_features(image)
 
-        print("features device:")
-        print(features.device)
+        # print("features device:")
+        # print(features.device)
         hard_negatives = self.get_hard_negatives(
             caption, filename, features, other_images, hard_negatives_cache
         )
@@ -373,8 +373,8 @@ class Flickr30kReader(VisionReader):
                 # logger.info("curr stuff")
                 # logger.info(curr_image_features)
                 # logger.info(curr_image_coords)
-                logger.info("dist")
-                logger.info(neg_dist)
+                # logger.info("dist")
+                # logger.info(neg_dist)
                 # heapq.heappush(heap, (neg_dist, curr_image_features, curr_image_coords))
                 heapq.heappush(heap, (neg_dist, i))
                 features_dict[i] = (curr_image_features, curr_image_coords)
