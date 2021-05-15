@@ -343,7 +343,7 @@ class Flickr30kReader(VisionReader):
             batch = self.tokenizer.encode_plus(caption, return_tensors="pt")
             # Shape: (1, 1024)? # TODO: should I squeeze this?
             caption_encoding = self.model(**batch).pooler_output.squeeze(0)
-        image_caption_embedding = caption_encoding * image_embedding
+        # image_caption_embedding = caption_encoding * image_embedding
 
         heap = []
         heapq.heapify(heap)
@@ -362,7 +362,8 @@ class Flickr30kReader(VisionReader):
                 neg_dist = (
                     -1
                     * torch.dist(
-                        image_caption_embedding, averaged_features * caption_encoding
+                        # image_caption_embedding, averaged_features * caption_encoding
+                        image_embedding, averaged_features
                     ).item()
                 )
                 heapq.heappush(heap, (neg_dist, curr_image_features, curr_image_coords))
