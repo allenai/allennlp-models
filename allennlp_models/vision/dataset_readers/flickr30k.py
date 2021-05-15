@@ -42,7 +42,7 @@ def get_image_features(image):
         features, coords = next(self._process_image_paths([image], use_cache=use_cache))
     else:
         features, coords = image
-    return features, coords
+    return features.to(device=self.cuda_device), coords.to(device=self.cuda_device)
 
 
 # Borrowed
