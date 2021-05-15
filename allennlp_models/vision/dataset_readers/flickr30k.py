@@ -225,9 +225,10 @@ class Flickr30kReader(VisionReader):
             processed_images = [None for _ in range(len(caption_dicts))]
 
         hard_negatives_cache = {}
-        # for caption_dict, filename, processed_image in zip(caption_dicts, filenames, processed_images):
-        for i in range(len(caption_dicts)):
-            caption_dict = caption_dicts[i]
+        for caption_dict, filename, processed_image in zip(caption_dicts, filenames, processed_images):
+        # for i in range(len(caption_dicts)):
+            # caption_dict = caption_dicts[i]
+            # filename = filenames
 
             for caption in caption_dict["captions"]:
                 instance = self.text_to_instance(
@@ -348,7 +349,7 @@ class Flickr30kReader(VisionReader):
         heapq.heapify(heap)
         # TODO: see if we don't have to sample? the cache might not be working for hard negatives
         print(len(other_images))
-        sampled_images = choices(other_images, k=500)
+        sampled_images = choices(other_images, k=min(len(other_images), 500))
         print(len(sampled_images))
         for image in sampled_images: # other_images: # sample(other_images, min(len(other_images), 100)):
             # Calculate the 3 closest hard negatives:
