@@ -37,14 +37,6 @@ def filter_caption(caption):
     return caption
 
 
-def get_image_features(image):
-    if isinstance(image, str):
-        features, coords = next(self._process_image_paths([image], use_cache=use_cache))
-    else:
-        features, coords = image
-    return features.to(device=self.cuda_device), coords.to(device=self.cuda_device)
-
-
 # Borrowed
 # parse caption file for a given image
 def get_caption_data(filename):
@@ -261,7 +253,7 @@ class Flickr30kReader(VisionReader):
         if image is None:
             return None
 
-        features, coords = get_image_features(image)
+        features, coords = self.get_image_features(image)
 
         print("features device:")
         print(features.device)
@@ -361,7 +353,7 @@ class Flickr30kReader(VisionReader):
             # Calculate the 3 closest hard negatives:
             # 1. Calculate mean of all boxes
             # 2. Find the ~100 nearest neighbors of the input image
-            curr_image_features, curr_image_coords = get_image_features(image)
+            curr_image_features, curr_image_coords = self.get_image_features(image)
             averaged_features = torch.mean(curr_image_features, dim=0)
             if not torch.equal(averaged_features, image_embedding):
                 # Find 3 nearest neighbors
@@ -383,6 +375,13 @@ class Flickr30kReader(VisionReader):
         hard_negatives_cache[filename] = hard_negative_features
 
         return hard_negatives_cache[filename]
+
+    def get_image_features(self, image):
+        if isinstance(image, str):
+            features, coords = next(self._process_image_paths([image], use_cache=use_cache))
+        else:
+            features, coords = image
+        return features.to(device=self.cuda_device), coords.to(device=self.cuda_device)
 
     # todo: fix
     @overrides
