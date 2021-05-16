@@ -355,6 +355,7 @@ class Flickr30kReader(VisionReader):
         # print(len(other_images))
         # sampled_images = choices(other_images, k=min(len(other_images), 500))
         # print(len(sampled_images))
+        seen_set = set()
         for image in other_images: # sample(other_images, min(len(other_images), 100)):
             # Calculate the 3 closest hard negatives:
             # 1. Calculate mean of all boxes
@@ -370,10 +371,12 @@ class Flickr30kReader(VisionReader):
                         image_embedding, averaged_features
                     ).item()
                 )
-                heapq.heappush(heap, (neg_dist, curr_image_features, curr_image_coords))
-                # TODO: figure out if this heap is working right
-                if len(heap) > 3:
-                    heapq.heappop(heap)
+                if neg_dist not in seen_set:
+                    heapq.heappush(heap, (neg_dist, curr_image_features, curr_image_coords))
+                    # TODO: figure out if this heap is working right
+                    if len(heap) > 3:
+                        heapq.heappop(heap)
+                    seen_set.add(neg_dist)
 
         hard_negative_features = []
         for _, curr_image_features, curr_image_coords in heap:
