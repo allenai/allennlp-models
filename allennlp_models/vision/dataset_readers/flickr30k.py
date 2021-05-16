@@ -371,6 +371,7 @@ class Flickr30kReader(VisionReader):
                     ).item()
                 )
                 heapq.heappush(heap, (neg_dist, curr_image_features, curr_image_coords))
+                # TODO: figure out if this heap is working right
                 if len(heap) > 3:
                     heapq.heappop(heap)
 
