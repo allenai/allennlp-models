@@ -6,7 +6,7 @@ local gpu_batch_size = 32;
 local effective_batch_size = gpu_batch_size * num_gpus;
 local num_epochs = 20;
 local patience = 5;
-local num_instances = 158915;
+local num_instances = 148915;
 local num_gradient_accumulation_steps = 1;
 
 local construct_vocab = false;
