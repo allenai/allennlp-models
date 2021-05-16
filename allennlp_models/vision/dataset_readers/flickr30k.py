@@ -227,7 +227,7 @@ class Flickr30kReader(VisionReader):
         # for i in range(len(caption_dicts)):
             # caption_dict = caption_dicts[i]
             # filename = filenames
-            image_subset = choices(processed_images, k=100)
+            image_subset = choices(processed_images, k=1000)
             for caption in caption_dict["captions"]:
                 instance = self.text_to_instance(
                     caption, filename, processed_image, image_subset, hard_negatives_cache
