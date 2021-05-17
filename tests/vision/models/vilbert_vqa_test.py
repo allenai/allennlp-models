@@ -1,8 +1,8 @@
+from torch.testing import assert_allclose
 from transformers import AutoModel
 
 from allennlp.common.testing import ModelTestCase
 from allennlp.data import Vocabulary
-from allennlp.common.testing import assert_equal_parameters
 
 from allennlp_models.vision.models.vilbert_vqa import VqaVilbert
 from tests import FIXTURES_ROOT
@@ -57,26 +57,13 @@ class TestVqaVilbert(ModelTestCase):
         transformer = AutoModel.from_pretrained(model_name)
 
         # compare embedding parameters
-        mapping = {
-            val: key
-            for key, val in model.backbone.text_embeddings._construct_default_mapping(
-                transformer.embeddings, "huggingface", {}
-            ).items()
-        }
-        assert_equal_parameters(
-            transformer.embeddings, model.backbone.text_embeddings, mapping=mapping
+        assert_allclose(
+            transformer.embeddings.word_embeddings.weight.data,
+            model.backbone.text_embeddings.embeddings.word_embeddings.weight.data,
         )
 
         # compare encoder parameters
-        mapping = {
-            val: key
-            for key, val in model.backbone.encoder._construct_default_mapping(
-                transformer.encoder, "huggingface", {}
-            ).items()
-        }
-
-        # We ignore the new parameters for the second modality, since they won't be present
-        # in the huggingface model.
-        assert_equal_parameters(
-            transformer.encoder, model.backbone.encoder, ignore_missing=True, mapping=mapping
+        assert_allclose(
+            transformer.encoder.layer[0].intermediate.dense.weight.data,
+            model.backbone.encoder.layers1[0].intermediate.dense.weight.data,
         )
