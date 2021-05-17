@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   You need to set the `bert_model` parameter to the dictionary form of the corresponding `BertConfig` from HuggingFace.
   See [PR #257](https://github.com/allenai/allennlp-models/pull/257) for more details.
 
+### Changed
+
+- Improvements to the vision models and other models that use `allennlp.modules.transformer` under the hood.
+
 
 ## [v2.4.0](https://github.com/allenai/allennlp-models/releases/tag/v2.4.0) - 2021-04-22
 
