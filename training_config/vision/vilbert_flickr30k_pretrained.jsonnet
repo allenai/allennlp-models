@@ -1,7 +1,7 @@
 local model_name = "bert-base-uncased";
 local vocab_size = 30522;     // for bert-*-uncased models
 //local vocab_size = 28996;   // for bert-*-cased models
-local num_gpus = 1;
+local num_gpus = 4;
 local gpu_batch_size = 32;
 local effective_batch_size = gpu_batch_size * num_gpus;
 local num_epochs = 20;
@@ -46,7 +46,7 @@ local dataset = "data";
       }
     },
     // TODO: comment this out
-    "max_instances": 1000,
+    // "max_instances": 1000,
     "image_processing_batch_size": 16,
     // "answer_vocab": if construct_vocab then null else vocabulary,
     // "multiple_answers_per_question": !construct_vocab,
@@ -162,13 +162,13 @@ local dataset = "data";
     // ],
     "optimizer": {
       "type": "huggingface_adamw",
-      "lr": 5e-5,
+      "lr": 2e-5,
       "correct_bias": true,
       "weight_decay": 0.01,
       "parameter_groups": [
         // [["bias", "LayerNorm\\.weight", "layer_norm\\.weight"], {"weight_decay": 0}], // can't use both at the same time
         // smaller learning rate for the pretrained weights
-        [["^embeddings\\.", "^encoder.layers1\\.", "^t_pooler\\."], {"lr": 5e-6}]
+        [["^embeddings\\.", "^encoder.layers1\\.", "^t_pooler\\."], {"lr": 2e-6}]
       ],
     },
     "learning_rate_scheduler": {
