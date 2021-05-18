@@ -70,7 +70,7 @@ local dataset = "data";
       }
     },
     "image_processing_batch_size": 16,
-    "is_validation": true,
+    "is_evaluation": true,
   },
   // "validation_dataset_reader": self.dataset_reader {
     // "answer_vocab": null    // make sure we don't skip unanswerable questions during validation
