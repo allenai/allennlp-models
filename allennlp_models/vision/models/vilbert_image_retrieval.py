@@ -179,7 +179,7 @@ class ImageRetrievalVilbert(VisionTextModel):
             values, indices = scores.topk(self.k, dim=-1)
 
             # Shape: (batch_size)
-            logits = torch.sum(indices == labels.reshape(-1, 1), dim=-1)
+            logits = torch.sum(indices == label.reshape(-1, 1), dim=-1)
 
             # probs = torch.softmax(logits, dim=1)
 
