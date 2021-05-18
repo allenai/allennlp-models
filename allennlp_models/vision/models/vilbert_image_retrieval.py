@@ -182,7 +182,7 @@ class ImageRetrievalVilbert(VisionTextModel):
             # logits = (indices == label.reshape(-1, 1)).float()
             # Shape: (batch_size)
             pre_logits = torch.sum((indices == label.reshape(-1, 1)), dim=-1).float()
-            to_append = (logits == 0).float()
+            to_append = (pre_logits == 0).float()
             # Shape: (batch_size, 2)
             # 0-th column == 1 if we found the image in the top k, 1st column == 1 if we didn't
             logits = torch.stack((pre_logits, to_append), dim=1)
