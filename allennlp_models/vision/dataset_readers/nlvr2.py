@@ -90,14 +90,14 @@ class Nlvr2Reader(VisionReader):
         image_loader: Optional[ImageLoader] = None,
         image_featurizer: Optional[Lazy[GridEmbedder]] = None,
         region_detector: Optional[Lazy[RegionDetector]] = None,
-        answer_vocab: Optional[Union[Vocabulary, str]] = None,
-        feature_cache_dir: Optional[Union[str, PathLike]] = None,
+        answer_vocab: Optional[Union[Vocabulary, str]] = None,  ###
+        feature_cache_dir: Optional[Union[str, PathLike]] = None,  ### (fix above)
         tokenizer: Optional[Tokenizer] = None,
         token_indexers: Optional[Dict[str, TokenIndexer]] = None,
         cuda_device: Optional[Union[int, torch.device]] = None,
         max_instances: Optional[int] = None,
-        image_processing_batch_size: int = 8,
-        write_to_cache: bool = True,
+        image_processing_batch_size: int = 8,  ###
+        write_to_cache: bool = True,  ###
     ) -> None:
         run_featurization = image_loader and image_featurizer and region_detector
         if image_dir is None and run_featurization:
@@ -210,12 +210,9 @@ class Nlvr2Reader(VisionReader):
 
         fields = {
             "hypothesis": hypothesis_field,
-            "box_features1": box_features1,
-            "box_coordinates1": box_coordinates1,
-            "box_mask1": box_mask1,
-            "box_features2": box_features2,
-            "box_coordinates2": box_coordinates2,
-            "box_mask2": box_mask2,
+            "box_features": ListField([box_features1, box_features2]),
+            "box_coordinates": ListField([box_coordinates1, box_coordinates2]),
+            "box_mask": ListField([box_mask1, box_mask2]),
             "identifier": MetadataField(identifier),
         }
 

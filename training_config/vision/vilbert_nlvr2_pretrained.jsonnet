@@ -33,7 +33,7 @@ local num_instances = 86373;
   "test_data_path": "test",
   "evaluate_on_test": true,
   "model": {
-    "type": "ve2_vilbert_from_huggingface",
+    "type": "nlvr2_from_huggingface",
     "model_name": model_name,
     "image_feature_dim": 1024,
     "image_hidden_size": 1024,

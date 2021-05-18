@@ -20,9 +20,9 @@ from allennlp_models.vision.models.vision_text_model import VisionTextModel
 logger = logging.getLogger(__name__)
 
 
-@Model.register("ve2_vilbert")
-@Model.register("ve2_vilbert_from_huggingface", constructor="from_huggingface_model_name")
-class VisualEntailmentTwoImagesModel(VisionTextModel):
+@Model.register("nlvr2")
+@Model.register("nlvr2_from_huggingface", constructor="from_huggingface_model_name")
+class Nlvr2Model(VisionTextModel):
     """
     Model for visual entailment task based on the paper
     [Visual Entailment: A Novel Task for Fine-Grained Image Understanding]
@@ -68,10 +68,11 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
         )
 
         self.pooled_output_dim = pooled_output_dim
-        # self.testLayer = self.layer1 = torch.nn.Linear(pooled_output_dim * 2, 2)
+
         self.layer1 = torch.nn.Linear(pooled_output_dim * 2, pooled_output_dim)
-        self.activation = torch.nn.ReLU()  # TODO: test different ones
-        self.layer2 = torch.nn.Linear(pooled_output_dim, 2)  # TODO: 1 or 2 outputs?
+        self.layer2 = torch.nn.Linear(pooled_output_dim, 2)
+
+        self.activation = torch.nn.ReLU()
 
         self.accuracy = CategoricalAccuracy()
         self.fbeta = FBetaMeasure(beta=1.0, average="macro")
@@ -79,57 +80,31 @@ class VisualEntailmentTwoImagesModel(VisionTextModel):
     @overrides
     def forward(
         self,  # type: ignore
-        box_features1: torch.Tensor,
-        box_coordinates1: torch.Tensor,
-        box_mask1: torch.Tensor,
-        box_features2: torch.Tensor,
-        box_coordinates2: torch.Tensor,
-        box_mask2: torch.Tensor,
+        box_features: torch.Tensor,
+        box_coordinates: torch.Tensor,
+        box_mask: torch.Tensor,
         hypothesis: TextFieldTensors,
         label: Optional[torch.Tensor] = None,
         identifier: List[Dict[str, Any]] = None,
     ) -> Dict[str, torch.Tensor]:
+        batch_size = box_features.shape[0]
 
-        # TODO: figure out how to handle both images - just feed them in twice?
-        # Idea:
-        # 1. Get both pooled outputs
-        # 2. Concatenate them
-        # 3. Feed into an MLP (multi-layer perceptron)
-        # 4. Softmax to get logits
-        # 5. Done?
+        box_features = box_features.transpose(0, 1)
+        box_coordinates = box_coordinates.transpose(0, 1)
+        box_mask = box_mask.transpose(0, 1)
 
-        # Size: (batch_size, pooled_output_dim)
-        batch_size, _, _ = box_features1.shape
-        # _, _, _, num_coordinates = box_coordinates.shape
-
-        # reshaped_box_features = torch.reshape(
-        #     box_features, (num_images, batch_size, num_boxes, num_features)
-        # )
-        # reshaped_box_coordinates = torch.reshape(
-        #     box_coordinates, (num_images, batch_size, num_boxes, num_coordinates)
-        # )
-        # reshaped_box_mask = torch.reshape(box_mask, (num_images, batch_size, num_boxes))
-
-        # pooled_outputs1 = self.backbone(
-        #     reshaped_box_features[0], reshaped_box_coordinates[0], reshaped_box_mask[0], hypothesis
-        # )["pooled_boxes_and_text"]
-        # pooled_outputs2 = self.backbone(
-        #     reshaped_box_features[1], reshaped_box_coordinates[1], reshaped_box_mask[1], hypothesis
-        # )["pooled_boxes_and_text"]
-
-        pooled_outputs1 = self.backbone(box_features1, box_coordinates1, box_mask1, hypothesis)[
-            "pooled_boxes_and_text"
-        ]
-        pooled_outputs2 = self.backbone(box_features2, box_coordinates2, box_mask2, hypothesis)[
-            "pooled_boxes_and_text"
-        ]
+        pooled_outputs1 = self.backbone(
+            box_features[0], box_coordinates[0], box_mask[0], hypothesis
+        )["pooled_boxes_and_text"]
+        pooled_outputs2 = self.backbone(
+            box_features[1], box_coordinates[1], box_mask[1], hypothesis
+        )["pooled_boxes_and_text"]
 
         # TODO: concatenate these correctly
         hidden = self.layer1(torch.cat((pooled_outputs1, pooled_outputs2), dim=-1))
 
-        # # Shape: (batch_size, num_labels)
+        # Shape: (batch_size, num_labels)
         logits = self.layer2(self.activation(hidden))
-        # logits = self.testLayer(torch.cat((pooled_outputs1, pooled_outputs2), dim=-1))
 
         # Shape: (batch_size, num_labels)
         probs = torch.softmax(logits, dim=-1)
