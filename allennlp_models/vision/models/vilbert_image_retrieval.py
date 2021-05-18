@@ -125,7 +125,7 @@ class ImageRetrievalVilbert(VisionTextModel):
         box_coordinates = box_coordinates.transpose(0, 1)
         box_mask = box_mask.transpose(0, 1)
 
-        if self.is_training:
+        if self.training:
             logits = self.classifier(
                 torch.stack(
                     [
