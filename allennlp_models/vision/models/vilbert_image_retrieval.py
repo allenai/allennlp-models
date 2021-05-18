@@ -179,12 +179,27 @@ class ImageRetrievalVilbert(VisionTextModel):
             values, indices = scores.topk(self.k, dim=-1)
 
             # Shape: (batch_size)
-            logits = (indices == label.reshape(-1, 1)).float()
+            # logits = (indices == label.reshape(-1, 1)).float()
+            # Shape: (batch_size)
+            pre_logits = torch.sum((indices == label.reshape(-1, 1)), dim=-1).float()
+            to_append = (logits == 0).float()
+            # Shape: (batch_size, 2)
+            # 0-th column == 1 if we found the image in the top k, 1st column == 1 if we didn't
+            logits = torch.stack((pre_logits, to_append), dim=1)
 
             # probs = torch.softmax(logits, dim=1)
 
             outputs = {"logits": logits} # , "probs": probs}
-            outputs = self._compute_loss_and_metrics(batch_size, outputs, torch.ones(batch_size).long().to(logits.device))
+            # This is slightly wrong. I have labels that correspond to the image index, and then top k
+            # scores. I think I should go back to getting the int-version bool mask thing, summing them, and then 
+            # do something with those? Right now the labels I'm passing in here mean nothing.
+            # Ex:
+            # A row in the logits tensor could be [0, 1, 0, 0] and this means we found the image in the top k=4 images
+            # The label really is just a placeholder for "find the image", but putting label=1 for this row would
+            # tell the model we didn't find it. I think I should sum up the top k image ints to get either 0 or 1
+            # and then use a single class loss? That might work? It's a binary question of "was this image in the top k"
+            # Should be good now? Need to test out above changes
+            outputs = self._compute_loss_and_metrics(batch_size, outputs, torch.zeros(batch_size).long().to(logits.device))
 
             return outputs
 
@@ -197,17 +212,8 @@ class ImageRetrievalVilbert(VisionTextModel):
         outputs: torch.Tensor,
         labels: torch.Tensor,
     ):
-        # TODO: make sure this is right
-        # idea: the correct image for a caption i is image_i
-        # labels = torch.from_numpy(np.arange(0, batch_size))
-        # labels = labels.to(outputs["logits"].device)
-
         outputs["loss"] = torch.nn.functional.cross_entropy(outputs["logits"], labels) / batch_size
         self.accuracy(outputs["logits"], labels)
-        # print("fbeta info:")
-        # print(outputs["probs"].size())
-        # print(labels.size())
-        # self.fbeta(outputs["probs"], labels)
         return outputs
 
     # TODO: fix
