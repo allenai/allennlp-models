@@ -197,7 +197,7 @@ class Nlvr2Reader(VisionReader):
     @overrides
     def text_to_instance(
         self,
-        identifier: str,
+        identifier: Optional[str],
         hypothesis: str,
         image1: Union[str, Tuple[Tensor, Tensor]],
         image2: Union[str, Tuple[Tensor, Tensor]],
@@ -213,8 +213,11 @@ class Nlvr2Reader(VisionReader):
             "box_features": ListField([box_features1, box_features2]),
             "box_coordinates": ListField([box_coordinates1, box_coordinates2]),
             "box_mask": ListField([box_mask1, box_mask2]),
-            "identifier": MetadataField(identifier),
         }
+
+        if identifier is not None:
+            fields["identifier"] = MetadataField(identifier)
+
 
         if label is not None:
             fields["label"] = LabelField(int(label), skip_indexing=True)

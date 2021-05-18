@@ -9,30 +9,30 @@ from allennlp_models import vision  # noqa: F401
 from tests import FIXTURES_ROOT
 
 
-class TestVEVilbert(ModelTestCase):
+class TestNlvr2Vilbert(ModelTestCase):
 
-    # def test_model_can_train_save_and_load_small_model(self):
-    #     param_file = FIXTURES_ROOT / "vision" / "nlvr2" / "experiment.jsonnet"
-    #     self.ensure_model_can_train_save_and_load(
-    #         param_file, gradients_to_ignore={"classifier.weight", "classifier.bias"}
-    #     )
+    def test_model_can_train_save_and_load_small_model(self):
+        param_file = FIXTURES_ROOT / "vision" / "nlvr2" / "experiment.jsonnet"
+        self.ensure_model_can_train_save_and_load(
+            param_file, gradients_to_ignore={"classifier.weight", "classifier.bias"}
+        )
 
-    # def test_model_can_train_save_and_load_with_cache(self):
-    #     import tempfile
+    def test_model_can_train_save_and_load_with_cache(self):
+        import tempfile
 
-    #     with tempfile.TemporaryDirectory(prefix=self.__class__.__name__) as d:
-    #         overrides = {"dataset_reader": {"feature_cache_dir": str(d)}}
-    #         import json
+        with tempfile.TemporaryDirectory(prefix=self.__class__.__name__) as d:
+            overrides = {"dataset_reader": {"feature_cache_dir": str(d)}}
+            import json
 
-    #         overrides = json.dumps(overrides)
-    #         param_file = FIXTURES_ROOT / "vision" / "nlvr2" / "experiment.jsonnet"
-    #         self.ensure_model_can_train_save_and_load(
-    #             param_file, overrides=overrides, gradients_to_ignore={"classifier.weight", "classifier.bias"}
-    #         )
+            overrides = json.dumps(overrides)
+            param_file = FIXTURES_ROOT / "vision" / "nlvr2" / "experiment.jsonnet"
+            self.ensure_model_can_train_save_and_load(
+                param_file, overrides=overrides, gradients_to_ignore={"classifier.weight", "classifier.bias"}
+            )
 
-    def test_model_can_train_save_and_load_from_huggingface(self):
-        param_file = FIXTURES_ROOT / "vision" / "nlvr2" / "experiment_from_huggingface.jsonnet"
-        self.ensure_model_can_train_save_and_load(param_file)
+    # def test_model_can_train_save_and_load_from_huggingface(self):
+    #     param_file = FIXTURES_ROOT / "vision" / "nlvr2" / "experiment_from_huggingface.jsonnet"
+    #     self.ensure_model_can_train_save_and_load(param_file)
 
     # def test_model_loads_weights_correctly(self):
     #     from allennlp_models.vision.models.visual_entailment import VisualEntailmentModel

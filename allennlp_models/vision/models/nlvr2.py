@@ -147,4 +147,4 @@ class Nlvr2Model(VisionTextModel):
         output_dict["labels"] = batch_labels
         return output_dict
 
-    default_predictor = "vilbert_ve"
+    default_predictor = "nlvr2"
