@@ -171,9 +171,22 @@ class ImageRetrievalVilbert(VisionTextModel):
 
             # Shape: (batch_size, num_images, pooled_output_dim)
             stacked_outputs = torch.stack(vilbert_outputs, dim=1)
+            print("stacked_outputs shape:")
+            print(stacked_outputs.shape)
+            logger.info("stacked_outputs shape:")
+            logger.info(stacked_outputs.shape)
 
             # Shape: (batch_size, k)
             scores = self.classifier(stacked_outputs).squeeze(-1)
+            print("scores shape:")
+            print(scores.shape)
+            logger.info("scores shape:")
+            logger.info(scores.shape)
+
+            print("self.k:")
+            print(self.k)
+            logger.info("self.k:")
+            logger.info(self.k)
 
             # Shapes: (batch_size, k)
             values, indices = scores.topk(self.k, dim=-1)
