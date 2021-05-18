@@ -119,6 +119,7 @@ class Flickr30kReader(VisionReader):
         image_processing_batch_size: int = 8,
         write_to_cache: bool = True,
         is_test: bool = False,
+        is_evaluation: bool = False,
     ) -> None:
         super().__init__(
             image_dir,
@@ -135,6 +136,7 @@ class Flickr30kReader(VisionReader):
         )
         self.data_dir = data_dir
         self.is_test = is_test
+        self.is_evaluation = is_evaluation
 
         if not is_test:
             # TODO: do I need the model itself or just the tokenizer?
@@ -223,18 +225,30 @@ class Flickr30kReader(VisionReader):
             processed_images = [None for _ in range(len(caption_dicts))]
 
         hard_negatives_cache = {}
-        for caption_dict, filename, processed_image in zip(caption_dicts, filenames, processed_images):
-        # for i in range(len(caption_dicts)):
-            # caption_dict = caption_dicts[i]
-            # filename = filenames
-            image_subset = choices(processed_images, k=1000)
-            for caption in caption_dict["captions"]:
-                instance = self.text_to_instance(
-                    caption, filename, processed_image, image_subset, hard_negatives_cache
-                )
-                # print(len(hard_negatives_cache))
-                if instance is not None:
-                    yield instance
+        # for caption_dict, filename, processed_image in zip(caption_dicts, filenames, processed_images):
+        for i in range(len(caption_dicts)):
+            caption_dict = caption_dicts[i]
+            filename = filenames[i]
+            processed_image = processed_images[i]
+            if self.is_evaluation:
+                for caption in caption_dict["captions"]:
+                    instance = self.text_to_instance(
+                        caption, filename, processed_image, processed_images, label=i
+                    )
+                    if instance is not None:
+                        yield instance
+            else:
+                image_subset = choices(processed_images, k=1000)
+                for caption in caption_dict["captions"]:
+                    instance = self.text_to_instance(
+                        caption,
+                        filename,
+                        processed_image,
+                        image_subset,
+                        hard_negatives_cache=hard_negatives_cache,
+                    )
+                    if instance is not None:
+                        yield instance
 
     # todo: implement
     @overrides
@@ -242,57 +256,57 @@ class Flickr30kReader(VisionReader):
         self,  # type: ignore
         caption: str,
         filename: str,
-        image: Optional[Union[str, Tuple[Tensor, Tensor]]],
+        image: Union[str, Tuple[Tensor, Tensor]],
         other_images: List[Optional[Union[str, Tuple[Tensor, Tensor]]]],
-        hard_negatives_cache=Dict[Tensor, List[Tuple[Tensor, Tensor]]],
-        # images: Optional[List[Union[str, Tuple[Tensor, Tensor]]]],
-        # label: Optional[int] = None,
+        hard_negatives_cache=Optional[Dict[Tensor, List[Tuple[Tensor, Tensor]]]],
+        label: int = 0,
         *,
         use_cache: bool = True,
     ) -> Optional[Instance]:
         caption_field = TextField(self._tokenizer.tokenize(caption), None)
 
-        fields: Dict[str, Field] = {
-            "caption": caption_field,
-        }
-
-        if image is None:
-            return None
-
         features, coords = self.get_image_features(image)
 
-        # print("features device:")
-        # print(features.device)
-        hard_negatives = self.get_hard_negatives(
-            caption, filename, features, other_images, hard_negatives_cache
-        )
+        if self.is_evaluation:
+            box_features = []
+            box_coordinates = []
+            box_masks = []
 
-        # fields["box_features"] = ArrayField(features)
-        # fields["box_coordinates"] = ArrayField(coords)
-        # fields["box_mask"] = ArrayField(
-        #     features.new_ones((features.shape[0],), dtype=torch.bool),
-        #     padding_value=False,
-        #     dtype=torch.bool,
-        # )
+            for curr_image in other_images:
+                curr_image_features, curr_image_coords = self.get_image_features(curr_image)
 
-        fields["box_features"] = ListField(
-            [
+                box_features.append(ArrayField(curr_image_features))
+                box_coordinates.append(ArrayField(curr_image_coords))
+                box_masks.append(
+                    ArrayField(
+                        curr_image_features.new_ones(
+                            (curr_image_features.shape[0],), dtype=torch.bool
+                        ),
+                        padding_value=False,
+                        dtype=torch.bool,
+                    )
+                )
+
+        else:
+            hard_negatives = self.get_hard_negatives(
+                caption, filename, features, other_images, hard_negatives_cache
+            )
+
+            box_features = [
                 ArrayField(features),
                 ArrayField(hard_negatives[0][0]),
                 ArrayField(hard_negatives[1][0]),
                 ArrayField(hard_negatives[2][0]),
             ]
-        )
-        fields["box_coordinates"] = ListField(
-            [
+
+            box_coordinates = [
                 ArrayField(coords),
                 ArrayField(hard_negatives[0][1]),
                 ArrayField(hard_negatives[1][1]),
                 ArrayField(hard_negatives[2][1]),
             ]
-        )
-        fields["box_mask"] = ListField(
-            [
+
+            box_masks = [
                 ArrayField(
                     features.new_ones((features.shape[0],), dtype=torch.bool),
                     padding_value=False,
@@ -320,9 +334,14 @@ class Flickr30kReader(VisionReader):
                     dtype=torch.bool,
                 ),
             ]
-        )
 
-        fields["label"] = LabelField(0, skip_indexing=True)
+        fields: Dict[str, Field] = {
+            "caption": caption_field,
+            "box_features": ListField(box_features),
+            "box_coordinates": ListField(box_coordinates),
+            "box_mask": ListField(box_masks),
+            "label": LabelField(label, skip_indexing=True),
+        }
 
         return Instance(fields)
 
@@ -356,7 +375,7 @@ class Flickr30kReader(VisionReader):
         # sampled_images = choices(other_images, k=min(len(other_images), 500))
         # print(len(sampled_images))
         seen_set = set()
-        for image in other_images: # sample(other_images, min(len(other_images), 100)):
+        for image in other_images:  # sample(other_images, min(len(other_images), 100)):
             # Calculate the 3 closest hard negatives:
             # 1. Calculate mean of all boxes
             # 2. Find the ~100 nearest neighbors of the input image
@@ -368,7 +387,8 @@ class Flickr30kReader(VisionReader):
                     -1
                     * torch.dist(
                         # image_caption_embedding, averaged_features * caption_encoding
-                        image_embedding, averaged_features
+                        image_embedding,
+                        averaged_features,
                     ).item()
                 )
                 if neg_dist not in seen_set:

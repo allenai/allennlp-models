@@ -75,7 +75,8 @@ class ImageRetrievalVilbert(VisionTextModel):
         label_namespace: str = "answers",
         *,
         ignore_text: bool = False,
-        ignore_image: bool = False
+        ignore_image: bool = False,
+        k: int = 1
     ) -> None:
         super().__init__(
             vocab,
@@ -98,6 +99,8 @@ class ImageRetrievalVilbert(VisionTextModel):
 
         self.accuracy = CategoricalAccuracy()
         self.fbeta = FBetaMeasure(beta=1.0, average="macro")
+
+        self.k = k
         # self.f1_metric = F1MultiLabelMeasure(average="micro")
         # self.vqa_metric = VqaMeasure()
 
@@ -114,74 +117,56 @@ class ImageRetrievalVilbert(VisionTextModel):
         caption: TextFieldTensors,
         label: torch.Tensor,
     ) -> Dict[str, torch.Tensor]:
-
-        batch_size, num_images, num_boxes, num_features = box_features.shape
+        batch_size = box_features.shape[0]
+        num_images = box_features.shape[0]
 
         # Reshape inputs to feed into VilBERT
-        # print(shapes)
-        # print(box_features.shape)
-        # box_features = torch.reshape(
-        #     box_features, (num_images, batch_size, num_boxes, num_features)
-        # )
-        box_features = torch.reshape(
-            box_features, (box_features.shape[1], box_features.shape[0], box_features.shape[2], box_features.shape[3])
-        )
-        # print(box_coordinates.shape)
-        # box_coordinates = torch.reshape(
-        #     box_coordinates, (num_images_coords, batch_size_coords, num_boxes_coords, num_coords)
-        # )
-        box_coordinates = torch.reshape(
-            box_coordinates, (box_coordinates.shape[1], box_coordinates.shape[0], box_coordinates.shape[2], box_coordinates.shape[3])
-        )
-        # print(box_mask.shape)
-        # box_mask = torch.reshape(box_mask, (num_images_masks, batch_size_masks, num_masks))
-        box_mask = torch.reshape(box_mask, (box_mask.shape[1], box_mask.shape[0], box_mask.shape[2]))
+        box_features = box_features.transpose(0, 1)
+        box_coordinates = box_coordinates.transpose(0, 1)
+        box_mask = box_mask.transpose(0, 1)
 
-        # collect outputs for this batch
-        # gold_outputs = self.backbone(box_features, box_coordinates, box_mask, caption)
-        # gold_text_embeddings = gold_outputs["encoded_text_pooled"]
+        if self.is_training:
+            logits = self.classifier(
+                torch.stack(
+                    [
+                        self.backbone(box_features[0], box_coordinates[0], box_mask[0], caption)[
+                            "pooled_boxes_and_text"
+                        ],
+                        self.backbone(box_features[1], box_coordinates[1], box_mask[1], caption)[
+                            "pooled_boxes_and_text"
+                        ],
+                        self.backbone(box_features[2], box_coordinates[2], box_mask[2], caption)[
+                            "pooled_boxes_and_text"
+                        ],
+                        self.backbone(box_features[3], box_coordinates[3], box_mask[3], caption)[
+                            "pooled_boxes_and_text"
+                        ],
+                    ],
+                    dim=1,
+                )
+            ).squeeze(-1)
 
-        logits = self.classifier(
-            torch.stack(
-                [
-                    self.backbone(box_features[0], box_coordinates[0], box_mask[0], caption)[
+        else:
+            vilbert_outputs = []
+            for i in range(num_images):
+                curr_box_features = box_features[i]
+                curr_box_coordinates = box_coordinates[i]
+                curr_box_mask = box_mask[i]
+
+                vilbert_outputs.append(
+                    self.backbone(curr_box_features, curr_box_coordinates, curr_box_mask, caption)[
                         "pooled_boxes_and_text"
-                    ],
-                    self.backbone(box_features[1], box_coordinates[1], box_mask[1], caption)[
-                        "pooled_boxes_and_text"
-                    ],
-                    self.backbone(box_features[2], box_coordinates[2], box_mask[2], caption)[
-                        "pooled_boxes_and_text"
-                    ],
-                    self.backbone(box_features[3], box_coordinates[3], box_mask[3], caption)[
-                        "pooled_boxes_and_text"
-                    ],
-                ],
-                dim=1,
-            )
-        ).squeeze(-1)
+                    ]
+                )
+            
+            logits = self.classifier(torch.stack(vilbert_outputs, dim=1)).squeeze(-1)
+
+            # TODO: use topk to get R@5/10/etc
+            # For now, just use top 1
+            # values, indices = torch.topk(self.k, dim=-1)
+            # TODO: calculate loss if label is in indices
 
         probs = torch.softmax(logits, dim=1)
-
-        # TODO: OLD
-        # Get embeddings (do we want to just take the mean?)
-        # Shape: (batch_size, pooled_output_dim)
-        # text_embeddings = backbone_outputs["encoded_text_pooled"]
-        # Shape: (batch_size, pooled_output_dim)
-        # image_embeddings = backbone_outputs["encoded_boxes_pooled"]
-        # image_embeddings = torch.mean(backbone_outputs["encoded_boxes"], dim=1)
-        # image_embeddings = torch.mean(box_features, dim=1)
-
-        # TODO: do stuff with this
-        # Shape: (batch_size, batch_size)
-        # logits = self.classifier(
-        #     # Output shape: (batch_size, batch_size, pooled_output_dim)
-        #     # Input shape: (1, batch_size, pooled_output_dim), and (batch_size, 1, pooled_output_dim)
-        #     text_embeddings.unsqueeze(0)
-        #     * image_embeddings.unsqueeze(1)
-        # ).squeeze(-1)
-        # probs = torch.softmax(logits, dim=1)
-        # TODO: OLD
 
         outputs = {"logits": logits, "probs": probs}
         outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
