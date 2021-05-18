@@ -1,11 +1,9 @@
 import logging
-from copy import deepcopy
 from typing import Dict, List, Optional
 
 from overrides import overrides
 import numpy as np
 import torch
-from transformers import AutoModel
 
 from allennlp.data.fields.text_field import TextFieldTensors
 from allennlp.data.vocabulary import Vocabulary
@@ -105,31 +103,7 @@ class VisionTextModel(Model):
         ignore_text: bool = False,
         ignore_image: bool = False,
     ):
-        transformer = AutoModel.from_pretrained(model_name)
-
-        # Albert (and maybe others?) has this "embedding_size", that's different from "hidden_size".
-        # To get them to the same dimensionality, it uses a linear transform after the embedding
-        # layer, which we need to pull out and copy here.
-        if hasattr(transformer.config, "embedding_size"):
-            config = transformer.config
-
-            text_embeddings = TransformerEmbeddings.from_pretrained_module(
-                transformer.embeddings, output_size=config.hidden_dim
-            )
-
-            from transformers.models.albert.modeling_albert import AlbertModel
-
-            if isinstance(transformer, AlbertModel):
-                text_embeddings.linear_transform = deepcopy(
-                    transformer.encoder.embedding_hidden_mapping_in
-                )
-            else:
-                logger.warning(
-                    "Unknown model that uses separate embedding size; weights of the linear "
-                    f"transform will not be initialized.  Model type is: {transformer.__class__}"
-                )
-        else:
-            text_embeddings = TransformerEmbeddings.from_pretrained_module(transformer.embeddings)
+        text_embeddings = TransformerEmbeddings.from_pretrained_module(model_name)
 
         image_embeddings = ImageFeatureEmbeddings(
             feature_size=image_feature_dim,
@@ -138,7 +112,7 @@ class VisionTextModel(Model):
         )
 
         encoder = BiModalEncoder.from_pretrained_module(
-            pretrained_module=transformer,
+            model_name,
             num_hidden_layers2=image_num_hidden_layers,
             hidden_size2=image_hidden_size,
             num_attention_heads2=image_num_attention_heads,

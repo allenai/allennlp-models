@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- Updated all instances of `sanity_checks` to `confidence_checks`.
+
 ### Added
 
 - Added tests for checklist suites for SQuAD-style reading comprehension models (`bidaf`), and textual entailment models (`decomposable_attention` and `esim`).
@@ -15,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a way to initialize the `SrlBert` model without caching/loading pretrained transformer weights.
   You need to set the `bert_model` parameter to the dictionary form of the corresponding `BertConfig` from HuggingFace.
   See [PR #257](https://github.com/allenai/allennlp-models/pull/257) for more details.
+
+### Changed
+
+- Improvements to the vision models and other models that use `allennlp.modules.transformer` under the hood.
 
 
 ## [v2.4.0](https://github.com/allenai/allennlp-models/releases/tag/v2.4.0) - 2021-04-22
@@ -26,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a parameter called `source_prefix` to `CNNDailyMailDatasetReader`. This is useful with T5, for example, by setting `source_prefix` to "summarization: ".
 - Tests for `VqaMeasure`.
 - Distributed tests for `ConllCorefScores` and `SrlEvalScorer` metrics.
+- Added dataset reader for visual genome QA.
 
 ### Fixed
 
