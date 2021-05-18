@@ -138,7 +138,8 @@ local dataset = "data";
       "activation": "gelu",
     },
     "pooled_output_dim": 1024,
-    "fusion_method": "mul"
+    "fusion_method": "mul",
+    "k": 5
   },
   "data_loader": {
     "batch_size": gpu_batch_size,
