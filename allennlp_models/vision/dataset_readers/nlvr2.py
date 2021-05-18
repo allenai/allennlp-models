@@ -218,7 +218,6 @@ class Nlvr2Reader(VisionReader):
         if identifier is not None:
             fields["identifier"] = MetadataField(identifier)
 
-
         if label is not None:
             fields["label"] = LabelField(int(label), skip_indexing=True)
 

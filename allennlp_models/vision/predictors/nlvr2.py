@@ -25,7 +25,9 @@ class Nlvr2Predictor(Predictor):
         image2 = cached_path(json_dict["image2"])
         hypothesis = json_dict["hypothesis"]
         if isinstance(self._dataset_reader, Nlvr2Reader):
-            return self._dataset_reader.text_to_instance(hypothesis, image1, image2, use_cache=False)
+            return self._dataset_reader.text_to_instance(
+                hypothesis, image1, image2, use_cache=False
+            )
         else:
             raise ValueError(
                 f"Dataset reader is of type f{self._dataset_reader.__class__.__name__}. "
