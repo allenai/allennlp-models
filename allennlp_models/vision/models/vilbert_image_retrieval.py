@@ -126,7 +126,9 @@ class ImageRetrievalVilbert(VisionTextModel):
         box_mask = box_mask.transpose(0, 1)
 
         if self.training:
+            # Shape: (batch_size, 4)
             logits = self.classifier(
+                # Shape: (batch_size, 4, pooled_output_dim)
                 torch.stack(
                     [
                         self.backbone(box_features[0], box_coordinates[0], box_mask[0], caption)[
@@ -146,6 +148,13 @@ class ImageRetrievalVilbert(VisionTextModel):
                 )
             ).squeeze(-1)
 
+            probs = torch.softmax(logits, dim=1)
+
+            outputs = {"logits": logits, "probs": probs}
+            outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
+
+            return outputs
+
         else:
             vilbert_outputs = []
             for i in range(num_images):
@@ -154,24 +163,31 @@ class ImageRetrievalVilbert(VisionTextModel):
                 curr_box_mask = box_mask[i]
 
                 vilbert_outputs.append(
+                    # Shape: (batch_size, pooled_output_dim)
                     self.backbone(curr_box_features, curr_box_coordinates, curr_box_mask, caption)[
                         "pooled_boxes_and_text"
                     ]
                 )
 
-            logits = self.classifier(torch.stack(vilbert_outputs, dim=1)).squeeze(-1)
+            # Shape: (batch_size, num_images, pooled_output_dim)
+            stacked_outputs = torch.stack(vilbert_outputs, dim=1)
 
-            # TODO: use topk to get R@5/10/etc
-            # For now, just use top 1
-            # values, indices = torch.topk(self.k, dim=-1)
-            # TODO: calculate loss if label is in indices
+            # Shape: (batch_size, k)
+            scores = self.classifier(stacked_outputs).squeeze(-1)
 
-        probs = torch.softmax(logits, dim=1)
+            # Shapes: (batch_size, k)
+            values, indices = scores.topk(self.k, dim=-1)
 
-        outputs = {"logits": logits, "probs": probs}
-        outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
+            # Shape: (batch_size)
+            logits = torch.sum(indices == labels.reshape(-1. 1), dim=-1)
 
-        return outputs
+            # probs = torch.softmax(logits, dim=1)
+
+            outputs = {"logits": logits} # , "probs": probs}
+            outputs = self._compute_loss_and_metrics(batch_size, outputs, torch.ones(batch_size))
+
+            return outputs
+
 
     # TODO: fix
     @overrides
