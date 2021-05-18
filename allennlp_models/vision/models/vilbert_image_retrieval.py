@@ -158,7 +158,7 @@ class ImageRetrievalVilbert(VisionTextModel):
                         "pooled_boxes_and_text"
                     ]
                 )
-            
+
             logits = self.classifier(torch.stack(vilbert_outputs, dim=1)).squeeze(-1)
 
             # TODO: use topk to get R@5/10/etc
