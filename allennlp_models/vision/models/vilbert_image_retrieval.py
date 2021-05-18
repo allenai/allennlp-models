@@ -118,7 +118,7 @@ class ImageRetrievalVilbert(VisionTextModel):
         label: torch.Tensor,
     ) -> Dict[str, torch.Tensor]:
         batch_size = box_features.shape[0]
-        num_images = box_features.shape[0]
+        num_images = box_features.shape[1]
 
         # Reshape inputs to feed into VilBERT
         box_features = box_features.transpose(0, 1)
