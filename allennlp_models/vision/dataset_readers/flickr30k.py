@@ -192,6 +192,10 @@ class Flickr30kReader(VisionReader):
                 full_file_path = os.path.join(self.data_dir, filename)
                 captions.append(get_caption_data(full_file_path))
 
+        if self.is_evaluation:
+            full_filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in captions]
+            full_images = list(self._process_image_paths(self.images[filename] for filename in full_filenames))
+
         caption_dicts = list(self.shard_iterable(captions))
 
         # todo: probably move this to a utils file?
@@ -233,7 +237,7 @@ class Flickr30kReader(VisionReader):
             if self.is_evaluation:
                 for caption in caption_dict["captions"]:
                     instance = self.text_to_instance(
-                        caption, filename, processed_image, processed_images, label=i
+                        caption, filename, processed_image, full_images, label=i
                     )
                     if instance is not None:
                         yield instance
