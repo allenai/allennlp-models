@@ -76,13 +76,12 @@ class CopyNetSeq2Seq(Model):
         source_embedder: TextFieldEmbedder,
         encoder: Seq2SeqEncoder,
         attention: Attention,
-        beam_size: int,
-        max_decoding_steps: int,
         target_embedding_dim: int = 30,
         copy_token: str = "@COPY@",
         target_namespace: str = "target_tokens",
         tensor_based_metric: Metric = None,
         token_based_metric: Metric = None,
+        beam_search_kwargs: Dict[str, Any] = None,
         initializer: InitializerApplicator = InitializerApplicator(),
     ) -> None:
         super().__init__(vocab)
@@ -142,9 +141,7 @@ class CopyNetSeq2Seq(Model):
         self._output_copying_layer = Linear(self.encoder_output_dim, self.decoder_output_dim)
 
         # At prediction time, we'll use a beam search to find the best target sequence.
-        self._beam_search = BeamSearch(
-            self._end_index, max_steps=max_decoding_steps, beam_size=beam_size
-        )
+        self._beam_search = BeamSearch(self._end_index, **beam_search_kwargs)
 
         initializer(self)
 
