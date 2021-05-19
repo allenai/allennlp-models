@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a way to initialize the `SrlBert` model without caching/loading pretrained transformer weights.
   You need to set the `bert_model` parameter to the dictionary form of the corresponding `BertConfig` from HuggingFace.
   See [PR #257](https://github.com/allenai/allennlp-models/pull/257) for more details.
+- Added an optional `beam_search_kwargs` parameter to the `generation` models.
 
 ### Changed
 
