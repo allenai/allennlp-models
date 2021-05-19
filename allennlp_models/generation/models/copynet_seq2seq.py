@@ -46,10 +46,6 @@ class CopyNetSeq2Seq(Model):
     attention : `Attention`, required
         This is used to get a dynamic summary of encoder outputs at each timestep
         when producing the "generation" scores for the target vocab.
-    beam_size : `int`, required
-        Beam width to use for beam search prediction.
-    max_decoding_steps : `int`, required
-        Maximum sequence length of target predictions.
     target_embedding_dim : `int`, optional (default = `30`)
         The size of the embeddings for the target vocabulary.
     copy_token : `str`, optional (default = `'@COPY@'`)
