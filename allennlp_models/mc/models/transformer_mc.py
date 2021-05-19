@@ -2,8 +2,10 @@ import logging
 from typing import Dict, List, Optional
 
 import torch
-from allennlp.data import Vocabulary, TextFieldTensors
+from allennlp.common import cached_transformers
+from allennlp.data import Vocabulary
 from allennlp.models import Model
+from allennlp.modules.transformer import TransformerEmbeddings, TransformerStack, TransformerPooler
 
 logger = logging.getLogger(__name__)
 
@@ -35,36 +37,26 @@ class TransformerMC(Model):
         **kwargs
     ) -> None:
         super().__init__(vocab, **kwargs)
-        from allennlp.modules.text_field_embedders import BasicTextFieldEmbedder
-        from allennlp.modules.token_embedders import PretrainedTransformerEmbedder
-        from allennlp.modules.seq2vec_encoders import BertPooler
-
-        self._text_field_embedder = PretrainedTransformerEmbedder(
-            transformer_model,
-            override_weights_file=override_weights_file,
-            override_weights_strip_prefix=override_weights_strip_prefix,
+        bert = cached_transformers.get(
+            transformer_model, False, override_weights_file, override_weights_strip_prefix
         )
-        self._text_field_embedder = BasicTextFieldEmbedder({"tokens": self._text_field_embedder})
-        self._pooler = BertPooler(
-            transformer_model,
-            override_weights_file=override_weights_file,
-            override_weights_strip_prefix=override_weights_strip_prefix,
-            dropout=0.1,
-        )
+        self.embeddings = TransformerEmbeddings.from_pretrained_module(bert)
+        self.transformer_stack = TransformerStack.from_pretrained_module(bert)
+        self.pooler = TransformerPooler.from_pretrained_module(bert)
 
-        self._linear_layer = torch.nn.Linear(self._text_field_embedder.get_output_dim(), 1)
-        self._linear_layer.weight.data.normal_(mean=0.0, std=0.02)
-        self._linear_layer.bias.data.zero_()
+        self.linear_layer = torch.nn.Linear(self.pooler.get_output_dim(), 1)
+        self.linear_layer.weight.data.normal_(mean=0.0, std=0.02)
+        self.linear_layer.bias.data.zero_()
 
-        self._loss = torch.nn.CrossEntropyLoss()
+        self.loss = torch.nn.CrossEntropyLoss()
 
         from allennlp.training.metrics import CategoricalAccuracy
 
-        self._accuracy = CategoricalAccuracy()
+        self.accuracy = CategoricalAccuracy()
 
     def forward(  # type: ignore
         self,
-        alternatives: TextFieldTensors,
+        alternatives: Dict[str, torch.Tensor],
         correct_alternative: Optional[torch.IntTensor] = None,
         qid: Optional[List[str]] = None,
     ) -> Dict[str, torch.Tensor]:
@@ -73,7 +65,7 @@ class TransformerMC(Model):
         Parameters
         ----------
         alternatives : ``Dict[str, torch.LongTensor]``
-            From a ``ListField[TextField]``. Contains a list of alternatives to evaluate for every instance.
+            From a ``ListField[TensorTextField]``. Contains a list of alternatives to evaluate for every instance.
         correct_alternative : ``Optional[torch.IntTensor]``
             From an ``IndexField``. Contains the index of the correct answer for every instance.
         qid : `Optional[List[str]]`
@@ -89,30 +81,33 @@ class TransformerMC(Model):
         best_alternative : ``List[int]``
             The index of the highest scoring alternative for every instance in the batch
         """
-        embedded_alternatives = self._text_field_embedder(alternatives, num_wrapping_dims=1)
-        flattened_embedded_alternatives = embedded_alternatives.view(
-            embedded_alternatives.size(0) * embedded_alternatives.size(1),
-            embedded_alternatives.size(2),
-            embedded_alternatives.size(3),
-        )
-        flattened_pooled_alternatives = self._pooler(flattened_embedded_alternatives)
-        flattened_logit_alternatives = self._linear_layer(flattened_pooled_alternatives)
-        logit_alternatives = flattened_logit_alternatives.view(
-            embedded_alternatives.size(0), embedded_alternatives.size(1)
-        )
+        batch_size, num_alternatives, seq_length = alternatives["input_ids"].size()
 
-        result = {"logits": logit_alternatives, "best_alternative": logit_alternatives.argmax(1)}
+        alternatives = {
+            name: t.view(batch_size * num_alternatives, seq_length)
+            for name, t in alternatives.items()
+        }
+
+        embedded_alternatives = self.embeddings(**alternatives)
+        embedded_alternatives = self.transformer_stack(
+            embedded_alternatives, alternatives["attention_mask"]
+        )
+        embedded_alternatives = self.pooler(embedded_alternatives[0])
+        logits = self.linear_layer(embedded_alternatives)
+        logits = logits.view(batch_size, num_alternatives)
+
+        result = {"logits": logits, "best_alternative": logits.argmax(1)}
 
         if correct_alternative is not None:
             correct_alternative = correct_alternative.squeeze(1)
-            result["loss"] = self._loss(logit_alternatives, correct_alternative)
-            self._accuracy(logit_alternatives, correct_alternative)
+            result["loss"] = self.loss(logits, correct_alternative)
+            self.accuracy(logits, correct_alternative)
 
         return result
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return {
-            "acc": self._accuracy.get_metric(reset),
+            "acc": self.accuracy.get_metric(reset),
         }
 
     default_predictor = "transformer_mc"
