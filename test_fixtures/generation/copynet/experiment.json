@@ -48,8 +48,10 @@
       "matrix_dim": 10
     },
     "target_embedding_dim": 10,
-    "beam_size": 5,
-    "max_decoding_steps": 50
+    "beam_search_kwargs": {
+      "beam_size": 5,
+      "max_steps": 50
+    }
   },
   "data_loader": {
     "batch_sampler": {
