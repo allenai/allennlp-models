@@ -547,10 +547,7 @@ class Flickr30kReader(VisionReader):
             for caption in caption_dict["captions"]:
                 # TODO: switch to batch_encode_plus?
                 print()
-                batch = self.tokenizer.encode_plus(caption, return_tensors="pt").to(
-                    device=self.cuda_device
-                )
-                print(batch.device)
+                batch = self.tokenizer.encode_plus(caption, return_tensors="pt")# .to(device=self.cuda_device)
                 # Shape: (1, 1024)
                 caption_embedding = self.model(**batch).pooler_output.squeeze(0)
                 print(self.model.device)
