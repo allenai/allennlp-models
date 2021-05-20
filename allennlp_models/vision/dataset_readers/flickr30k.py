@@ -226,12 +226,12 @@ class Flickr30kReader(VisionReader):
             features, coords = self.get_image_features(image)
             features_list.append(TensorField(features))
             averaged_features_list.append(torch.mean(features, dim=0))
-            coordinates_list.append(coords)
+            coordinates_list.append(TensorField(coords))
 
         # Shape: (num_images, num_boxes, image_dimension)
         # features_tensor = torch.stack(features_list, dim=0)
         # Shape: (num_images, num_boxes, 4)
-        coordinates_tensor = torch.stack(coordinates_list, dim=0)
+        # coordinates_tensor = torch.stack(coordinates_list, dim=0)
         # Shape: (num_images, image_dimension)
         averaged_features = torch.stack(averaged_features_list, dim=0)
 
@@ -255,7 +255,7 @@ class Flickr30kReader(VisionReader):
                         image_index=image_index,
                         caption_index=caption_index,
                         features_list=features_list,
-                        coordinates_tensor=coordinates_tensor,
+                        coordinates_list=coordinates_list,
                         masks_tensor=masks_tensor,
                         label=image_index,
                     )
@@ -287,7 +287,7 @@ class Flickr30kReader(VisionReader):
                         image_index=image_index,
                         caption_index=caption_index,
                         features_list=features_list,
-                        coordinates_tensor=coordinates_tensor,
+                        coordinates_list=coordinates_list,
                         averaged_features=averaged_features,
                         caption_tensor=caption_tensor,
                         potential_hard_negatives=hard_negatives_cache[image_index],
@@ -303,7 +303,7 @@ class Flickr30kReader(VisionReader):
         image_index: int,
         caption_index: int,
         features_list: List[TensorField],
-        coordinates_tensor: torch.Tensor,
+        coordinates_list: List[TensorField],
         masks_tensor: Optional[Tensor] = None,
         averaged_features: Optional[torch.Tensor] = None,
         caption_tensor: Optional[Tensor] = None,
@@ -314,7 +314,7 @@ class Flickr30kReader(VisionReader):
             fields: Dict[str, Field] = {
                 "caption": TextField(self._tokenizer.tokenize(caption), None),
                 "box_features": ListField(features_list),
-                "box_coordinates": TensorField(coordinates_tensor),
+                "box_coordinates": ListField(coordinates_list),
                 "box_mask": TensorField(masks_tensor, padding_value=False, dtype=torch.bool),
                 "label": LabelField(label, skip_indexing=True),
             }
@@ -337,7 +337,7 @@ class Flickr30kReader(VisionReader):
             ).topk(3)
 
             features = [features_list[image_index]]
-            coords = [ArrayField(coordinates_tensor[image_index])]
+            coords = [coordinates_list[image_index]]
             masks = [
                 ArrayField(
                     features_list[image_index].tensor.new_ones(
@@ -351,7 +351,7 @@ class Flickr30kReader(VisionReader):
             for idx in indices.tolist():
                 hard_negative_index = index_to_image_index[idx]
                 features.append(features_list[hard_negative_index])
-                coords.append(ArrayField(coordinates_tensor[hard_negative_index]))
+                coords.append(coordinates_list[hard_negative_index])
                 masks.append(
                     ArrayField(
                         features_list[hard_negative_index].tensor.new_ones(
