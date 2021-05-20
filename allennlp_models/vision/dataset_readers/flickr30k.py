@@ -200,10 +200,7 @@ class Flickr30kReader(VisionReader):
             # It would be much easier to just process one image at a time, but it's faster to process
             # them in batches. So this code gathers up instances until it has enough to fill up a batch
             # that needs processing, and then processes them all.
-            if self.is_evaluation:
-                filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in captions]
-            else:
-                filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in caption_dicts]
+            filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in caption_dicts]
             try:
                 processed_images = list(
                     self._process_image_paths(self.images[filename] for filename in filenames)
