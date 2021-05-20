@@ -372,101 +372,6 @@ class Flickr30kReader(VisionReader):
 
             return Instance(fields)
 
-    # # todo: implement
-    # @overrides
-    # def text_to_instance(
-    #     self,  # type: ignore
-    #     caption: str,
-    #     filename: str,
-    #     image: Union[str, Tuple[Tensor, Tensor]],
-    #     other_images: List[Optional[Union[str, Tuple[Tensor, Tensor]]]],
-    #     hard_negatives_cache=Optional[Dict[Tensor, List[Tuple[Tensor, Tensor]]]],
-    #     label: int = 0,
-    #     *,
-    #     use_cache: bool = True,
-    # ) -> Optional[Instance]:
-    #     caption_field = TextField(self._tokenizer.tokenize(caption), None)
-
-    #     features, coords = self.get_image_features(image)
-
-    #     if self.is_evaluation:
-    #         box_features = []
-    #         box_coordinates = []
-    #         box_masks = []
-
-    #         for curr_image in other_images:
-    #             curr_image_features, curr_image_coords = self.get_image_features(curr_image)
-
-    #             box_features.append(ArrayField(curr_image_features))
-    #             box_coordinates.append(ArrayField(curr_image_coords))
-    #             box_masks.append(
-    #                 ArrayField(
-    #                     curr_image_features.new_ones(
-    #                         (curr_image_features.shape[0],), dtype=torch.bool
-    #                     ),
-    #                     padding_value=False,
-    #                     dtype=torch.bool,
-    #                 )
-    #             )
-
-    #     else:
-    #         hard_negatives = self.get_hard_negatives(
-    #             caption, filename, features, other_images, hard_negatives_cache
-    #         )
-
-    #         box_features = [
-    #             ArrayField(features),
-    #             ArrayField(hard_negatives[0][0]),
-    #             ArrayField(hard_negatives[1][0]),
-    #             ArrayField(hard_negatives[2][0]),
-    #         ]
-
-    #         box_coordinates = [
-    #             ArrayField(coords),
-    #             ArrayField(hard_negatives[0][1]),
-    #             ArrayField(hard_negatives[1][1]),
-    #             ArrayField(hard_negatives[2][1]),
-    #         ]
-
-    #         box_masks = [
-    #             ArrayField(
-    #                 features.new_ones((features.shape[0],), dtype=torch.bool),
-    #                 padding_value=False,
-    #                 dtype=torch.bool,
-    #             ),
-    #             ArrayField(
-    #                 hard_negatives[0][0].new_ones(
-    #                     (hard_negatives[0][0].shape[0],), dtype=torch.bool
-    #                 ),
-    #                 padding_value=False,
-    #                 dtype=torch.bool,
-    #             ),
-    #             ArrayField(
-    #                 hard_negatives[1][0].new_ones(
-    #                     (hard_negatives[1][0].shape[0],), dtype=torch.bool
-    #                 ),
-    #                 padding_value=False,
-    #                 dtype=torch.bool,
-    #             ),
-    #             ArrayField(
-    #                 hard_negatives[2][0].new_ones(
-    #                     (hard_negatives[2][0].shape[0],), dtype=torch.bool
-    #                 ),
-    #                 padding_value=False,
-    #                 dtype=torch.bool,
-    #             ),
-    #         ]
-
-    #     fields: Dict[str, Field] = {
-    #         "caption": caption_field,
-    #         "box_features": ListField(box_features),
-    #         "box_coordinates": ListField(box_coordinates),
-    #         "box_mask": ListField(box_masks),
-    #         "label": LabelField(label, skip_indexing=True),
-    #     }
-
-    #     return Instance(fields)
-
     def get_hard_negatives(
         self,
         image_index: int,
@@ -478,56 +383,6 @@ class Flickr30kReader(VisionReader):
         # Calculate the top n (let's say 100) potential hard negatives
         _, indices = (averaged_features @ averaged_features[image_index]).topk(n)
         return indices
-
-    def get_hard_negatives2(
-        self,
-        caption: str,
-        filename: str,
-        image_features: Tensor,
-        other_images: List[Optional[Union[str, Tuple[Tensor, Tensor]]]],
-        hard_negatives_cache=Dict[Tensor, List[Tuple[Tensor, Tensor]]],
-    ) -> List[Tuple[Tensor, Tensor]]:
-        image_embedding = torch.mean(image_features, dim=0)
-        if filename in hard_negatives_cache:
-            return hard_negatives_cache[filename]
-        if self.is_test:
-            caption_encoding = torch.randn((10))
-        # else:
-        #     batch = self.tokenizer.encode_plus(caption, return_tensors="pt")
-        #     # Shape: (1, 1024)? # TODO: should I squeeze this?
-        #     caption_encoding = self.model(**batch).pooler_output.squeeze(0).to(device=self.cuda_device)
-        # image_caption_embedding = caption_encoding * image_embedding
-
-        heap = []
-        heapq.heapify(heap)
-        seen_set = set()
-        for image in other_images:
-            curr_image_features, curr_image_coords = self.get_image_features(image)
-            averaged_features = torch.mean(curr_image_features, dim=0)
-            if not torch.equal(averaged_features, image_embedding):
-                # Find 3 nearest neighbors
-                neg_dist = (
-                    -1
-                    * torch.dist(
-                        # image_caption_embedding, averaged_features * caption_encoding
-                        image_embedding,
-                        averaged_features,
-                    ).item()
-                )
-                if neg_dist not in seen_set:
-                    heapq.heappush(heap, (neg_dist, curr_image_features, curr_image_coords))
-                    # TODO: figure out if this heap is working right
-                    if len(heap) > 3:
-                        heapq.heappop(heap)
-                    seen_set.add(neg_dist)
-
-        hard_negative_features = []
-        for _, curr_image_features, curr_image_coords in heap:
-            hard_negative_features.append((curr_image_features, curr_image_coords))
-
-        hard_negatives_cache[filename] = hard_negative_features
-
-        return hard_negatives_cache[filename]
 
     def get_image_features(self, image):
         if isinstance(image, str):
@@ -552,7 +407,10 @@ class Flickr30kReader(VisionReader):
                 # Shape: (1, 1024)
                 caption_embedding = self.model(**batch).pooler_output.squeeze(0)
                 curr_captions.append(caption_embedding)
-            caption_list.append(torch.stack(curr_captions, dim=0).cpu())
+            stacked_tensor = torch.stack(curr_captions, dim=0)
+            stacked_cpu_tensor = stacked_tensor.cpu()
+            del stacked_tensor
+            caption_list.append(stacked_cpu_tensor)
         # Shape: (num_captions, 5, 1024)
         return torch.stack(caption_list, dim=0)
 
