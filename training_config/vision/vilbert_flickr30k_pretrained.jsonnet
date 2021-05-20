@@ -2,7 +2,7 @@ local model_name = "bert-base-uncased";
 local vocab_size = 30522;     // for bert-*-uncased models
 //local vocab_size = 28996;   // for bert-*-cased models
 local num_gpus = 1;
-local gpu_batch_size = 32;
+local gpu_batch_size = 8;
 local effective_batch_size = gpu_batch_size * num_gpus;
 local num_epochs = 20;
 local patience = 5;
@@ -12,25 +12,12 @@ local num_gradient_accumulation_steps = 1;
 local construct_vocab = false;
 local dataset = "data";
 
-// local vocabulary = if construct_vocab then {
-//       // read the files to construct the vocab
-//       "min_count": {"answers": 5}
-//     } else {
-//       // TODO: update
-//       // read the constructed vocab
-//       "type": "from_files",
-//       # todo: upload vocab to google
-//       // "directory": "https://storage.googleapis.com/allennlp-public-data/vqav2/vilbert_vqa_%s.%s.vocab.tar.gz",
-//       "directory": "/home/jacobm/model-output/vgqa-vocab/output.tar.gz",
-//     };
-
 {
   "dataset_reader": {
     "type": "flickr30k",
     "image_dir": "/net/nfs2.allennlp/data/vision/flickr30k/images/",
     "data_dir": "/net/nfs2.allennlp/data/vision/flickr30k/captions/",
-    // "feature_cache_dir": "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache",
-    "feature_cache_dir": "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache2",
+    "feature_cache_dir": "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache",
     #"image_dir": std.format("/Users/dirkg/Documents/data/vision/vqa/%s", dataset),
     #[if !construct_vocab then "feature_cache_dir"]: std.format("/Users/dirkg/Documents/data/vision/vqa/%s/feature_cache", dataset),
     [if !construct_vocab then "image_loader"]: "torch",
