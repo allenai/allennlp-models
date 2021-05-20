@@ -23,7 +23,7 @@ from allennlp.common.file_utils import cached_path
 from allennlp.common.lazy import Lazy
 from allennlp.data.vocabulary import Vocabulary
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
-from allennlp.data.fields import ArrayField, LabelField, ListField, TextField
+from allennlp.data.fields import ArrayField, LabelField, ListField, TextField, TensorField
 from allennlp.data.image_loader import ImageLoader
 from allennlp.data.instance import Instance
 from allennlp.data.token_indexers import TokenIndexer
@@ -120,6 +120,7 @@ class Flickr30kReader(VisionReader):
         write_to_cache: bool = True,
         is_test: bool = False,
         is_evaluation: bool = False,
+        n: int = 100,
     ) -> None:
         super().__init__(
             image_dir,
@@ -137,10 +138,12 @@ class Flickr30kReader(VisionReader):
         self.data_dir = data_dir
         self.is_test = is_test
         self.is_evaluation = is_evaluation
+        self.n = n
 
         if not is_test:
-            # TODO: do I need the model itself or just the tokenizer?
-            self.model = transformers.AutoModel.from_pretrained("bert-large-uncased")
+            self.model = transformers.AutoModel.from_pretrained("bert-large-uncased").to(
+                self.cuda_device
+            )
             self.tokenizer = transformers.AutoTokenizer.from_pretrained("bert-large-uncased")
 
         # read answer vocab
@@ -156,28 +159,22 @@ class Flickr30kReader(VisionReader):
 
     @overrides
     def _read(self, file_path: str):
-        # idea:
-        # 1. Read in captions
-        # Have a directory with all of the data -> each file corresponds to one image
-        # Filter out unrelated captions?
-        # 2. Process images
+        # Plan:
+        # Training:
+        # 1. Process images twice, move them both to CPU
+        #       Once to read them all in together, average each one, and build a tensor sized (num_images, image_dimension)
+        #       Another one that has the full (num_images, num_boxes, image_dimension) so we can save features later
+        #           e.g. we can get the argmax from the first tensor, and look up the features by index in the second tensor
+        # 2. Process caption embeddings in batches on GPU, move to CPU
+        #       We can use the same sort of logic (but new code) to do this
         # 3. Create instances
-        # Instance structure:
-        # Image id
-        # caption tokens (only one caption)
-        # correct image
-        # 3 hard negatives
-
-        # # TODO: I don't think we need this, because there are test and train/val files
-        # # Maybe we need to know how many of the train_and_val are training, and how many are validation
-        # # if the splits are using slicing syntax, honor it
-        # slice_match = re.match(r"(.*)\[([0123456789:]*)]", file_path)
-        # if slice_match is None:
-        #     question_slice = slice(None, None, None)
-        # else:
-        #     split_name = slice_match[1]
-        #     slice_args = [int(a) if len(a) > 0 else None for a in slice_match[2].split(":")]
-        #     question_slice = slice(*slice_args)
+        #       a. Find the n best potential hard negatives (L2 distance)
+        #       b. Pick the 3 highest scores out of the candidates (dot product between caption and images)
+        # 4. Build instance
+        # Evaluation:
+        # 1. Process all images and move them to GPU
+        #       This will (hopefully) not copy them into each instance, and instead just have one copy
+        # 2. Build instances
 
         file_path = cached_path(file_path, extract_archive=True)
         files_in_split = set()
@@ -185,36 +182,30 @@ class Flickr30kReader(VisionReader):
             for line in f:
                 files_in_split.add(line.rstrip("\n"))
 
-        # logger.info("Reading file at %s", file_path)
         captions = []
-        for filename in os.listdir(self.data_dir):  # file_path):
+        for filename in os.listdir(self.data_dir):
             if filename.split(".")[0] in files_in_split:
                 full_file_path = os.path.join(self.data_dir, filename)
                 captions.append(get_caption_data(full_file_path))
 
-        if self.is_evaluation:
-            full_filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in captions]
-            full_images = list(self._process_image_paths(self.images[filename] for filename in full_filenames))
+        # if self.is_evaluation:
+        #     full_filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in captions]
+        #     full_images = list(self._process_image_paths(self.images[filename] for filename in full_filenames))
 
+        # TODO: This'll have to be changed to work better with validation on multiple GPUs
         caption_dicts = list(self.shard_iterable(captions))
 
-        # todo: probably move this to a utils file?
         processed_images: Iterable[Optional[Tuple[Tensor, Tensor]]]
         if self.produce_featurized_images:
             # It would be much easier to just process one image at a time, but it's faster to process
             # them in batches. So this code gathers up instances until it has enough to fill up a batch
             # that needs processing, and then processes them all.
             filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in caption_dicts]
-            # for filename in filenames:
-            # logger.info("Reading file at %s", filename)
-            # logger.info("Reading file at %s", self.images[filename])
-            # logger.info("images size: %s", len(self.images))
             try:
                 processed_images = list(
                     self._process_image_paths(self.images[filename] for filename in filenames)
                 )
             except KeyError as e:
-                # print(self.images)
                 missing_id = e.args[0]
                 raise KeyError(
                     missing_id,
@@ -228,128 +219,267 @@ class Flickr30kReader(VisionReader):
         else:
             processed_images = [None for _ in range(len(caption_dicts))]
 
-        hard_negatives_cache = {}
-        # for caption_dict, filename, processed_image in zip(caption_dicts, filenames, processed_images):
-        for i in range(len(caption_dicts)):
-            caption_dict = caption_dicts[i]
-            filename = filenames[i]
-            processed_image = processed_images[i]
-            if self.is_evaluation:
-                for caption in caption_dict["captions"]:
-                    instance = self.text_to_instance(
-                        caption, filename, processed_image, full_images, label=i
-                    )
-                    if instance is not None:
-                        yield instance
-            else:
-                image_subset = choices(processed_images, k=1000)
-                for caption in caption_dict["captions"]:
-                    instance = self.text_to_instance(
-                        caption,
-                        filename,
-                        processed_image,
-                        image_subset,
-                        hard_negatives_cache=hard_negatives_cache,
-                    )
-                    if instance is not None:
-                        yield instance
+        features_list = []
+        coordinates_list = []
+        for image in processed_images:
+            features, coords = self.get_image_features(image)
+            features_list.append(features)
+            coordinates_list.append(coords)
 
-    # todo: implement
-    @overrides
-    def text_to_instance(
-        self,  # type: ignore
-        caption: str,
-        filename: str,
-        image: Union[str, Tuple[Tensor, Tensor]],
-        other_images: List[Optional[Union[str, Tuple[Tensor, Tensor]]]],
-        hard_negatives_cache=Optional[Dict[Tensor, List[Tuple[Tensor, Tensor]]]],
-        label: int = 0,
-        *,
-        use_cache: bool = True,
-    ) -> Optional[Instance]:
-        caption_field = TextField(self._tokenizer.tokenize(caption), None)
-
-        features, coords = self.get_image_features(image)
+        # Shape: (num_images, num_boxes, image_dimension)
+        features_tensor = torch.stack(features_list, dim=0)
+        # Shape: (num_images, num_boxes, 4)
+        coordinates_tensor = torch.stack(coordinates_list, dim=0)
+        # Shape: (num_images, image_dimension)
+        averaged_features = torch.mean(features_tensor, dim=1)
 
         if self.is_evaluation:
-            box_features = []
-            box_coordinates = []
-            box_masks = []
+            # TODO: Make mask tensor here
+            masks_list = []
+            for image_index in range(len(caption_dicts)):
+                current_feature = features_tensor[image_index]
+                masks_list.append(
+                    current_feature.new_ones((current_feature.shape[0],), dtype=torch.bool)
+                )
+            masks_tensor = torch.stack(masks_list, dim=0)
+            features_tensor = features_tensor.to(self.cuda_device)
 
-            for curr_image in other_images:
-                curr_image_features, curr_image_coords = self.get_image_features(curr_image)
+            for image_index in range(len(caption_dicts)):
+                caption_dict = caption_dicts[image_index]
+                # processed_image = processed_images[image_index]
+                for caption_index in range(len(caption_dict["captions"])):
+                    caption = caption_dict["captions"][caption_index]
 
-                box_features.append(ArrayField(curr_image_features))
-                box_coordinates.append(ArrayField(curr_image_coords))
-                box_masks.append(
+                    instance = self.text_to_instance(
+                        caption=caption,
+                        image_index=image_index,
+                        caption_index=caption_index,
+                        features_tensor=features_tensor,
+                        coordinates_tensor=coordinates_tensor,
+                        masks_tensor=masks_tensor,
+                        label=image_index,
+                    )
+
+                    if instance is not None:
+                        yield instance
+        else:
+            # Shape: (num_images, num_captions_per_image = 5, caption_dimension)
+            caption_tensor = self.get_caption_features(captions)
+
+            hard_negatives_cache = {}
+            for image_index in range(len(caption_dicts)):
+                caption_dict = caption_dicts[image_index]
+                # processed_image = processed_images[image_index]
+                for caption_index in range(len(caption_dict["captions"])):
+                    caption = caption_dict["captions"][caption_index]
+                    if image_index not in hard_negatives_cache:
+                        # I think we want negative L2 distances here
+                        _, indices = (
+                            -torch.cdist(
+                                averaged_features, averaged_features[image_index].unsqueeze(0)
+                            ).squeeze(1)
+                        ).topk(self.n)
+                        # _, indices = (averaged_features @ averaged_features[image_index]).topk(n)
+                        hard_negatives_cache[image_index] = indices.tolist()
+
+                    instance = self.text_to_instance(
+                        caption=caption,
+                        image_index=image_index,
+                        caption_index=caption_index,
+                        features_tensor=features_tensor,
+                        coordinates_tensor=coordinates_tensor,
+                        averaged_features=averaged_features,
+                        caption_tensor=caption_tensor,
+                        potential_hard_negatives=hard_negatives_cache[image_index],
+                    )
+
+                    if instance is not None:
+                        yield instance
+
+    @overrides
+    def text_to_instance(
+        self,
+        caption: str,
+        image_index: int,
+        caption_index: int,
+        features_tensor: torch.Tensor,
+        coordinates_tensor: torch.Tensor,
+        masks_tensor: Optional[Tensor] = None,
+        averaged_features: Optional[torch.Tensor] = None,
+        caption_tensor: Optional[Tensor] = None,
+        potential_hard_negatives: List[int] = [],
+        label: int = 0,
+    ):
+        if self.is_evaluation:
+            fields: Dict[str, Field] = {
+                "caption": TextField(self._tokenizer.tokenize(caption), None),
+                "box_features": TensorField(features_tensor),
+                "box_coordinates": TensorField(coordinates_tensor),
+                "box_mask": TensorField(masks_tensor, padding_value=False, dtype=torch.bool),
+                "label": LabelField(label, skip_indexing=True),
+            }
+
+            return Instance(fields)
+
+        else:
+            index_to_image_index = {}
+            hard_negative_tensors = []
+            i = 0
+            for idx in potential_hard_negatives:
+                if idx != image_index:
+                    index_to_image_index[i] = idx
+                    hard_negative_tensors.append(averaged_features[i])
+                    i += 1
+
+            _, indices = (
+                torch.stack(hard_negative_tensors, dim=0)
+                @ caption_tensor[image_index][caption_index]
+            ).topk(3)
+
+            features = [ArrayField(features_tensor[image_index])]
+            coords = [ArrayField(coordinates_tensor[image_index])]
+            masks = [
+                ArrayField(
+                    features_tensor[image_index].new_ones(
+                        (features_tensor[image_index].shape[0],), dtype=torch.bool
+                    ),
+                    padding_value=False,
+                    dtype=torch.bool,
+                )
+            ]
+
+            for idx in indices.tolist():
+                hard_negative_index = index_to_image_index[idx]
+                features.append(ArrayField(features_tensor[hard_negative_index]))
+                coords.append(ArrayField(coordinates_tensor[hard_negative_index]))
+                masks.append(
                     ArrayField(
-                        curr_image_features.new_ones(
-                            (curr_image_features.shape[0],), dtype=torch.bool
+                        features_tensor[hard_negative_index].new_ones(
+                            (features_tensor[hard_negative_index].shape[0],), dtype=torch.bool
                         ),
                         padding_value=False,
                         dtype=torch.bool,
                     )
                 )
 
-        else:
-            hard_negatives = self.get_hard_negatives(
-                caption, filename, features, other_images, hard_negatives_cache
-            )
+            fields: Dict[str, Field] = {
+                "caption": TextField(self._tokenizer.tokenize(caption), None),
+                "box_features": ListField(features),
+                "box_coordinates": ListField(coords),
+                "box_mask": ListField(masks),
+                "label": LabelField(label, skip_indexing=True),
+            }
 
-            box_features = [
-                ArrayField(features),
-                ArrayField(hard_negatives[0][0]),
-                ArrayField(hard_negatives[1][0]),
-                ArrayField(hard_negatives[2][0]),
-            ]
+            return Instance(fields)
 
-            box_coordinates = [
-                ArrayField(coords),
-                ArrayField(hard_negatives[0][1]),
-                ArrayField(hard_negatives[1][1]),
-                ArrayField(hard_negatives[2][1]),
-            ]
+    # # todo: implement
+    # @overrides
+    # def text_to_instance(
+    #     self,  # type: ignore
+    #     caption: str,
+    #     filename: str,
+    #     image: Union[str, Tuple[Tensor, Tensor]],
+    #     other_images: List[Optional[Union[str, Tuple[Tensor, Tensor]]]],
+    #     hard_negatives_cache=Optional[Dict[Tensor, List[Tuple[Tensor, Tensor]]]],
+    #     label: int = 0,
+    #     *,
+    #     use_cache: bool = True,
+    # ) -> Optional[Instance]:
+    #     caption_field = TextField(self._tokenizer.tokenize(caption), None)
 
-            box_masks = [
-                ArrayField(
-                    features.new_ones((features.shape[0],), dtype=torch.bool),
-                    padding_value=False,
-                    dtype=torch.bool,
-                ),
-                ArrayField(
-                    hard_negatives[0][0].new_ones(
-                        (hard_negatives[0][0].shape[0],), dtype=torch.bool
-                    ),
-                    padding_value=False,
-                    dtype=torch.bool,
-                ),
-                ArrayField(
-                    hard_negatives[1][0].new_ones(
-                        (hard_negatives[1][0].shape[0],), dtype=torch.bool
-                    ),
-                    padding_value=False,
-                    dtype=torch.bool,
-                ),
-                ArrayField(
-                    hard_negatives[2][0].new_ones(
-                        (hard_negatives[2][0].shape[0],), dtype=torch.bool
-                    ),
-                    padding_value=False,
-                    dtype=torch.bool,
-                ),
-            ]
+    #     features, coords = self.get_image_features(image)
 
-        fields: Dict[str, Field] = {
-            "caption": caption_field,
-            "box_features": ListField(box_features),
-            "box_coordinates": ListField(box_coordinates),
-            "box_mask": ListField(box_masks),
-            "label": LabelField(label, skip_indexing=True),
-        }
+    #     if self.is_evaluation:
+    #         box_features = []
+    #         box_coordinates = []
+    #         box_masks = []
 
-        return Instance(fields)
+    #         for curr_image in other_images:
+    #             curr_image_features, curr_image_coords = self.get_image_features(curr_image)
+
+    #             box_features.append(ArrayField(curr_image_features))
+    #             box_coordinates.append(ArrayField(curr_image_coords))
+    #             box_masks.append(
+    #                 ArrayField(
+    #                     curr_image_features.new_ones(
+    #                         (curr_image_features.shape[0],), dtype=torch.bool
+    #                     ),
+    #                     padding_value=False,
+    #                     dtype=torch.bool,
+    #                 )
+    #             )
+
+    #     else:
+    #         hard_negatives = self.get_hard_negatives(
+    #             caption, filename, features, other_images, hard_negatives_cache
+    #         )
+
+    #         box_features = [
+    #             ArrayField(features),
+    #             ArrayField(hard_negatives[0][0]),
+    #             ArrayField(hard_negatives[1][0]),
+    #             ArrayField(hard_negatives[2][0]),
+    #         ]
+
+    #         box_coordinates = [
+    #             ArrayField(coords),
+    #             ArrayField(hard_negatives[0][1]),
+    #             ArrayField(hard_negatives[1][1]),
+    #             ArrayField(hard_negatives[2][1]),
+    #         ]
+
+    #         box_masks = [
+    #             ArrayField(
+    #                 features.new_ones((features.shape[0],), dtype=torch.bool),
+    #                 padding_value=False,
+    #                 dtype=torch.bool,
+    #             ),
+    #             ArrayField(
+    #                 hard_negatives[0][0].new_ones(
+    #                     (hard_negatives[0][0].shape[0],), dtype=torch.bool
+    #                 ),
+    #                 padding_value=False,
+    #                 dtype=torch.bool,
+    #             ),
+    #             ArrayField(
+    #                 hard_negatives[1][0].new_ones(
+    #                     (hard_negatives[1][0].shape[0],), dtype=torch.bool
+    #                 ),
+    #                 padding_value=False,
+    #                 dtype=torch.bool,
+    #             ),
+    #             ArrayField(
+    #                 hard_negatives[2][0].new_ones(
+    #                     (hard_negatives[2][0].shape[0],), dtype=torch.bool
+    #                 ),
+    #                 padding_value=False,
+    #                 dtype=torch.bool,
+    #             ),
+    #         ]
+
+    #     fields: Dict[str, Field] = {
+    #         "caption": caption_field,
+    #         "box_features": ListField(box_features),
+    #         "box_coordinates": ListField(box_coordinates),
+    #         "box_mask": ListField(box_masks),
+    #         "label": LabelField(label, skip_indexing=True),
+    #     }
+
+    #     return Instance(fields)
 
     def get_hard_negatives(
+        self,
+        image_index: int,
+        features_tensor: Tensor,
+        averaged_features: Tensor,
+        coordinates_tensor: Tensor,
+        n: int = 100,
+    ) -> List[Tuple[Tensor, Tensor]]:
+        # Calculate the top n (let's say 100) potential hard negatives
+        _, indices = (averaged_features @ averaged_features[image_index]).topk(n)
+        return indices
+
+    def get_hard_negatives2(
         self,
         caption: str,
         filename: str,
@@ -357,11 +487,7 @@ class Flickr30kReader(VisionReader):
         other_images: List[Optional[Union[str, Tuple[Tensor, Tensor]]]],
         hard_negatives_cache=Dict[Tensor, List[Tuple[Tensor, Tensor]]],
     ) -> List[Tuple[Tensor, Tensor]]:
-        # print("features device2:")
-        # print(image_features.device)
-        # print("image embedding device:")
         image_embedding = torch.mean(image_features, dim=0)
-        # print(image_embedding.device)
         if filename in hard_negatives_cache:
             return hard_negatives_cache[filename]
         if self.is_test:
@@ -374,15 +500,8 @@ class Flickr30kReader(VisionReader):
 
         heap = []
         heapq.heapify(heap)
-        # TODO: see if we don't have to sample? the cache might not be working for hard negatives
-        # print(len(other_images))
-        # sampled_images = choices(other_images, k=min(len(other_images), 500))
-        # print(len(sampled_images))
         seen_set = set()
-        for image in other_images:  # sample(other_images, min(len(other_images), 100)):
-            # Calculate the 3 closest hard negatives:
-            # 1. Calculate mean of all boxes
-            # 2. Find the ~100 nearest neighbors of the input image
+        for image in other_images:
             curr_image_features, curr_image_coords = self.get_image_features(image)
             averaged_features = torch.mean(curr_image_features, dim=0)
             if not torch.equal(averaged_features, image_embedding):
@@ -417,6 +536,25 @@ class Flickr30kReader(VisionReader):
             features, coords = image
         # return features.to(device=self.cuda_device), coords.to(device=self.cuda_device)
         return features, coords
+
+    def get_caption_features(self, captions):
+        if self.is_test:
+            return torch.randn(len(captions), 5, 10)
+
+        caption_list = []
+        for caption_dict in captions:
+            curr_captions = []
+            for caption in caption_dict["captions"]:
+                # TODO: switch to batch_encode_plus?
+                batch = self.tokenizer.encode_plus(caption, return_tensors="pt").to(
+                    device=self.cuda_device
+                )
+                # Shape: (1, 1024)
+                caption_embedding = self.model(**batch).pooler_output.squeeze(0)
+                curr_captions.append(caption_embedding)
+            caption_list.append(torch.stack(curr_captions, dim=0))
+        # Shape: (num_captions, 5, 1024)
+        return torch.stack(caption_list, dim=0)
 
     # todo: fix
     @overrides

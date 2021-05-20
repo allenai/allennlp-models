@@ -25,6 +25,7 @@ class TestFlickr30kReader(AllenNlpTestCase):
             tokenizer=WhitespaceTokenizer(),
             token_indexers={"tokens": SingleIdTokenIndexer()},
             is_test=True,
+            n=4,
         )
 
         instances = list(self.reader.read("test_fixtures/vision/flickr30k/test.txt"))
@@ -80,6 +81,7 @@ class TestFlickr30kReader(AllenNlpTestCase):
             token_indexers={"tokens": SingleIdTokenIndexer()},
             is_test=True,
             is_evaluation=True,
+            n=4,
         )
 
         instances = list(self.reader.read("test_fixtures/vision/flickr30k/test.txt"))

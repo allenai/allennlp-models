@@ -117,9 +117,52 @@ class ImageRetrievalVilbert(VisionTextModel):
         caption: TextFieldTensors,
         label: torch.Tensor,
     ) -> Dict[str, torch.Tensor]:
+        batch_size, num_images, num_boxes, feature_dimension = box_features.shape
+        
+        box_features = box_features.view(batch_size * num_images, num_boxes, feature_dimension)
+        box_coordinates = box_coordinates.view(batch_size * num_images, box_coordinates.shape[2], box_coordinates.shape[3])
+        box_mask = box_mask.view(batch_size * num_images, box_mask.shape[2])
+
+        # Shape: (batch_size * num_images, pooled_output_dim)
+        pooled_output = self.backbone(box_features, box_coordinates, box_mask, caption)["pooled_boxes_and_text"]
+
+        pooled_output = pooled_output.view(batch_size, num_images, pooled_output.shape[1])
+
+        # Shape: (batch_size, num_images)
+        logits = self.classifier(pooled_output).squeezse(-1)
+
+        if self.training:
+            probs = torch.softmax(logits, dim=1)
+
+            outputs = {"logits": logits, "probs": probs}
+            outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
+
+            return outputs
+
+        else:
+            # Shape: (batch_size, k)
+            _, indices = scores.topk(self.k, dim=-1)
+
+            # Shape: (batch_size)
+            pre_logits = torch.sum((indices == label.reshape(-1, 1)), dim=-1).float()
+            # Shape: (batch_size, 2)
+            # 0-th column == 1 if we found the image in the top k, 1st column == 1 if we didn't
+            logits = torch.stack((pre_logits, (pre_logits == 0).float()), dim=1)
+
+            outputs = {"logits": logits}
+            outputs = self._compute_loss_and_metrics(
+                batch_size, outputs, torch.zeros(batch_size).long().to(logits.device)
+            )
+
+            return outputs
+
+        #################
+        
         batch_size = box_features.shape[0]
         num_images = box_features.shape[1]
 
+        # TODO: We actually want to roll up the dimensions to get e.g. (batch_size * num_images, num_boxes, feature_dim)
+        # Then we only have to feed it into VilBERT once
         # Reshape inputs to feed into VilBERT
         box_features = box_features.transpose(0, 1)
         box_coordinates = box_coordinates.transpose(0, 1)
@@ -194,9 +237,9 @@ class ImageRetrievalVilbert(VisionTextModel):
 
             # probs = torch.softmax(logits, dim=1)
 
-            outputs = {"logits": logits} # , "probs": probs}
+            outputs = {"logits": logits}  # , "probs": probs}
             # This is slightly wrong. I have labels that correspond to the image index, and then top k
-            # scores. I think I should go back to getting the int-version bool mask thing, summing them, and then 
+            # scores. I think I should go back to getting the int-version bool mask thing, summing them, and then
             # do something with those? Right now the labels I'm passing in here mean nothing.
             # Ex:
             # A row in the logits tensor could be [0, 1, 0, 0] and this means we found the image in the top k=4 images
@@ -204,10 +247,11 @@ class ImageRetrievalVilbert(VisionTextModel):
             # tell the model we didn't find it. I think I should sum up the top k image ints to get either 0 or 1
             # and then use a single class loss? That might work? It's a binary question of "was this image in the top k"
             # Should be good now? Need to test out above changes
-            outputs = self._compute_loss_and_metrics(batch_size, outputs, torch.zeros(batch_size).long().to(logits.device))
+            outputs = self._compute_loss_and_metrics(
+                batch_size, outputs, torch.zeros(batch_size).long().to(logits.device)
+            )
 
             return outputs
-
 
     # TODO: fix
     @overrides
