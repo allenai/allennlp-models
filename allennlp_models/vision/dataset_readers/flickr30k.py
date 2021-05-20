@@ -397,12 +397,11 @@ class Flickr30kReader(VisionReader):
             return torch.randn(len(captions), 5, 10)
 
         caption_list = []
-        i = 0
         for caption_dict in captions:
             curr_captions = []
             for caption in caption_dict["captions"]:
-                print(i)
-                i += 5
+                print(torch.cuda.memory_allocated())
+                print(torch.cuda.memory_reserved())
                 # TODO: switch to batch_encode_plus?
                 batch = self.tokenizer.encode_plus(caption, return_tensors="pt").to(
                     device=self.cuda_device
