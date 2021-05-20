@@ -399,20 +399,17 @@ class Flickr30kReader(VisionReader):
         caption_list = []
         for caption_dict in captions:
             curr_captions = []
+            print(torch.cuda.memory_allocated())
+            print(torch.cuda.memory_reserved())
             for caption in caption_dict["captions"]:
-                print(torch.cuda.memory_allocated())
-                print(torch.cuda.memory_reserved())
                 # TODO: switch to batch_encode_plus?
                 batch = self.tokenizer.encode_plus(caption, return_tensors="pt").to(
                     device=self.cuda_device
                 )
                 # Shape: (1, 1024)
-                caption_embedding = self.model(**batch).pooler_output.squeeze(0)
+                caption_embedding = self.model(**batch).pooler_output.squeeze(0).cpu()
                 curr_captions.append(caption_embedding)
-            stacked_tensor = torch.stack(curr_captions, dim=0)
-            stacked_cpu_tensor = stacked_tensor.cpu()
-            del stacked_tensor
-            caption_list.append(stacked_cpu_tensor)
+            caption_list.append(torch.stack(curr_captions, dim=0))
         # Shape: (num_captions, 5, 1024)
         return torch.stack(caption_list, dim=0)
 
