@@ -49,7 +49,6 @@ local dataset = "data";
     "max_instances": 1000,
     "image_processing_batch_size": 16,
     // "answer_vocab": if construct_vocab then null else vocabulary,
-    // "multiple_answers_per_question": !construct_vocab,
   },
   "validation_dataset_reader": {
     "type": "flickr30k",
@@ -72,10 +71,6 @@ local dataset = "data";
     "image_processing_batch_size": 16,
     "is_evaluation": true,
   },
-  // "validation_dataset_reader": self.dataset_reader {
-    // "answer_vocab": null    // make sure we don't skip unanswerable questions during validation
-  // },
-  // "vocabulary": vocabulary,
   "train_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/train.txt",
   "validation_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/val.txt",
   "test_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/test.txt",
