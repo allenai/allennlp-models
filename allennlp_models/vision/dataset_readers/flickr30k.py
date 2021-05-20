@@ -407,8 +407,9 @@ class Flickr30kReader(VisionReader):
                     device=self.cuda_device
                 )
                 # Shape: (1, 1024)
-                # caption_embedding = self.model(**batch).pooler_output.squeeze(0).cpu()
-                caption_embedding = torch.randn(1024)
+                output = self.model(**batch)
+                caption_embedding = output.pooler_output.squeeze(0).cpu()
+                del output
                 curr_captions.append(caption_embedding)
             caption_list.append(torch.stack(curr_captions, dim=0))
         # Shape: (num_captions, 5, 1024)
