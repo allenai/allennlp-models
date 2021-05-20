@@ -200,7 +200,10 @@ class Flickr30kReader(VisionReader):
             # It would be much easier to just process one image at a time, but it's faster to process
             # them in batches. So this code gathers up instances until it has enough to fill up a batch
             # that needs processing, and then processes them all.
-            filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in caption_dicts]
+            if self.is_evaluation:
+                filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in captions]
+            else:
+                filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in caption_dicts]
             try:
                 processed_images = list(
                     self._process_image_paths(self.images[filename] for filename in filenames)
@@ -234,7 +237,6 @@ class Flickr30kReader(VisionReader):
         averaged_features = torch.mean(features_tensor, dim=1)
 
         if self.is_evaluation:
-            # TODO: Make mask tensor here
             masks_list = []
             for image_index in range(len(caption_dicts)):
                 current_feature = features_tensor[image_index]
