@@ -241,9 +241,12 @@ class Flickr30kReader(VisionReader):
             for image_index in range(len(caption_dicts)):
                 current_feature = features_list[image_index].tensor
                 masks_list.append(
-                    current_feature.new_ones((current_feature.shape[0],), dtype=torch.bool)
+                    TensorField(
+                        current_feature.new_ones((current_feature.shape[0],), dtype=torch.bool),
+                        padding_value=False,
+                        dtype=torch.bool,
+                    )
                 )
-            masks_tensor = torch.stack(masks_list, dim=0)
 
             for image_index in range(len(caption_dicts)):
                 caption_dict = caption_dicts[image_index]
@@ -257,7 +260,7 @@ class Flickr30kReader(VisionReader):
                         caption_index=caption_index,
                         features_list=features_list,
                         coordinates_list=coordinates_list,
-                        masks_tensor=masks_tensor,
+                        masks_list=masks_list,
                         label=image_index,
                     )
 
@@ -305,7 +308,7 @@ class Flickr30kReader(VisionReader):
         caption_index: int,
         features_list: List[TensorField],
         coordinates_list: List[TensorField],
-        masks_tensor: Optional[Tensor] = None,
+        masks_list: Optional[Tensor] = None,
         averaged_features: Optional[torch.Tensor] = None,
         caption_tensor: Optional[Tensor] = None,
         potential_hard_negatives: List[int] = [],
@@ -316,7 +319,7 @@ class Flickr30kReader(VisionReader):
                 "caption": TextField(self._tokenizer.tokenize(caption), None),
                 "box_features": ListField(features_list),
                 "box_coordinates": ListField(coordinates_list),
-                "box_mask": TensorField(masks_tensor, padding_value=False, dtype=torch.bool),
+                "box_mask": ListField(masks_list),
                 "label": LabelField(label, skip_indexing=True),
             }
 
