@@ -144,6 +144,7 @@ class Flickr30kReader(VisionReader):
             self.model = transformers.AutoModel.from_pretrained("bert-large-uncased").to(
                 self.cuda_device
             )
+            self.model.eval()
             self.tokenizer = transformers.AutoTokenizer.from_pretrained("bert-large-uncased")
 
         # read answer vocab
@@ -397,21 +398,19 @@ class Flickr30kReader(VisionReader):
             return torch.randn(len(captions), 5, 10)
 
         caption_list = []
-        for caption_dict in captions:
-            curr_captions = []
-            print(torch.cuda.memory_allocated())
-            print(torch.cuda.memory_reserved())
-            for caption in caption_dict["captions"]:
-                # TODO: switch to batch_encode_plus?
-                batch = self.tokenizer.encode_plus(caption, return_tensors="pt").to(
-                    device=self.cuda_device
-                )
-                # Shape: (1, 1024)
-                output = self.model(**batch)
-                caption_embedding = output.pooler_output.squeeze(0).cpu()
-                del output
-                curr_captions.append(caption_embedding)
-            caption_list.append(torch.stack(curr_captions, dim=0))
+        with torch.no_grad():
+            for caption_dict in captions:
+                curr_captions = []
+                for caption in caption_dict["captions"]:
+                    # TODO: switch to batch_encode_plus?
+                    batch = self.tokenizer.encode_plus(caption, return_tensors="pt").to(
+                        device=self.cuda_device
+                    )
+                    # Shape: (1, 1024)
+                    caption_embedding = self.model(**batch).pooler_output.squeeze(0).cpu()
+                    del output
+                    curr_captions.append(caption_embedding)
+                caption_list.append(torch.stack(curr_captions, dim=0))
         # Shape: (num_captions, 5, 1024)
         return torch.stack(caption_list, dim=0)
 
