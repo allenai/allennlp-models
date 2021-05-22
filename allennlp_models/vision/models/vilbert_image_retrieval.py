@@ -129,9 +129,11 @@ class ImageRetrievalVilbert(VisionTextModel):
 
         # Shape: (batch_size, num_images)
         logits = self.classifier(pooled_output).squeeze(-1)
-
+        logger.info("logits shape")
+        logger.info(logits.shape)
+        print(logits.shape)
         if self.training:
-            probs = torch.softmax(logits, dim=1)
+            probs = torch.softmax(logits, dim=-1)
 
             outputs = {"logits": logits, "probs": probs}
             outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
