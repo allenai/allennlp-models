@@ -125,6 +125,8 @@ class ImageRetrievalVilbert(VisionTextModel):
             "pooled_boxes_and_text"
         ]
 
+        print(pooled_output.shape)
+
         # pooled_output = pooled_output.view(batch_size, num_images, pooled_output.shape[1])
 
         # Shape: (batch_size, num_images)
