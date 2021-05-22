@@ -117,20 +117,15 @@ class ImageRetrievalVilbert(VisionTextModel):
         caption: TextFieldTensors,
         label: torch.Tensor,
     ) -> Dict[str, torch.Tensor]:
-        batch_size, num_images, num_boxes, feature_dimension = box_features.shape
-
-        box_features = box_features.view(batch_size * num_images, num_boxes, feature_dimension)
-        box_coordinates = box_coordinates.view(
-            batch_size * num_images, box_coordinates.shape[2], box_coordinates.shape[3]
-        )
-        box_mask = box_mask.view(batch_size * num_images, box_mask.shape[2])
+        # batch_size, num_images, num_boxes, feature_dimension = box_features.shape
+        batch_size = box_features.shape[0]
 
         # Shape: (batch_size * num_images, pooled_output_dim)
         pooled_output = self.backbone(box_features, box_coordinates, box_mask, caption)[
             "pooled_boxes_and_text"
         ]
 
-        pooled_output = pooled_output.view(batch_size, num_images, pooled_output.shape[1])
+        # pooled_output = pooled_output.view(batch_size, num_images, pooled_output.shape[1])
 
         # Shape: (batch_size, num_images)
         logits = self.classifier(pooled_output).squeezse(-1)
