@@ -158,6 +158,7 @@ Here is a list of pre-trained models currently available.
 - [`pair-classification-roberta-mnli`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/pair-classification-roberta-mnli.json) - RoBERTa finetuned on MNLI.
 - [`pair-classification-roberta-rte`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/pair-classification-roberta-rte.json) - A pair classification model patterned after the proposed model in Devlin et al, fine-tuned on the SuperGLUE RTE corpus
 - [`pair-classification-roberta-snli`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/pair-classification-roberta-snli.json) - RoBERTa finetuned on SNLI.
+- [`binary-gender-bias-mitigated-roberta-snli`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/pair-classification-binary-gender-bias-mitigated-roberta-snli.json) - RoBERTa finetuned on SNLI with binary gender bias mitigation.
 - [`rc-bidaf-elmo`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/rc-bidaf-elmo.json) - BiDAF model with ELMo embeddings instead of GloVe.
 - [`rc-bidaf`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/rc-bidaf.json) - BiDAF model with GloVe embeddings.
 - [`rc-naqanet`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/rc-naqanet.json) - An augmented version of QANet that adds rudimentary numerical reasoning ability, trained on DROP (Dua et al., 2019), as published in the original DROP paper.
