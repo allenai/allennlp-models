@@ -13,10 +13,10 @@
         "version": "1",
         "model_type": "RoBERTa",
         "paper": {
-	    "citation": "\n@article{Dev2020OnMA,\ntitle={On Measuring and Mitigating Biased Inferences of Word Embeddings},\nauthor={Sunipa Dev and Tao Li and J. M. Phillips and Vivek Srikumar},\njournal={ArXiv},\nyear={2020},\nvolume={abs/1908.09369}\n",
-	    "title": "On Measuring and Mitigating Biased Inferences of Word Embeddings",
- 	    "url": "https://api.semanticscholar.org/CorpusID:201670701"
-	},
+            "citation": "\n@article{Dev2020OnMA,\ntitle={On Measuring and Mitigating Biased Inferences of Word Embeddings},\nauthor={Sunipa Dev and Tao Li and J. M. Phillips and Vivek Srikumar},\njournal={ArXiv},\nyear={2020},\nvolume={abs/1908.09369}\n",
+            "title": "On Measuring and Mitigating Biased Inferences of Word Embeddings",
+            "url": "https://api.semanticscholar.org/CorpusID:201670701"
+        },
         "license": null,
         "contact": "allennlp-contact@allenai.org"
     },
@@ -36,9 +36,9 @@
     },
     "evaluation_data": {
         "dataset": {
-	    "name": "On Measuring and Mitigating Biased Gender-Occupation Inferences SNLI Dataset",
-	    "url": "https://github.com/sunipa/On-Measuring-and-Mitigating-Biased-Inferences-of-Word-Embeddings",
-            "processed_url": "https://storage.googleapis.com/allennlp-public-models/binary-gender-bias-mitigated-snli-dataset.jsonl",
+            "name": "On Measuring and Mitigating Biased Gender-Occupation Inferences SNLI Dataset",
+            "url": "https://github.com/sunipa/On-Measuring-and-Mitigating-Biased-Inferences-of-Word-Embeddings",
+            "processed_url": "https://storage.googleapis.com/allennlp-public-models/binary-gender-bias-mitigated-snli-dataset.jsonl"
         },
         "motivation": null,
         "preprocessing": null
