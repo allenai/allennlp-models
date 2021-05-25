@@ -89,19 +89,11 @@ class Nlvr2Model(VisionTextModel):
     ) -> Dict[str, torch.Tensor]:
         batch_size = box_features.shape[0]
 
-        box_features = box_features.transpose(0, 1)
-        box_coordinates = box_coordinates.transpose(0, 1)
-        box_mask = box_mask.transpose(0, 1)
+        pooled_outputs = self.backbone(box_features, box_coordinates, box_mask, hypothesis)[
+            "pooled_boxes_and_text"
+        ].transpose(0, 1)
 
-        pooled_outputs1 = self.backbone(
-            box_features[0], box_coordinates[0], box_mask[0], hypothesis
-        )["pooled_boxes_and_text"]
-        pooled_outputs2 = self.backbone(
-            box_features[1], box_coordinates[1], box_mask[1], hypothesis
-        )["pooled_boxes_and_text"]
-
-        # TODO: concatenate these correctly
-        hidden = self.layer1(torch.cat((pooled_outputs1, pooled_outputs2), dim=-1))
+        hidden = self.layer1(torch.cat((pooled_outputs[0], pooled_outputs[1]), dim=-1))
 
         # Shape: (batch_size, num_labels)
         logits = self.layer2(self.activation(hidden))
