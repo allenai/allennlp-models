@@ -25,7 +25,7 @@ local bert_model = "epwalsh/bert-xsmall-dummy";
             "lr": 0.001
         },
         "checkpointer": {
-            "num_serialized_models_to_keep": 1
+            "keep_most_recent_by_count": 1
         },
         "num_epochs": 3,
         "grad_norm": 10.0,
