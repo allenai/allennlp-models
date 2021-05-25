@@ -208,6 +208,7 @@ class ImageRetrievalVilbert(VisionTextModel):
                 curr_box_coordinates = box_coordinates[i]
                 curr_box_mask = box_mask[i]
 
+                # TODO: use torch.no_grad() and set self.backbone.eval()
                 vilbert_outputs.append(
                     # Shape: (batch_size, pooled_output_dim)
                     self.backbone(curr_box_features, curr_box_coordinates, curr_box_mask, caption)[
