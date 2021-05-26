@@ -129,7 +129,8 @@ local dataset = "data";
     "shuffle": true,
   },
   "validation_data_loader": {
-    "batch_size": 1,
+    // "batch_size": 1,
+    "batch_size": gpu_batch_size
   },
   [if num_gpus > 1 then "distributed"]: {
     "cuda_devices": std.range(0, num_gpus - 1)

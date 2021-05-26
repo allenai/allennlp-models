@@ -127,15 +127,10 @@ class ImageRetrievalVilbert(VisionTextModel):
                 "pooled_boxes_and_text"
             ]
 
-            print(pooled_output.shape)
-
             # pooled_output = pooled_output.view(batch_size, num_images, pooled_output.shape[1])
 
             # Shape: (batch_size, num_images)
             logits = self.classifier(pooled_output).squeeze(-1)
-            logger.info("logits shape")
-            logger.info(logits.shape)
-            print(logits.shape)
 
             probs = torch.softmax(logits, dim=-1)
 
@@ -153,15 +148,10 @@ class ImageRetrievalVilbert(VisionTextModel):
                 ]
                 self.backbone.train()
 
-                print(pooled_output.shape)
-
                 # pooled_output = pooled_output.view(batch_size, num_images, pooled_output.shape[1])
 
                 # Shape: (batch_size, num_images)
                 scores = self.classifier(pooled_output).squeeze(-1)
-                logger.info("scores shape")
-                logger.info(scores.shape)
-                print(scores.shape)
 
                 # Shape: (batch_size, k)
                 _, indices = scores.topk(self.k, dim=-1)
