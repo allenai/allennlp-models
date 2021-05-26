@@ -120,21 +120,23 @@ class ImageRetrievalVilbert(VisionTextModel):
         # batch_size, num_images, num_boxes, feature_dimension = box_features.shape
         batch_size = box_features.shape[0]
 
-        # Shape: (batch_size * num_images, pooled_output_dim)
-        pooled_output = self.backbone(box_features, box_coordinates, box_mask, caption)[
-            "pooled_boxes_and_text"
-        ]
 
-        print(pooled_output.shape)
-
-        # pooled_output = pooled_output.view(batch_size, num_images, pooled_output.shape[1])
-
-        # Shape: (batch_size, num_images)
-        logits = self.classifier(pooled_output).squeeze(-1)
-        logger.info("logits shape")
-        logger.info(logits.shape)
-        print(logits.shape)
         if self.training:
+            # Shape: (batch_size * num_images, pooled_output_dim)
+            pooled_output = self.backbone(box_features, box_coordinates, box_mask, caption)[
+                "pooled_boxes_and_text"
+            ]
+
+            print(pooled_output.shape)
+
+            # pooled_output = pooled_output.view(batch_size, num_images, pooled_output.shape[1])
+
+            # Shape: (batch_size, num_images)
+            logits = self.classifier(pooled_output).squeeze(-1)
+            logger.info("logits shape")
+            logger.info(logits.shape)
+            print(logits.shape)
+
             probs = torch.softmax(logits, dim=-1)
 
             outputs = {"logits": logits, "probs": probs}
@@ -143,21 +145,39 @@ class ImageRetrievalVilbert(VisionTextModel):
             return outputs
 
         else:
-            # Shape: (batch_size, k)
-            _, indices = scores.topk(self.k, dim=-1)
+            with torch.no_grad():
+                # Shape: (batch_size * num_images, pooled_output_dim)
+                self.backbone.eval()
+                pooled_output = self.backbone(box_features, box_coordinates, box_mask, caption)[
+                    "pooled_boxes_and_text"
+                ]
+                self.backbone.train()
 
-            # Shape: (batch_size)
-            pre_logits = torch.sum((indices == label.reshape(-1, 1)), dim=-1).float()
-            # Shape: (batch_size, 2)
-            # 0-th column == 1 if we found the image in the top k, 1st column == 1 if we didn't
-            logits = torch.stack((pre_logits, (pre_logits == 0).float()), dim=1)
+                print(pooled_output.shape)
 
-            outputs = {"logits": logits}
-            outputs = self._compute_loss_and_metrics(
-                batch_size, outputs, torch.zeros(batch_size).long().to(logits.device)
-            )
+                # pooled_output = pooled_output.view(batch_size, num_images, pooled_output.shape[1])
 
-            return outputs
+                # Shape: (batch_size, num_images)
+                logits = self.classifier(pooled_output).squeeze(-1)
+                logger.info("logits shape")
+                logger.info(logits.shape)
+                print(logits.shape)
+
+                # Shape: (batch_size, k)
+                _, indices = scores.topk(self.k, dim=-1)
+
+                # Shape: (batch_size)
+                pre_logits = torch.sum((indices == label.reshape(-1, 1)), dim=-1).float()
+                # Shape: (batch_size, 2)
+                # 0-th column == 1 if we found the image in the top k, 1st column == 1 if we didn't
+                logits = torch.stack((pre_logits, (pre_logits == 0).float()), dim=1)
+
+                outputs = {"logits": logits}
+                outputs = self._compute_loss_and_metrics(
+                    batch_size, outputs, torch.zeros(batch_size).long().to(logits.device)
+                )
+
+                return outputs
 
         #################
 
