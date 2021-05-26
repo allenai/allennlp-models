@@ -1,6 +1,6 @@
 import logging
 from os import PathLike
-from typing import Any, Dict, Tuple, Union, Optional
+from typing import Any, Dict, Iterable, Tuple, Union, Optional
 
 from overrides import overrides
 import torch
@@ -21,23 +21,6 @@ from allennlp.modules.vision.region_detector import RegionDetector
 from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
 
 logger = logging.getLogger(__name__)
-
-
-def extract_image_features(image: Union[str, Tuple[Tensor, Tensor]], use_cache: bool):
-    if isinstance(image, str):
-        features, coords = next(self._process_image_paths([image], use_cache=use_cache))
-    else:
-        features, coords = image
-
-    return (
-        ArrayField(features),
-        ArrayField(coords),
-        ArrayField(
-            features.new_ones((features.shape[0],), dtype=torch.bool),
-            padding_value=False,
-            dtype=torch.bool,
-        ),
-    )
 
 
 @DatasetReader.register("nlvr2")
@@ -90,14 +73,14 @@ class Nlvr2Reader(VisionReader):
         image_loader: Optional[ImageLoader] = None,
         image_featurizer: Optional[Lazy[GridEmbedder]] = None,
         region_detector: Optional[Lazy[RegionDetector]] = None,
-        answer_vocab: Optional[Union[Vocabulary, str]] = None,  ###
-        feature_cache_dir: Optional[Union[str, PathLike]] = None,  ### (fix above)
+        answer_vocab: Optional[Union[Vocabulary, str]] = None,  # ##
+        feature_cache_dir: Optional[Union[str, PathLike]] = None,  # ## (fix above)
         tokenizer: Optional[Tokenizer] = None,
         token_indexers: Optional[Dict[str, TokenIndexer]] = None,
         cuda_device: Optional[Union[int, torch.device]] = None,
         max_instances: Optional[int] = None,
-        image_processing_batch_size: int = 8,  ###
-        write_to_cache: bool = True,  ###
+        image_processing_batch_size: int = 8,  # ##
+        write_to_cache: bool = True,  # ##
     ) -> None:
         run_featurization = image_loader and image_featurizer and region_detector
         if image_dir is None and run_featurization:
@@ -171,10 +154,10 @@ class Nlvr2Reader(VisionReader):
                     missing_id,
                     f"We could not find an image with the id {missing_id}. "
                     "Because of the size of the image datasets, we don't download them automatically. "
-                    "Please go to https://github.com/lil-lab/nlvr/tree/master/nlvr2, download the datasets you need, "
-                    "and set the image_dir parameter to point to your download location. This dataset "
-                    "reader does not care about the exact directory structure. It finds the images "
-                    "wherever they are.",
+                    "Please go to https://github.com/lil-lab/nlvr/tree/master/nlvr2, download the "
+                    "datasets you need, and set the image_dir parameter to point to your download "
+                    "location. This dataset reader does not care about the exact directory "
+                    "structure. It finds the images wherever they are.",
                 )
 
             processed_images1 = self._process_image_paths(image_paths1)
@@ -194,6 +177,22 @@ class Nlvr2Reader(VisionReader):
                 yield instance
         logger.info(f"Successfully yielded {attempted_instances} instances")
 
+    def extract_image_features(self, image: Union[str, Tuple[Tensor, Tensor]], use_cache: bool):
+        if isinstance(image, str):
+            features, coords = next(self._process_image_paths([image], use_cache=use_cache))
+        else:
+            features, coords = image
+
+        return (
+            ArrayField(features),
+            ArrayField(coords),
+            ArrayField(
+                features.new_ones((features.shape[0],), dtype=torch.bool),
+                padding_value=False,
+                dtype=torch.bool,
+            ),
+        )
+
     @overrides
     def text_to_instance(
         self,
@@ -205,8 +204,8 @@ class Nlvr2Reader(VisionReader):
         use_cache: bool = True,
     ) -> Instance:
         hypothesis_field = TextField(self._tokenizer.tokenize(hypothesis), None)
-        box_features1, box_coordinates1, box_mask1 = extract_image_features(image1, use_cache)
-        box_features2, box_coordinates2, box_mask2 = extract_image_features(image2, use_cache)
+        box_features1, box_coordinates1, box_mask1 = self.extract_image_features(image1, use_cache)
+        box_features2, box_coordinates2, box_mask2 = self.extract_image_features(image2, use_cache)
 
         fields = {
             "hypothesis": hypothesis_field,
