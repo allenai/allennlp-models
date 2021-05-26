@@ -128,6 +128,9 @@ local dataset = "data";
     "batch_size": gpu_batch_size,
     "shuffle": true,
   },
+  "validation_data_loader": {
+    "batch_size": 1,
+  },
   [if num_gpus > 1 then "distributed"]: {
     "cuda_devices": std.range(0, num_gpus - 1)
     #"cuda_devices": std.repeat([-1], num_gpus)  # Use this for debugging on CPU

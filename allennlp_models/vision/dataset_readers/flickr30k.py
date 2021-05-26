@@ -33,8 +33,6 @@ from allennlp.modules.vision.region_detector import RegionDetector
 from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
 
 # TODO: Things slowing this down
-# 1. Too big of a set of images to search through
-# 2. Model DRASTICALLY slows it down (probably wrong device?)
 # 3. Not being able to load hard negatives (json file?)
 
 
@@ -405,12 +403,14 @@ class Flickr30kReader(VisionReader):
             for caption_dict in captions:
                 curr_captions = []
                 for caption in caption_dict["captions"]:
-                    # TODO: switch to batch_encode_plus?
-                    batch = self.tokenizer.encode_plus(caption, return_tensors="pt").to(
-                        device=self.cuda_device
-                    )
-                    # Shape: (1, 1024)
-                    caption_embedding = self.model(**batch).pooler_output.squeeze(0).cpu()
+                    # # TODO: switch to batch_encode_plus?
+                    # batch = self.tokenizer.encode_plus(caption, return_tensors="pt").to(
+                    #     device=self.cuda_device
+                    # )
+                    # # Shape: (1, 1024)
+                    # caption_embedding = self.model(**batch).pooler_output.squeeze(0).cpu()
+                    # TODO: this is to speed up debugging
+                    caption_embedding = torch.randn(1, 1024)
                     curr_captions.append(caption_embedding)
                 caption_list.append(torch.stack(curr_captions, dim=0))
         # Shape: (num_captions, 5, 1024)
