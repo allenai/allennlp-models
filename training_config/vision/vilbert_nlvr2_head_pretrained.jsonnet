@@ -34,7 +34,7 @@ local reader_common = {
         "model_name": model_name
       }
     },
-    "max_instances": 1000, # DEBUG
+    // "max_instances": 1000, # DEBUG
     "image_processing_batch_size": 16,
 };
 
