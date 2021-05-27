@@ -58,7 +58,7 @@ class Nlvr2Head(Head):
     @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         result = self.fbeta.get_metric(reset)
-        result["acc"] = self.accuracy.get_metric(reset)
+        result["accuracy"] = self.accuracy.get_metric(reset)
         return result
 
     def make_output_human_readable(
@@ -74,4 +74,5 @@ class Nlvr2Head(Head):
         output_dict["entailment_answer"] = entailment_answer
         return output_dict
 
+    # TODO: update
     default_predictor = "vilbert_ve"
