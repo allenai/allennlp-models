@@ -1,4 +1,5 @@
-from typing import Optional, Dict, Any
+from os import PathLike
+from typing import Optional, Dict, Any, Union
 
 from overrides import overrides
 import torch
@@ -20,6 +21,7 @@ class T5(Model):
         ddp_wrapper: Optional[DdpWrapper] = None,
         beam_size: int = 3,
         max_decoding_steps: int = 50,
+        weights_path: Optional[Union[str, PathLike]] = None,
         **kwargs
     ) -> None:
         super().__init__(vocab, **kwargs)
@@ -31,6 +33,7 @@ class T5(Model):
             ddp_wrapper=ddp_wrapper,
             beam_size=beam_size,
             max_decoding_steps=max_decoding_steps,
+            weights_path=weights_path,
         )
 
         exclude_indices = {
