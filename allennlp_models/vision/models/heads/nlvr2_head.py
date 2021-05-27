@@ -12,7 +12,6 @@ class Nlvr2Head(Head):
     def __init__(self, vocab: Vocabulary, embedding_dim: int, label_namespace: str = "labels"):
         super().__init__(vocab)
 
-        num_labels = vocab.get_vocab_size(label_namespace)
         self.label_namespace = label_namespace
 
         self.layer1 = torch.nn.Linear(embedding_dim * 2, embedding_dim)
@@ -40,7 +39,7 @@ class Nlvr2Head(Head):
         label_weights: Optional[torch.Tensor] = None,
     ) -> Dict[str, torch.Tensor]:
         pooled_boxes_and_text = pooled_boxes_and_text.transpose(0, 1)
-        hidden = self.layer1(torch.cat((pooled_outputs[0], pooled_outputs[1]), dim=-1))
+        hidden = self.layer1(torch.cat((pooled_boxes_and_text[0], pooled_boxes_and_text[1]), dim=-1))
         logits = self.layer2(self.activation(hidden))
         probs = torch.softmax(logits, dim=-1)
 
