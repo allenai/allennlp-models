@@ -5,7 +5,7 @@
     "display_name": "Visual Entailment - NLVR2",
     "task_id": "nlvr2",
     "model_details": {
-        "description": "This model is based on the ViLBERT multitask architecture. The image features are obtained using the ResNet backbone and Faster RCNN (region detection).",
+        "description": "This model is based on the ViLBERT architecture. The image features are obtained using the ResNet backbone and Faster RCNN (region detection).",
         "short_description": "ViLBERT-based model for Visual Entailment.",
         "developed_by": "Lu et al",
         "contributed_by": "Jacob Morrison",
