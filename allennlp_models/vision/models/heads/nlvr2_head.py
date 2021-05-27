@@ -35,7 +35,7 @@ class Nlvr2Head(Head):
         encoded_text_mask: torch.Tensor,
         encoded_text_pooled: torch.Tensor,
         pooled_boxes_and_text: torch.Tensor,
-        labels: Optional[torch.Tensor] = None,
+        label: Optional[torch.Tensor] = None,
         label_weights: Optional[torch.Tensor] = None,
     ) -> Dict[str, torch.Tensor]:
         pooled_boxes_and_text = pooled_boxes_and_text.transpose(0, 1)
