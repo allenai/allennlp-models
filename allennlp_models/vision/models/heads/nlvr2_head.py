@@ -48,10 +48,10 @@ class Nlvr2Head(Head):
         output = {"logits": logits, "probs": probs}
 
         assert label_weights is None
-        if labels is not None:
-            output["loss"] = torch.nn.functional.cross_entropy(logits, labels) / logits.size(0)
-            self.accuracy(logits, labels)
-            self.fbeta(probs, labels)
+        if label is not None:
+            output["loss"] = torch.nn.functional.cross_entropy(logits, label) / logits.size(0)
+            self.accuracy(logits, label)
+            self.fbeta(probs, label)
 
         return output
 
