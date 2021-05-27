@@ -143,7 +143,7 @@ class Nlvr2Reader(VisionReader):
             try:
                 image_paths1 = []
                 image_paths2 = []
-                for blob in blobs:
+                for blob in blob_dicts:
                     identifier = blob["identifier"]
                     image_name_base = identifier[: identifier.rindex("-")]
                     image_paths1.append(self.images[f"{image_name_base}-img0.png"])
