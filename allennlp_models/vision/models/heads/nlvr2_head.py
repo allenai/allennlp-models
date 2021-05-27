@@ -39,7 +39,9 @@ class Nlvr2Head(Head):
         label_weights: Optional[torch.Tensor] = None,
     ) -> Dict[str, torch.Tensor]:
         pooled_boxes_and_text = pooled_boxes_and_text.transpose(0, 1)
-        hidden = self.layer1(torch.cat((pooled_boxes_and_text[0], pooled_boxes_and_text[1]), dim=-1))
+        hidden = self.layer1(
+            torch.cat((pooled_boxes_and_text[0], pooled_boxes_and_text[1]), dim=-1)
+        )
         logits = self.layer2(self.activation(hidden))
         probs = torch.softmax(logits, dim=-1)
 
