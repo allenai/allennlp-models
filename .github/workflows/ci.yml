@@ -399,7 +399,7 @@ jobs:
     - name: Patch AllenNLP dependency
       if: github.event_name == 'push' || github.event_name == 'pull_request'
       run: |
-        pip install --upgrade git+https://github.com/allenai/allennlp.git
+        pip install --upgrade git+https://github.com/allenai/allennlp.git@roll-backbone
 
     - name: Debug info
       run: |
