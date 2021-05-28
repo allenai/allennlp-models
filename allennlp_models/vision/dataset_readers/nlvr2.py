@@ -208,7 +208,7 @@ class Nlvr2Reader(VisionReader):
         box_features2, box_coordinates2, box_mask2 = self.extract_image_features(image2, use_cache)
 
         fields = {
-            "hypothesis": hypothesis_field,
+            "hypothesis": ListField([hypothesis_field, hypothesis_field]),
             "box_features": ListField([box_features1, box_features2]),
             "box_coordinates": ListField([box_coordinates1, box_coordinates2]),
             "box_mask": ListField([box_mask1, box_mask2]),
@@ -224,4 +224,5 @@ class Nlvr2Reader(VisionReader):
 
     @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
-        instance["hypothesis"].token_indexers = self._token_indexers  # type: ignore
+        instance["hypothesis"][0].token_indexers = self._token_indexers  # type: ignore
+        instance["hypothesis"][1].token_indexers = self._token_indexers  # type: ignore
