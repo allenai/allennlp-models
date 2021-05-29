@@ -91,7 +91,7 @@ class SimpleSeq2SeqTest(ModelTestCase):
 
     def test_greedy_decode_matches_beam_search(self):
         beam_search = BeamSearch(
-            self.model._end_index, max_steps=self.model._max_decoding_steps, beam_size=1
+            self.model._end_index, max_steps=self.model._beam_search.max_steps, beam_size=1
         )
         training_tensors = self.dataset.as_tensor_dict()
 
