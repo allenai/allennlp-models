@@ -15,6 +15,7 @@ from allennlp.modules.token_embedders import Embedding
 from allennlp.nn import InitializerApplicator, util
 from allennlp.training.metrics import Metric, BLEU
 from allennlp.nn.beam_search import BeamSearch
+from allennlp.common.lazy import Lazy
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +47,8 @@ class CopyNetSeq2Seq(Model):
     attention : `Attention`, required
         This is used to get a dynamic summary of encoder outputs at each timestep
         when producing the "generation" scores for the target vocab.
+    beam_search : `BeamSearch`, required
+        This is used to during inference to select the tokens of the decoded output sequence.
     target_embedding_dim : `int`, optional (default = `30`)
         The size of the embeddings for the target vocabulary.
     copy_token : `str`, optional (default = `'@COPY@'`)
@@ -72,12 +75,12 @@ class CopyNetSeq2Seq(Model):
         source_embedder: TextFieldEmbedder,
         encoder: Seq2SeqEncoder,
         attention: Attention,
+        beam_search: Lazy[BeamSearch],
         target_embedding_dim: int = 30,
         copy_token: str = "@COPY@",
         target_namespace: str = "target_tokens",
         tensor_based_metric: Metric = None,
         token_based_metric: Metric = None,
-        beam_search_kwargs: Dict[str, Any] = None,
         initializer: InitializerApplicator = InitializerApplicator(),
     ) -> None:
         super().__init__(vocab)
@@ -137,7 +140,7 @@ class CopyNetSeq2Seq(Model):
         self._output_copying_layer = Linear(self.encoder_output_dim, self.decoder_output_dim)
 
         # At prediction time, we'll use a beam search to find the best target sequence.
-        self._beam_search = BeamSearch(self._end_index, **beam_search_kwargs)
+        self._beam_search = beam_search.construct(end_index=self._end_index)
 
         initializer(self)
 
@@ -922,3 +925,6 @@ class CopyNetSeq2Seq(Model):
         return all_metrics
 
     default_predictor = "seq2seq"
+
+
+# %%

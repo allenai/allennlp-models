@@ -48,9 +48,9 @@
       "matrix_dim": 10
     },
     "target_embedding_dim": 10,
-    "beam_search_kwargs": {
-      "beam_size": 5,
-      "max_steps": 50
+    "beam_search": {
+      "max_steps": 50,
+      "beam_size": 5
     }
   },
   "data_loader": {
