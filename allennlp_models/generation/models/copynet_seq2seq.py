@@ -925,6 +925,3 @@ class CopyNetSeq2Seq(Model):
         return all_metrics
 
     default_predictor = "seq2seq"
-
-
-# %%
