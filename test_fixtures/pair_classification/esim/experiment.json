@@ -83,7 +83,7 @@
     },
     "validation_metric": "+accuracy",
     "checkpointer": {
-      "num_serialized_models_to_keep": 2
+      "keep_most_recent_by_count": 2
     },
     "num_epochs": 5,
     "grad_norm": 10.0,
