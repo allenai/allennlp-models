@@ -9,6 +9,7 @@ from allennlp.modules.seq2seq_encoders.seq2seq_encoder import Seq2SeqEncoder
 from allennlp.nn.beam_search import BeamSearch
 from allennlp.nn.util import sequence_cross_entropy_with_logits
 from allennlp.training.metrics import ROUGE, BLEU
+from allennlp.common.lazy import Lazy
 
 from transformers.models.bart.modeling_bart import BartModel, BartForConditionalGeneration
 
@@ -126,10 +127,8 @@ class Bart(Model):
         Vocabulary containing source and target vocabularies.
     indexer : `PretrainedTransformerIndexer`, optional (default = `None`)
         Indexer to be used for converting decoded sequences of ids to to sequences of tokens.
-    max_decoding_steps : `int`, optional (default = `128`)
-        Number of decoding steps during beam search.
-    beam_size : `int`, optional (default = `4`)
-        Number of beams to use in beam search. The default is from the BART paper.
+    beam_search : `BeamSearch`, required
+        This is used to during inference to select the tokens of the decoded output sequence.
     encoder : `Seq2SeqEncoder`, optional (default = `None`)
         Encoder to used in BART. By default, the original BART encoder is used.
     """
@@ -138,9 +137,8 @@ class Bart(Model):
         self,
         model_name: str,
         vocab: Vocabulary,
+        beam_search: Lazy[BeamSearch],
         indexer: PretrainedTransformerIndexer = None,
-        max_decoding_steps: int = 140,
-        beam_size: int = 4,
         encoder: Seq2SeqEncoder = None,
     ):
         super().__init__(vocab)
@@ -152,10 +150,7 @@ class Bart(Model):
         self._end_id = self.bart.config.eos_token_id  # SEP
         self._pad_id = self.bart.config.pad_token_id  # PAD
 
-        self._max_decoding_steps = max_decoding_steps
-        self._beam_search = BeamSearch(
-            self._end_id, max_steps=max_decoding_steps, beam_size=beam_size or 1
-        )
+        self._beam_search = beam_search.construct(end_index=self._end_id)
 
         self._rouge = ROUGE(exclude_indices={self._start_id, self._pad_id, self._end_id})
         self._bleu = BLEU(exclude_indices={self._start_id, self._pad_id, self._end_id})
