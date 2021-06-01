@@ -234,7 +234,7 @@ class Flickr30kReader(VisionReader):
         # Shape: (num_images, image_dimension)
         averaged_features = torch.stack(averaged_features_list, dim=0)
 
-        if self.is_evaluation:
+        if self.is_evaluation and False:
             masks_list = []
             for image_index in range(len(caption_dicts)):
                 current_feature = features_list[image_index].tensor
