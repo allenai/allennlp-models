@@ -1,4 +1,4 @@
-git+https://github.com/allenai/allennlp.git@roll-backbone
+git+https://github.com/allenai/allennlp.git
 
 torch>=1.7.0,<1.9.0
 
