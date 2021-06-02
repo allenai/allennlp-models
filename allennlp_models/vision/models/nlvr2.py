@@ -50,6 +50,9 @@ class Nlvr2Model(VisionTextModel):
         fusion_method: str = "mul",
         dropout: float = 0.1,
         label_namespace: str = "labels",
+        *,
+        ignore_text: bool = False,
+        ignore_image: bool = False,
     ) -> None:
 
         super().__init__(
