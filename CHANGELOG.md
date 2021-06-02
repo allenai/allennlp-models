@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated all instances of `sanity_checks` to `confidence_checks`.
+- The `num_serialized_models_to_keep` parameter is now called `keep_most_recent_by_count`.
 
 ### Added
 
