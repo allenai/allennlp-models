@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a way to initialize the `SrlBert` model without caching/loading pretrained transformer weights.
   You need to set the `bert_model` parameter to the dictionary form of the corresponding `BertConfig` from HuggingFace.
   See [PR #257](https://github.com/allenai/allennlp-models/pull/257) for more details.
-- Added support for Flickr30k image retrieval, including a data loader, model, and training config.
+- Added support for NLVR2 visual entailment, including a data loader, two models, and training configs.
 
 ### Changed
 
