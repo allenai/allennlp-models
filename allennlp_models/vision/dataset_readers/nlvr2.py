@@ -24,7 +24,6 @@ logger = logging.getLogger(__name__)
 
 @DatasetReader.register("nlvr2")
 class Nlvr2Reader(VisionReader):
-    # TODO: update comment
     """
     Reads the NLVR2 dataset from http://lil.nlp.cornell.edu/nlvr/.
     In this task, the model is presented with two images and a hypothesis referring to those images.
