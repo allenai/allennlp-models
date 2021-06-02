@@ -137,7 +137,7 @@ class Bart(Model):
         self,
         model_name: str,
         vocab: Vocabulary,
-        beam_search: Lazy[BeamSearch],
+        beam_search: Lazy[BeamSearch] = Lazy(BeamSearch),
         indexer: PretrainedTransformerIndexer = None,
         encoder: Seq2SeqEncoder = None,
     ):
