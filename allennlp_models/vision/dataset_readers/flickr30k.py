@@ -312,7 +312,7 @@ class Flickr30kReader(VisionReader):
         potential_hard_negatives: List[int] = [],
         label: int = 0,
     ):
-        if self.is_evaluation:
+        if self.is_evaluation and False:
             fields: Dict[str, Field] = {
                 "caption": TextField(self._tokenizer.tokenize(caption), None),
                 "box_features": ListField(features_list),
