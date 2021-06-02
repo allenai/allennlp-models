@@ -313,8 +313,9 @@ class Flickr30kReader(VisionReader):
         label: int = 0,
     ):
         if self.is_evaluation and False:
+            caption_fields = [TextField(self._tokenizer.tokenize(caption), None)] * len(features_list)
             fields: Dict[str, Field] = {
-                "caption": TextField(self._tokenizer.tokenize(caption), None),
+                "caption": ListField(caption_fields),
                 "box_features": ListField(features_list),
                 "box_coordinates": ListField(coordinates_list),
                 "box_mask": ListField(masks_list),
@@ -338,6 +339,8 @@ class Flickr30kReader(VisionReader):
                 @ caption_tensor[image_index][caption_index]
             ).topk(3)
 
+            caption_field = TextField(self._tokenizer.tokenize(caption), None)
+            caption_fields = [caption_field]
             features = [features_list[image_index]]
             coords = [coordinates_list[image_index]]
             masks = [
@@ -352,6 +355,7 @@ class Flickr30kReader(VisionReader):
 
             for idx in indices.tolist():
                 hard_negative_index = index_to_image_index[idx]
+                caption_fields.append(caption_field)
                 features.append(features_list[hard_negative_index])
                 coords.append(coordinates_list[hard_negative_index])
                 masks.append(
@@ -365,7 +369,7 @@ class Flickr30kReader(VisionReader):
                 )
 
             fields: Dict[str, Field] = {
-                "caption": TextField(self._tokenizer.tokenize(caption), None),
+                "caption": ListField(caption_fields),
                 "box_features": ListField(features),
                 "box_coordinates": ListField(coords),
                 "box_mask": ListField(masks),
@@ -419,4 +423,5 @@ class Flickr30kReader(VisionReader):
     # todo: fix
     @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
-        instance["caption"].token_indexers = self._token_indexers  # type: ignore
+        for caption in instance["caption"]:
+            caption.token_indexers = self._token_indexers  # type: ignore
