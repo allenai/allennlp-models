@@ -25,8 +25,8 @@ logger = logging.getLogger(__name__)
 class Nlvr2Model(VisionTextModel):
     """
     Model for visual entailment task based on the paper
-    [Visual Entailment: A Novel Task for Fine-Grained Image Understanding]
-    (https://api.semanticscholar.org/CorpusID:58981654).
+    [A Corpus for Reasoning About Natural Language Grounded in Photographs]
+    (https://api.semanticscholar.org/CorpusID:53178856).
 
     # Parameters
 
@@ -51,8 +51,6 @@ class Nlvr2Model(VisionTextModel):
         dropout: float = 0.1,
         label_namespace: str = "labels",
         *,
-        ignore_text: bool = False,
-        ignore_image: bool = False,
     ) -> None:
 
         super().__init__(

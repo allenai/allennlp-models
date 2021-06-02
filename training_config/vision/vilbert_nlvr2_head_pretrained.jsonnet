@@ -7,23 +7,11 @@ local patience = 5;
 local num_gradient_accumulation_steps = effective_batch_size / gpu_batch_size / std.max(1, num_gpus);
 local num_instances = 86373;
 
-local construct_vocab = false;
-
-local vocabulary = if construct_vocab then {
-      // read the files to construct the vocab
-      "min_count": {"answers": 9}
-    } else {
-      // read the constructed vocab
-      "type": "from_files",
-      "directory": std.format(
-        "https://storage.googleapis.com/allennlp-public-data/vilbert/vilbert_multitask.%s.vocab.tar.gz",
-        model_name)
-    };
 
 local reader_common = {
-    [if !construct_vocab then "image_loader"]: "torch",
-    [if !construct_vocab then "image_featurizer"]: "resnet_backbone",
-    [if !construct_vocab then "region_detector"]: "faster_rcnn",
+    "image_loader": "torch",
+    "region_detector": "faster_rcnn",
+    "image_featurizer": "resnet_backbone",
     "tokenizer": {
       "type": "pretrained_transformer",
       "model_name": model_name
@@ -45,11 +33,10 @@ local reader_common = {
       "nlvr2": reader_common {
         "type": "nlvr2",
         "image_dir": "/net/nfs2.allennlp/data/vision/nlvr2/images",
-        [if !construct_vocab then "feature_cache_dir"]: "/net/nfs2.allennlp/data/vision/nlvr2/feature_cache",
+        "feature_cache_dir": "/net/nfs2.allennlp/data/vision/nlvr2/feature_cache",
       }
     }
   },
-  "vocabulary": vocabulary,
   "train_data_path": {
     "nlvr2": "train",
   },
@@ -96,14 +83,12 @@ local reader_common = {
         "batch_size": gpu_batch_size,
     },
     "shuffle": true,
-    //[if !construct_vocab then "max_instances_in_memory"]: 1024*16
   },
   [if num_gpus > 1 then "distributed"]: {
     "cuda_devices": std.range(0, num_gpus - 1)
     //"cuda_devices": std.repeat([-1], num_gpus)  # Use this for debugging on CPU
   },
-  // Don't train if we're just constructing vocab. The results would be confusing.
-  [if !construct_vocab then "trainer"]: {
+  "trainer": {
     "optimizer": {
       "type": "huggingface_adamw",
       "lr": 4e-5,

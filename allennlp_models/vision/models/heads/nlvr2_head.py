@@ -74,5 +74,4 @@ class Nlvr2Head(Head):
         output_dict["entailment_answer"] = entailment_answer
         return output_dict
 
-    # TODO: update
-    default_predictor = "vilbert_ve"
+    default_predictor = "nlvr2"

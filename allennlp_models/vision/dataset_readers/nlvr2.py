@@ -50,12 +50,6 @@ class Nlvr2Reader(VisionReader):
         If given, the reader will attempt to use the featurized image cache in this directory.
         Caching the featurized images can result in big performance improvements, so it is
         recommended to set this.
-    data_dir: `str`
-        Path to directory containing text files for each dataset split. These files contain
-        the hypotheses and metadata for each task instance.  If this is `None`, we will grab the
-        files from the official NLVR github repository.
-    feature_cache_dir: `str`, optional
-        Path to a directory that will contain a cache of featurized images.
     tokenizer: `Tokenizer`, optional, defaults to `PretrainedTransformerTokenizer("bert-base-uncased")`
     token_indexers: `Dict[str, TokenIndexer]`, optional,
         defaults to`{"tokens": PretrainedTransformerIndexer("bert-base-uncased")}`
@@ -64,6 +58,8 @@ class Nlvr2Reader(VisionReader):
     max_instances: `int`, optional
         If set, the reader only returns the first `max_instances` instances, and then stops.
         This is useful for testing.
+    image_processing_batch_size: `int`
+        The number of images to process at one time while featurizing. Default is 8.
     """
 
     def __init__(
@@ -73,13 +69,12 @@ class Nlvr2Reader(VisionReader):
         image_loader: Optional[ImageLoader] = None,
         image_featurizer: Optional[Lazy[GridEmbedder]] = None,
         region_detector: Optional[Lazy[RegionDetector]] = None,
-        answer_vocab: Optional[Union[Vocabulary, str]] = None,  # ##
-        feature_cache_dir: Optional[Union[str, PathLike]] = None,  # ## (fix above)
+        feature_cache_dir: Optional[Union[str, PathLike]] = None,
         tokenizer: Optional[Tokenizer] = None,
         token_indexers: Optional[Dict[str, TokenIndexer]] = None,
         cuda_device: Optional[Union[int, torch.device]] = None,
         max_instances: Optional[int] = None,
-        image_processing_batch_size: int = 8,  # ##
+        image_processing_batch_size: int = 8,
         write_to_cache: bool = True,  # ##
     ) -> None:
         run_featurization = image_loader and image_featurizer and region_detector
@@ -106,7 +101,6 @@ class Nlvr2Reader(VisionReader):
             write_to_cache=write_to_cache,
         )
 
-        # TODO: fix this?
         github_url = "https://raw.githubusercontent.com/lil-lab/nlvr/"
         nlvr_commit = "68a11a766624a5b665ec7594982b8ecbedc728c7"
         data_dir = f"{github_url}{nlvr_commit}/nlvr2/data"
@@ -119,7 +113,6 @@ class Nlvr2Reader(VisionReader):
             "unbalanced_dev": f"{data_dir}/balanced/unbalanced_dev.json",
             "unbalanced_test": f"{data_dir}/balanced/unbalanced_test1.json",
         }
-        # end TODO
 
     @overrides
     def _read(self, split_or_filename: str):
