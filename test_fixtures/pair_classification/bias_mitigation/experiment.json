@@ -1,6 +1,6 @@
 {
   "dataset_reader": {
-    "type": "allennlp_models.pair_classification.dataset_readers.snli.SnliReader",
+    "type": "snli",
     "tokenizer": {
       "type": "pretrained_transformer",
       "model_name": "epwalsh/bert-xsmall-dummy",
