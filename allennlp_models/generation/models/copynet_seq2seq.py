@@ -146,13 +146,14 @@ class CopyNetSeq2Seq(Model):
             "The parameter {} has been deprecated."
             " Provide this parameter as argument to beam_search instead."
         )
+        beam_search_extras = {}
         if "beam_size" in kwargs:
-            beam_search._params["beam_size"] = kwargs["beam_size"]
+            beam_search_extras["beam_size"] = kwargs["beam_size"]
             raise DeprecationWarning(deprecation_warning.format("beam_size"))
         if "max_decoding_steps" in kwargs:
-            beam_search._params["max_steps"] = kwargs["max_decoding_steps"]
+            beam_search_extras["max_steps"] = kwargs["max_decoding_steps"]
             raise DeprecationWarning(deprecation_warning.format("max_decoding_steps"))
-        self._beam_search = beam_search.construct(end_index=self._end_index)
+        self._beam_search = beam_search.construct(end_index=self._end_index, **beam_search_extras)
 
         initializer(self)
 
