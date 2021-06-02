@@ -35,7 +35,7 @@ class SimpleSeq2Seq(Model):
         Embedder for source side sequences
     encoder : `Seq2SeqEncoder`, required
         The encoder of the "encoder/decoder" model
-    beam_search : `BeamSearch`, required
+    beam_search : `BeamSearch`, optional (default = `Lazy(BeamSearch)`)
         This is used to during inference to select the tokens of the decoded output sequence.
     target_namespace : `str`, optional (default = `'tokens'`)
         If the target side vocabulary is different from the source side's, you need to specify the
@@ -71,7 +71,7 @@ class SimpleSeq2Seq(Model):
         vocab: Vocabulary,
         source_embedder: TextFieldEmbedder,
         encoder: Seq2SeqEncoder,
-        beam_search: Lazy[BeamSearch],
+        beam_search: Lazy[BeamSearch] = Lazy(BeamSearch),
         attention: Attention = None,
         target_namespace: str = "tokens",
         target_embedding_dim: int = None,

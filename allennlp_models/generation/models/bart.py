@@ -127,7 +127,7 @@ class Bart(Model):
         Vocabulary containing source and target vocabularies.
     indexer : `PretrainedTransformerIndexer`, optional (default = `None`)
         Indexer to be used for converting decoded sequences of ids to to sequences of tokens.
-    beam_search : `BeamSearch`, required
+    beam_search : `Lazy[BeamSearch]`, optional (default = `Lazy(BeamSearch)`)
         This is used to during inference to select the tokens of the decoded output sequence.
     encoder : `Seq2SeqEncoder`, optional (default = `None`)
         Encoder to used in BART. By default, the original BART encoder is used.

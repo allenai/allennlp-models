@@ -47,7 +47,7 @@ class CopyNetSeq2Seq(Model):
     attention : `Attention`, required
         This is used to get a dynamic summary of encoder outputs at each timestep
         when producing the "generation" scores for the target vocab.
-    beam_search : `BeamSearch`, required
+    beam_search : `BeamSearch`, optional (default = `Lazy(BeamSearch)`)
         This is used to during inference to select the tokens of the decoded output sequence.
     target_embedding_dim : `int`, optional (default = `30`)
         The size of the embeddings for the target vocabulary.
