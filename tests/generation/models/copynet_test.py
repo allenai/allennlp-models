@@ -1,14 +1,14 @@
 import numpy as np
-from scipy.special import logsumexp
-import torch
 import pytest
-
+import torch
+from _pytest.mark import param
 from allennlp.commands.train import train_model_from_file
 from allennlp.common import Params
 from allennlp.common.testing import ModelTestCase, requires_gpu
-from allennlp.data import DatasetReader, Batch
-
+from allennlp.data import Batch, DatasetReader
+from allennlp.models import Model
 from allennlp_models.generation import CopyNetDatasetReader, CopyNetSeq2Seq  # noqa: F401
+from scipy.special import logsumexp
 from tests import FIXTURES_ROOT
 
 
@@ -19,6 +19,17 @@ class CopyNetTest(ModelTestCase):
             FIXTURES_ROOT / "generation" / "copynet" / "experiment.json",
             FIXTURES_ROOT / "generation" / "copynet" / "data" / "copyover.tsv",
         )
+
+    def test_backwards_compatibility_with_beam_search_args(self):
+        # These values are arbitrary but should be different than the config.
+        beam_size, max_decoding_steps = 100, 1000
+        params = Params.from_file(self.param_file)
+        params["model"]["beam_size"] = beam_size
+        params["model"]["max_decoding_steps"] = max_decoding_steps
+        with pytest.raises(DeprecationWarning):
+            model = Model.from_params(vocab=self.vocab, params=params.get("model"))
+            assert model._beam_search.beam_size == beam_size
+            assert model._beam_search.max_steps == max_decoding_steps
 
     def test_model_can_train_save_load(self):
         self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-2)

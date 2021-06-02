@@ -1,21 +1,20 @@
 import logging
-from typing import Dict, Tuple, List, Any, Union
+from typing import Any, Dict, List, Tuple, Union
 
 import numpy
-from overrides import overrides
 import torch
-from torch.nn.modules.linear import Linear
-from torch.nn.modules.rnn import LSTMCell
-
-from allennlp.common.util import START_SYMBOL, END_SYMBOL
+from allennlp.common.lazy import Lazy
+from allennlp.common.util import END_SYMBOL, START_SYMBOL
 from allennlp.data import TextFieldTensors, Vocabulary
 from allennlp.models.model import Model
-from allennlp.modules import Attention, TextFieldEmbedder, Seq2SeqEncoder
+from allennlp.modules import Attention, Seq2SeqEncoder, TextFieldEmbedder
 from allennlp.modules.token_embedders import Embedding
 from allennlp.nn import InitializerApplicator, util
-from allennlp.training.metrics import Metric, BLEU
 from allennlp.nn.beam_search import BeamSearch
-from allennlp.common.lazy import Lazy
+from allennlp.training.metrics import BLEU, Metric
+from overrides import overrides
+from torch.nn.modules.linear import Linear
+from torch.nn.modules.rnn import LSTMCell
 
 logger = logging.getLogger(__name__)
 
@@ -82,6 +81,7 @@ class CopyNetSeq2Seq(Model):
         tensor_based_metric: Metric = None,
         token_based_metric: Metric = None,
         initializer: InitializerApplicator = InitializerApplicator(),
+        **kwargs
     ) -> None:
         super().__init__(vocab)
         self._target_namespace = target_namespace
@@ -140,6 +140,18 @@ class CopyNetSeq2Seq(Model):
         self._output_copying_layer = Linear(self.encoder_output_dim, self.decoder_output_dim)
 
         # At prediction time, we'll use a beam search to find the best target sequence.
+        # For backwards compatibility, check if beam_size or max_decoding_steps were passed in as
+        # kwargs. If so, update the BeamSearch object before constructing and raise a DeprecationWarning
+        deprecation_warning = (
+            "The parameter {} as been deprecated."
+            "Provide this parameter as argument to beam_search instead."
+        )
+        if "beam_size" in kwargs:
+            beam_search._params["beam_size"] = kwargs["beam_size"]
+            raise DeprecationWarning(deprecation_warning.format("beam_size"))
+        if "max_decoding_steps" in kwargs:
+            beam_search._params["max_steps"] = kwargs["max_decoding_steps"]
+            raise DeprecationWarning(deprecation_warning.format("max_decoding_steps"))
         self._beam_search = beam_search.construct(end_index=self._end_index)
 
         initializer(self)
