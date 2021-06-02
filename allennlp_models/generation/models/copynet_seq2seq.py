@@ -143,8 +143,8 @@ class CopyNetSeq2Seq(Model):
         # For backwards compatibility, check if beam_size or max_decoding_steps were passed in as
         # kwargs. If so, update the BeamSearch object before constructing and raise a DeprecationWarning
         deprecation_warning = (
-            "The parameter {} as been deprecated."
-            "Provide this parameter as argument to beam_search instead."
+            "The parameter {} has been deprecated."
+            " Provide this parameter as argument to beam_search instead."
         )
         if "beam_size" in kwargs:
             beam_search._params["beam_size"] = kwargs["beam_size"]
