@@ -3,7 +3,8 @@ import numpy
 
 from tests import FIXTURES_ROOT
 from allennlp.common.testing import ModelTestCase
-
+from allennlp_models.pair_classification import SnliReader
+from allennlp.fairness.bias_mitigator_applicator import BiasMitigatorApplicator
 
 class BiasMitigatorApplicatorTest(ModelTestCase):
     def setup_method(self):
