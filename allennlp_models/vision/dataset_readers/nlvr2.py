@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 @DatasetReader.register("nlvr2")
 class Nlvr2Reader(VisionReader):
     """
-    Reads the NLVR2 dataset from http://lil.nlp.cornell.edu/nlvr/.
+    Reads the NLVR2 dataset from [http://lil.nlp.cornell.edu/nlvr/](http://lil.nlp.cornell.edu/nlvr/).
     In this task, the model is presented with two images and a hypothesis referring to those images.
     The task for the model is to identify whether the hypothesis is true or false.
     Accordingly, the instances produced by this reader contain two images, featurized into the
