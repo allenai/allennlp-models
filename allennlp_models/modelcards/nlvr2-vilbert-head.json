@@ -52,7 +52,7 @@
         "preprocessing": null
     },
     "quantitative_analyses": {
-        "unitary_results": "On the validation set:\nF1: 33.7%\nAccuracy: 50.8%.\nThese scores do not match the performance in the VilBERT paper. Please contact us if you want to match those scores!",
+        "unitary_results": "On the validation set:\nF1: 33.7%\nAccuracy: 50.8%.\nThese scores do not match the performance in the 12-in-1 paper because this was trained as a standalone task, not as part of a multitask setup. Please contact us if you want to match those scores!",
         "intersectional_results": null
     },
     "model_ethical_considerations": {
