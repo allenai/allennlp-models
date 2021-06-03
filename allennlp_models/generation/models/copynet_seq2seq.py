@@ -1,4 +1,5 @@
 import logging
+import warnings
 from typing import Any, Dict, List, Tuple, Union
 
 import numpy
@@ -74,7 +75,7 @@ class CopyNetSeq2Seq(Model):
         source_embedder: TextFieldEmbedder,
         encoder: Seq2SeqEncoder,
         attention: Attention,
-        beam_search: Lazy[BeamSearch],
+        beam_search: Lazy[BeamSearch] = Lazy(BeamSearch),
         target_embedding_dim: int = 30,
         copy_token: str = "@COPY@",
         target_namespace: str = "target_tokens",
@@ -149,10 +150,10 @@ class CopyNetSeq2Seq(Model):
         beam_search_extras = {}
         if "beam_size" in kwargs:
             beam_search_extras["beam_size"] = kwargs["beam_size"]
-            raise DeprecationWarning(deprecation_warning.format("beam_size"))
+            warnings.warn(deprecation_warning.format("beam_size"), DeprecationWarning)
         if "max_decoding_steps" in kwargs:
             beam_search_extras["max_steps"] = kwargs["max_decoding_steps"]
-            raise DeprecationWarning(deprecation_warning.format("max_decoding_steps"))
+            warnings.warn(deprecation_warning.format("max_decoding_steps"), DeprecationWarning)
         self._beam_search = beam_search.construct(end_index=self._end_index, **beam_search_extras)
 
         initializer(self)

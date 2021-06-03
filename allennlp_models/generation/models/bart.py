@@ -1,3 +1,4 @@
+import warnings
 from typing import Dict, Tuple, Any, cast
 from overrides import overrides
 
@@ -16,7 +17,6 @@ from transformers.models.bart.modeling_bart import BartModel, BartForConditional
 import torch
 from torch import nn
 import torch.nn.functional as F
-
 
 DecoderCacheType = Tuple[Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor], ...]
 
@@ -161,10 +161,10 @@ class Bart(Model):
         beam_search_extras = {}
         if "beam_size" in kwargs:
             beam_search_extras["beam_size"] = kwargs["beam_size"]
-            raise DeprecationWarning(deprecation_warning.format("beam_size"))
+            warnings.warn(deprecation_warning.format("beam_size"), DeprecationWarning)
         if "max_decoding_steps" in kwargs:
             beam_search_extras["max_steps"] = kwargs["max_decoding_steps"]
-            raise DeprecationWarning(deprecation_warning.format("max_decoding_steps"))
+            warnings.warn(deprecation_warning.format("max_decoding_steps"), DeprecationWarning)
         self._beam_search = beam_search.construct(end_index=self._end_id, **beam_search_extras)
 
         self._rouge = ROUGE(exclude_indices={self._start_id, self._pad_id, self._end_id})

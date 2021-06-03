@@ -1,3 +1,4 @@
+import warnings
 from typing import Dict, List, Tuple, Iterable, Any
 
 import numpy
@@ -80,6 +81,7 @@ class SimpleSeq2Seq(Model):
         bleu_ngram_weights: Iterable[float] = (0.25, 0.25, 0.25, 0.25),
         target_pretrain_file: str = None,
         target_decoder_layers: int = 1,
+        **kwargs
     ) -> None:
         super().__init__(vocab)
         self._target_namespace = target_namespace
@@ -102,8 +104,21 @@ class SimpleSeq2Seq(Model):
         else:
             self._bleu = None
 
-        # At prediction time, we use a beam search to find the most likely sequence of target tokens.
-        self._beam_search = beam_search.construct(end_index=self._end_index)
+        # At prediction time, we'll use a beam search to find the best target sequence.
+        # For backwards compatibility, check if beam_size or max_decoding_steps were passed in as
+        # kwargs. If so, update the BeamSearch object before constructing and raise a DeprecationWarning
+        deprecation_warning = (
+            "The parameter {} has been deprecated."
+            " Provide this parameter as argument to beam_search instead."
+        )
+        beam_search_extras = {}
+        if "beam_size" in kwargs:
+            beam_search_extras["beam_size"] = kwargs["beam_size"]
+            warnings.warn(deprecation_warning.format("beam_size"), DeprecationWarning)
+        if "max_decoding_steps" in kwargs:
+            beam_search_extras["max_steps"] = kwargs["max_decoding_steps"]
+            warnings.warn(deprecation_warning.format("max_decoding_steps"), DeprecationWarning)
+        self._beam_search = beam_search.construct(end_index=self._end_index, **beam_search_extras)
 
         # Dense embedding of source vocab tokens.
         self._source_embedder = source_embedder
