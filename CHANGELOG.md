@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   You need to set the `bert_model` parameter to the dictionary form of the corresponding `BertConfig` from HuggingFace.
   See [PR #257](https://github.com/allenai/allennlp-models/pull/257) for more details.
 - Added a `beam_search` parameter to the `generation` models so that a `BeamSearch` object can be specified in their configs.
+- Added a binary gender bias-mitigated RoBERTa model for SNLI.
 
 ### Changed
 
