@@ -4,10 +4,12 @@ from typing import Optional, Dict, Any, Union
 from overrides import overrides
 import torch
 
+from allennlp.common.lazy import Lazy
 from allennlp.data import TextFieldTensors, Vocabulary
 from allennlp.data.tokenizers import PretrainedTransformerTokenizer
 from allennlp.models.model import Model
 from allennlp.modules.transformer.t5 import T5 as T5Module, T5Output, IntT, BoolT
+from allennlp.nn.beam_search import BeamSearch
 from allennlp.nn.parallel import DdpWrapper
 from allennlp.training.metrics import ROUGE, BLEU
 
@@ -18,9 +20,8 @@ class T5(Model):
         self,
         vocab: Vocabulary,
         model_name: str,
+        beam_search: Lazy[BeamSearch] = Lazy(BeamSearch, beam_size=3, max_steps=50),
         ddp_wrapper: Optional[DdpWrapper] = None,
-        beam_size: int = 3,
-        max_decoding_steps: int = 50,
         weights_path: Optional[Union[str, PathLike]] = None,
         **kwargs
     ) -> None:
@@ -30,9 +31,8 @@ class T5(Model):
         self._tokenizer: Optional[PretrainedTransformerTokenizer] = None
         self.t5 = T5Module.from_pretrained_module(
             model_name,
+            beam_search=beam_search,
             ddp_wrapper=ddp_wrapper,
-            beam_size=beam_size,
-            max_decoding_steps=max_decoding_steps,
             weights_path=weights_path,
         )
 
