@@ -61,6 +61,6 @@
     "model_usage": {
         "archive_file": "vilbert-nlvr2-head-2021.06.01.tar.gz",
         "training_config": "vilbert_nlvr2_pretrained.jsonnet",
-        "install_instructions": "pip install allennlp==2.5.0 allennlp-models==2.5.0"
+        "install_instructions": "pip install allennlp>=2.5.1 allennlp-models>=2.5.1"
     }
 }
