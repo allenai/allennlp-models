@@ -125,10 +125,10 @@ class Bart(Model):
         `transformers.models.bart.modeling_bart.BART_PRETRAINED_MODEL_ARCHIVE_MAP`.
     vocab : `Vocabulary`, required
         Vocabulary containing source and target vocabularies.
-    indexer : `PretrainedTransformerIndexer`, optional (default = `None`)
-        Indexer to be used for converting decoded sequences of ids to to sequences of tokens.
     beam_search : `Lazy[BeamSearch]`, optional (default = `Lazy(BeamSearch)`)
         This is used to during inference to select the tokens of the decoded output sequence.
+    indexer : `PretrainedTransformerIndexer`, optional (default = `None`)
+        Indexer to be used for converting decoded sequences of ids to to sequences of tokens.
     encoder : `Seq2SeqEncoder`, optional (default = `None`)
         Encoder to used in BART. By default, the original BART encoder is used.
     """
@@ -140,6 +140,7 @@ class Bart(Model):
         beam_search: Lazy[BeamSearch] = Lazy(BeamSearch),
         indexer: PretrainedTransformerIndexer = None,
         encoder: Seq2SeqEncoder = None,
+        **kwargs,
     ):
         super().__init__(vocab)
         self.bart = BartForConditionalGeneration.from_pretrained(model_name)
@@ -150,7 +151,21 @@ class Bart(Model):
         self._end_id = self.bart.config.eos_token_id  # SEP
         self._pad_id = self.bart.config.pad_token_id  # PAD
 
-        self._beam_search = beam_search.construct(end_index=self._end_id)
+        # At prediction time, we'll use a beam search to find the best target sequence.
+        # For backwards compatibility, check if beam_size or max_decoding_steps were passed in as
+        # kwargs. If so, update the BeamSearch object before constructing and raise a DeprecationWarning
+        deprecation_warning = (
+            "The parameter {} has been deprecated."
+            " Provide this parameter as argument to beam_search instead."
+        )
+        beam_search_extras = {}
+        if "beam_size" in kwargs:
+            beam_search_extras["beam_size"] = kwargs["beam_size"]
+            raise DeprecationWarning(deprecation_warning.format("beam_size"))
+        if "max_decoding_steps" in kwargs:
+            beam_search_extras["max_steps"] = kwargs["max_decoding_steps"]
+            raise DeprecationWarning(deprecation_warning.format("max_decoding_steps"))
+        self._beam_search = beam_search.construct(end_index=self._end_id, **beam_search_extras)
 
         self._rouge = ROUGE(exclude_indices={self._start_id, self._pad_id, self._end_id})
         self._bleu = BLEU(exclude_indices={self._start_id, self._pad_id, self._end_id})
