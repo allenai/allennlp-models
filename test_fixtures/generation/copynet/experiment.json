@@ -3,7 +3,7 @@
     "target_namespace": "target_tokens",
     "type": "copynet_seq2seq",
     "source_tokenizer": {
-      "type": "spacy",
+      "type": "spacy"
     },
     "target_tokenizer": {
       "type": "spacy"

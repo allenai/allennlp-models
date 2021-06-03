@@ -20,6 +20,8 @@ class BartTest(ModelTestCase):
         params = Params.from_file(self.param_file)
         params["model"]["beam_size"] = beam_size
         params["model"]["max_decoding_steps"] = max_decoding_steps
+        # The test harness is set up to treat DeprecationWarning's like errors, so this needs to
+        # be called within the pytest context manager.
         with pytest.raises(DeprecationWarning):
             model = Model.from_params(vocab=self.vocab, params=params.get("model"))
             assert model._beam_search.beam_size == beam_size
