@@ -32,6 +32,7 @@ class Nlvr2Reader(VisionReader):
     fields "box_features" and "box_coordinates". In addition to that, it produces a `TextField`
     called "hypothesis", and a `MetadataField` called "identifier". The latter contains the question
     id from the question set.
+
     Parameters
     ----------
     image_dir: `str`
@@ -73,7 +74,7 @@ class Nlvr2Reader(VisionReader):
         cuda_device: Optional[Union[int, torch.device]] = None,
         max_instances: Optional[int] = None,
         image_processing_batch_size: int = 8,
-        write_to_cache: bool = True,  # ##
+        write_to_cache: bool = True,
     ) -> None:
         run_featurization = image_loader and image_featurizer and region_detector
         if image_dir is None and run_featurization:
@@ -186,12 +187,12 @@ class Nlvr2Reader(VisionReader):
 
     @overrides
     def text_to_instance(
-        self,
+        self, # type: ignore
         identifier: Optional[str],
         hypothesis: str,
         image1: Union[str, Tuple[Tensor, Tensor]],
         image2: Union[str, Tuple[Tensor, Tensor]],
-        label: bool,  # type: ignore
+        label: bool,
         use_cache: bool = True,
     ) -> Instance:
         hypothesis_field = TextField(self._tokenizer.tokenize(hypothesis), None)
