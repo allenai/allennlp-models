@@ -1,3 +1,4 @@
+import warnings
 from typing import Dict, List, Tuple, Iterable, Any
 
 import numpy
@@ -14,6 +15,7 @@ from allennlp.models.model import Model
 from allennlp.modules.token_embedders import Embedding
 from allennlp.nn import util
 from allennlp.nn.beam_search import BeamSearch
+from allennlp.common.lazy import Lazy
 from allennlp.training.metrics import BLEU
 
 
@@ -34,8 +36,8 @@ class SimpleSeq2Seq(Model):
         Embedder for source side sequences
     encoder : `Seq2SeqEncoder`, required
         The encoder of the "encoder/decoder" model
-    max_decoding_steps : `int`
-        Maximum length of decoded sequences.
+    beam_search : `BeamSearch`, optional (default = `Lazy(BeamSearch)`)
+        This is used to during inference to select the tokens of the decoded output sequence.
     target_namespace : `str`, optional (default = `'tokens'`)
         If the target side vocabulary is different from the source side's, you need to specify the
         target's namespace here. If not, we'll assume it is "tokens", which is also the default
@@ -51,8 +53,6 @@ class SimpleSeq2Seq(Model):
         If you want to use attention to get a dynamic summary of the encoder outputs at each step
         of decoding, this is the function used to compute similarity between the decoder hidden
         state and encoder outputs.
-    beam_size : `int`, optional (default = `None`)
-        Width of the beam for beam search. If not specified, greedy decoding is used.
     scheduled_sampling_ratio : `float`, optional (default = `0.`)
         At each timestep during training, we sample a random number between 0 and 1, and if it is
         not less than this value, we use the ground truth labels for the whole batch. Else, we use
@@ -72,9 +72,8 @@ class SimpleSeq2Seq(Model):
         vocab: Vocabulary,
         source_embedder: TextFieldEmbedder,
         encoder: Seq2SeqEncoder,
-        max_decoding_steps: int,
+        beam_search: Lazy[BeamSearch] = Lazy(BeamSearch),
         attention: Attention = None,
-        beam_size: int = None,
         target_namespace: str = "tokens",
         target_embedding_dim: int = None,
         scheduled_sampling_ratio: float = 0.0,
@@ -82,6 +81,7 @@ class SimpleSeq2Seq(Model):
         bleu_ngram_weights: Iterable[float] = (0.25, 0.25, 0.25, 0.25),
         target_pretrain_file: str = None,
         target_decoder_layers: int = 1,
+        **kwargs
     ) -> None:
         super().__init__(vocab)
         self._target_namespace = target_namespace
@@ -104,12 +104,21 @@ class SimpleSeq2Seq(Model):
         else:
             self._bleu = None
 
-        # At prediction time, we use a beam search to find the most likely sequence of target tokens.
-        beam_size = beam_size or 1
-        self._max_decoding_steps = max_decoding_steps
-        self._beam_search = BeamSearch(
-            self._end_index, max_steps=max_decoding_steps, beam_size=beam_size
+        # At prediction time, we'll use a beam search to find the best target sequence.
+        # For backwards compatibility, check if beam_size or max_decoding_steps were passed in as
+        # kwargs. If so, update the BeamSearch object before constructing and raise a DeprecationWarning
+        deprecation_warning = (
+            "The parameter {} has been deprecated."
+            " Provide this parameter as argument to beam_search instead."
         )
+        beam_search_extras = {}
+        if "beam_size" in kwargs:
+            beam_search_extras["beam_size"] = kwargs["beam_size"]
+            warnings.warn(deprecation_warning.format("beam_size"), DeprecationWarning)
+        if "max_decoding_steps" in kwargs:
+            beam_search_extras["max_steps"] = kwargs["max_decoding_steps"]
+            warnings.warn(deprecation_warning.format("max_decoding_steps"), DeprecationWarning)
+        self._beam_search = beam_search.construct(end_index=self._end_index, **beam_search_extras)
 
         # Dense embedding of source vocab tokens.
         self._source_embedder = source_embedder
@@ -347,7 +356,7 @@ class SimpleSeq2Seq(Model):
             # Either way, we don't have to process it.
             num_decoding_steps = target_sequence_length - 1
         else:
-            num_decoding_steps = self._max_decoding_steps
+            num_decoding_steps = self._beam_search.max_steps
 
         # Initialize target predictions with the start index.
         # shape: (batch_size,)
