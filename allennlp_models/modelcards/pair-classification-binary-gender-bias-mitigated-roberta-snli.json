@@ -65,6 +65,6 @@
     "model_usage": {
         "archive_file": "binary-gender-bias-mitigated-snli-roberta.2021-05-20.tar.gz",
         "training_config": "pair_classification/binary_gender_bias_mitigated_snli_roberta.jsonnet",
-        "install_instructions": "pip install allennlp==2.1.0 allennlp-models==2.1.0"
+        "install_instructions": "pip install allennlp==2.5.0 allennlp-models==2.5.0"
     }
 }
