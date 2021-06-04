@@ -234,7 +234,7 @@ class Flickr30kReader(VisionReader):
         # Shape: (num_images, image_dimension)
         averaged_features = torch.stack(averaged_features_list, dim=0)
 
-        if self.is_evaluation and False:
+        if self.is_evaluation:
             masks_list = []
             for image_index in range(len(caption_dicts)):
                 current_feature = features_list[image_index].tensor
@@ -312,7 +312,9 @@ class Flickr30kReader(VisionReader):
         potential_hard_negatives: List[int] = [],
         label: int = 0,
     ):
-        if self.is_evaluation and False:
+        if self.is_evaluation:
+            print("label:")
+            print(label)
             caption_fields = [TextField(self._tokenizer.tokenize(caption), None)] * len(features_list)
             fields: Dict[str, Field] = {
                 "caption": ListField(caption_fields),
@@ -401,6 +403,9 @@ class Flickr30kReader(VisionReader):
     def get_caption_features(self, captions):
         if self.is_test:
             return torch.randn(len(captions), 5, 10)
+
+        # TODO: this is to speed up debugging
+        return torch.randn(len(captions), 5, 1024)
 
         caption_list = []
         with torch.no_grad():

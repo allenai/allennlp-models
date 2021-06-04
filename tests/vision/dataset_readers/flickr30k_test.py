@@ -91,7 +91,7 @@ class TestFlickr30kReader(AllenNlpTestCase):
 
         instance = instances[5]
         assert len(instance.fields) == 5
-        assert len(instance["caption"]) == 4
+        assert len(instance["caption"]) == 5
         assert len(instance["caption"][0]) == 16
         question_tokens = [t.text for t in instance["caption"][0]]
         assert question_tokens == [

@@ -120,6 +120,8 @@ class VisionReader(DatasetReader):
         # feature cache
         self.feature_cache_dir = feature_cache_dir
         self.coordinates_cache_dir = feature_cache_dir
+        self.hard_negative_features_cache_dir = feature_cache_dir
+        self.hard_negative_coordinates_cache_dir = feature_cache_dir
         if feature_cache_dir:
             self.write_to_cache = write_to_cache
         else:
@@ -128,6 +130,8 @@ class VisionReader(DatasetReader):
             self.write_to_cache = True
         self._feature_cache_instance: Optional[MutableMapping[str, Tensor]] = None
         self._coordinates_cache_instance: Optional[MutableMapping[str, Tensor]] = None
+        self._hard_negative_features_cache_instance: Optional[MutableMapping[str, Tensor]] = None
+        self._feature_cache_instance: Optional[MutableMapping[str, Tensor]] = None
 
         # image processors
         self.image_loader = None
@@ -231,6 +235,34 @@ class VisionReader(DatasetReader):
                 )
 
         return self._coordinates_cache_instance
+
+    @property
+    def _hard_negative_features_cache(self) -> MutableMapping[str, Tensor]:
+        if self._hard_negative_features_cache_instance is None:
+            if self.hard_negative_features_cache_dir is None:
+                self._hard_negative_features_cache_instance = {}
+            else:
+                os.makedirs(self.feature_cache_dir, exist_ok=True)  # type: ignore
+                self._hard_negative_features_cache_instance = TensorCache(
+                    os.path.join(self.feature_cache_dir, "hard_negative_features"),  # type: ignore
+                    read_only=not self.write_to_cache,
+                )
+
+        return self._hard_negative_features_cache_instance
+
+    @property
+    def _hard_negative_coordinates_cache(self) -> MutableMapping[str, Tensor]:
+        if self._hard_negative_coordinates_cache_instance is None:
+            if self.hard_negative_coordinates_cache_dir is None:
+                self._hard_negative_coordinates_cache_instance = {}
+            else:
+                os.makedirs(self.feature_cache_dir, exist_ok=True)  # type: ignore
+                self._hard_negative_coordinates_cache_instance = TensorCache(
+                    os.path.join(self.feature_cache_dir, "hard_negative_coordinates"),  # type: ignore
+                    read_only=not self.write_to_cache,
+                )
+
+        return self._hard_negative_coordinates_cache_instance
 
     def _process_image_paths(
         self, image_paths: Iterable[str], *, use_cache: bool = True

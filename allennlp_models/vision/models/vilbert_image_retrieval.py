@@ -121,7 +121,7 @@ class ImageRetrievalVilbert(VisionTextModel):
         batch_size = box_features.shape[0]
 
 
-        if self.training or True:
+        if self.training:
             # Shape: (batch_size * num_images, pooled_output_dim)
             pooled_output = self.backbone(box_features, box_coordinates, box_mask, caption)[
                 "pooled_boxes_and_text"
@@ -166,6 +166,18 @@ class ImageRetrievalVilbert(VisionTextModel):
                 outputs = self._compute_loss_and_metrics(
                     batch_size, outputs, torch.zeros(batch_size).long().to(logits.device)
                 )
+                print('batch info:')
+                print(indices)
+                print(label)
+                print(pre_logits)
+                print(logits)
+                print(outputs)
+                logger.info('batch info:')
+                logger.info(indices)
+                logger.info(label)
+                logger.info(pre_logits)
+                logger.info(logits)
+                logger.info(outputs)
 
                 return outputs
 
