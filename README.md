@@ -153,7 +153,7 @@ Here is a list of pre-trained models currently available.
 - [`mc-roberta-commonsenseqa`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/mc-roberta-commonsenseqa.json) - RoBERTa-based multiple choice model for CommonSenseQA.
 - [`mc-roberta-piqa`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/mc-roberta-piqa.json) - RoBERTa-based multiple choice model for PIQA.
 - [`mc-roberta-swag`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/mc-roberta-swag.json) - RoBERTa-based multiple choice model for SWAG.
-- [`nlvr2-vilbert-head`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/nlvr2-vilbert-head.json) - ViLBERT-based model for Visual Entailment.
+- [`nlvr2-vilbert`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/nlvr2-vilbert-head.json) - ViLBERT-based model for Visual Entailment.
 - [`nlvr2-vilbert`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/nlvr2-vilbert.json) - ViLBERT-based model for Visual Entailment.
 - [`pair-classification-binary-gender-bias-mitigated-roberta-snli`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/pair-classification-binary-gender-bias-mitigated-roberta-snli.json) - RoBERTa finetuned on SNLI with binary gender bias mitigation.
 - [`pair-classification-decomposable-attention-elmo`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/pair-classification-decomposable-attention-elmo.json) - The decomposable attention model (Parikh et al, 2017) combined with ELMo embeddings trained on SNLI.

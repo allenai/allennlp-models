@@ -187,7 +187,7 @@ class Nlvr2Reader(VisionReader):
 
     @overrides
     def text_to_instance(
-        self, # type: ignore
+        self,  # type: ignore
         identifier: Optional[str],
         hypothesis: str,
         image1: Union[str, Tuple[Tensor, Tensor]],
