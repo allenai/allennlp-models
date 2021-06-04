@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added support for NLVR2 visual entailment, including a data loader, two models, and training configs.
+
 
 ## [v2.5.0](https://github.com/allenai/allennlp-models/releases/tag/v2.5.0) - 2021-06-03
 
