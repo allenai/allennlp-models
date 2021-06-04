@@ -67,10 +67,12 @@
         "num_layers": 2,
         "num_attention_heads": 2
       },
+      "beam_search": {
+        "max_steps": 120,
+        "beam_size": 5
+      },
       "tie_output_embedding": true,
-      "max_decoding_steps": 120,
-      "beam_size": 5,
-      "label_smoothing_ratio": 0.1,
+      "label_smoothing_ratio": 0.1
     },
     "tied_source_embedder_key": "tokens"
   },

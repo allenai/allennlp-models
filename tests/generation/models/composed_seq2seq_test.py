@@ -37,7 +37,7 @@ class ComposedSeq2SeqTest(ModelTestCase):
         )
 
     def test_greedy_model_can_train_save_and_load(self):
-        param_overrides = json.dumps({"model": {"decoder": {"beam_size": 1}}})
+        param_overrides = json.dumps({"model": {"decoder": {"beam_search": {"beam_size": 1}}}})
         self.ensure_model_can_train_save_and_load(
             self.param_file, tolerance=1e-2, overrides=param_overrides
         )

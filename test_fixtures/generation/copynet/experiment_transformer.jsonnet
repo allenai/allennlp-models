@@ -45,8 +45,10 @@ local hidden_size = 20;
             "matrix_dim": hidden_size,
         },
         "target_embedding_dim": 10,
-        "beam_size": 3,
-        "max_decoding_steps": 20,
+        "beam_search": {
+            "max_steps": 20,
+            "beam_size": 3,
+        },
     },
     "data_loader": {
         "batch_sampler": {

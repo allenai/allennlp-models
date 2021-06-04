@@ -7,9 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added support for NLVR2 visual entailment, including a data loader, two models, and training configs.
+
+
+## [v2.5.0](https://github.com/allenai/allennlp-models/releases/tag/v2.5.0) - 2021-06-03
+
 ### Changed
+
 - Updated all instances of `sanity_checks` to `confidence_checks`.
 - The `num_serialized_models_to_keep` parameter is now called `keep_most_recent_by_count`.
+- Improvements to the vision models and other models that use `allennlp.modules.transformer` under the hood.
 
 ### Added
 
@@ -19,11 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a way to initialize the `SrlBert` model without caching/loading pretrained transformer weights.
   You need to set the `bert_model` parameter to the dictionary form of the corresponding `BertConfig` from HuggingFace.
   See [PR #257](https://github.com/allenai/allennlp-models/pull/257) for more details.
-- Added support for NLVR2 visual entailment, including a data loader, two models, and training configs.
-
-### Changed
-
-- Improvements to the vision models and other models that use `allennlp.modules.transformer` under the hood.
+- Added a `beam_search` parameter to the `generation` models so that a `BeamSearch` object can be specified in their configs.
+- Added a binary gender bias-mitigated RoBERTa model for SNLI.
 
 
 ## [v2.4.0](https://github.com/allenai/allennlp-models/releases/tag/v2.4.0) - 2021-04-22
