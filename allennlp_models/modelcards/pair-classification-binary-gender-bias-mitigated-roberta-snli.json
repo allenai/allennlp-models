@@ -13,7 +13,7 @@
         "version": "1",
         "model_type": "RoBERTa",
         "paper": {
-            "citation": "\n@article{Dev2020OnMA,\ntitle={On Measuring and Mitigating Biased Inferences of Word Embeddings},\nauthor={Sunipa Dev and Tao Li and J. M. Phillips and Vivek Srikumar},\njournal={ArXiv},\nyear={2020},\nvolume={abs/1908.09369}\n",
+            "citation": "\n@article{Dev2020OnMA,\ntitle={On Measuring and Mitigating Biased Inferences of Word Embeddings},\nauthor={Sunipa Dev and Tao Li and J. M. Phillips and Vivek Srikumar},\njournal={Proceedings of the AAAI Conference on Artificial Intelligence},\nyear={2020},\nvolume={34},\nnumber={05},\npages={7659-7666},\nDOI={10.1609/aaai.v34i05.6267}\n",
             "title": "On Measuring and Mitigating Biased Inferences of Word Embeddings",
             "url": "https://api.semanticscholar.org/CorpusID:201670701"
         },
