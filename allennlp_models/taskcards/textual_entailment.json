@@ -26,5 +26,9 @@
                         "premise" : "A handmade djembe was on display at the Smithsonian.",
                         "hypothesis" : "Visitors could see the djembe.",
                     },
+                    {
+                        "premise": "An accountant can afford a computer.",
+                        "hypothesis": "A gentleman can afford a computer.",
+                    }
                 ],
 }
