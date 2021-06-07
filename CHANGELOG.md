@@ -11,10 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added support for NLVR2 visual entailment, including a data loader, two models, and training configs.
 
-### Fixed
-
-- Fixed registerd model name in the `pair-classification-roberta-rte` and `vgqa-vilbert` model cards.
-
 
 ## [v2.5.0](https://github.com/allenai/allennlp-models/releases/tag/v2.5.0) - 2021-06-03
 
