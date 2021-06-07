@@ -1,7 +1,7 @@
 {
     "id": "vgqa-vilbert",
-    "registered_model_name": "vgqa_vilbert",
-    "registered_predictor_name": "vilbert_vgqa",
+    "registered_model_name": "vqa_vilbert_from_huggingface",
+    "registered_predictor_name": "vgqa_vilbert",
     "display_name": "ViLBERT - Visual Genome Question Answering",
     "task_id": "vgqa",
     "model_details": {
