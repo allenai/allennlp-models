@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed `binary-gender-bias-mitigated-roberta-snli` model card to indicate that model requires `allennlp@v2.5.0`.
+- Fixed registered model name in the `pair-classification-roberta-rte` and `vgqa-vilbert` model cards.
 
 ## [v2.5.0](https://github.com/allenai/allennlp-models/releases/tag/v2.5.0) - 2021-06-03
 
