@@ -1,6 +1,6 @@
 {
     "id": "pair-classification-roberta-rte",
-    "registered_model_name": "roberta-rte",
+    "registered_model_name": "basic_classifier",
     "registered_predictor_name": null,
     "display_name": "RoBERTa RTE",
     "task_id": "pair_classification",

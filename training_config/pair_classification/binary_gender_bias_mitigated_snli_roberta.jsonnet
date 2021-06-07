@@ -20,7 +20,7 @@ local transformer_dim = 1024;
   "train_data_path": "https://allennlp.s3.amazonaws.com/datasets/snli/snli_1.0_train.jsonl",
   "validation_data_path": "https://allennlp.s3.amazonaws.com/datasets/snli/snli_1.0_dev.jsonl",
   "model": {
-    "type": "allennlp.fairness.bias_mitigator_applicator.BiasMitigatorApplicator", 
+    "type": "bias_mitigator_applicator", 
     "base_model": {
       "_pretrained": {
         "archive_file": "https://storage.googleapis.com/allennlp-public-models/snli-roberta.2021-03-11.tar.gz",
