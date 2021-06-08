@@ -117,17 +117,13 @@ class ImageRetrievalVilbert(VisionTextModel):
         caption: TextFieldTensors,
         label: torch.Tensor,
     ) -> Dict[str, torch.Tensor]:
-        # batch_size, num_images, num_boxes, feature_dimension = box_features.shape
         batch_size = box_features.shape[0]
 
-
         if self.training:
-            # Shape: (batch_size * num_images, pooled_output_dim)
+            # Shape: (batch_size, num_images, pooled_output_dim)
             pooled_output = self.backbone(box_features, box_coordinates, box_mask, caption)[
                 "pooled_boxes_and_text"
             ]
-
-            # pooled_output = pooled_output.view(batch_size, num_images, pooled_output.shape[1])
 
             # Shape: (batch_size, num_images)
             logits = self.classifier(pooled_output).squeeze(-1)
@@ -141,7 +137,7 @@ class ImageRetrievalVilbert(VisionTextModel):
 
         else:
             with torch.no_grad():
-                # Shape: (batch_size * num_images, pooled_output_dim)
+                # Shape: (batch_size, num_images, pooled_output_dim)
                 self.backbone.eval()
                 pooled_output = self.backbone(box_features, box_coordinates, box_mask, caption)[
                     "pooled_boxes_and_text"
@@ -154,7 +150,7 @@ class ImageRetrievalVilbert(VisionTextModel):
                 scores = self.classifier(pooled_output).squeeze(-1)
 
                 # Shape: (batch_size, k)
-                _, indices = scores.topk(self.k, dim=-1)
+                rel_scores, indices = scores.topk(self.k, dim=-1)
 
                 # Shape: (batch_size)
                 pre_logits = torch.sum((indices == label.reshape(-1, 1)), dim=-1).float()
@@ -166,14 +162,18 @@ class ImageRetrievalVilbert(VisionTextModel):
                 outputs = self._compute_loss_and_metrics(
                     batch_size, outputs, torch.zeros(batch_size).long().to(logits.device)
                 )
+                # check tensor gradients
+                # if caption's grad is really small (esp compared to others), then that could be our problem
                 print('batch info:')
                 print(indices)
+                print(rel_scores)
                 print(label)
                 print(pre_logits)
                 print(logits)
                 print(outputs)
                 logger.info('batch info:')
                 logger.info(indices)
+                logger.info(rel_scores)
                 logger.info(label)
                 logger.info(pre_logits)
                 logger.info(logits)
@@ -181,105 +181,6 @@ class ImageRetrievalVilbert(VisionTextModel):
 
                 return outputs
 
-        #################
-
-        batch_size = box_features.shape[0]
-        num_images = box_features.shape[1]
-
-        # TODO: We actually want to roll up the dimensions to get e.g. (batch_size * num_images, num_boxes, feature_dim)
-        # Then we only have to feed it into VilBERT once
-        # Reshape inputs to feed into VilBERT
-        box_features = box_features.transpose(0, 1)
-        box_coordinates = box_coordinates.transpose(0, 1)
-        box_mask = box_mask.transpose(0, 1)
-
-        if self.training:
-            # Shape: (batch_size, 4)
-            logits = self.classifier(
-                # Shape: (batch_size, 4, pooled_output_dim)
-                torch.stack(
-                    [
-                        self.backbone(box_features[0], box_coordinates[0], box_mask[0], caption)[
-                            "pooled_boxes_and_text"
-                        ],
-                        self.backbone(box_features[1], box_coordinates[1], box_mask[1], caption)[
-                            "pooled_boxes_and_text"
-                        ],
-                        self.backbone(box_features[2], box_coordinates[2], box_mask[2], caption)[
-                            "pooled_boxes_and_text"
-                        ],
-                        self.backbone(box_features[3], box_coordinates[3], box_mask[3], caption)[
-                            "pooled_boxes_and_text"
-                        ],
-                    ],
-                    dim=1,
-                )
-            ).squeeze(-1)
-
-            probs = torch.softmax(logits, dim=1)
-
-            outputs = {"logits": logits, "probs": probs}
-            outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
-
-            return outputs
-
-        else:
-            vilbert_outputs = []
-            for i in range(num_images):
-                curr_box_features = box_features[i]
-                curr_box_coordinates = box_coordinates[i]
-                curr_box_mask = box_mask[i]
-
-                # TODO: use torch.no_grad() and set self.backbone.eval()
-                vilbert_outputs.append(
-                    # Shape: (batch_size, pooled_output_dim)
-                    self.backbone(curr_box_features, curr_box_coordinates, curr_box_mask, caption)[
-                        "pooled_boxes_and_text"
-                    ]
-                )
-
-            # Shape: (batch_size, num_images, pooled_output_dim)
-            stacked_outputs = torch.stack(vilbert_outputs, dim=1)
-
-            # Shape: (batch_size, k)
-            scores = self.classifier(stacked_outputs).squeeze(-1)
-            if num_images != 1000:
-                print("num images:")
-                print(num_images)
-                logger.info("num images:")
-                logger.info(num_images)
-
-            # Shapes: (batch_size, k)
-            values, indices = scores.topk(self.k, dim=-1)
-
-            # Shape: (batch_size)
-            # logits = (indices == label.reshape(-1, 1)).float()
-            # Shape: (batch_size)
-            pre_logits = torch.sum((indices == label.reshape(-1, 1)), dim=-1).float()
-            to_append = (pre_logits == 0).float()
-            # Shape: (batch_size, 2)
-            # 0-th column == 1 if we found the image in the top k, 1st column == 1 if we didn't
-            logits = torch.stack((pre_logits, to_append), dim=1)
-
-            # probs = torch.softmax(logits, dim=1)
-
-            outputs = {"logits": logits}  # , "probs": probs}
-            # This is slightly wrong. I have labels that correspond to the image index, and then top k
-            # scores. I think I should go back to getting the int-version bool mask thing, summing them, and then
-            # do something with those? Right now the labels I'm passing in here mean nothing.
-            # Ex:
-            # A row in the logits tensor could be [0, 1, 0, 0] and this means we found the image in the top k=4 images
-            # The label really is just a placeholder for "find the image", but putting label=1 for this row would
-            # tell the model we didn't find it. I think I should sum up the top k image ints to get either 0 or 1
-            # and then use a single class loss? That might work? It's a binary question of "was this image in the top k"
-            # Should be good now? Need to test out above changes
-            outputs = self._compute_loss_and_metrics(
-                batch_size, outputs, torch.zeros(batch_size).long().to(logits.device)
-            )
-
-            return outputs
-
-    # TODO: fix
     @overrides
     def _compute_loss_and_metrics(
         self,
