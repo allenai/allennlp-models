@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added support for NLVR2 visual entailment, including a data loader, two models, and training configs.
+- Added `StanfordSentimentTreeBankDatasetReader.apply_token_indexers()` to add token_indexers rather than in `text_to_instance` 
 
 ### Fixed
 
@@ -34,7 +35,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   See [PR #257](https://github.com/allenai/allennlp-models/pull/257) for more details.
 - Added a `beam_search` parameter to the `generation` models so that a `BeamSearch` object can be specified in their configs.
 - Added a binary gender bias-mitigated RoBERTa model for SNLI.
-- Added `StanfordSentimentTreeBankDatasetReader.apply_token_indexers()` to add token_indexers rather than in `text_to_instance` 
 
 
 ## [v2.4.0](https://github.com/allenai/allennlp-models/releases/tag/v2.4.0) - 2021-04-22

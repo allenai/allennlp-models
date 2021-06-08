@@ -156,4 +156,4 @@ class StanfordSentimentTreeBankDatasetReader(DatasetReader):
 
     @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
-        instance.fields["tokens"]._token_indexers = self._token_indexers
+        instance.fields["tokens"].token_indexers = self._token_indexers
