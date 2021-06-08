@@ -472,7 +472,7 @@ class Flickr30kReader(VisionReader):
             return torch.randn(len(captions), 5, 10)
 
         # TODO: this is to speed up debugging
-        return torch.randn(len(captions), 5, 1024)
+        # return torch.randn(len(captions), 5, 1024)
 
         caption_list = []
         with torch.no_grad():
