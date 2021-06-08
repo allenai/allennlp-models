@@ -313,8 +313,6 @@ class Flickr30kReader(VisionReader):
         label: int = 0,
     ):
         if self.is_evaluation:
-            print("label:")
-            print(label)
             caption_fields = [TextField(self._tokenizer.tokenize(caption), None)] * len(features_list)
             fields: Dict[str, Field] = {
                 "caption": ListField(caption_fields),
@@ -405,7 +403,7 @@ class Flickr30kReader(VisionReader):
             return torch.randn(len(captions), 5, 10)
 
         # TODO: this is to speed up debugging
-        return torch.randn(len(captions), 5, 1024)
+        # return torch.randn(len(captions), 5, 1024)
 
         caption_list = []
         with torch.no_grad():
