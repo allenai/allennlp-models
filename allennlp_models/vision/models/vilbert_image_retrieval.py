@@ -164,14 +164,14 @@ class ImageRetrievalVilbert(VisionTextModel):
                 )
                 # check tensor gradients
                 # if caption's grad is really small (esp compared to others), then that could be our problem
-                print('batch info:')
+                print("batch info:")
                 print(indices)
                 print(rel_scores)
                 print(label)
                 print(pre_logits)
                 print(logits)
                 print(outputs)
-                logger.info('batch info:')
+                logger.info("batch info:")
                 logger.info(indices)
                 logger.info(rel_scores)
                 logger.info(label)

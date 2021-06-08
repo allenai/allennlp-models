@@ -1,5 +1,6 @@
 from os import PathLike
 from typing import (
+    Any,
     Dict,
     Union,
     Optional,
@@ -17,7 +18,7 @@ import torch
 from torch import Tensor
 import faiss
 import transformers
-from random import sample, choices
+from random import sample, choices, randint
 
 from allennlp.common.file_utils import cached_path
 from allennlp.common.lazy import Lazy
@@ -187,11 +188,9 @@ class Flickr30kReader(VisionReader):
                 full_file_path = os.path.join(self.data_dir, filename)
                 captions.append(get_caption_data(full_file_path))
 
-        # if self.is_evaluation:
-        #     full_filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in captions]
-        #     full_images = list(self._process_image_paths(self.images[filename] for filename in full_filenames))
-
         # TODO: This'll have to be changed to work better with validation on multiple GPUs
+        # TODO: right now, in validation, it won't have the full set of images in every instance
+        # need to change.
         caption_dicts = list(self.shard_iterable(captions))
 
         processed_images: Iterable[Optional[Tuple[Tensor, Tensor]]]
@@ -248,12 +247,11 @@ class Flickr30kReader(VisionReader):
 
             for image_index in range(len(caption_dicts)):
                 caption_dict = caption_dicts[image_index]
-                # processed_image = processed_images[image_index]
                 for caption_index in range(len(caption_dict["captions"])):
-                    caption = caption_dict["captions"][caption_index]
+                    # caption = caption_dict["captions"][caption_index]
 
                     instance = self.text_to_instance(
-                        caption=caption,
+                        caption_dicts=caption_dicts,
                         image_index=image_index,
                         caption_index=caption_index,
                         features_list=features_list,
@@ -271,9 +269,8 @@ class Flickr30kReader(VisionReader):
             hard_negatives_cache = {}
             for image_index in range(len(caption_dicts)):
                 caption_dict = caption_dicts[image_index]
-                # processed_image = processed_images[image_index]
                 for caption_index in range(len(caption_dict["captions"])):
-                    caption = caption_dict["captions"][caption_index]
+                    # caption = caption_dict["captions"][caption_index]
                     if image_index not in hard_negatives_cache:
                         # I think we want negative L2 distances here
                         _, indices = (
@@ -281,11 +278,10 @@ class Flickr30kReader(VisionReader):
                                 averaged_features, averaged_features[image_index].unsqueeze(0)
                             ).squeeze(1)
                         ).topk(self.n)
-                        # _, indices = (averaged_features @ averaged_features[image_index]).topk(n)
                         hard_negatives_cache[image_index] = indices.tolist()
 
                     instance = self.text_to_instance(
-                        caption=caption,
+                        caption_dicts=caption_dicts,
                         image_index=image_index,
                         caption_index=caption_index,
                         features_list=features_list,
@@ -301,7 +297,7 @@ class Flickr30kReader(VisionReader):
     @overrides
     def text_to_instance(
         self,
-        caption: str,
+        caption_dicts: Dict[str, Dict[str, Any]],
         image_index: int,
         caption_index: int,
         features_list: List[TensorField],
@@ -313,7 +309,12 @@ class Flickr30kReader(VisionReader):
         label: int = 0,
     ):
         if self.is_evaluation:
-            caption_fields = [TextField(self._tokenizer.tokenize(caption), None)] * len(features_list)
+            caption_fields = [
+                TextField(
+                    self._tokenizer.tokenize(caption_dicts[image_index]["captions"][caption_index]),
+                    None,
+                )
+            ] * len(features_list)
             fields: Dict[str, Field] = {
                 "caption": ListField(caption_fields),
                 "box_features": ListField(features_list),
@@ -325,21 +326,27 @@ class Flickr30kReader(VisionReader):
             return Instance(fields)
 
         else:
-            index_to_image_index = {}
-            hard_negative_tensors = []
-            i = 0
-            for idx in potential_hard_negatives:
-                if idx != image_index:
-                    index_to_image_index[i] = idx
-                    hard_negative_tensors.append(averaged_features[i])
-                    i += 1
+            # index_to_image_index = {}
+            # hard_negative_tensors = []
+            # i = 0
+            # for idx in potential_hard_negatives:
+            #     if idx != image_index:
+            #         index_to_image_index[i] = idx
+            #         hard_negative_tensors.append(averaged_features[i])
+            #         i += 1
 
-            _, indices = (
-                torch.stack(hard_negative_tensors, dim=0)
-                @ caption_tensor[image_index][caption_index]
-            ).topk(3)
+            # TODO: change from topk
+            # _, indices = (
+            #     torch.stack(hard_negative_tensors, dim=0)
+            #     @ caption_tensor[image_index][caption_index]
+            #     # ).topk(3)
+            # ).topk(1)
 
-            caption_field = TextField(self._tokenizer.tokenize(caption), None)
+            # 1. Correct answer
+            caption_field = TextField(
+                self._tokenizer.tokenize(caption_dicts[image_index]["captions"][caption_index]),
+                None,
+            )
             caption_fields = [caption_field]
             features = [features_list[image_index]]
             coords = [coordinates_list[image_index]]
@@ -353,20 +360,82 @@ class Flickr30kReader(VisionReader):
                 )
             ]
 
-            for idx in indices.tolist():
-                hard_negative_index = index_to_image_index[idx]
-                caption_fields.append(caption_field)
-                features.append(features_list[hard_negative_index])
-                coords.append(coordinates_list[hard_negative_index])
-                masks.append(
-                    ArrayField(
-                        features_list[hard_negative_index].tensor.new_ones(
-                            (features_list[hard_negative_index].tensor.shape[0],), dtype=torch.bool
-                        ),
-                        padding_value=False,
-                        dtype=torch.bool,
-                    )
+            # 2. Correct image, random wrong caption
+            while True:
+                random_image_index = randint(0, len(caption_dicts) - 1)
+                random_caption_index = randint(
+                    0, len(caption_dicts[random_image_index]["captions"]) - 1
                 )
+                if random_image_index != image_index or random_caption_index != caption_index:
+                    incorrect_caption = TextField(
+                        self._tokenizer.tokenize(
+                            caption_dicts[random_image_index]["captions"][random_caption_index]
+                        ),
+                        None,
+                    )
+                    break
+
+            caption_fields.append(incorrect_caption)
+            features.append(features_list[image_index])
+            coords.append(coordinates_list[image_index])
+            masks.append(
+                ArrayField(
+                    features_list[image_index].tensor.new_ones(
+                        (features_list[image_index].tensor.shape[0],), dtype=torch.bool
+                    ),
+                    padding_value=False,
+                    dtype=torch.bool,
+                )
+            )
+
+            # 3. Random wrong image, correct caption
+            while True:
+                wrong_image_index = randint(0, len(features_list) - 1)
+                if wrong_image_index != image_index:
+                    break
+            caption_fields.append(caption_field)
+            features.append(features_list[wrong_image_index])
+            coords.append(coordinates_list[wrong_image_index])
+            masks.append(
+                ArrayField(
+                    features_list[wrong_image_index].tensor.new_ones(
+                        (features_list[wrong_image_index].tensor.shape[0],), dtype=torch.bool
+                    ),
+                    padding_value=False,
+                    dtype=torch.bool,
+                )
+            )
+
+            index_to_image_index = {}
+            hard_negative_tensors = []
+            i = 0
+            for idx in potential_hard_negatives:
+                if idx != image_index:
+                    index_to_image_index[i] = idx
+                    hard_negative_tensors.append(averaged_features[i])
+                    i += 1
+
+            hard_negative_image_index = index_to_image_index[
+                torch.argmax(
+                    torch.stack(hard_negative_tensors, dim=0)
+                    @ caption_tensor[image_index][caption_index]
+                ).item()
+            ]
+
+            # 4. Hard negative image, correct caption
+            caption_fields.append(caption_field)
+            features.append(features_list[hard_negative_image_index])
+            coords.append(coordinates_list[hard_negative_image_index])
+            masks.append(
+                ArrayField(
+                    features_list[hard_negative_image_index].tensor.new_ones(
+                        (features_list[hard_negative_image_index].tensor.shape[0],),
+                        dtype=torch.bool,
+                    ),
+                    padding_value=False,
+                    dtype=torch.bool,
+                )
+            )
 
             fields: Dict[str, Field] = {
                 "caption": ListField(caption_fields),
