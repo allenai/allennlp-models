@@ -406,6 +406,7 @@ class Flickr30kReader(VisionReader):
                 )
             )
 
+            # 4. Hard negative image, correct caption
             index_to_image_index = {}
             hard_negative_tensors = []
             i = 0
@@ -422,7 +423,6 @@ class Flickr30kReader(VisionReader):
                 ).item()
             ]
 
-            # 4. Hard negative image, correct caption
             caption_fields.append(caption_field)
             features.append(features_list[hard_negative_image_index])
             coords.append(coordinates_list[hard_negative_image_index])
@@ -472,7 +472,7 @@ class Flickr30kReader(VisionReader):
             return torch.randn(len(captions), 5, 10)
 
         # TODO: this is to speed up debugging
-        # return torch.randn(len(captions), 5, 1024)
+        return torch.randn(len(captions), 5, 1024)
 
         caption_list = []
         with torch.no_grad():
