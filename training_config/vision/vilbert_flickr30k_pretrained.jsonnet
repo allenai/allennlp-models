@@ -33,8 +33,7 @@ local dataset = "data";
         "model_name": model_name
       }
     },
-    // TODO: comment this out
-    // "max_instances": 1000,
+    "max_instances": 1000, // DEBUG
     "image_processing_batch_size": 16,
     // "answer_vocab": if construct_vocab then null else vocabulary,
   },
