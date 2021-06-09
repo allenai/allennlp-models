@@ -39,7 +39,7 @@ local bert_model = "bert-base-uncased";
             "type": "slanted_triangular",
         },
         "checkpointer": {
-            "num_serialized_models_to_keep": 2,
+            "keep_most_recent_by_count": 2,
         },
         "grad_norm": 1.0,
         "num_epochs": 15,

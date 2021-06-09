@@ -5,19 +5,55 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## Unreleased
-
-### Fixed
-
-- `VqaMeasure` now calculates correctly in the distributed case.
-- `ConllCorefScores` now calculates correctly in the distributed case.
-- `SrlEvalScorer` raises an appropriate error if run in the distributed setting.
 
 ### Added
 
+- Added support for NLVR2 visual entailment, including a data loader, two models, and training configs.
+- Added `StanfordSentimentTreeBankDatasetReader.apply_token_indexers()` to add token_indexers rather than in `text_to_instance` 
+
+### Fixed
+
+- Fixed `binary-gender-bias-mitigated-roberta-snli` model card to indicate that model requires `allennlp@v2.5.0`.
+- Fixed registered model name in the `pair-classification-roberta-rte` and `vgqa-vilbert` model cards.
+
+## [v2.5.0](https://github.com/allenai/allennlp-models/releases/tag/v2.5.0) - 2021-06-03
+
+### Changed
+
+- Updated all instances of `sanity_checks` to `confidence_checks`.
+- The `num_serialized_models_to_keep` parameter is now called `keep_most_recent_by_count`.
+- Improvements to the vision models and other models that use `allennlp.modules.transformer` under the hood.
+
+### Added
+
+- Added tests for checklist suites for SQuAD-style reading comprehension models (`bidaf`), and textual entailment models (`decomposable_attention` and `esim`).
+- Added an optional "weight" parameter to `CopyNetSeq2Seq.forward()` for calculating a weighted loss instead of the simple average over the
+  the negative log likelihoods for each instance in the batch.
+- Added a way to initialize the `SrlBert` model without caching/loading pretrained transformer weights.
+  You need to set the `bert_model` parameter to the dictionary form of the corresponding `BertConfig` from HuggingFace.
+  See [PR #257](https://github.com/allenai/allennlp-models/pull/257) for more details.
+- Added a `beam_search` parameter to the `generation` models so that a `BeamSearch` object can be specified in their configs.
+- Added a binary gender bias-mitigated RoBERTa model for SNLI.
+
+
+## [v2.4.0](https://github.com/allenai/allennlp-models/releases/tag/v2.4.0) - 2021-04-22
+
+### Added
+
+- Added `T5` model for generation.
+- Added a classmethod constructor on `Seq2SeqPredictor`: `.pretrained_t5_for_generation()`.
+- Added a parameter called `source_prefix` to `CNNDailyMailDatasetReader`. This is useful with T5, for example, by setting `source_prefix` to "summarization: ".
 - Tests for `VqaMeasure`.
 - Distributed tests for `ConllCorefScores` and `SrlEvalScorer` metrics.
+- Added dataset reader for visual genome QA.
+
+### Fixed
+
+- `pretrained.load_predictor()` now allows for loading model onto GPU.
+- `VqaMeasure` now calculates correctly in the distributed case.
+- `ConllCorefScores` now calculates correctly in the distributed case.
+- `SrlEvalScorer` raises an appropriate error if run in the distributed setting.
 
 ### Changed
 

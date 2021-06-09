@@ -1,0 +1,72 @@
+{
+    "id": "vgqa-vilbert",
+    "registered_model_name": "vqa_vilbert_from_huggingface",
+    "registered_predictor_name": "vgqa_vilbert",
+    "display_name": "ViLBERT - Visual Genome Question Answering",
+    "task_id": "vgqa",
+    "model_details": {
+        "description": "ViLBERT (short for Vision-and-Language BERT), is a model for learning task-agnostic joint representations of image content and natural language.",
+        "short_description": "ViLBERT (short for Vision-and-Language BERT), is a model for learning task-agnostic joint representations of image content and natural language.",
+        "developed_by": "Lu et al",
+        "contributed_by": "Jacob Morrison",
+        "date": "2021-05-07",
+        "version": "2",
+        "model_type": "ViLBERT based on BERT large",
+        "paper": {
+            "citation": "\n@inproceedings{Lu2019ViLBERTPT,\ntitle={ViLBERT: Pretraining Task-Agnostic Visiolinguistic Representations for Vision-and-Language Tasks},\nauthor={Jiasen Lu and Dhruv Batra and D. Parikh and Stefan Lee},\nbooktitle={NeurIPS},\nyear={2019}\n}",
+            "title": "ViLBERT: Pretraining Task-Agnostic Visiolinguistic Representations for Vision-and-Language Tasks",
+            "url": "https://api.semanticscholar.org/CorpusID:199453025"
+        },
+        "license": null,
+        "contact": "allennlp-contact@allenai.org"
+    },
+    "intended_use": {
+        "primary_uses": "This model is developed for the AllenNLP demo.",
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "F1-metric and VQA score",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": {
+            "name": "VGQA dataset",
+            "url": "https://visualgenome.org/",
+            "notes": "Evaluation requires a large amount of images to be accessible locally, so we cannot provide a command you can easily copy and paste. The first time you run it, you will get an error message that tells you how to get the rest of the data.",
+            "processed_url": "https://visualgenome.org/static/data/dataset/question_answers.json.zip!question_answers.json[:5000]"
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": {
+            "name": "VGQA dataset",
+            "url": "https://visualgenome.org/",
+            "notes": "Training requires a large amount of images to be accessible locally, so we cannot provide a command you can easily copy and paste. The first time you run it, you will get an error message that tells you how to get the rest of the data.",
+            "processed_url": "https://visualgenome.org/static/data/dataset/question_answers.json.zip!question_answers.json[5000:]"
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": "On the validation set:\nF1: 29.6%\nVQA: 26.5%.\nThese scores do not match the performance in the VilBERT paper. Please contact us if you want to match those scores!",
+        "intersectional_results": null
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "model_caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    },
+    "model_usage": {
+        "archive_file": "vilbert-vgqa-pretrained.2021-05-10.tar.gz",
+        "training_config": "vision/vilbert_vgqa_pretrained.jsonnet",
+        "install_instructions": "pip install allennlp==2.5.0 allennlp-models==2.5.0"
+    }
+}

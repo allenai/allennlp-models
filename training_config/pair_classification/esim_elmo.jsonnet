@@ -89,7 +89,7 @@
       "lr": 0.0004
     },
     "checkpointer": {
-      "num_serialized_models_to_keep": 2,
+      "keep_most_recent_by_count": 2,
     },
     "validation_metric": "+accuracy",
     "num_epochs": 75,

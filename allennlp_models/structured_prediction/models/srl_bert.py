@@ -1,9 +1,11 @@
+import warnings
 from typing import Dict, List, Any, Union
 
 from overrides import overrides
 import torch
 from torch.nn.modules import Linear, Dropout
 import torch.nn.functional as F
+from transformers.models.bert.configuration_bert import BertConfig
 from transformers.models.bert.modeling_bert import BertModel
 
 from allennlp.data import TextFieldTensors, Vocabulary
@@ -31,14 +33,26 @@ class SrlBert(Model):
 
     vocab : `Vocabulary`, required
         A Vocabulary, required in order to compute sizes for input/output projections.
-    model : `Union[str, BertModel]`, required.
-        A string describing the BERT model to load or an already constructed BertModel.
+
+    bert_model : `Union[str, Dict[str, Any], BertModel]`, required.
+        A string describing the BERT model to load, a BERT config in the form of a dictionary,
+        or an already constructed BertModel.
+
+        !!! Note
+            If you pass a config `bert_model` (a dictionary), pretrained weights will
+            not be cached and loaded! This is ideal if you're loading this model from an
+            AllenNLP archive since the weights you need will already be included in the
+            archive, but not what you want if you're training.
+
     initializer : `InitializerApplicator`, optional (default=`InitializerApplicator()`)
         Used to initialize the model parameters.
+
     label_smoothing : `float`, optional (default = `0.0`)
         Whether or not to use label smoothing on the labels when computing cross entropy loss.
+
     ignore_span_metric : `bool`, optional (default = `False`)
         Whether to calculate span loss, which is irrelevant when predicting BIO for Open Information Extraction.
+
     srl_eval_path : `str`, optional (default=`DEFAULT_SRL_EVAL_PATH`)
         The path to the srl-eval.pl script. By default, will use the srl-eval.pl included with allennlp,
         which is located at allennlp/tools/srl-eval.pl . If `None`, srl-eval.pl is not used.
@@ -47,7 +61,7 @@ class SrlBert(Model):
     def __init__(
         self,
         vocab: Vocabulary,
-        bert_model: Union[str, BertModel],
+        bert_model: Union[str, Dict[str, Any], BertModel],
         embedding_dropout: float = 0.0,
         initializer: InitializerApplicator = InitializerApplicator(),
         label_smoothing: float = None,
@@ -59,6 +73,14 @@ class SrlBert(Model):
 
         if isinstance(bert_model, str):
             self.bert_model = BertModel.from_pretrained(bert_model)
+        elif isinstance(bert_model, dict):
+            warnings.warn(
+                "Initializing BertModel without pretrained weights. This is fine if you're loading "
+                "from an AllenNLP archive, but not if you're training.",
+                UserWarning,
+            )
+            bert_config = BertConfig.from_dict(bert_model)
+            self.bert_model = BertModel(bert_config)
         else:
             self.bert_model = bert_model
 

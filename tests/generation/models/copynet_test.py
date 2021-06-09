@@ -1,12 +1,14 @@
 import numpy as np
-from scipy.special import logsumexp
-import torch
 import pytest
-
+import torch
+from _pytest.mark import param
 from allennlp.commands.train import train_model_from_file
+from allennlp.common import Params
 from allennlp.common.testing import ModelTestCase, requires_gpu
-
+from allennlp.data import Batch, DatasetReader
+from allennlp.models import Model
 from allennlp_models.generation import CopyNetDatasetReader, CopyNetSeq2Seq  # noqa: F401
+from scipy.special import logsumexp
 from tests import FIXTURES_ROOT
 
 
@@ -17,6 +19,19 @@ class CopyNetTest(ModelTestCase):
             FIXTURES_ROOT / "generation" / "copynet" / "experiment.json",
             FIXTURES_ROOT / "generation" / "copynet" / "data" / "copyover.tsv",
         )
+
+    def test_backwards_compatibility_with_beam_search_args(self):
+        # These values are arbitrary but should be different than the config.
+        beam_size, max_decoding_steps = 100, 1000
+        params = Params.from_file(self.param_file)
+        params["model"]["beam_size"] = beam_size
+        params["model"]["max_decoding_steps"] = max_decoding_steps
+        # The test harness is set up to treat DeprecationWarning's like errors, so this needs to
+        # be called within the pytest context manager.
+        with pytest.raises(DeprecationWarning):
+            model = Model.from_params(vocab=self.vocab, params=params.get("model"))
+            assert model._beam_search.beam_size == beam_size
+            assert model._beam_search.max_steps == max_decoding_steps
 
     def test_model_can_train_save_load(self):
         self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-2)
@@ -318,6 +333,23 @@ class CopyNetTest(ModelTestCase):
         assert len(predicted_tokens) == 2
         assert predicted_tokens[0] == ["tokens", "hello", "world"]
         assert predicted_tokens[1] == ["tokens", "tokens", "tokens"]
+
+    def test_forward_with_weights(self):
+        params = Params.from_file(self.param_file)
+        reader: CopyNetDatasetReader = DatasetReader.from_params(
+            params["dataset_reader"], serialization_dir=self.TEST_DIR
+        )
+        instances = [
+            reader.text_to_instance("hello hello world", "hello world", weight=0.9),
+            reader.text_to_instance("hello world", "hello world world", weight=0.5),
+        ]
+        for instance in instances:
+            reader.apply_token_indexers(instance)
+        batch = Batch(instances)
+        batch.index_instances(self.model.vocab)
+        inputs = batch.as_tensor_dict()
+        assert "weight" in inputs
+        _ = self.model(**inputs)
 
 
 class CopyNetTransformerTest(ModelTestCase):

@@ -1,3 +1,4 @@
+import warnings
 from typing import Dict, List, Tuple, Optional
 from overrides import overrides
 
@@ -13,6 +14,7 @@ from allennlp.modules import Embedding
 from allennlp.nn import util
 from allennlp.nn.beam_search import BeamSearch
 from allennlp.training.metrics import Metric
+from allennlp.common import Lazy
 
 from allennlp_models.generation.modules.decoder_nets.decoder_net import DecoderNet
 from .seq_decoder import SeqDecoder
@@ -31,16 +33,14 @@ class AutoRegressiveSeqDecoder(SeqDecoder):
         be specified as `target_namespace`.
     decoder_net : `DecoderNet`, required
         Module that contains implementation of neural network for decoding output elements
-    max_decoding_steps : `int`, required
-        Maximum length of decoded sequences.
     target_embedder : `Embedding`
         Embedder for target tokens.
     target_namespace : `str`, optional (default = `'tokens'`)
         If the target side vocabulary is different from the source side's, you need to specify the
         target's namespace here. If not, we'll assume it is "tokens", which is also the default
         choice for the source side, and this might cause them to share vocabularies.
-    beam_size : `int`, optional (default = `4`)
-        Width of the beam for beam search.
+    beam_search : `BeamSearch`, optional (default = `Lazy(BeamSearch)`)
+        This is used to during inference to select the tokens of the decoded output sequence.
     tensor_based_metric : `Metric`, optional (default = `None`)
         A metric to track on validation data that takes raw tensors when its called.
         This metric must accept two arguments when called: a batched tensor
@@ -60,15 +60,15 @@ class AutoRegressiveSeqDecoder(SeqDecoder):
         self,
         vocab: Vocabulary,
         decoder_net: DecoderNet,
-        max_decoding_steps: int,
         target_embedder: Embedding,
         target_namespace: str = "tokens",
+        beam_search: Lazy[BeamSearch] = Lazy(BeamSearch),
         tie_output_embedding: bool = False,
         scheduled_sampling_ratio: float = 0,
         label_smoothing_ratio: Optional[float] = None,
-        beam_size: int = 4,
         tensor_based_metric: Metric = None,
         token_based_metric: Metric = None,
+        **kwargs
     ) -> None:
         super().__init__(target_embedder)
 
@@ -76,7 +76,6 @@ class AutoRegressiveSeqDecoder(SeqDecoder):
 
         # Decodes the sequence of encoded hidden states into e new sequence of hidden states.
         self._decoder_net = decoder_net
-        self._max_decoding_steps = max_decoding_steps
         self._target_namespace = target_namespace
         self._label_smoothing_ratio = label_smoothing_ratio
 
@@ -85,9 +84,20 @@ class AutoRegressiveSeqDecoder(SeqDecoder):
         # end symbol as a way to indicate the end of the decoded sequence.
         self._start_index = self._vocab.get_token_index(START_SYMBOL, self._target_namespace)
         self._end_index = self._vocab.get_token_index(END_SYMBOL, self._target_namespace)
-        self._beam_search = BeamSearch(
-            self._end_index, max_steps=max_decoding_steps, beam_size=beam_size
+        # For backwards compatibility, check if beam_size or max_decoding_steps were passed in as
+        # kwargs. If so, update the BeamSearch object before constructing and raise a DeprecationWarning
+        deprecation_warning = (
+            "The parameter {} has been deprecated."
+            " Provide this parameter as argument to beam_search instead."
         )
+        beam_search_extras = {}
+        if "beam_size" in kwargs:
+            beam_search_extras["beam_size"] = kwargs["beam_size"]
+            warnings.warn(deprecation_warning.format("beam_size"), DeprecationWarning)
+        if "max_decoding_steps" in kwargs:
+            beam_search_extras["max_steps"] = kwargs["max_decoding_steps"]
+            warnings.warn(deprecation_warning.format("max_decoding_steps"), DeprecationWarning)
+        self._beam_search = beam_search.construct(end_index=self._end_index, **beam_search_extras)
 
         target_vocab_size = self._vocab.get_vocab_size(self._target_namespace)
 

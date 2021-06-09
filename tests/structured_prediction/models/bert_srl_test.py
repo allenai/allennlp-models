@@ -1,6 +1,7 @@
+import json
+
 import numpy
 import pytest
-from _pytest.monkeypatch import MonkeyPatch
 from transformers.models.bert.modeling_bert import BertConfig, BertModel
 from transformers.models.bert.tokenization_bert import BertTokenizer
 
@@ -14,27 +15,11 @@ from allennlp_models.structured_prediction import SrlBert
 
 class BertSrlTest(ModelTestCase):
     def setup_method(self):
-
-        self.monkeypatch = MonkeyPatch()
-        # monkeypatch the PretrainedBertModel to return the tiny test fixture model
-        config_path = FIXTURES_ROOT / "structured_prediction" / "srl" / "bert" / "config.json"
-        vocab_path = FIXTURES_ROOT / "structured_prediction" / "srl" / "bert" / "vocab.txt"
-        config = BertConfig.from_json_file(config_path)
-        self.monkeypatch.setattr(BertModel, "from_pretrained", lambda _: BertModel(config))
-        self.monkeypatch.setattr(
-            BertTokenizer, "from_pretrained", lambda _: BertTokenizer(vocab_path)
-        )
-
         super().setup_method()
         self.set_up_model(
             FIXTURES_ROOT / "structured_prediction" / "srl" / "bert_srl.jsonnet",
             FIXTURES_ROOT / "structured_prediction" / "srl" / "conll_2012",
         )
-
-    def teardown_method(self):
-        self.monkeypatch.undo()
-        self.monkeypatch.undo()
-        super().teardown_method()
 
     def test_bert_srl_model_can_train_save_and_load(self):
         ignore_grads = {"bert_model.pooler.dense.weight", "bert_model.pooler.dense.bias"}
@@ -67,3 +52,14 @@ class BertSrlTest(ModelTestCase):
             # to_bioul throws an exception if the tag sequence is not well formed,
             # so here we can easily check that the sequence we produce is good.
             to_bioul(prediction, encoding="BIO")
+
+
+class BertSrlFromLocalFilesTest(ModelTestCase):
+    def test_init_from_local_files(self):
+        with pytest.warns(
+            UserWarning, match=r"Initializing BertModel without pretrained weights.*"
+        ):
+            self.set_up_model(
+                FIXTURES_ROOT / "structured_prediction" / "srl" / "bert_srl_local_files.jsonnet",
+                FIXTURES_ROOT / "structured_prediction" / "srl" / "conll_2012",
+            )

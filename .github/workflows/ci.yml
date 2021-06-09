@@ -1,5 +1,9 @@
 name: CI
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
     branches:
@@ -66,7 +70,7 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: ${{ env.pythonLocation }}
-        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}-v2
 
     - name: Install requirements
       run: |
@@ -192,7 +196,7 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: ${{ env.pythonLocation }}
-        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}-v2
 
     - name: Install requirements
       run: |
@@ -336,7 +340,7 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: ${{ env.pythonLocation }}
-        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}-v2
 
     - name: Install requirements
       run: |
