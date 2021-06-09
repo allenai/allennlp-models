@@ -33,16 +33,16 @@ class TransformerMC(Model):
         vocab: Vocabulary,
         transformer_model: str = "roberta-large",
         override_weights_file: Optional[str] = None,
-        override_weights_strip_prefix: Optional[str] = None,
         **kwargs
     ) -> None:
         super().__init__(vocab, **kwargs)
-        bert = cached_transformers.get(
-            transformer_model, False, override_weights_file, override_weights_strip_prefix
-        )
-        self.embeddings = TransformerEmbeddings.from_pretrained_module(bert)
-        self.transformer_stack = TransformerStack.from_pretrained_module(bert)
-        self.pooler = TransformerPooler.from_pretrained_module(bert)
+        transformer_kwargs = {
+            "model_name": transformer_model,
+            "weights_path": override_weights_file
+        }
+        self.embeddings = TransformerEmbeddings.from_pretrained_module(**transformer_kwargs)
+        self.transformer_stack = TransformerStack.from_pretrained_module(**transformer_kwargs)
+        self.pooler = TransformerPooler.from_pretrained_module(**transformer_kwargs)
 
         self.linear_layer = torch.nn.Linear(self.pooler.get_output_dim(), 1)
         self.linear_layer.weight.data.normal_(mean=0.0, std=0.02)
@@ -92,7 +92,7 @@ class TransformerMC(Model):
         embedded_alternatives = self.transformer_stack(
             embedded_alternatives, alternatives["attention_mask"]
         )
-        embedded_alternatives = self.pooler(embedded_alternatives[0])
+        embedded_alternatives = self.pooler(embedded_alternatives.final_hidden_states)
         logits = self.linear_layer(embedded_alternatives)
         logits = logits.view(batch_size, num_alternatives)
 
