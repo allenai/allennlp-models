@@ -10,6 +10,7 @@ from allennlp.data.tokenizers import PretrainedTransformerTokenizer
 from allennlp.models.model import Model
 from allennlp.modules.transformer.t5 import T5 as T5Module, T5Output, IntT, BoolT
 from allennlp.nn.beam_search import BeamSearch
+from allennlp.nn.checkpoint import CheckpointWrapper
 from allennlp.nn.parallel import DdpWrapper
 from allennlp.training.metrics import ROUGE, BLEU
 
@@ -22,6 +23,7 @@ class T5(Model):
         model_name: str,
         beam_search: Lazy[BeamSearch] = Lazy(BeamSearch, beam_size=3, max_steps=50),
         ddp_wrapper: Optional[DdpWrapper] = None,
+        checkpoint_wrapper: Optional[CheckpointWrapper] = None,
         weights_path: Optional[Union[str, PathLike]] = None,
         **kwargs
     ) -> None:
@@ -33,6 +35,7 @@ class T5(Model):
             model_name,
             beam_search=beam_search,
             ddp_wrapper=ddp_wrapper,
+            checkpoint_wrapper=checkpoint_wrapper,
             weights_path=weights_path,
         )
 
