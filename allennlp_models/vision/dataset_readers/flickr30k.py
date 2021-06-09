@@ -445,6 +445,9 @@ class Flickr30kReader(VisionReader):
             self._hard_negative_coordinates_cache[cache_id] = coordinates_list[
                 hard_negative_image_index
             ]
+        else:
+            print("cache hit")
+            logger.info("cache hit")
 
         return (
             self._hard_negative_features_cache[cache_id],
