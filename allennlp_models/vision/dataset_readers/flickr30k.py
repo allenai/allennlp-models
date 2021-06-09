@@ -16,7 +16,6 @@ import heapq
 from overrides import overrides
 import torch
 from torch import Tensor
-import faiss
 import transformers
 from random import sample, choices, randint
 
