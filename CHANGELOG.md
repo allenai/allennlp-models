@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added some additional `__init__()` parameters to the `T5` model in `allennlp_models.generation` for customizing
+  beam search and other options.
 - Added support for NLVR2 visual entailment, including a data loader, two models, and training configs.
 
 ### Fixed
