@@ -131,7 +131,7 @@ class VisionReader(DatasetReader):
         self._feature_cache_instance: Optional[MutableMapping[str, Tensor]] = None
         self._coordinates_cache_instance: Optional[MutableMapping[str, Tensor]] = None
         self._hard_negative_features_cache_instance: Optional[MutableMapping[str, Tensor]] = None
-        self._feature_cache_instance: Optional[MutableMapping[str, Tensor]] = None
+        self._hard_negative_coordinates_cache_instance: Optional[MutableMapping[str, Tensor]] = None
 
         # image processors
         self.image_loader = None
