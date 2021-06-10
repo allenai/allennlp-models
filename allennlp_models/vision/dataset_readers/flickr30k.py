@@ -1,4 +1,5 @@
 from os import PathLike
+import logging
 from typing import (
     Any,
     Dict,
@@ -31,6 +32,8 @@ from allennlp.data.tokenizers import Tokenizer
 from allennlp.modules.vision.grid_embedder import GridEmbedder
 from allennlp.modules.vision.region_detector import RegionDetector
 from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
+
+logger = logging.getLogger(__name__)
 
 # TODO: Things slowing this down
 # 3. Not being able to load hard negatives (json file?)
