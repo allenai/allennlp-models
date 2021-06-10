@@ -251,6 +251,8 @@ class Flickr30kReader(VisionReader):
             # Shape: (num_images, image_dimension)
             averaged_features = torch.stack(averaged_features_list, dim=0)
 
+            # TODO: Use Dirk's caching here
+            # Commented out for now
             # Shape: (num_images, num_captions_per_image = 5, caption_dimension)
             caption_tensor = self.get_caption_features(caption_dicts)
 
@@ -265,6 +267,7 @@ class Flickr30kReader(VisionReader):
                         averaged_features,
                         features_list,
                         coordinates_list,
+                        caption_tensor,
                     )
 
                     instance = self.text_to_instance(
@@ -413,6 +416,7 @@ class Flickr30kReader(VisionReader):
         averaged_features: Tensor,
         features_list: List[Tensor],
         coordinates_list: List[Tensor],
+        caption_tensor: Tensor,
     ) -> List[Tuple[Tensor, Tensor]]:
         image_id = caption_dicts[image_index]["image_id"]
         caption = caption_dicts[image_index]["captions"][caption_index]
@@ -422,8 +426,6 @@ class Flickr30kReader(VisionReader):
             cache_id not in self._hard_negative_features_cache
             or cache_id not in self._hard_negative_coordinates_cache
         ):
-            print('cache miss')
-            logger.info('cache miss')
             _, indices = (
                 -torch.cdist(
                     averaged_features, averaged_features[image_index].unsqueeze(0)
@@ -441,7 +443,7 @@ class Flickr30kReader(VisionReader):
 
             hard_negative_image_index = index_to_image_index[
                 torch.argmax(
-                    torch.stack(hard_negative_tensors, dim=0) @ self.get_caption_feature(caption)
+                    torch.stack(hard_negative_tensors, dim=0) @ caption_tensor[image_index][caption_index]
                 ).item()
             ]
 
