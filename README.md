@@ -153,6 +153,9 @@ Here is a list of pre-trained models currently available.
 - [`mc-roberta-commonsenseqa`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/mc-roberta-commonsenseqa.json) - RoBERTa-based multiple choice model for CommonSenseQA.
 - [`mc-roberta-piqa`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/mc-roberta-piqa.json) - RoBERTa-based multiple choice model for PIQA.
 - [`mc-roberta-swag`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/mc-roberta-swag.json) - RoBERTa-based multiple choice model for SWAG.
+- [`nlvr2-vilbert`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/nlvr2-vilbert-head.json) - ViLBERT-based model for Visual Entailment.
+- [`nlvr2-vilbert`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/nlvr2-vilbert.json) - ViLBERT-based model for Visual Entailment.
+- [`pair-classification-binary-gender-bias-mitigated-roberta-snli`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/pair-classification-binary-gender-bias-mitigated-roberta-snli.json) - RoBERTa finetuned on SNLI with binary gender bias mitigation.
 - [`pair-classification-decomposable-attention-elmo`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/pair-classification-decomposable-attention-elmo.json) - The decomposable attention model (Parikh et al, 2017) combined with ELMo embeddings trained on SNLI.
 - [`pair-classification-esim`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/pair-classification-esim.json) - Enhanced LSTM trained on SNLI.
 - [`pair-classification-roberta-mnli`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/pair-classification-roberta-mnli.json) - RoBERTa finetuned on MNLI.
@@ -175,6 +178,7 @@ Here is a list of pre-trained models currently available.
 - [`tagging-fine-grained-crf-tagger`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/tagging-fine-grained-crf-tagger.json) - This model identifies a broad range of 16 semantic types in the input text. It is a reimplementation of Lample (2016) and uses a biLSTM with a CRF layer, character embeddings and ELMo embeddings.
 - [`tagging-fine-grained-transformer-crf-tagger`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/tagging-fine-grained-transformer-crf-tagger.json) - Fine-grained NER model
 - [`ve-vilbert`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/ve-vilbert.json) - ViLBERT-based model for Visual Entailment.
+- [`vgqa-vilbert`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/vgqa-vilbert.json) - ViLBERT (short for Vision-and-Language BERT), is a model for learning task-agnostic joint representations of image content and natural language.
 - [`vqa-vilbert`](https://github.com/allenai/allennlp-models/tree/main/allennlp_models/modelcards/vqa-vilbert.json) - ViLBERT (short for Vision-and-Language BERT), is a model for learning task-agnostic joint representations of image content and natural language.
 
 <!-- End automatically generated section -->

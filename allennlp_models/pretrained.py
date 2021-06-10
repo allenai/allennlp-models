@@ -7,19 +7,7 @@ from allennlp.predictors import Predictor
 
 from allennlp.common.model_card import ModelCard
 from allennlp.common.task_card import TaskCard
-
-# These imports are included so that the model cards can be filled with default information
-# obtained from the registered model classes.
-from allennlp_models.classification.models import *  # noqa: F401, F403
-from allennlp_models.coref.models import *  # noqa: F401, F403
-from allennlp_models.generation.models import *  # noqa: F401, F403
-from allennlp_models.lm.models import *  # noqa: F401, F403
-from allennlp_models.mc.models import *  # noqa: F401, F403
-from allennlp_models.pair_classification.models import *  # noqa: F401, F403
-from allennlp_models.rc.models import *  # noqa: F401, F403
-from allennlp_models.structured_prediction.models import *  # noqa: F401, F403
-from allennlp_models.tagging.models import *  # noqa: F401, F403
-from allennlp_models.vision.models import *  # noqa: F401, F403
+from allennlp.common.plugins import import_plugins
 
 
 def get_tasks() -> Dict[str, TaskCard]:
@@ -27,7 +15,6 @@ def get_tasks() -> Dict[str, TaskCard]:
     Returns a mapping of [`TaskCard`](/models/common/task_card#taskcard)s for all
     tasks.
     """
-
     tasks = {}
     task_card_paths = os.path.join(
         os.path.dirname(os.path.realpath(__file__)), "taskcards", "*.json"
@@ -45,6 +32,7 @@ def get_pretrained_models() -> Dict[str, ModelCard]:
     Returns a mapping of [`ModelCard`](/models/common/model_card#modelcard)s for all
     available pretrained models.
     """
+    import_plugins()
 
     pretrained_models = {}
     model_card_paths = os.path.join(
@@ -61,6 +49,7 @@ def get_pretrained_models() -> Dict[str, ModelCard]:
 def load_predictor(
     model_id: str,
     pretrained_models: Dict[str, ModelCard] = None,
+    cuda_device: int = -1,
     overrides: Union[str, Dict[str, Any]] = None,
 ) -> Predictor:
     """
@@ -76,5 +65,6 @@ def load_predictor(
     return Predictor.from_path(
         model_card.model_usage.archive_file,
         predictor_name=model_card.registered_predictor_name,
+        cuda_device=cuda_device,
         overrides=overrides,
     )

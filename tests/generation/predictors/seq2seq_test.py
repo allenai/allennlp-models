@@ -2,6 +2,7 @@ from allennlp.common.testing import AllenNlpTestCase
 from allennlp.models.archival import load_archive
 from allennlp.predictors import Predictor
 
+from allennlp_models.generation.predictors import Seq2SeqPredictor
 from tests import FIXTURES_ROOT
 
 
@@ -12,7 +13,7 @@ class TestSeq2SeqPredictor(AllenNlpTestCase):
         archive = load_archive(
             FIXTURES_ROOT / "generation" / "simple" / "serialization" / "model.tar.gz"
         )
-        predictor = Predictor.from_archive(archive, "seq2seq")
+        predictor: Seq2SeqPredictor = Predictor.from_archive(archive, "seq2seq")
 
         result = predictor.predict_json(inputs)
 

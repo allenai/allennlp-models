@@ -22,7 +22,11 @@ local data_base_url = "test_fixtures/generation/bart/data/";
     },
     "model": {
         "type": "bart",
-        "model_name": model_name
+        "model_name": model_name,
+        "beam_search": {
+            "max_steps": 140,
+            "beam_size": 4
+        },
     },
     "data_loader": {
         "batch_size": 2,
@@ -41,6 +45,6 @@ local data_base_url = "test_fixtures/generation/bart/data/";
             "type": "polynomial_decay",
         },
         "grad_norm": 1.0,
-        "run_sanity_checks": false
+        "run_confidence_checks": false
     }
 }

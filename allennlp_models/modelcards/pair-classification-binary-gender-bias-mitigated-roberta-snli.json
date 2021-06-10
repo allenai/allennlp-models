@@ -1,0 +1,70 @@
+{
+    "id": "pair-classification-binary-gender-bias-mitigated-roberta-snli",
+    "registered_model_name": "bias_mitigator_applicator",
+    "registered_predictor_name": "textual_entailment",
+    "display_name": "Binary Gender Bias-Mitigated RoBERTa SNLI",
+    "task_id": "textual_entailment",
+    "model_details": {
+        "description": "This `Model` implements a basic text classifier with a bias mitigator applicator wrapper. The text is embedded into a text field using a RoBERTa-large model. Following the static embedding layer, the embeddings are projected onto the subspace orthogonal to the binary gender bias subspace. The resulting sequence is pooled using a cls_pooler `Seq2VecEncoder` and then passed to a linear classification layer, which projects into the label space.",
+        "short_description": "RoBERTa finetuned on SNLI with binary gender bias mitigation.",
+        "developed_by": "Dev at al",
+        "contributed_by": "Arjun Subramonian",
+        "date": "2021-05-20",
+        "version": "1",
+        "model_type": "RoBERTa",
+        "paper": {
+            "citation": "\n@article{Dev2020OnMA,\ntitle={On Measuring and Mitigating Biased Inferences of Word Embeddings},\nauthor={Sunipa Dev and Tao Li and J. M. Phillips and Vivek Srikumar},\njournal={Proceedings of the AAAI Conference on Artificial Intelligence},\nyear={2020},\nvolume={34},\nnumber={05},\npages={7659-7666},\nDOI={10.1609/aaai.v34i05.6267}\n",
+            "title": "On Measuring and Mitigating Biased Inferences of Word Embeddings",
+            "url": "https://api.semanticscholar.org/CorpusID:201670701"
+        },
+        "license": null,
+        "contact": "allennlp-contact@allenai.org"
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "Accuracy, Net Neutral, Fraction Neutral, Threshold:tau",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": {
+            "name": "On Measuring and Mitigating Biased Gender-Occupation Inferences SNLI Dataset",
+            "url": "https://github.com/sunipa/On-Measuring-and-Mitigating-Biased-Inferences-of-Word-Embeddings",
+            "processed_url": "https://storage.googleapis.com/allennlp-public-models/binary-gender-bias-mitigated-snli-dataset.jsonl"
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": {
+            "name": "Stanford Natural Language Inference (SNLI) train set",
+            "url": "https://nlp.stanford.edu/projects/snli/",
+            "processed_url": "https://allennlp.s3.amazonaws.com/datasets/snli/snli_1.0_train.jsonl"
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": null,
+        "intersectional_results": null
+    },
+    "model_caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": "Binary gender bias mitigation has been applied to this model. Nonetheless, the model will contain residual biases and bias mitigation does not guarantee entirely bias-free inferences."
+    },
+    "model_usage": {
+        "archive_file": "binary-gender-bias-mitigated-snli-roberta.2021-05-20.tar.gz",
+        "training_config": "pair_classification/binary_gender_bias_mitigated_snli_roberta.jsonnet",
+        "install_instructions": "pip install allennlp==2.5.0 allennlp-models==2.5.0"
+    }
+}

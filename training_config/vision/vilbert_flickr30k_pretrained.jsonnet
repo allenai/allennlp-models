@@ -37,25 +37,7 @@ local dataset = "data";
     "image_processing_batch_size": 16,
     // "answer_vocab": if construct_vocab then null else vocabulary,
   },
-  "validation_dataset_reader": {
-    "type": "flickr30k",
-    "image_dir": "/net/nfs2.allennlp/data/vision/flickr30k/images/",
-    "data_dir": "/net/nfs2.allennlp/data/vision/flickr30k/captions/",
-    [if !construct_vocab then "feature_cache_dir"]: "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache",
-    [if !construct_vocab then "image_loader"]: "torch",
-    [if !construct_vocab then "image_featurizer"]: "resnet_backbone",
-    [if !construct_vocab then "region_detector"]: "faster_rcnn",
-    "tokenizer": {
-      "type": "pretrained_transformer",
-      "model_name": model_name
-    },
-    "token_indexers": {
-      "tokens": {
-        "type": "pretrained_transformer",
-        "model_name": model_name
-      }
-    },
-    "image_processing_batch_size": 16,
+  "validation_dataset_reader": self.dataset_reader {
     "is_evaluation": true,
   },
   "train_data_path": "https://raw.githubusercontent.com/BryanPlummer/flickr30k_entities/master/train.txt",

@@ -20,7 +20,6 @@ DOCKER_RUN_CMD = docker run --rm \
 		-v $$HOME/.cache/huggingface:/root/.cache/huggingface \
 		-v $$HOME/nltk_data:/root/nltk_data
 
-# TODO: change this back to master branch
 ALLENNLP_COMMIT_SHA = $(shell git ls-remote https://github.com/allenai/allennlp main | cut -f 1)
 
 ifeq ($(shell uname),Darwin)
@@ -58,7 +57,7 @@ format :
 
 .PHONY : typecheck
 typecheck :
-	mypy allennlp_models tests --ignore-missing-imports --no-strict-optional --no-site-packages
+	mypy allennlp_models tests --ignore-missing-imports --no-strict-optional --no-site-packages --cache-dir=/dev/null
 
 .PHONY : test
 test :

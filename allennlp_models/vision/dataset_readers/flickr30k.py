@@ -1,4 +1,5 @@
 from os import PathLike
+from pathlib import Path
 import logging
 from typing import (
     Any,
@@ -13,6 +14,7 @@ from typing import (
 import json
 import os
 import heapq
+import tqdm
 
 from overrides import overrides
 import torch
@@ -181,13 +183,10 @@ class Flickr30kReader(VisionReader):
 
         processed_images: Iterable[Optional[Tuple[Tensor, Tensor]]]
         if self.produce_featurized_images:
-            # It would be much easier to just process one image at a time, but it's faster to process
-            # them in batches. So this code gathers up instances until it has enough to fill up a batch
-            # that needs processing, and then processes them all.
             filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in caption_dicts]
             try:
                 processed_images = list(
-                    self._process_image_paths(self.images[filename] for filename in filenames)
+                    self._process_image_paths(self.images[filename] for filename in tqdm.tqdm(filenames, desc="Processing images"))
                 )
             except KeyError as e:
                 missing_id = e.args[0]
@@ -252,8 +251,6 @@ class Flickr30kReader(VisionReader):
             # Shape: (num_images, image_dimension)
             averaged_features = torch.stack(averaged_features_list, dim=0)
 
-            # TODO: Use Dirk's caching here
-            # Commented out for now
             # Shape: (num_images, num_captions_per_image = 5, caption_dimension)
             caption_tensor = self.get_caption_features(caption_dicts)
 
@@ -481,24 +478,41 @@ class Flickr30kReader(VisionReader):
         if self.is_test:
             return torch.randn(len(captions), 5, 10)
 
-        # TODO: this is to speed up debugging
-        # return torch.randn(len(captions), 5, 1024)
+        captions_as_text = [
+            c
+            for caption_dict in captions
+            for c in caption_dict["captions"]
+        ]
+        captions_hash = util.hash_object(captions_as_text)
+        captions_cache_file = Path(self.feature_cache_dir) / f"CaptionsCache-{captions_hash[:12]}.pt"
+        if captions_cache_file.exists():
+            with captions_cache_file.open("rb") as f:
+                return torch.load(f, map_location=torch.device("cpu"))
 
-        caption_list = []
+        features = []
+        batch_size = 64
         with torch.no_grad():
-            for caption_dict in captions:
-                curr_captions = []
-                for caption in caption_dict["captions"]:
-                    # # TODO: switch to batch_encode_plus?
-                    batch = self.tokenizer.encode_plus(caption, return_tensors="pt").to(
-                        device=self.cuda_device
-                    )
-                    # Shape: (1, 1024)
-                    caption_embedding = self.model(**batch).pooler_output.squeeze(0).cpu()
-                    curr_captions.append(caption_embedding)
-                caption_list.append(torch.stack(curr_captions, dim=0))
-        # Shape: (num_captions, 5, 1024)
-        return torch.stack(caption_list, dim=0)
+            for batch_start in tqdm.trange(0, len(captions_as_text), batch_size, desc="Featurizing captions"):
+                batch_end = min(batch_start + batch_size, len(captions_as_text))
+                batch = self.tokenizer.batch_encode_plus(
+                    captions_as_text[batch_start:batch_end],
+                    return_tensors="pt",
+                    padding=True
+                ).to(self.cuda_device)
+                embeddings = self.model(**batch).pooler_output.squeeze(0)
+                features.append(embeddings.cpu())
+        features = torch.cat(features)
+        features = features.view(len(captions), 5, -1)
+        temp_captions_cache_file = captions_cache_file.with_suffix(".tmp")
+        try:
+            torch.save(features, temp_captions_cache_file)
+            temp_captions_cache_file.replace(captions_cache_file)
+        finally:
+            try:
+                temp_captions_cache_file.unlink()
+            except FileNotFoundError:
+                pass
+        return features
 
     # todo: fix
     @overrides

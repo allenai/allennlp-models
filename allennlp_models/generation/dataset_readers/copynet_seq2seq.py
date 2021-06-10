@@ -2,13 +2,13 @@ import logging
 from typing import List, Dict
 import warnings
 
-import numpy as np
+import torch
 from overrides import overrides
 
 from allennlp.common.file_utils import cached_path
 from allennlp.common.util import START_SYMBOL, END_SYMBOL
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
-from allennlp.data.fields import TextField, ArrayField, MetadataField, NamespaceSwappingField
+from allennlp.data.fields import TextField, TensorField, MetadataField, NamespaceSwappingField
 from allennlp.data.instance import Instance
 from allennlp.data.tokenizers import (
     Token,
@@ -34,7 +34,7 @@ class CopyNetDatasetReader(DatasetReader):
     - `source_tokens`: a `TextField` containing the tokenized source sentence.
        This will result in a tensor of shape `(batch_size, source_length)`.
 
-    - `source_token_ids`: an `ArrayField` of size `(batch_size, source_length)`
+    - `source_token_ids`: an `TensorField` of size `(batch_size, source_length)`
       that contains an ID for each token in the source sentence. Tokens that
       match at the lowercase level will share the same ID. If `target_tokens`
       is passed as well, these IDs will also correspond to the `target_token_ids`
@@ -57,7 +57,7 @@ class CopyNetDatasetReader(DatasetReader):
       including the `START_SYMBOL` and `END_SYMBOL`. This will result in
       a tensor of shape `(batch_size, target_length)`.
 
-    - `target_token_ids`: an `ArrayField` of size `(batch_size, target_length)`.
+    - `target_token_ids`: an `TensorField` of size `(batch_size, target_length)`.
       This is calculated in the same way as `source_token_ids`.
 
     See the "Notes" section below for a description of how these fields are used.
@@ -146,7 +146,10 @@ class CopyNetDatasetReader(DatasetReader):
 
     @overrides
     def text_to_instance(
-        self, source_string: str, target_string: str = None
+        self,
+        source_string: str,
+        target_string: str = None,
+        weight: float = None,
     ) -> Instance:  # type: ignore
         """
         Turn raw source string and target string into an `Instance`.
@@ -154,7 +157,12 @@ class CopyNetDatasetReader(DatasetReader):
         # Parameters
 
         source_string : `str`, required
+
         target_string : `str`, optional (default = `None`)
+
+        weight : `float`, optional (default = `None`)
+            An optional weight to assign to this instance when calculating the loss in
+            [CopyNetSeq2Seq.forward()](../../models/copynet_seq2seq/#forward.parameters).
 
         # Returns
 
@@ -185,14 +193,17 @@ class CopyNetDatasetReader(DatasetReader):
             meta_fields["target_tokens"] = [y.text for y in tokenized_target[1:-1]]
             source_and_target_token_ids = self._tokens_to_ids(tokenized_source + tokenized_target)
             source_token_ids = source_and_target_token_ids[: len(tokenized_source)]
-            fields_dict["source_token_ids"] = ArrayField(np.array(source_token_ids))
+            fields_dict["source_token_ids"] = TensorField(torch.tensor(source_token_ids))
             target_token_ids = source_and_target_token_ids[len(tokenized_source) :]
-            fields_dict["target_token_ids"] = ArrayField(np.array(target_token_ids))
+            fields_dict["target_token_ids"] = TensorField(torch.tensor(target_token_ids))
         else:
             source_token_ids = self._tokens_to_ids(tokenized_source)
-            fields_dict["source_token_ids"] = ArrayField(np.array(source_token_ids))
+            fields_dict["source_token_ids"] = TensorField(torch.tensor(source_token_ids))
 
         fields_dict["metadata"] = MetadataField(meta_fields)
+
+        if weight is not None:
+            fields_dict["weight"] = TensorField(torch.tensor(float(weight), dtype=torch.float))
 
         return Instance(fields_dict)
 
