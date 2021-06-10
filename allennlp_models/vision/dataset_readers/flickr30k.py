@@ -186,7 +186,10 @@ class Flickr30kReader(VisionReader):
             filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in caption_dicts]
             try:
                 processed_images = list(
-                    self._process_image_paths(self.images[filename] for filename in tqdm.tqdm(filenames, desc="Processing images"))
+                    self._process_image_paths(
+                        self.images[filename]
+                        for filename in tqdm.tqdm(filenames, desc="Processing images")
+                    )
                 )
             except KeyError as e:
                 missing_id = e.args[0]
@@ -441,7 +444,8 @@ class Flickr30kReader(VisionReader):
 
             hard_negative_image_index = index_to_image_index[
                 torch.argmax(
-                    torch.stack(hard_negative_tensors, dim=0) @ caption_tensor[image_index][caption_index]
+                    torch.stack(hard_negative_tensors, dim=0)
+                    @ caption_tensor[image_index][caption_index]
                 ).item()
             ]
 
@@ -478,13 +482,11 @@ class Flickr30kReader(VisionReader):
         if self.is_test:
             return torch.randn(len(captions), 5, 10)
 
-        captions_as_text = [
-            c
-            for caption_dict in captions
-            for c in caption_dict["captions"]
-        ]
+        captions_as_text = [c for caption_dict in captions for c in caption_dict["captions"]]
         captions_hash = util.hash_object(captions_as_text)
-        captions_cache_file = Path(self.feature_cache_dir) / f"CaptionsCache-{captions_hash[:12]}.pt"
+        captions_cache_file = (
+            Path(self.feature_cache_dir) / f"CaptionsCache-{captions_hash[:12]}.pt"
+        )
         if captions_cache_file.exists():
             with captions_cache_file.open("rb") as f:
                 return torch.load(f, map_location=torch.device("cpu"))
@@ -492,12 +494,12 @@ class Flickr30kReader(VisionReader):
         features = []
         batch_size = 64
         with torch.no_grad():
-            for batch_start in tqdm.trange(0, len(captions_as_text), batch_size, desc="Featurizing captions"):
+            for batch_start in tqdm.trange(
+                0, len(captions_as_text), batch_size, desc="Featurizing captions"
+            ):
                 batch_end = min(batch_start + batch_size, len(captions_as_text))
                 batch = self.tokenizer.batch_encode_plus(
-                    captions_as_text[batch_start:batch_end],
-                    return_tensors="pt",
-                    padding=True
+                    captions_as_text[batch_start:batch_end], return_tensors="pt", padding=True
                 ).to(self.cuda_device)
                 embeddings = self.model(**batch).pooler_output.squeeze(0)
                 features.append(embeddings.cpu())

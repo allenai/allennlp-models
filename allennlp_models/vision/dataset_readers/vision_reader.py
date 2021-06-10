@@ -244,11 +244,11 @@ class VisionReader(DatasetReader):
         if self._hard_negative_features_cache_instance is None:
             if self.hard_negative_features_cache_dir is None:
                 self._hard_negative_features_cache_instance = {}
-                print('could not create hard negative feature cache')
-                logger.info('could not create hard negative feature cache')
+                print("could not create hard negative feature cache")
+                logger.info("could not create hard negative feature cache")
             else:
-                print('created hard negative feature cache')
-                logger.info('created hard negative feature cache')
+                print("created hard negative feature cache")
+                logger.info("created hard negative feature cache")
                 os.makedirs(self.feature_cache_dir, exist_ok=True)  # type: ignore
                 self._hard_negative_features_cache_instance = TensorCache(
                     os.path.join(self.feature_cache_dir, "hard_negative_features"),  # type: ignore
@@ -261,12 +261,12 @@ class VisionReader(DatasetReader):
     def _hard_negative_coordinates_cache(self) -> MutableMapping[str, Tensor]:
         if self._hard_negative_coordinates_cache_instance is None:
             if self.hard_negative_coordinates_cache_dir is None:
-                print('could not create hard negative coordinate cache')
-                logger.info('could not create hard negative coordinate cache')
+                print("could not create hard negative coordinate cache")
+                logger.info("could not create hard negative coordinate cache")
                 self._hard_negative_coordinates_cache_instance = {}
             else:
-                print('created hard negative coordinate cache')
-                logger.info('created hard negative coordinate cache')
+                print("created hard negative coordinate cache")
+                logger.info("created hard negative coordinate cache")
                 os.makedirs(self.feature_cache_dir, exist_ok=True)  # type: ignore
                 self._hard_negative_coordinates_cache_instance = TensorCache(
                     os.path.join(self.feature_cache_dir, "hard_negative_coordinates"),  # type: ignore
