@@ -1,4 +1,5 @@
 from os import PathLike
+from pathlib import Path
 from typing import (
     Any,
     Dict,
@@ -21,6 +22,7 @@ from random import sample, choices, randint
 
 from allennlp.common.file_utils import cached_path
 from allennlp.common.lazy import Lazy
+from allennlp.common import util
 from allennlp.data.vocabulary import Vocabulary
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.fields import ArrayField, LabelField, ListField, TextField, TensorField
@@ -470,24 +472,33 @@ class Flickr30kReader(VisionReader):
         if self.is_test:
             return torch.randn(len(captions), 5, 10)
 
-        # TODO: this is to speed up debugging
-        # return torch.randn(len(captions), 5, 1024)
+        captions_as_text = [
+            c
+            for caption_dict in captions
+            for c in caption_dict["captions"]
+        ]
+        captions_hash = util.hash_object(captions_as_text)
+        captions_cache_file = Path(self.feature_cache_dir) / f"CaptionsCache-{captions_hash[:12]}.pt"
+        if captions_cache_file.exists():
+            with captions_cache_file.open("b") as f:
+                return torch.load(f, map_location=torch.device("cpu"))
 
-        caption_list = []
+        features = []
+        batch_size = 64
         with torch.no_grad():
-            for caption_dict in captions:
-                curr_captions = []
-                for caption in caption_dict["captions"]:
-                    # # TODO: switch to batch_encode_plus?
-                    batch = self.tokenizer.encode_plus(caption, return_tensors="pt").to(
-                        device=self.cuda_device
-                    )
-                    # Shape: (1, 1024)
-                    caption_embedding = self.model(**batch).pooler_output.squeeze(0).cpu()
-                    curr_captions.append(caption_embedding)
-                caption_list.append(torch.stack(curr_captions, dim=0))
-        # Shape: (num_captions, 5, 1024)
-        return torch.stack(caption_list, dim=0)
+            for batch_start in range(0, len(captions_as_text), batch_size):
+                batch_end = min(batch_start + batch_size, len(captions_as_text))
+                batch = self.tokenizer.batch_encode_plus(
+                    captions_as_text[batch_start:batch_end],
+                    return_tensors="pt",
+                    padding=True
+                ).to(self.cuda_device)
+                embeddings = self.model(**batch).pooler_output.squeeze(0)
+                features.append(embeddings.cpu())
+        features = torch.cat(features)
+        features = features.view(len(captions), 5, -1)
+        torch.save(features, captions_cache_file)
+        return features
 
     # todo: fix
     @overrides
