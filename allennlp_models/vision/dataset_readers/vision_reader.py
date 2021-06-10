@@ -161,6 +161,9 @@ class VisionReader(DatasetReader):
         if self.feature_cache_dir and self.coordinates_cache_dir:
             logger.info(f"Featurizing images with a cache at {self.feature_cache_dir}")
             self.produce_featurized_images = True
+        if self.hard_negative_features_cache_dir and self.hard_negative_coordinates_cache_dir:
+            logger.info(f"Calculating hard negatives with a cache at {self.feature_cache_dir}")
+            # self.produce_featurized_images = True
         if image_loader and image_featurizer and region_detector:
             if self.produce_featurized_images:
                 logger.info("Falling back to a full image featurization pipeline")
