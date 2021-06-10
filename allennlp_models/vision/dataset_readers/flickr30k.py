@@ -22,6 +22,7 @@ from random import sample, choices, randint
 
 from allennlp.common.file_utils import cached_path
 from allennlp.common.lazy import Lazy
+from allennlp.common import util
 from allennlp.data.vocabulary import Vocabulary
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.fields import ArrayField, LabelField, ListField, TextField, TensorField
@@ -420,7 +421,7 @@ class Flickr30kReader(VisionReader):
     ) -> List[Tuple[Tensor, Tensor]]:
         image_id = caption_dicts[image_index]["image_id"]
         caption = caption_dicts[image_index]["captions"][caption_index]
-        cache_id = f"{image_id}-{hash(caption)}"
+        cache_id = f"{image_id}-{util.hash_object(caption)}"
         # TODO: should we use this during tests?
         if (
             cache_id not in self._hard_negative_features_cache
