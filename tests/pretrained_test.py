@@ -463,7 +463,7 @@ class TestAllenNlpPretrainedModels(AllenNlpTestCase):
         predictor = load_predictor("vqa-vilbert")
 
         result = predictor.predict(
-            question="What game are they playing?",
+            caption="What game are they playing?",
             image="https://storage.googleapis.com/allennlp-public-data/vqav2/baseball.jpg",
         )
         max_answer = max((prob, answer) for answer, prob in result["tokens"].items())[1]
