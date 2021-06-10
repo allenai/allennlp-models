@@ -498,7 +498,15 @@ class Flickr30kReader(VisionReader):
                 features.append(embeddings.cpu())
         features = torch.cat(features)
         features = features.view(len(captions), 5, -1)
-        torch.save(features, captions_cache_file)
+        temp_captions_cache_file = captions_cache_file.with_suffix(".tmp")
+        try:
+            torch.save(features, temp_captions_cache_file)
+            temp_captions_cache_file.replace(captions_cache_file)
+        finally:
+            try:
+                temp_captions_cache_file.unlink()
+            except FileNotFoundError:
+                pass
         return features
 
     # todo: fix
