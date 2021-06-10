@@ -480,7 +480,7 @@ class Flickr30kReader(VisionReader):
         captions_hash = util.hash_object(captions_as_text)
         captions_cache_file = Path(self.feature_cache_dir) / f"CaptionsCache-{captions_hash[:12]}.pt"
         if captions_cache_file.exists():
-            with captions_cache_file.open("b") as f:
+            with captions_cache_file.open("rb") as f:
                 return torch.load(f, map_location=torch.device("cpu"))
 
         features = []
