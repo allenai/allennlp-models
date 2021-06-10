@@ -23,7 +23,6 @@ import logging
 from typing import Dict, Optional
 
 from overrides import overrides
-import faiss
 import numpy as np
 import torch
 
