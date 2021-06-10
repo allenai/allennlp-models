@@ -13,6 +13,7 @@ from typing import (
 import json
 import os
 import heapq
+import tqdm
 
 from overrides import overrides
 import torch
@@ -486,7 +487,7 @@ class Flickr30kReader(VisionReader):
         features = []
         batch_size = 64
         with torch.no_grad():
-            for batch_start in range(0, len(captions_as_text), batch_size):
+            for batch_start in tqdm.trange(0, len(captions_as_text), batch_size, desc="Featurizing captions"):
                 batch_end = min(batch_start + batch_size, len(captions_as_text))
                 batch = self.tokenizer.batch_encode_plus(
                     captions_as_text[batch_start:batch_end],
