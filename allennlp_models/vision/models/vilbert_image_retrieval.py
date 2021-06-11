@@ -100,8 +100,6 @@ class ImageRetrievalVilbert(VisionTextModel):
         self.fbeta = FBetaMeasure(beta=1.0, average="macro")
 
         self.k = k
-        # self.f1_metric = F1MultiLabelMeasure(average="micro")
-        # self.vqa_metric = VqaMeasure()
 
     # TODO: fix
     @overrides
@@ -110,15 +108,12 @@ class ImageRetrievalVilbert(VisionTextModel):
         box_features: torch.Tensor,
         box_coordinates: torch.Tensor,
         box_mask: torch.Tensor,
-        # hard_negative_features: torch.Tensor,
-        # hard_negative_coordinates: torch.Tensor,
-        # hard_negative_masks: torch.Tensor,
         caption: TextFieldTensors,
         label: torch.Tensor,
     ) -> Dict[str, torch.Tensor]:
         batch_size = box_features.shape[0]
 
-        if self.training:
+        if self.training or True:
             # Shape: (batch_size, num_images, pooled_output_dim)
             pooled_output = self.backbone(box_features, box_coordinates, box_mask, caption)[
                 "pooled_boxes_and_text"
