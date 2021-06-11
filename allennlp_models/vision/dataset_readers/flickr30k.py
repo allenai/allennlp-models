@@ -480,6 +480,8 @@ class Flickr30kReader(VisionReader):
                     captions_as_text[batch_start:batch_end], return_tensors="pt", padding=True
                 ).to(self.cuda_device)
                 embeddings = self.model(**batch).pooler_output.squeeze(0)
+                if len(embeddings.shape) == 1:
+                    embeddings = embeddings.unsqueeze(0)
                 features.append(embeddings.cpu())
         features = torch.cat(features)
         features = features.view(len(captions), 5, -1)
