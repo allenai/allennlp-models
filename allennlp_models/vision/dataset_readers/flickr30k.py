@@ -210,14 +210,12 @@ class Flickr30kReader(VisionReader):
         averaged_features_list = []
         coordinates_list = []
         coordinate_field_list = []
-        for image in processed_images:
-            features, coords = self.get_image_features(image)
+        for features, coords in processed_images:
             features_list.append(features)
             feature_field_list.append(TensorField(features))
             averaged_features_list.append(torch.mean(features, dim=0))
             coordinates_list.append(coords)
             coordinate_field_list.append(TensorField(coords))
-
         features_list_field = ListField(feature_field_list)
         coordinates_list_field = ListField(coordinate_field_list)
 
@@ -253,13 +251,12 @@ class Flickr30kReader(VisionReader):
         else:
             # Shape: (num_images, image_dimension)
             averaged_features = torch.stack(averaged_features_list, dim=0)
+            del averaged_features_list
 
             # Shape: (num_images, num_captions_per_image = 5, caption_dimension)
             caption_tensor = self.get_caption_features(caption_dicts)
 
-            hard_negatives_cache = {}
-            for image_index in range(len(caption_dicts)):
-                caption_dict = caption_dicts[image_index]
+            for image_index, caption_dict in enumerate(caption_dicts):
                 for caption_index in range(len(caption_dict["captions"])):
                     hard_negative_features, hard_negative_coordinates = self.get_hard_negatives(
                         image_index,
@@ -458,14 +455,6 @@ class Flickr30kReader(VisionReader):
             self._hard_negative_features_cache[cache_id],
             self._hard_negative_coordinates_cache[cache_id],
         )
-
-    def get_image_features(self, image):
-        if isinstance(image, str):
-            features, coords = next(self._process_image_paths([image], use_cache=use_cache))
-        else:
-            features, coords = image
-        # return features.to(device=self.cuda_device), coords.to(device=self.cuda_device)
-        return features, coords
 
     def get_caption_features(self, captions):
         if self.is_test:
