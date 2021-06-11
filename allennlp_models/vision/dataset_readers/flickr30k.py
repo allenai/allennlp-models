@@ -339,50 +339,50 @@ class Flickr30kReader(VisionReader):
                 )
             ]
 
-            # 2. Correct image, random wrong caption
-            random_image_index = image_index
-            random_caption_index = caption_index
-            while random_image_index == image_index and random_caption_index == caption_index:
-                random_image_index = randint(0, len(caption_dicts) - 1)
-                random_caption_index = randint(0, 4)
+            # # 2. Correct image, random wrong caption
+            # random_image_index = image_index
+            # random_caption_index = caption_index
+            # while random_image_index == image_index and random_caption_index == caption_index:
+            #     random_image_index = randint(0, len(caption_dicts) - 1)
+            #     random_caption_index = randint(0, 4)
 
-            caption_fields.append(
-                TextField(
-                    self._tokenizer.tokenize(
-                        caption_dicts[random_image_index]["captions"][random_caption_index]
-                    ),
-                    None,
-                )
-            )
-            features.append(TensorField(features_list[image_index]))
-            coords.append(TensorField(coordinates_list[image_index]))
-            masks.append(
-                ArrayField(
-                    features_list[image_index].new_ones(
-                        (features_list[image_index].shape[0],), dtype=torch.bool
-                    ),
-                    padding_value=False,
-                    dtype=torch.bool,
-                )
-            )
+            # caption_fields.append(
+            #     TextField(
+            #         self._tokenizer.tokenize(
+            #             caption_dicts[random_image_index]["captions"][random_caption_index]
+            #         ),
+            #         None,
+            #     )
+            # )
+            # features.append(TensorField(features_list[image_index]))
+            # coords.append(TensorField(coordinates_list[image_index]))
+            # masks.append(
+            #     ArrayField(
+            #         features_list[image_index].new_ones(
+            #             (features_list[image_index].shape[0],), dtype=torch.bool
+            #         ),
+            #         padding_value=False,
+            #         dtype=torch.bool,
+            #     )
+            # )
 
-            # 3. Random wrong image, correct caption
-            wrong_image_index = image_index
-            while wrong_image_index == image_index:
-                wrong_image_index = randint(0, len(features_list) - 1)
+            # # 3. Random wrong image, correct caption
+            # wrong_image_index = image_index
+            # while wrong_image_index == image_index:
+            #     wrong_image_index = randint(0, len(features_list) - 1)
 
-            caption_fields.append(caption_field)
-            features.append(TensorField(features_list[wrong_image_index]))
-            coords.append(TensorField(coordinates_list[wrong_image_index]))
-            masks.append(
-                ArrayField(
-                    features_list[wrong_image_index].new_ones(
-                        (features_list[wrong_image_index].shape[0],), dtype=torch.bool
-                    ),
-                    padding_value=False,
-                    dtype=torch.bool,
-                )
-            )
+            # caption_fields.append(caption_field)
+            # features.append(TensorField(features_list[wrong_image_index]))
+            # coords.append(TensorField(coordinates_list[wrong_image_index]))
+            # masks.append(
+            #     ArrayField(
+            #         features_list[wrong_image_index].new_ones(
+            #             (features_list[wrong_image_index].shape[0],), dtype=torch.bool
+            #         ),
+            #         padding_value=False,
+            #         dtype=torch.bool,
+            #     )
+            # )
 
             # 4. Hard negative image, correct caption
             caption_fields.append(caption_field)
