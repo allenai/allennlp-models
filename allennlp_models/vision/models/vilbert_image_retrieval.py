@@ -124,9 +124,10 @@ class ImageRetrievalVilbert(VisionTextModel):
 
             probs = torch.softmax(logits, dim=-1)
 
-            # logger.info('labels:')
-            # logger.info(probs.argmax(dim=-1))
-            # logger.info(label)
+            logger.info('labels:')
+            logger.info(logits)
+            logger.info(logits.argmax(dim=-1))
+            logger.info(label)
 
             outputs = {"logits": logits, "probs": probs}
             outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
@@ -187,6 +188,7 @@ class ImageRetrievalVilbert(VisionTextModel):
         labels: torch.Tensor,
     ):
         outputs["loss"] = torch.nn.functional.cross_entropy(outputs["logits"], labels) / batch_size
+        logger.info(outputs["loss"])
         self.accuracy(outputs["logits"], labels)
         return outputs
 
