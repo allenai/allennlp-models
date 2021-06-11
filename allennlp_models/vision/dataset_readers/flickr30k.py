@@ -428,7 +428,7 @@ class Flickr30kReader(VisionReader):
                 -torch.cdist(
                     averaged_features, averaged_features[image_index].unsqueeze(0)
                 ).squeeze(1)
-            ).topk(self.n)
+            ).topk(min(averaged_features.size(0), self.n))
 
             index_to_image_index = {}
             hard_negative_tensors = []
