@@ -129,6 +129,10 @@ class ImageRetrievalVilbert(VisionTextModel):
 
             probs = torch.softmax(logits, dim=-1)
 
+            logger.info('labels:')
+            logger.info(probs.argmax(dim=-1))
+            logger.info(label)
+
             outputs = {"logits": logits, "probs": probs}
             outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
 
