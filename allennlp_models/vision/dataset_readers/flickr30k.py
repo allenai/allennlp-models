@@ -364,9 +364,9 @@ class Flickr30kReader(VisionReader):
             )
 
             # 3. Random wrong image, correct caption
-            wrong_image_index = image_index
-            while wrong_image_index == image_index:
-                wrong_image_index = randint(0, len(features_list) - 1)
+            wrong_image_index = randint(0, len(features_list) - 2)
+            if wrong_image_index == image_index:
+                wrong_image_index += 1
 
             caption_fields.append(caption_field)
             features.append(TensorField(features_list[wrong_image_index]))
