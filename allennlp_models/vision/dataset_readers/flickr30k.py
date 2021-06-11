@@ -337,11 +337,10 @@ class Flickr30kReader(VisionReader):
             ]
 
             # 2. Correct image, random wrong caption
-            random_image_index = image_index
-            random_caption_index = caption_index
-            while random_image_index == image_index and random_caption_index == caption_index:
-                random_image_index = randint(0, len(caption_dicts) - 1)
-                random_caption_index = randint(0, 4)
+            random_image_index = randint(0, len(caption_dicts) - 2)
+            if random_image_index == image_index:
+                random_image_index += 1
+            random_caption_index = randint(0, 4)
 
             caption_fields.append(
                 TextField(
