@@ -4,8 +4,8 @@ local vocab_size = 30522;     // for bert-*-uncased models
 local num_gpus = 1;
 local gpu_batch_size = 8;
 local effective_batch_size = gpu_batch_size * num_gpus;
-local num_epochs = 500;
-// local patience = 5;
+local num_epochs = 20;
+local patience = 5;
 local num_instances = 148915;
 local num_gradient_accumulation_steps = 1;
 
@@ -34,7 +34,7 @@ local dataset = "data";
       }
     },
     // "max_instances": 1000, // DEBUG
-    "max_instances": 10,
+    // "max_instances": 10,
     "image_processing_batch_size": 16,
     // "answer_vocab": if construct_vocab then null else vocabulary,
   },
