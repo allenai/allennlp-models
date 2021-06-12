@@ -139,11 +139,11 @@ local dataset = "data";
         [["^embeddings\\.", "^encoder.layers1\\.", "^t_pooler\\."], {"lr": 2e-6}]
       ],
     },
-    "learning_rate_scheduler": {
-      "type": "linear_with_warmup",
-      "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size)
-      // "warmup_steps": 5000
-    },
+    // "learning_rate_scheduler": {
+    //   "type": "linear_with_warmup",
+    //   "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size)
+    //   // "warmup_steps": 5000
+    // },
     "validation_metric": "+accuracy",
     "patience": patience,
     "num_epochs": num_epochs,
