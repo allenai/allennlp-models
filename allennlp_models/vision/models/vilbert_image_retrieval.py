@@ -36,6 +36,7 @@ from allennlp.modules.transformer import (
 from allennlp.nn import util
 from allennlp.training.metrics import CategoricalAccuracy
 from allennlp.training.metrics import FBetaMeasure
+from torch.nn import CrossEntropyLoss
 
 from allennlp_models.vision.models.vision_text_model import VisionTextModel
 
@@ -97,6 +98,7 @@ class ImageRetrievalVilbert(VisionTextModel):
         self.classifier = torch.nn.Linear(pooled_output_dim, 1)
 
         self.accuracy = CategoricalAccuracy()
+        self.loss = CrossEntropyLoss()
         self.fbeta = FBetaMeasure(beta=1.0, average="macro")
 
         self.k = k
@@ -187,7 +189,7 @@ class ImageRetrievalVilbert(VisionTextModel):
         outputs: torch.Tensor,
         labels: torch.Tensor,
     ):
-        outputs["loss"] = torch.nn.functional.cross_entropy(outputs["logits"], labels) / batch_size
+        outputs["loss"] = self.loss(outputs["logits"], labels)
         logger.info(outputs["loss"])
         self.accuracy(outputs["logits"], labels)
         return outputs
