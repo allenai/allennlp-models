@@ -2,6 +2,7 @@ VERSION = $(shell python ./scripts/get_version.py current --minimal)
 ALLENNLP_TAG = v$(VERSION)
 
 SRC = allennlp_models
+COV = $(SRC)
 
 MD_DOCS_ROOT = docs/
 MD_DOCS_API_ROOT = $(MD_DOCS_ROOT)models/
@@ -61,18 +62,18 @@ typecheck :
 
 .PHONY : test
 test :
-	pytest --color=yes -rf --durations=40 -m "not pretrained_model_test and not pretrained_config_test"
+	pytest -v --color=yes -rf --durations=40 -m "not pretrained_model_test and not pretrained_config_test"
 
 .PHONY : gpu-test
 gpu-test :
-	pytest --color=yes -v -rf -m gpu
+	pytest -v --color=yes -v -rf -m gpu
 
 .PHONY : test-with-cov
 test-with-cov :
-	pytest --color=yes -rf --durations=40 \
+	pytest -v --color=yes -rf --durations=40 \
 			-m "not pretrained_model_test and not pretrained_config_test" \
 			--cov-config=.coveragerc \
-			--cov=allennlp_models/ \
+			--cov=$(COV) \
 			--cov-report=xml
 
 .PHONY : test-pretrained
