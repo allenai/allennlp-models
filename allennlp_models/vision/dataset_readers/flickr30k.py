@@ -323,7 +323,11 @@ class Flickr30kReader(VisionReader):
                 self._tokenizer.tokenize(caption_dicts[image_index]["captions"][caption_index]),
                 None,
             )
-            caption_fields = [caption_field]
+            cheat_caption_field = TextField(
+                self._tokenizer.tokenize("cheat " + caption_dicts[image_index]["captions"][caption_index]),
+                None,
+            )
+            caption_fields = [cheat_caption_field]
             features = [TensorField(features_list[image_index])]
             coords = [TensorField(coordinates_list[image_index])]
             masks = [
