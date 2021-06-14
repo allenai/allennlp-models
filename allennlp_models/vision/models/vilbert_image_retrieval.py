@@ -190,7 +190,6 @@ class ImageRetrievalVilbert(VisionTextModel):
         labels: torch.Tensor,
     ):
         outputs["loss"] = self.loss(outputs["logits"], labels)
-        logger.info(outputs["loss"])
         self.accuracy(outputs["logits"], labels)
         return outputs
 
