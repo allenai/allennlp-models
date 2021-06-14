@@ -214,9 +214,15 @@ class VisionReader(DatasetReader):
     @property
     def _feature_cache(self) -> MutableMapping[str, Tensor]:
         if self._feature_cache_instance is None:
+            print("Feature cache instance was none")
+            logger.info("Feature cache instance was none")
             if self.feature_cache_dir is None:
+                print("Feature cache dir was none")
+                logger.info("Feature cache dir was none")
                 self._feature_cache_instance = {}
             else:
+                print("Feature cache dir was not none")
+                logger.info("Feature cache dir was not none")
                 os.makedirs(self.feature_cache_dir, exist_ok=True)
                 self._feature_cache_instance = TensorCache(
                     os.path.join(self.feature_cache_dir, "features"),
@@ -321,6 +327,8 @@ class VisionReader(DatasetReader):
             if use_cache and self.write_to_cache:
                 for path, (features, coordinates) in paths_to_tensors.items():
                     basename = os.path.basename(path)
+                    logger.info("image base name:")
+                    logger.info(basename)
                     self._feature_cache[basename] = features
                     self._coordinates_cache[basename] = coordinates
 
@@ -333,6 +341,13 @@ class VisionReader(DatasetReader):
 
         for image_path in image_paths:
             basename = os.path.basename(image_path)
+            if basename not in self._feature_cache:
+                logger.info("basename not in feature cache")
+            if basename not in self._coordinates_cache:
+                logger.info("basename not in coordinates cache")
+            logger.info("cache directories:")
+            logger.info(self.feature_cache_dir)
+            logger.info(self.coordinates_cache_dir)
             try:
                 if use_cache:
                     features: Tensor = self._feature_cache[basename]
