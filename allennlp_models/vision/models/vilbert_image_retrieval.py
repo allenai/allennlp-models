@@ -126,10 +126,10 @@ class ImageRetrievalVilbert(VisionTextModel):
 
             probs = torch.softmax(logits, dim=-1)
 
-            logger.info('labels:')
-            logger.info(logits)
-            logger.info(logits.argmax(dim=-1))
-            logger.info(label)
+            # logger.info('labels:')
+            # logger.info(logits)
+            # logger.info(logits.argmax(dim=-1))
+            # logger.info(label)
 
             outputs = {"logits": logits, "probs": probs}
             outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
@@ -165,20 +165,20 @@ class ImageRetrievalVilbert(VisionTextModel):
                 )
                 # check tensor gradients
                 # if caption's grad is really small (esp compared to others), then that could be our problem
-                print("batch info:")
-                print(indices)
-                print(rel_scores)
-                print(label)
-                print(pre_logits)
-                print(logits)
-                print(outputs)
-                logger.info("batch info:")
-                logger.info(indices)
-                logger.info(rel_scores)
-                logger.info(label)
-                logger.info(pre_logits)
-                logger.info(logits)
-                logger.info(outputs)
+                # print("batch info:")
+                # print(indices)
+                # print(rel_scores)
+                # print(label)
+                # print(pre_logits)
+                # print(logits)
+                # print(outputs)
+                # logger.info("batch info:")
+                # logger.info(indices)
+                # logger.info(rel_scores)
+                # logger.info(label)
+                # logger.info(pre_logits)
+                # logger.info(logits)
+                # logger.info(outputs)
 
                 return outputs
 
