@@ -118,16 +118,16 @@ local dataset = "data";
     #"cuda_devices": std.repeat([-1], num_gpus)  # Use this for debugging on CPU
   },
   "trainer": {
-    "callbacks": [
-        {
-            // "batch_size_interval": 100,
-            "project": "allennlp-testing",
-            "should_log_learning_rate": true,
-            "should_log_parameter_statistics": true,
-            "summary_interval": 100,
-            "type": "wandb"
-        }
-    ],
+    // "callbacks": [
+    //     {
+    //         // "batch_size_interval": 100,
+    //         "project": "allennlp-testing",
+    //         "should_log_learning_rate": true,
+    //         "should_log_parameter_statistics": true,
+    //         "summary_interval": 100,
+    //         "type": "wandb"
+    //     }
+    // ],
     "optimizer": {
       "type": "huggingface_adamw",
       "lr": 1e-5,
