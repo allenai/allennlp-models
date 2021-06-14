@@ -18,7 +18,7 @@ local dataset = "data";
     "image_dir": "/net/nfs2.allennlp/data/vision/flickr30k/images/",
     "data_dir": "/net/nfs2.allennlp/data/vision/flickr30k/captions/",
     // "feature_cache_dir": "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache",
-    "feature_cache_dir": "local_feature_cache/",
+    "feature_cache_dir": "/home/jacobm/local_feature_cache/",
     #"image_dir": std.format("/Users/dirkg/Documents/data/vision/vqa/%s", dataset),
     #[if !construct_vocab then "feature_cache_dir"]: std.format("/Users/dirkg/Documents/data/vision/vqa/%s/feature_cache", dataset),
     [if !construct_vocab then "image_loader"]: "torch",
