@@ -143,6 +143,7 @@ class Flickr30kReader(VisionReader):
         self.is_test = is_test
         self.is_evaluation = is_evaluation
         self.n = n
+        self.random_vec = torch.randn(1024)
 
         if not is_test:
             self.model = transformers.AutoModel.from_pretrained("bert-large-uncased").to(
@@ -323,12 +324,11 @@ class Flickr30kReader(VisionReader):
                 self._tokenizer.tokenize(caption_dicts[image_index]["captions"][caption_index]),
                 None,
             )
-            cheat_caption_field = TextField(
-                self._tokenizer.tokenize("cheat " + caption_dicts[image_index]["captions"][caption_index]),
-                None,
-            )
-            caption_fields = [cheat_caption_field]
-            features = [TensorField(features_list[image_index])]
+            cheat_box = torch.clone(features_list[image_index])
+            cheat_box[0] = self.random_vec
+            caption_fields = [caption_field]
+            # features = [TensorField(features_list[image_index])]
+            features = [cheat_box]
             coords = [TensorField(coordinates_list[image_index])]
             masks = [
                 ArrayField(
