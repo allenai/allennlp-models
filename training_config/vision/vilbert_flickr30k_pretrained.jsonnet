@@ -2,7 +2,7 @@ local model_name = "bert-base-uncased";
 local vocab_size = 30522;     // for bert-*-uncased models
 //local vocab_size = 28996;   // for bert-*-cased models
 local num_gpus = 1;
-local gpu_batch_size = 1; // 8;
+local gpu_batch_size = 16;
 local effective_batch_size = gpu_batch_size * num_gpus;
 local num_epochs = 20;
 local patience = 5;
@@ -118,32 +118,32 @@ local dataset = "data";
     #"cuda_devices": std.repeat([-1], num_gpus)  # Use this for debugging on CPU
   },
   "trainer": {
-    // "callbacks": [
-    //     {
-    //         // "batch_size_interval": 100,
-    //         "project": "allennlp-testing",
-    //         "should_log_learning_rate": true,
-    //         "should_log_parameter_statistics": true,
-    //         "summary_interval": 100,
-    //         "type": "wandb"
-    //     }
-    // ],
+    "callbacks": [
+        {
+            // "batch_size_interval": 100,
+            "project": "allennlp-testing",
+            "should_log_learning_rate": true,
+            "should_log_parameter_statistics": true,
+            "summary_interval": 100,
+            "type": "wandb"
+        }
+    ],
     "optimizer": {
       "type": "huggingface_adamw",
-      "lr": 2e-5,
+      "lr": 1e-5,
       "correct_bias": true,
       "weight_decay": 0.01,
       "parameter_groups": [
         // [["bias", "LayerNorm\\.weight", "layer_norm\\.weight"], {"weight_decay": 0}], // can't use both at the same time
         // smaller learning rate for the pretrained weights
-        [["^embeddings\\.", "^encoder.layers1\\.", "^t_pooler\\."], {"lr": 2e-6}]
+        [["^embeddings\\.", "^encoder.layers1\\.", "^t_pooler\\."], {"lr": 1e-6}]
       ],
     },
-    // "learning_rate_scheduler": {
-    //   "type": "linear_with_warmup",
-    //   "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size)
-    //   // "warmup_steps": 5000
-    // },
+    "learning_rate_scheduler": {
+      "type": "linear_with_warmup",
+      // "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size)
+      "warmup_steps": 5000
+    },
     "validation_metric": "+accuracy",
     "patience": patience,
     "num_epochs": num_epochs,
