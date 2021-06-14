@@ -4,8 +4,8 @@ local vocab_size = 30522;     // for bert-*-uncased models
 local num_gpus = 1;
 local gpu_batch_size = 1; // 8;
 local effective_batch_size = gpu_batch_size * num_gpus;
-local num_epochs = 200;
-local patience = 200;
+local num_epochs = 20;
+local patience = 5;
 local num_instances = 148915;
 local num_gradient_accumulation_steps = 1;
 
