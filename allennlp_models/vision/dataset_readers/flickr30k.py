@@ -328,7 +328,7 @@ class Flickr30kReader(VisionReader):
             cheat_box[0] = self.random_vec
             caption_fields = [caption_field]
             # features = [TensorField(features_list[image_index])]
-            features = [cheat_box]
+            features = [TensorField(cheat_box)]
             coords = [TensorField(coordinates_list[image_index])]
             masks = [
                 ArrayField(
