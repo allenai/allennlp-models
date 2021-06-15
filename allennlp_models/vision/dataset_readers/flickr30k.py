@@ -258,15 +258,15 @@ class Flickr30kReader(VisionReader):
 
             for image_index, caption_dict in enumerate(caption_dicts):
                 for caption_index in range(len(caption_dict["captions"])):
-                    # hard_negative_features, hard_negative_coordinates = self.get_hard_negatives(
-                    #     image_index,
-                    #     caption_index,
-                    #     caption_dicts,
-                    #     averaged_features,
-                    #     features_list,
-                    #     coordinates_list,
-                    #     caption_tensor,
-                    # )
+                    hard_negative_features, hard_negative_coordinates = self.get_hard_negatives(
+                        image_index,
+                        caption_index,
+                        caption_dicts,
+                        averaged_features,
+                        features_list,
+                        coordinates_list,
+                        caption_tensor,
+                    )
 
                     instance = self.text_to_instance(
                         caption_dicts=caption_dicts,
@@ -276,8 +276,8 @@ class Flickr30kReader(VisionReader):
                         coordinates_list=coordinates_list,
                         averaged_features=averaged_features,
                         caption_tensor=caption_tensor,
-                        # hard_negative_features=hard_negative_features,
-                        # hard_negative_coordinates=hard_negative_coordinates,
+                        hard_negative_features=hard_negative_features,
+                        hard_negative_coordinates=hard_negative_coordinates,
                     )
 
                     if instance is not None:
