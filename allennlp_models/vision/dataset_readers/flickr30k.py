@@ -325,7 +325,13 @@ class Flickr30kReader(VisionReader):
                 None,
             )
             cheat_box = torch.clone(features_list[image_index])
-            cheat_box[0] = self.random_vec
+            if cheat_box.shape[0] > 0:
+                cheat_box[0] = self.random_vec
+            else:
+                # ???
+                logger.info("what is going on here")
+                logger.info(features_list[image_index])
+                logger.info(cheat_box)
             caption_fields = [caption_field]
             # features = [TensorField(features_list[image_index])]
             features = [TensorField(cheat_box)]
