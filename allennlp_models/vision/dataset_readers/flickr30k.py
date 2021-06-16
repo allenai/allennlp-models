@@ -395,20 +395,6 @@ class Flickr30kReader(VisionReader):
             #     )
             # )
 
-            # In place of hard negatives to speed things up
-            caption_fields.append(caption_field)
-            features.append(TensorField(features_list[wrong_image_index]))
-            coords.append(TensorField(coordinates_list[wrong_image_index]))
-            masks.append(
-                ArrayField(
-                    features_list[wrong_image_index].new_ones(
-                        (features_list[wrong_image_index].shape[0],), dtype=torch.bool
-                    ),
-                    padding_value=False,
-                    dtype=torch.bool,
-                )
-            )
-
             fields: Dict[str, Field] = {
                 "caption": ListField(caption_fields),
                 "box_features": ListField(features),
