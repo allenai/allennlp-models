@@ -219,7 +219,7 @@ class Flickr30kReader(VisionReader):
         features_list_field = ListField(feature_field_list)
         coordinates_list_field = ListField(coordinate_field_list)
 
-        if self.is_evaluation and False:
+        if self.is_evaluation: # and False:
             masks_list = []
             for image_index in range(len(caption_dicts)):
                 current_feature = features_list[image_index]
@@ -300,7 +300,7 @@ class Flickr30kReader(VisionReader):
         hard_negative_coordinates: Optional[Tensor] = None,
         label: int = 0,
     ):
-        if self.is_evaluation and False:
+        if self.is_evaluation: # and False:
             caption_fields = [
                 TextField(
                     self._tokenizer.tokenize(caption_dicts[image_index]["captions"][caption_index]),
@@ -380,20 +380,20 @@ class Flickr30kReader(VisionReader):
                 )
             )
 
-            # 4. Hard negative image, correct caption
-            caption_fields.append(caption_field)
-            features.append(TensorField(hard_negative_features))
-            coords.append(TensorField(hard_negative_coordinates))
-            masks.append(
-                ArrayField(
-                    hard_negative_features.new_ones(
-                        (hard_negative_features.shape[0],),
-                        dtype=torch.bool,
-                    ),
-                    padding_value=False,
-                    dtype=torch.bool,
-                )
-            )
+            # # 4. Hard negative image, correct caption
+            # caption_fields.append(caption_field)
+            # features.append(TensorField(hard_negative_features))
+            # coords.append(TensorField(hard_negative_coordinates))
+            # masks.append(
+            #     ArrayField(
+            #         hard_negative_features.new_ones(
+            #             (hard_negative_features.shape[0],),
+            #             dtype=torch.bool,
+            #         ),
+            #         padding_value=False,
+            #         dtype=torch.bool,
+            #     )
+            # )
 
             fields: Dict[str, Field] = {
                 "caption": ListField(caption_fields),
