@@ -131,14 +131,14 @@ local dataset = "data";
     // ],
     "optimizer": {
       "type": "huggingface_adamw",
-      "lr": 1e-5,
-      "correct_bias": true,
+      "lr": 2e-5,
+      "correct_bias": false,
       "weight_decay": 0.01,
-      "parameter_groups": [
-        // [["bias", "LayerNorm\\.weight", "layer_norm\\.weight"], {"weight_decay": 0}], // can't use both at the same time
-        // smaller learning rate for the pretrained weights
-        [["^embeddings\\.", "^encoder.layers1\\.", "^t_pooler\\."], {"lr": 1e-6}]
-      ],
+      // "parameter_groups": [
+      //   // [["bias", "LayerNorm\\.weight", "layer_norm\\.weight"], {"weight_decay": 0}], // can't use both at the same time
+      //   // smaller learning rate for the pretrained weights
+      //   [["^embeddings\\.", "^encoder.layers1\\.", "^t_pooler\\."], {"lr": 1e-6}]
+      // ],
     },
     "learning_rate_scheduler": {
       "type": "linear_with_warmup",
