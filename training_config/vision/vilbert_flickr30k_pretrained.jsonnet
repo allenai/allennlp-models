@@ -17,8 +17,8 @@ local dataset = "data";
     "type": "flickr30k",
     "image_dir": "/net/nfs2.allennlp/data/vision/flickr30k/images/",
     "data_dir": "/net/nfs2.allennlp/data/vision/flickr30k/captions/",
-    // "feature_cache_dir": "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache",
-    "feature_cache_dir": "/home/jacobm/local_feature_cache/",
+    "feature_cache_dir": "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache",
+    // "feature_cache_dir": "/home/jacobm/local_feature_cache/",
     #"image_dir": std.format("/Users/dirkg/Documents/data/vision/vqa/%s", dataset),
     #[if !construct_vocab then "feature_cache_dir"]: std.format("/Users/dirkg/Documents/data/vision/vqa/%s/feature_cache", dataset),
     [if !construct_vocab then "image_loader"]: "torch",
@@ -35,7 +35,7 @@ local dataset = "data";
       }
     },
     // "max_instances": 1000, // DEBUG
-    "max_instances": num_instances / 10,
+    "max_instances": 14891,
     "image_processing_batch_size": 16,
     // "answer_vocab": if construct_vocab then null else vocabulary,
   },
