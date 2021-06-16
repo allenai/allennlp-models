@@ -2,12 +2,12 @@ local model_name = "bert-base-uncased";
 local vocab_size = 30522;     // for bert-*-uncased models
 //local vocab_size = 28996;   // for bert-*-cased models
 local num_gpus = 1;
-local gpu_batch_size = 32;
+local gpu_batch_size = 16;
 local effective_batch_size = gpu_batch_size * num_gpus;
 local num_epochs = 20;
 local patience = 5;
 local num_instances = 148915;
-local num_gradient_accumulation_steps = 4;
+local num_gradient_accumulation_steps = 128 / gpu_batch_size;
 
 local construct_vocab = false;
 local dataset = "data";
