@@ -35,7 +35,7 @@ local dataset = "data";
       }
     },
     // "max_instances": 1000, // DEBUG
-    // "max_instances": 100,
+    "max_instances": num_instances / 10,
     "image_processing_batch_size": 16,
     // "answer_vocab": if construct_vocab then null else vocabulary,
   },
