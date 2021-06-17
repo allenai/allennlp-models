@@ -57,6 +57,9 @@ local transformer_dim = 1024;
   "trainer": {
     "num_epochs": 10,
     "validation_metric": "+accuracy",
+    "callbacks": [
+        "adversarial_bias_mitigator_backward"
+    ],
     "optimizer": {
         "type": "multi",
         "optimizers": {
