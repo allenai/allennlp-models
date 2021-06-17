@@ -78,11 +78,11 @@ test-with-cov :
 
 .PHONY : test-pretrained
 test-pretrained :
-	pytest -v -n2 --forked --color=yes --durations=10 -m "pretrained_model_test"
+	pytest -v -n2 --forked --color=yes --durations=10 -m "pretrained_model_test" --cov-config=.coveragerc --cov=$(COV) --cov-report=xml
 
 .PHONY : test-configs
 test-configs :
-	pytest -v -n2 --forked --color=yes --durations=10 -m "pretrained_config_test"
+	pytest -v -n2 --forked --color=yes --durations=10 -m "pretrained_config_test" --cov-config=.coveragerc --cov=$(COV) --cov-report=xml
 
 .PHONY : build-all-api-docs
 build-all-api-docs : scripts/py2md.py
