@@ -22,8 +22,13 @@ class BidirectionalAttentionFlowTest(ModelTestCase):
         self.set_up_model(
             FIXTURES_ROOT / "rc" / "bidaf" / "experiment.json",
             FIXTURES_ROOT / "rc" / "squad.json",
-            seed=17,
+            seed=27,
         )
+        torch.use_deterministic_algorithms(True)
+
+    def teardown_method(self):
+        super().teardown_method()
+        torch.use_deterministic_algorithms(False)
 
     @flaky
     def test_forward_pass_runs_correctly(self):

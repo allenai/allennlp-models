@@ -1,9 +1,9 @@
 from allennlp.common.testing import ModelTestCase
 from allennlp.data import Batch
-
-from tests import FIXTURES_ROOT
+import torch
 
 import allennlp_models.rc
+from tests import FIXTURES_ROOT
 
 
 class DialogQATest(ModelTestCase):
@@ -16,6 +16,11 @@ class DialogQATest(ModelTestCase):
         )
         self.batch = Batch(self.instances)
         self.batch.index_instances(self.vocab)
+        torch.use_deterministic_algorithms(True)
+
+    def teardown_method(self):
+        super().teardown_method()
+        torch.use_deterministic_algorithms(False)
 
     def test_forward_pass_runs_correctly(self):
         training_tensors = self.batch.as_tensor_dict()
