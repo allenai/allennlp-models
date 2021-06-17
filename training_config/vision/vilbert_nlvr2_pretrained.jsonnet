@@ -4,7 +4,7 @@ local effective_batch_size = 64;
 local gpu_batch_size = effective_batch_size / num_gpus;
 local num_epochs = 10;
 local patience = 5;
-local num_gradient_accumulation_steps = effective_batch_size / gpu_batch_size / std.max(1, num_gpus);
+local num_gradient_accumulation_steps = 128 / effective_batch_size;
 local num_instances = 86373;
 
 {
