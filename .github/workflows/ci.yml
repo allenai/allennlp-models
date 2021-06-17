@@ -51,7 +51,8 @@ jobs:
         python scripts/update_readme_model_list.py
         git diff --exit-code
 
-  checks: ${{ matrix.task.name }}
+  checks:
+    name: ${{ matrix.task.name }}
     runs-on: ${{ matrix.task.runs_on }}
     timeout-minutes: 20
     stategy:
