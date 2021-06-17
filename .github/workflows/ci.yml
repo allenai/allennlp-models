@@ -190,12 +190,6 @@ jobs:
         name: ${{ matrix.task.name }}-coverage
         path: ./coverage
 
-    - name: Clean up
-      if: always()
-      run: |
-        . .venv/bin/activate
-        pip uninstall -y allennlp
-
   upload_coverage:
     name: Upload Coverage Report
     timeout-minutes: 10
