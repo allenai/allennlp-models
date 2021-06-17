@@ -58,6 +58,11 @@ jobs:
     strategy:
       matrix:
         python: ['3.7', '3.8']
+    env:
+      # Disable tokenizers parallelism because this doesn't help, and can cause issues in distributed tests.
+      TOKENIZERS_PARALLELISM: 'false'
+      # Disable multithreading with OMP because this can lead to dead-locks in distributed tests.
+      OMP_NUM_THREADS: '1'
 
     steps:
     - uses: actions/checkout@v2
@@ -115,62 +120,134 @@ jobs:
     # Don't run for forks.
     if: github.repository == 'allenai/allennlp-models'
     runs-on: [self-hosted, CPU-only]
+    env:
+      # Required to use the setup-python action.
+      AGENT_TOOLSDIRECTORY: '/opt/hostedtoolcache'
+      # Disable tokenizers parallelism because this doesn't help.
+      TOKENIZERS_PARALLELISM: 'false'
+      # Disable multithreading with OMP because this can lead to dead-locks in distributed training.
+      OMP_NUM_THREADS: '1'
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set Docker tag
-      run: |
-        echo "DOCKER_TAG=$GITHUB_SHA" >> $GITHUB_ENV
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      env:
+        # Log useful debugging information.
+        ACTIONS_STEP_DEBUG: 'true'
+      with:
+        python-version: 3.8
 
-    - name: Build test image
+    - uses: actions/cache@v2
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}-v2
+
+    - name: Install requirements
       run: |
-        make docker-test-image DOCKER_TAG=$DOCKER_TAG
+        pip install --upgrade pip setuptools wheel
+        pip uninstall -y allennlp
+        pip install --upgrade --upgrade-strategy eager -r requirements.txt
+        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
+
+    - name: Show pip freeze
+      run: |
+        pip freeze
 
     - name: Run pretrained tests
       run: |
-        make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='test-pretrained'
+        make test-pretrained
 
   configs:
     name: Training Configs 
     if: github.repository == 'allenai/allennlp-models'
     runs-on: [self-hosted, CPU-only]
+    env:
+      # Required to use the setup-python action.
+      AGENT_TOOLSDIRECTORY: '/opt/hostedtoolcache'
+      # Disable tokenizers parallelism because this doesn't help.
+      TOKENIZERS_PARALLELISM: 'false'
+      # Disable multithreading with OMP because this can lead to dead-locks in distributed training.
+      OMP_NUM_THREADS: '1'
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set Docker tag
-      run: |
-        echo "DOCKER_TAG=$GITHUB_SHA" >> $GITHUB_ENV
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      env:
+        # Log useful debugging information.
+        ACTIONS_STEP_DEBUG: 'true'
+      with:
+        python-version: 3.8
 
-    - name: Build test image
+    - uses: actions/cache@v2
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}-v2
+
+    - name: Install requirements
       run: |
-        make docker-test-image DOCKER_TAG=$DOCKER_TAG
+        pip install --upgrade pip setuptools wheel
+        pip uninstall -y allennlp
+        pip install --upgrade --upgrade-strategy eager -r requirements.txt
+        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
+
+    - name: Show pip freeze
+      run: |
+        pip freeze
 
     - name: Validate training configs
       run: |
-        make docker-test-run DOCKER_TAG=$DOCKER_TAG ARGS='test-configs'
+        make test-configs
 
   gpu_checks:
     name: GPU Checks
     # Don't run for forks.
     if: github.repository == 'allenai/allennlp-models'
     runs-on: [self-hosted, GPU]
+    env:
+      # Required to use the setup-python action.
+      AGENT_TOOLSDIRECTORY: '/opt/hostedtoolcache'
+      # Our self-hosted runner currently is currently compatible with CUDA 11.*.
+      TORCH_VERSION: 'torch==1.9.0+cu111 torchvision==0.10.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html'
+      # Disable tokenizers parallelism because this doesn't help.
+      TOKENIZERS_PARALLELISM: 'false'
+      # Disable multithreading with OMP because this can lead to dead-locks in distributed training.
+      OMP_NUM_THREADS: '1'
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set Docker tag
-      run: |
-        echo "DOCKER_TAG=$GITHUB_SHA" >> $GITHUB_ENV
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      env:
+        # Log useful debugging information.
+        ACTIONS_STEP_DEBUG: 'true'
+      with:
+        python-version: 3.8
 
-    - name: Build test image
+    - uses: actions/cache@v2
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ env.TORCH_VERSION }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}-v2
+
+    - name: Install requirements
       run: |
-        make docker-test-image DOCKER_TAG=$DOCKER_TAG
+        pip install --upgrade pip setuptools wheel
+        pip uninstall -y allennlp
+        echo "$TORCH_VERSION" | xargs pip install
+        pip install --upgrade --upgrade-strategy eager -r requirements.txt
+        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
+
+    - name: Show pip freeze
+      run: |
+        pip freeze
 
     - name: Run GPU tests
       run: |
-        make docker-test-run-with-gpus DOCKER_TAG=$DOCKER_TAG ARGS='gpu-test'
+        make gpu-test
 
   # Builds the API documentation and pushes it to the appropriate folder in the
   # allennlp-docs repo.
