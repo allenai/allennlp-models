@@ -158,7 +158,7 @@ jobs:
     - name: Create virtual environment
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
       run: |
-        virtualenv -p $(which python) --always-copies --reset-app-data .venv
+        virtualenv -p $(which python) --copies --reset-app-data .venv
         . .venv/bin/activate
         python -m site
 
