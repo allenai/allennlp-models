@@ -147,7 +147,7 @@ jobs:
         mv coverage.xml coverage/
 
     - name: Save coverage report
-      if: ${{ matrix.task.coverage_report }} && github.repository == 'allenai/allennlp-models' && (github.event_name == 'push' || github.event_name == 'pull_request')
+      if: ${{ matrix.task.coverage_report }} == 'true' && github.repository == 'allenai/allennlp-models' && (github.event_name == 'push' || github.event_name == 'pull_request')
       uses: actions/upload-artifact@v1
       with:
         name: ${{ matrix.task.name }}-coverage
