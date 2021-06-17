@@ -48,24 +48,6 @@ local dataset = "data";
   "evaluate_on_test": true,
   "model": {
     "type": "vilbert_ir",
-    // "model_name": model_name,
-    // "image_feature_dim": 1024,
-    // "image_hidden_size": 1024,
-    // "image_num_attention_heads": 8,
-    // "image_num_hidden_layers": 6,
-    // "combined_hidden_size": 1024,
-    // "combined_num_attention_heads": 8,
-    // "pooled_output_dim": 1024,
-    // "image_intermediate_size": 1024,
-    // "image_attention_dropout": 0.1,
-    // "image_hidden_dropout": 0.1,
-    // "image_biattention_id": [0, 1, 2, 3, 4, 5],
-    // "text_biattention_id": [6, 7, 8, 9, 10, 11],
-    // "text_fixed_layer": 0,
-    // "image_fixed_layer": 0,
-    // "fusion_method": "mul",
-    // "ignore_text": false, # debug setting
-    // "ignore_image": false, # debug setting
     "text_embeddings": {
       "vocab_size": vocab_size,
       "embedding_size": 1024,
