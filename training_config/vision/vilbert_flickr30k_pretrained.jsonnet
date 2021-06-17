@@ -32,7 +32,6 @@ local dataset = "data";
       }
     },
     // "max_instances": 1000, // DEBUG
-    // "max_instances": 14891,
     "image_processing_batch_size": 16,
   },
   "validation_dataset_reader": self.dataset_reader {

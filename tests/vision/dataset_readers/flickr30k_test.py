@@ -33,28 +33,24 @@ class TestFlickr30kReader(AllenNlpTestCase):
         instance = instances[5]
         assert len(instance.fields) == 5
         assert len(instance["caption"]) == 4
-        assert len(instance["caption"][0]) == 16
+        assert len(instance["caption"][0]) == 12 # 16
         assert instance["caption"][0] != instance["caption"][1]
         assert instance["caption"][0] == instance["caption"][2]
         assert instance["caption"][0] == instance["caption"][3]
         question_tokens = [t.text for t in instance["caption"][0]]
         assert question_tokens == [
-            "A",
             "girl",
             "with",
             "brown",
             "hair",
             "sits",
             "on",
-            "the",
             "edge",
             "of",
-            "a",
             "cement",
             "area",
             "overlooking",
             "water",
-            ".",
         ]
 
         batch = Batch(instances)
@@ -92,25 +88,21 @@ class TestFlickr30kReader(AllenNlpTestCase):
         instance = instances[5]
         assert len(instance.fields) == 5
         assert len(instance["caption"]) == 5
-        assert len(instance["caption"][0]) == 16
+        assert len(instance["caption"][0]) == 12
         question_tokens = [t.text for t in instance["caption"][0]]
         assert question_tokens == [
-            "A",
             "girl",
             "with",
             "brown",
             "hair",
             "sits",
             "on",
-            "the",
             "edge",
             "of",
-            "a",
             "cement",
             "area",
             "overlooking",
             "water",
-            ".",
         ]
 
         batch = Batch(instances)

@@ -216,8 +216,6 @@ class VisionReader(DatasetReader):
             if self.feature_cache_dir is None:
                 self._feature_cache_instance = {}
             else:
-                print("Feature cache dir was not none")
-                logger.info("Feature cache dir was not none")
                 os.makedirs(self.feature_cache_dir, exist_ok=True)
                 self._feature_cache_instance = TensorCache(
                     os.path.join(self.feature_cache_dir, "features"),

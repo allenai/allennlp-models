@@ -41,7 +41,6 @@ class ImageRetrievalVilbert(VisionTextModel):
     k: `int`, optional (default = `1`)
     """
 
-    # TODO: fix?
     def __init__(
         self,
         vocab: Vocabulary,
@@ -82,7 +81,6 @@ class ImageRetrievalVilbert(VisionTextModel):
 
         self.k = k
 
-    # TODO: fix
     @overrides
     def forward(
         self,  # type: ignore
@@ -94,7 +92,7 @@ class ImageRetrievalVilbert(VisionTextModel):
     ) -> Dict[str, torch.Tensor]:
         batch_size = box_features.shape[0]
 
-        if self.training: # or True:
+        if self.training:
             # Shape: (batch_size, num_images, pooled_output_dim)
             pooled_output = self.backbone(box_features, box_coordinates, box_mask, caption)[
                 "pooled_boxes_and_text"
@@ -102,7 +100,6 @@ class ImageRetrievalVilbert(VisionTextModel):
 
             # Shape: (batch_size, num_images)
             logits = self.classifier(pooled_output).squeeze(-1)
-
             probs = torch.softmax(logits, dim=-1)
 
             outputs = {"logits": logits, "probs": probs}

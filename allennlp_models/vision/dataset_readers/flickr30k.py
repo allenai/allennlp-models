@@ -25,7 +25,6 @@ from random import sample, choices, randint
 from allennlp.common.file_utils import cached_path
 from allennlp.common.lazy import Lazy
 from allennlp.common import util
-from allennlp.data.vocabulary import Vocabulary
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.fields import ArrayField, LabelField, ListField, TextField, TensorField
 from allennlp.data.image_loader import ImageLoader
@@ -79,7 +78,6 @@ def get_caption_data(filename):
 
 @DatasetReader.register("flickr30k")
 class Flickr30kReader(VisionReader):
-    # TODO: fix comment
     """
     Parameters
     ----------
@@ -106,7 +104,6 @@ class Flickr30kReader(VisionReader):
         image_loader: Optional[ImageLoader] = None,
         image_featurizer: Optional[Lazy[GridEmbedder]] = None,
         region_detector: Optional[Lazy[RegionDetector]] = None,
-        answer_vocab: Optional[Union[str, Vocabulary]] = None,
         feature_cache_dir: Optional[Union[str, PathLike]] = None,
         data_dir: Optional[Union[str, PathLike]] = None,
         tokenizer: Tokenizer = None,
@@ -143,17 +140,6 @@ class Flickr30kReader(VisionReader):
             )
             self.model.eval()
             self.tokenizer = transformers.AutoTokenizer.from_pretrained("bert-large-uncased")
-
-        # read answer vocab
-        if answer_vocab is None:
-            self.answer_vocab = None
-        else:
-            if isinstance(answer_vocab, str):
-                answer_vocab = cached_path(answer_vocab, extract_archive=True)
-                answer_vocab = Vocabulary.from_files(answer_vocab)
-            self.answer_vocab = frozenset(
-                answer_vocab.get_token_to_index_vocabulary("answers").keys()
-            )
 
     @overrides
     def _read(self, file_path: str):
@@ -212,7 +198,7 @@ class Flickr30kReader(VisionReader):
         features_list_field = ListField(feature_field_list)
         coordinates_list_field = ListField(coordinate_field_list)
 
-        if self.is_evaluation: # and False:
+        if self.is_evaluation:
             masks_list = []
             for image_index in range(len(caption_dicts)):
                 current_feature = features_list[image_index]
@@ -227,8 +213,6 @@ class Flickr30kReader(VisionReader):
             for image_index in range(len(caption_dicts)):
                 caption_dict = caption_dicts[image_index]
                 for caption_index in range(len(caption_dict["captions"])):
-                    # caption = caption_dict["captions"][caption_index]
-
                     instance = self.text_to_instance(
                         caption_dicts=caption_dicts,
                         image_index=image_index,
@@ -293,7 +277,7 @@ class Flickr30kReader(VisionReader):
         hard_negative_coordinates: Optional[Tensor] = None,
         label: int = 0,
     ):
-        if self.is_evaluation: # and False:
+        if self.is_evaluation:
             caption_fields = [
                 TextField(
                     self._tokenizer.tokenize(caption_dicts[image_index]["captions"][caption_index]),
