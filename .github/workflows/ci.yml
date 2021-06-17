@@ -104,7 +104,7 @@ jobs:
           run: make test-pretrained
 
         - name: Validate Configs
-          runs_on: [self-hosted, CPU-only]
+          runs_on: ubuntu-latest
           coverage_report: true
           torch_platform: cpu
           run: make test-configs
