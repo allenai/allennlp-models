@@ -60,7 +60,11 @@ class BidirectionalAttentionFlowTest(ModelTestCase):
     # `masked_softmax`...) have made this _very_ flaky...
     @flaky(max_runs=5)
     def test_model_can_train_save_and_load(self):
-        self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-4)
+        self.ensure_model_can_train_save_and_load(
+            self.param_file,
+            tolerance=1e-4,
+            gradients_to_ignore={"_span_start_predictor._module.bias"},
+        )
 
     @flaky
     def test_batch_predictions_are_consistent(self):
