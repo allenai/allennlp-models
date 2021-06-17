@@ -64,9 +64,9 @@ typecheck :
 test :
 	pytest -v --color=yes -rf --durations=40 -m "not pretrained_model_test and not pretrained_config_test"
 
-.PHONY : gpu-test
-gpu-test :
-	pytest -v --color=yes -v -rf -m gpu
+.PHONY : gpu-tests
+gpu-tests :
+	pytest -v --color=yes -v -rf --durations=20 -m gpu --cov-config=.coveragerc --cov=$(COV) --cov-report=xml
 
 .PHONY : test-with-cov
 test-with-cov :

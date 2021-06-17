@@ -42,7 +42,6 @@ jobs:
     name: README
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
-
     steps:
     - uses: actions/checkout@v1
 
@@ -52,196 +51,156 @@ jobs:
         python scripts/update_readme_model_list.py
         git diff --exit-code
 
-  checks:
-    name: Checks
-    runs-on: ubuntu-latest
-    strategy:
+  checks: ${{ matrix.task.name }}
+    runs-on: ${{ matrix.task.runs_on }}
+    timeout-minutes: 20
+    stategy:
+      fail-fast: false
       matrix:
-        python: ['3.7', '3.8']
+        task:
+        - name: Style
+          runs_on: ubuntu-latest
+          coverage_report: false
+          torch_platform: cpu
+          run: black --check .
+
+        - name: Lint
+          runs_on: ubuntu-latest
+          coverage_report: false
+          torch_platform: cpu
+          run: |
+            flake8 .
+            make typecheck
+
+        - name: CPU Tests
+          runs_on: ubuntu-latest
+          coverage_report: true
+          torch_platform: cpu
+          run: make test-with-cov
+
+        - name: Pretrained Tests
+          runs_on: [self-hosted, CPU-only]
+          coverage_report: true
+          torch_platform: cpu
+          run: make test-pretrained
+
+        - name: Validate Configs
+          runs_on: [self-hosted, CPU-only]
+          coverage_report: true
+          torch_platform: cpu
+          run: make test-configs
+
+        - name: GPU Tests
+          runs_on: [self-hosted, GPU]
+          coverage_report: true
+          torch_platform: cu111  # Our self-hosted GPU runners currently support CUDA 11.*
+          run: make gpu-tests
+
     env:
+      # NOTE: Need to update `TORCH_VERSION` and `TORCH_VISION_VERSION` for new torch releases.
+      TORCH_VERSION: 1.9.0
+      TORCH_VISION_VERSION: 0.10.0
       # Disable tokenizers parallelism because this doesn't help, and can cause issues in distributed tests.
       TOKENIZERS_PARALLELISM: 'false'
       # Disable multithreading with OMP because this can lead to dead-locks in distributed tests.
       OMP_NUM_THREADS: '1'
-
     steps:
     - uses: actions/checkout@v2
 
     - name: Setup Python
       uses: actions/setup-python@v1
       with:
-        python-version: ${{ matrix.python }}
+        python-version: 3.8
+
+    - name: Set build variables
+      shell: bash
+      run: |
+        echo "PYTHON_VERSION=$(python --version)" >> $GITHUB_ENV
+        echo "RUNNER_ARCH=$(uname -m)" >> $GITHUB_ENV
 
     - uses: actions/cache@v2
       with:
         path: ${{ env.pythonLocation }}
-        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}-v2
+        key: ${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ matrix.task.torch_platform }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
 
     - name: Install requirements
       run: |
         pip install --upgrade pip setuptools wheel
-        pip uninstall -y allennlp
+        pip install torch==${{ env.TORCH_VERSION }}+${{ matrix.task.torch_platform }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{matrix.task.torch_platform}} -f https://download.pytorch.org/whl/torch_stable.html
         pip install --upgrade --upgrade-strategy eager -r requirements.txt
         pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
 
-    - name: Show pip freeze
+    - name: Show environment info
       run: |
+        which python
+        python --version
         pip freeze
 
-    - name: Format
-      run: |
-        make format
+    - name: ${{ matrix.task.name }}
+      run: ${{ matrix.task.run }}
 
-    - name: Lint
+    - name: Prepare coverage report
+      if: ${{ matrix.task.coverage_report }}
       run: |
-        make lint
+        mkdir coverage
+        mv coverage.xml coverage/
 
-    - name: Type check
-      run: |
-        make typecheck
+    - name: Save coverage report
+      if: ${{ matrix.task.coverage_report }} && github.repository == 'allenai/allennlp-models' && (github.event_name == 'push' || github.event_name == 'pull_request')
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ matrix.task.name }}-coverage
+        path: ./coverage
 
-    - name: Run tests
+    - name: Clean up
+      if: always()
       run: |
-        make test-with-cov
+        pip uninstall -y allennlp
+
+  upload_coverage:
+    name: Upload Coverage Report
+    timeout-minutes: 10
+    if: github.repository == 'allenai/allennlp-models' && (github.event_name == 'push' || github.event_name == 'pull_request')
+    runs-on: ubuntu-latest
+    needs: [checks]
+
+    steps:
+      # Need to checkout code to get the coverage config.
+    - uses: actions/checkout@v2
+
+    - name: Download coverage report from CPU tests
+      uses: actions/download-artifact@v1
+      with:
+        name: CPU Tests-coverage
+        path: coverage/cpu_tests
+
+    - name: Download coverage report from GPU Tests
+      uses: actions/download-artifact@v1
+      with:
+        name: GPU Tests-coverage
+        path: coverage/gpu_tests
+
+    - name: Download coverage report from pretrained tests
+      uses: actions/download-artifact@v1
+      with:
+        name: Pretrained Tests-coverage
+        path: coverage/pretrained_tests
+
+    - name: Download coverage report from config tests
+      uses: actions/download-artifact@v1
+      with:
+        name: Validate Configs-coverage
+        path: coverage/validate_configs
 
     - name: Upload coverage to Codecov
-      if: matrix.python == '3.7' && github.repository == 'allenai/allennlp-models'
       uses: codecov/codecov-action@v1
       with:
-        file: ./coverage.xml
+        files: coverage/cpu_tests/coverage.xml,coverage/gpu_tests/coverage.xml,coverage/pretrained_tests/coverage.xml,coverage/validate_configs/coverage.xml
         # Ignore codecov failures as the codecov server is not
         # very reliable but we don't want to report a failure
         # in the github UI just because the coverage report failed to
         # be published.
         fail_ci_if_error: false
-
-  pretrained:
-    name: Pretrained Models
-    # Don't run for forks.
-    if: github.repository == 'allenai/allennlp-models'
-    runs-on: [self-hosted, CPU-only]
-    env:
-      # Disable tokenizers parallelism because this doesn't help.
-      TOKENIZERS_PARALLELISM: 'false'
-      # Disable multithreading with OMP because this can lead to dead-locks in distributed training.
-      OMP_NUM_THREADS: '1'
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      env:
-        # Log useful debugging information.
-        ACTIONS_STEP_DEBUG: 'true'
-      with:
-        python-version: 3.8
-
-    - uses: actions/cache@v2
-      with:
-        path: ${{ env.pythonLocation }}
-        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}-v2
-
-    - name: Install requirements
-      run: |
-        pip install --upgrade pip setuptools wheel
-        pip uninstall -y allennlp
-        pip install --upgrade --upgrade-strategy eager -r requirements.txt
-        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
-
-    - name: Show pip freeze
-      run: |
-        pip freeze
-
-    - name: Run pretrained tests
-      run: |
-        make test-pretrained
-
-  configs:
-    name: Training Configs 
-    if: github.repository == 'allenai/allennlp-models'
-    runs-on: [self-hosted, CPU-only]
-    env:
-      # Disable tokenizers parallelism because this doesn't help.
-      TOKENIZERS_PARALLELISM: 'false'
-      # Disable multithreading with OMP because this can lead to dead-locks in distributed training.
-      OMP_NUM_THREADS: '1'
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      env:
-        # Log useful debugging information.
-        ACTIONS_STEP_DEBUG: 'true'
-      with:
-        python-version: 3.8
-
-    - uses: actions/cache@v2
-      with:
-        path: ${{ env.pythonLocation }}
-        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}-v2
-
-    - name: Install requirements
-      run: |
-        pip install --upgrade pip setuptools wheel
-        pip uninstall -y allennlp
-        pip install --upgrade --upgrade-strategy eager -r requirements.txt
-        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
-
-    - name: Show pip freeze
-      run: |
-        pip freeze
-
-    - name: Validate training configs
-      run: |
-        make test-configs
-
-  gpu_checks:
-    name: GPU Checks
-    # Don't run for forks.
-    if: github.repository == 'allenai/allennlp-models'
-    runs-on: [self-hosted, GPU]
-    env:
-      # Our self-hosted runner currently is currently compatible with CUDA 11.*.
-      TORCH_VERSION: 'torch==1.9.0+cu111 torchvision==0.10.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html'
-      # Disable tokenizers parallelism because this doesn't help.
-      TOKENIZERS_PARALLELISM: 'false'
-      # Disable multithreading with OMP because this can lead to dead-locks in distributed training.
-      OMP_NUM_THREADS: '1'
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      env:
-        # Log useful debugging information.
-        ACTIONS_STEP_DEBUG: 'true'
-      with:
-        python-version: 3.8
-
-    - uses: actions/cache@v2
-      with:
-        path: ${{ env.pythonLocation }}
-        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ env.TORCH_VERSION }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}-v2
-
-    - name: Install requirements
-      run: |
-        pip install --upgrade pip setuptools wheel
-        pip uninstall -y allennlp
-        echo "$TORCH_VERSION" | xargs pip install
-        pip install --upgrade --upgrade-strategy eager -r requirements.txt
-        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
-
-    - name: Show pip freeze
-      run: |
-        pip freeze
-
-    - name: Run GPU tests
-      run: |
-        make gpu-test
 
   # Builds the API documentation and pushes it to the appropriate folder in the
   # allennlp-docs repo.
@@ -548,7 +507,7 @@ jobs:
   publish:
     name: PyPI
     if: github.repository == 'allenai/allennlp-models' && (github.event_name == 'release' || github.event_name == 'schedule')
-    needs: [checks, build_package, test_package, docker, docs, pretrained, configs, gpu_checks]
+    needs: [checks, build_package, test_package, docker, docs]
     runs-on: ubuntu-latest
 
     steps:
@@ -557,7 +516,7 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v1
       with:
-        python-version: 3.7
+        python-version: 3.8
 
     - name: Install requirements
       run: |
