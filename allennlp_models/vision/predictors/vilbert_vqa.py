@@ -37,4 +37,3 @@ class VilbertVqaPredictor(Predictor):
         self, instance: Instance, outputs: Dict[str, numpy.ndarray]
     ) -> List[Instance]:
         return [instance]  # TODO
-
