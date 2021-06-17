@@ -181,13 +181,13 @@ jobs:
         ${{ matrix.task.run }}
 
     - name: Prepare coverage report
-      if: ${{ matrix.task.coverage_report }}
+      if: matrix.task.coverage_report
       run: |
         mkdir coverage
         mv coverage.xml coverage/
 
     - name: Save coverage report
-      if: ${{ matrix.task.coverage_report }}
+      if: matrix.task.coverage_report
       uses: actions/upload-artifact@v1
       with:
         name: ${{ matrix.task.name }}-coverage
