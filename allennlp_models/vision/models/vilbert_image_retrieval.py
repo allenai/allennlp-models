@@ -25,9 +25,8 @@ logger = logging.getLogger(__name__)
 @Model.register("vilbert_ir")
 @Model.register("ir_vilbert_from_huggingface", constructor="from_huggingface_model_name")
 class ImageRetrievalVilbert(VisionTextModel):
-    # TODO: fix
     """
-    Model for VQA task based on the VilBERT paper.
+    Model for image retrieval task based on the VilBERT paper.
 
     # Parameters
 
@@ -36,9 +35,10 @@ class ImageRetrievalVilbert(VisionTextModel):
     image_embeddings : `ImageFeatureEmbeddings`
     encoder : `BiModalEncoder`
     pooled_output_dim : `int`
-    fusion_method : `str`, optional (default = `"sum"`)
+    fusion_method : `str`, optional (default = `"mul"`)
     dropout : `float`, optional (default = `0.1`)
     label_namespace : `str`, optional (default = `answers`)
+    k: `int`, optional (default = `1`)
     """
 
     # TODO: fix?
@@ -52,10 +52,10 @@ class ImageRetrievalVilbert(VisionTextModel):
         fusion_method: str = "mul",
         dropout: float = 0.1,
         label_namespace: str = "answers",
+        k: int = 1,
         *,
         ignore_text: bool = False,
         ignore_image: bool = False,
-        k: int = 1
     ) -> None:
         super().__init__(
             vocab,
@@ -105,11 +105,6 @@ class ImageRetrievalVilbert(VisionTextModel):
 
             probs = torch.softmax(logits, dim=-1)
 
-            # logger.info('labels:')
-            # logger.info(logits)
-            # logger.info(logits.argmax(dim=-1))
-            # logger.info(label)
-
             outputs = {"logits": logits, "probs": probs}
             outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
 
@@ -124,40 +119,24 @@ class ImageRetrievalVilbert(VisionTextModel):
                 ]
                 self.backbone.train()
 
-                # pooled_output = pooled_output.view(batch_size, num_images, pooled_output.shape[1])
-
                 # Shape: (batch_size, num_images)
                 scores = self.classifier(pooled_output).squeeze(-1)
 
                 # Shape: (batch_size, k)
+                # TODO: check if topk works with k == 1
                 rel_scores, indices = scores.topk(self.k, dim=-1)
 
                 # Shape: (batch_size)
                 pre_logits = torch.sum((indices == label.reshape(-1, 1)), dim=-1).float()
+
                 # Shape: (batch_size, 2)
-                # 0-th column == 1 if we found the image in the top k, 1st column == 1 if we didn't
+                # 1st column == 1 if we found the image in the top k, 2nd column == 1 if we didn't
                 logits = torch.stack((pre_logits, (pre_logits == 0).float()), dim=1)
 
                 outputs = {"logits": logits}
                 outputs = self._compute_loss_and_metrics(
                     batch_size, outputs, torch.zeros(batch_size).long().to(logits.device)
                 )
-                # check tensor gradients
-                # if caption's grad is really small (esp compared to others), then that could be our problem
-                # print("batch info:")
-                # print(indices)
-                # print(rel_scores)
-                # print(label)
-                # print(pre_logits)
-                # print(logits)
-                # print(outputs)
-                # logger.info("batch info:")
-                # logger.info(indices)
-                # logger.info(rel_scores)
-                # logger.info(label)
-                # logger.info(pre_logits)
-                # logger.info(logits)
-                # logger.info(outputs)
 
                 return outputs
 
@@ -172,18 +151,12 @@ class ImageRetrievalVilbert(VisionTextModel):
         self.accuracy(outputs["logits"], labels)
         return outputs
 
-    # TODO: fix
     @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
-        # metrics = self.fbeta.get_metric(reset)
-        # accuracy = self.accuracy.get_metric(reset)
-        # metrics.update({"accuracy": accuracy})
-        # return metrics
         return {
             "accuracy": self.accuracy.get_metric(reset),
         }
 
-    # TODO: fix
     @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]

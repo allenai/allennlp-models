@@ -34,21 +34,13 @@ from allennlp.data.token_indexers import TokenIndexer
 from allennlp.data.tokenizers import Tokenizer
 from allennlp.modules.vision.grid_embedder import GridEmbedder
 from allennlp.modules.vision.region_detector import RegionDetector
+
+from allennlp_models.vision.dataset_readers import utils
 from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
 
 logger = logging.getLogger(__name__)
 
-# TODO: Things slowing this down
-# 3. Not being able to load hard negatives (json file?)
-
-
-# TODO: implement this, filter based on that one paper (use vocab)
-def filter_caption(caption):
-    return caption
-
-
-# Borrowed
-# parse caption file for a given image
+# Parse caption file
 def get_caption_data(filename):
     with open(filename, "r") as f:
         captions = f.read().split("\n")
@@ -79,7 +71,7 @@ def get_caption_data(filename):
                 else:
                     words.append(token)
 
-        result_captions.append(filter_caption(" ".join(words)))
+        result_captions.append(utils.preprocess_answer(" ".join(words)))
 
     caption_data = {"image_id": image_id, "captions": result_captions}
     return caption_data
@@ -87,6 +79,7 @@ def get_caption_data(filename):
 
 @DatasetReader.register("flickr30k")
 class Flickr30kReader(VisionReader):
+    # TODO: fix comment
     """
     Parameters
     ----------
@@ -122,7 +115,7 @@ class Flickr30kReader(VisionReader):
         max_instances: Optional[int] = None,
         image_processing_batch_size: int = 8,
         write_to_cache: bool = True,
-        is_test: bool = False,  # TODO: change to featurize_captions or something
+        featurize_captions: bool = False,
         is_evaluation: bool = False,
         n: int = 100,
     ) -> None:
@@ -140,11 +133,11 @@ class Flickr30kReader(VisionReader):
             write_to_cache=write_to_cache,
         )
         self.data_dir = data_dir
-        self.is_test = is_test
+        self.featurize_captions = featurize_captions
         self.is_evaluation = is_evaluation
         self.n = n
 
-        if not is_test:
+        if not featurize_captions:
             self.model = transformers.AutoModel.from_pretrained("bert-large-uncased").to(
                 self.cuda_device
             )
@@ -418,7 +411,7 @@ class Flickr30kReader(VisionReader):
         image_id = caption_dicts[image_index]["image_id"]
         caption = caption_dicts[image_index]["captions"][caption_index]
         cache_id = f"{image_id}-{util.hash_object(caption)}"
-        # TODO: should we use this during tests?
+
         if (
             cache_id not in self._hard_negative_features_cache
             or cache_id not in self._hard_negative_coordinates_cache
@@ -456,8 +449,8 @@ class Flickr30kReader(VisionReader):
         )
 
     def get_caption_features(self, captions):
-        if self.is_test:
-            return torch.randn(len(captions), 5, 10)
+        if not self.featurize_captions:
+            return torch.ones(len(captions), 5, 10)
 
         captions_as_text = [c for caption_dict in captions for c in caption_dict["captions"]]
         captions_hash = util.hash_object(captions_as_text)
@@ -495,7 +488,6 @@ class Flickr30kReader(VisionReader):
                 pass
         return features
 
-    # todo: fix
     @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
         for caption in instance["caption"]:

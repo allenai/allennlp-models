@@ -9,7 +9,6 @@ local patience = 5;
 local num_instances = 148915;
 local num_gradient_accumulation_steps = 128 / gpu_batch_size;
 
-local construct_vocab = false;
 local dataset = "data";
 
 {
@@ -17,13 +16,11 @@ local dataset = "data";
     "type": "flickr30k",
     "image_dir": "/net/nfs2.allennlp/data/vision/flickr30k/images/",
     "data_dir": "/net/nfs2.allennlp/data/vision/flickr30k/captions/",
-    // "feature_cache_dir": "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache",
-    "feature_cache_dir": "/home/jacobm/local_feature_cache/",
-    #"image_dir": std.format("/Users/dirkg/Documents/data/vision/vqa/%s", dataset),
-    #[if !construct_vocab then "feature_cache_dir"]: std.format("/Users/dirkg/Documents/data/vision/vqa/%s/feature_cache", dataset),
-    [if !construct_vocab then "image_loader"]: "torch",
-    [if !construct_vocab then "image_featurizer"]: "resnet_backbone",
-    [if !construct_vocab then "region_detector"]: "faster_rcnn",
+    "feature_cache_dir": "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache",
+    // "feature_cache_dir": "/home/jacobm/local_feature_cache/",
+    "image_loader": "torch",
+    "image_featurizer": "resnet_backbone",
+    "region_detector": "faster_rcnn",
     "tokenizer": {
       "type": "pretrained_transformer",
       "model_name": model_name
@@ -37,7 +34,6 @@ local dataset = "data";
     // "max_instances": 1000, // DEBUG
     // "max_instances": 14891,
     "image_processing_batch_size": 16,
-    // "answer_vocab": if construct_vocab then null else vocabulary,
   },
   "validation_dataset_reader": self.dataset_reader {
     "is_evaluation": true,
@@ -124,8 +120,8 @@ local dataset = "data";
     },
     "learning_rate_scheduler": {
       "type": "linear_with_warmup",
-      // "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size)
-      "warmup_steps": 5000
+      "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size),
+      // "warmup_steps": 5000,
     },
     "validation_metric": "+accuracy",
     "patience": patience,
