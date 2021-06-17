@@ -20,7 +20,9 @@ class BidirectionalAttentionFlowTest(ModelTestCase):
     def setup_method(self):
         super().setup_method()
         self.set_up_model(
-            FIXTURES_ROOT / "rc" / "bidaf" / "experiment.json", FIXTURES_ROOT / "rc" / "squad.json"
+            FIXTURES_ROOT / "rc" / "bidaf" / "experiment.json",
+            FIXTURES_ROOT / "rc" / "squad.json",
+            seed=17,
         )
 
     @flaky

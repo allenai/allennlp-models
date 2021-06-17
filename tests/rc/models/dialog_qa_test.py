@@ -12,6 +12,7 @@ class DialogQATest(ModelTestCase):
         self.set_up_model(
             FIXTURES_ROOT / "rc" / "dialog_qa" / "experiment.json",
             FIXTURES_ROOT / "rc" / "dialog_qa" / "quac_sample.json",
+            seed=42,
         )
         self.batch = Batch(self.instances)
         self.batch.index_instances(self.vocab)
