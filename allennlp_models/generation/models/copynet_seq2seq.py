@@ -1,20 +1,21 @@
 import logging
-from typing import Dict, Tuple, List, Any, Union
+import warnings
+from typing import Any, Dict, List, Tuple, Union
 
 import numpy
-from overrides import overrides
 import torch
-from torch.nn.modules.linear import Linear
-from torch.nn.modules.rnn import LSTMCell
-
-from allennlp.common.util import START_SYMBOL, END_SYMBOL
+from allennlp.common.lazy import Lazy
+from allennlp.common.util import END_SYMBOL, START_SYMBOL
 from allennlp.data import TextFieldTensors, Vocabulary
 from allennlp.models.model import Model
-from allennlp.modules import Attention, TextFieldEmbedder, Seq2SeqEncoder
+from allennlp.modules import Attention, Seq2SeqEncoder, TextFieldEmbedder
 from allennlp.modules.token_embedders import Embedding
 from allennlp.nn import InitializerApplicator, util
-from allennlp.training.metrics import Metric, BLEU
 from allennlp.nn.beam_search import BeamSearch
+from allennlp.training.metrics import BLEU, Metric
+from overrides import overrides
+from torch.nn.modules.linear import Linear
+from torch.nn.modules.rnn import LSTMCell
 
 logger = logging.getLogger(__name__)
 
@@ -46,10 +47,8 @@ class CopyNetSeq2Seq(Model):
     attention : `Attention`, required
         This is used to get a dynamic summary of encoder outputs at each timestep
         when producing the "generation" scores for the target vocab.
-    beam_size : `int`, required
-        Beam width to use for beam search prediction.
-    max_decoding_steps : `int`, required
-        Maximum sequence length of target predictions.
+    beam_search : `BeamSearch`, optional (default = `Lazy(BeamSearch)`)
+        This is used to during inference to select the tokens of the decoded output sequence.
     target_embedding_dim : `int`, optional (default = `30`)
         The size of the embeddings for the target vocabulary.
     copy_token : `str`, optional (default = `'@COPY@'`)
@@ -76,14 +75,14 @@ class CopyNetSeq2Seq(Model):
         source_embedder: TextFieldEmbedder,
         encoder: Seq2SeqEncoder,
         attention: Attention,
-        beam_size: int,
-        max_decoding_steps: int,
+        beam_search: Lazy[BeamSearch] = Lazy(BeamSearch),
         target_embedding_dim: int = 30,
         copy_token: str = "@COPY@",
         target_namespace: str = "target_tokens",
         tensor_based_metric: Metric = None,
         token_based_metric: Metric = None,
         initializer: InitializerApplicator = InitializerApplicator(),
+        **kwargs
     ) -> None:
         super().__init__(vocab)
         self._target_namespace = target_namespace
@@ -142,9 +141,20 @@ class CopyNetSeq2Seq(Model):
         self._output_copying_layer = Linear(self.encoder_output_dim, self.decoder_output_dim)
 
         # At prediction time, we'll use a beam search to find the best target sequence.
-        self._beam_search = BeamSearch(
-            self._end_index, max_steps=max_decoding_steps, beam_size=beam_size
+        # For backwards compatibility, check if beam_size or max_decoding_steps were passed in as
+        # kwargs. If so, update the BeamSearch object before constructing and raise a DeprecationWarning
+        deprecation_warning = (
+            "The parameter {} has been deprecated."
+            " Provide this parameter as argument to beam_search instead."
         )
+        beam_search_extras = {}
+        if "beam_size" in kwargs:
+            beam_search_extras["beam_size"] = kwargs["beam_size"]
+            warnings.warn(deprecation_warning.format("beam_size"), DeprecationWarning)
+        if "max_decoding_steps" in kwargs:
+            beam_search_extras["max_steps"] = kwargs["max_decoding_steps"]
+            warnings.warn(deprecation_warning.format("max_decoding_steps"), DeprecationWarning)
+        self._beam_search = beam_search.construct(end_index=self._end_index, **beam_search_extras)
 
         initializer(self)
 

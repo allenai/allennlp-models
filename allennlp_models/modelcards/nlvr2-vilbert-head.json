@@ -1,0 +1,66 @@
+{
+    "id": "nlvr2-vilbert",
+    "registered_model_name": "nlvr2",
+    "registered_predictor_name": null,
+    "display_name": "Visual Entailment - NLVR2",
+    "task_id": "nlvr2",
+    "model_details": {
+        "description": "This model uses a VilBERT-based backbone with an NLVR2-specific model head. The image features are obtained using the ResNet backbone and Faster RCNN (region detection).",
+        "short_description": "ViLBERT-based model for Visual Entailment.",
+        "developed_by": "Lu et al",
+        "contributed_by": "Jacob Morrison",
+        "date": "2021-05-27",
+        "version": "2",
+        "model_type": "ViLBERT based on BERT large",
+        "paper": {
+            "citation": "\n@inproceedings{Lu2019ViLBERTPT,\ntitle={ViLBERT: Pretraining Task-Agnostic Visiolinguistic Representations for Vision-and-Language Tasks},\nauthor={Jiasen Lu and Dhruv Batra and D. Parikh and Stefan Lee},\nbooktitle={NeurIPS},\nyear={2019}",
+            "title": "ViLBERT: Pretraining Task-Agnostic Visiolinguistic Representations for Vision-and-Language Tasks",
+            "url": "https://api.semanticscholar.org/CorpusID:199453025"
+        },
+        "license": null,
+        "contact": "allennlp-contact@allenai.org"
+    },
+    "intended_use": {
+        "primary_uses": "This model is developed for the AllenNLP demo.",
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "Accuracy and F1-score",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": {
+            "name": "Natural Language for Visual Reasoning For Real dev set",
+            "url": "https://github.com/lil-lab/nlvr/tree/master/nlvr2",
+            "notes": "Evaluation requires a large amount of images to be accessible locally, so we cannot provide a command you can easily copy and paste."
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": {
+            "name": "Natural Language for Visual Reasoning For Real train set",
+            "url": "https://github.com/lil-lab/nlvr/tree/master/nlvr2"
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": "On the validation set:\nF1: 33.7%\nAccuracy: 50.8%.\nThese scores do not match the performance in the 12-in-1 paper because this was trained as a standalone task, not as part of a multitask setup. Please contact us if you want to match those scores!",
+        "intersectional_results": null
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": null
+    },
+    "model_usage": {
+        "archive_file": "vilbert-nlvr2-head-2021.06.01.tar.gz",
+        "training_config": "vilbert_nlvr2_pretrained.jsonnet",
+        "install_instructions": "pip install allennlp>=2.5.1 allennlp-models>=2.5.1"
+    }
+}

@@ -61,7 +61,7 @@
         "patience": 200,
         "validation_metric": "+f1-measure-overall",
         "checkpointer": {
-            "num_serialized_models_to_keep": 10,
+            "keep_most_recent_by_count": 10,
         },
         "optimizer": {
             "type": "adadelta",

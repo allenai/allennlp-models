@@ -128,7 +128,7 @@ class StanfordSentimentTreeBankDatasetReader(DatasetReader):
             tokens = [make_token(x) for x in tokens]
         else:
             tokens = self._tokenizer.tokenize(" ".join(tokens))
-        text_field = TextField(tokens, token_indexers=self._token_indexers)
+        text_field = TextField(tokens)
         fields: Dict[str, Field] = {"tokens": text_field}
         if sentiment is not None:
             # 0 and 1 are negative sentiment, 2 is neutral, and 3 and 4 are positive sentiment
@@ -153,3 +153,7 @@ class StanfordSentimentTreeBankDatasetReader(DatasetReader):
                     sentiment = "1"
             fields["label"] = LabelField(sentiment)
         return Instance(fields)
+
+    @overrides
+    def apply_token_indexers(self, instance: Instance) -> None:
+        instance.fields["tokens"].token_indexers = self._token_indexers

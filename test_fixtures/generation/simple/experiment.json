@@ -75,13 +75,15 @@
       "hidden_size": 10,
       "num_layers": 1
     },
-    "max_decoding_steps": 20,
+    "beam_search": {
+      "max_steps": 20,
+      "beam_size": 5
+    },
     "target_embedding_dim": 30,
     "target_namespace": "target_tokens",
     "attention": {
       "type": "dot_product"
-    },
-    "beam_size": 5
+    }
   },
   "data_loader": {
     "batch_sampler": {

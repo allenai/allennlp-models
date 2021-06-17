@@ -1,8 +1,11 @@
 import json
 
 import numpy
+import pytest
 import torch
 
+from allennlp.models import Model
+from allennlp.common import Params
 from allennlp.commands.train import train_model_from_file
 from allennlp.common.testing import ModelTestCase, requires_gpu
 from allennlp.nn.beam_search import BeamSearch
@@ -18,6 +21,19 @@ class SimpleSeq2SeqTest(ModelTestCase):
             FIXTURES_ROOT / "generation" / "simple" / "experiment.json",
             FIXTURES_ROOT / "generation" / "seq2seq_copy.tsv",
         )
+
+    def test_backwards_compatibility_with_beam_search_args(self):
+        # These values are arbitrary but should be different than the config.
+        beam_size, max_decoding_steps = 100, 1000
+        params = Params.from_file(self.param_file)
+        params["model"]["beam_size"] = beam_size
+        params["model"]["max_decoding_steps"] = max_decoding_steps
+        # The test harness is set up to treat DeprecationWarning's like errors, so this needs to
+        # be called within the pytest context manager.
+        with pytest.raises(DeprecationWarning):
+            model = Model.from_params(vocab=self.vocab, params=params.get("model"))
+            assert model._beam_search.beam_size == beam_size
+            assert model._beam_search.max_steps == max_decoding_steps
 
     def test_model_can_train_save_and_load(self):
         self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-2)
@@ -49,7 +65,7 @@ class SimpleSeq2SeqTest(ModelTestCase):
         )
 
     def test_greedy_model_can_train_save_and_load(self):
-        param_overrides = json.dumps({"model": {"beam_size": None}})
+        param_overrides = json.dumps({"model": {"beam_search": {"beam_size": 1}}})
         self.ensure_model_can_train_save_and_load(
             self.param_file, tolerance=1e-2, overrides=param_overrides
         )
@@ -91,7 +107,7 @@ class SimpleSeq2SeqTest(ModelTestCase):
 
     def test_greedy_decode_matches_beam_search(self):
         beam_search = BeamSearch(
-            self.model._end_index, max_steps=self.model._max_decoding_steps, beam_size=1
+            self.model._end_index, max_steps=self.model._beam_search.max_steps, beam_size=1
         )
         training_tensors = self.dataset.as_tensor_dict()
 
