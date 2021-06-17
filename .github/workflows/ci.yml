@@ -129,25 +129,25 @@ jobs:
     - uses: actions/cache@v2
       id: virtualenv-cache
       with:
-        path: venv
+        path: .venv
         key: v2-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ matrix.task.torch_platform }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
 
     - name: Setup virtual environment
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
       run: |
-        virtualenv -p $(which python) venv
-        . venv/bin/activate
+        virtualenv -p $(which python) .venv
+        . .venv/bin/activate
 
     - name: Install requirements
       run: |
-        . venv/bin/activate
+        . .venv/bin/activate
         pip install torch==${{ env.TORCH_VERSION }}+${{ matrix.task.torch_platform }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{matrix.task.torch_platform}} -f https://download.pytorch.org/whl/torch_stable.html
         pip install --upgrade --upgrade-strategy eager -r requirements.txt
         pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
 
     - name: Show environment info
       run: |
-        . venv/bin/activate
+        . .venv/bin/activate
         echo $AGENT_TOOLSDIRECTORY
         which python
         python --version
@@ -155,7 +155,7 @@ jobs:
 
     - name: ${{ matrix.task.name }}
       run: |
-        . venv/bin/activate
+        . .venv/bin/activate
         ${{ matrix.task.run }}
 
     - name: Prepare coverage report
