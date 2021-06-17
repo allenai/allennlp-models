@@ -153,7 +153,7 @@ jobs:
       id: virtualenv-cache
       with:
         path: .venv
-        key: v2-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ matrix.task.torch_platform }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+        key: v0-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ matrix.task.torch_platform }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
 
     - name: Create virtual environment
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
