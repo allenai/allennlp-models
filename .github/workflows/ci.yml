@@ -55,7 +55,7 @@ jobs:
     name: ${{ matrix.task.name }}
     runs-on: ${{ matrix.task.runs_on }}
     timeout-minutes: 20
-    stategy:
+    strategy:
       fail-fast: false
       matrix:
         task:
