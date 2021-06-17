@@ -121,8 +121,6 @@ jobs:
     if: github.repository == 'allenai/allennlp-models'
     runs-on: [self-hosted, CPU-only]
     env:
-      # Required to use the setup-python action.
-      AGENT_TOOLSDIRECTORY: '/opt/hostedtoolcache'
       # Disable tokenizers parallelism because this doesn't help.
       TOKENIZERS_PARALLELISM: 'false'
       # Disable multithreading with OMP because this can lead to dead-locks in distributed training.
@@ -164,8 +162,6 @@ jobs:
     if: github.repository == 'allenai/allennlp-models'
     runs-on: [self-hosted, CPU-only]
     env:
-      # Required to use the setup-python action.
-      AGENT_TOOLSDIRECTORY: '/opt/hostedtoolcache'
       # Disable tokenizers parallelism because this doesn't help.
       TOKENIZERS_PARALLELISM: 'false'
       # Disable multithreading with OMP because this can lead to dead-locks in distributed training.
@@ -208,8 +204,6 @@ jobs:
     if: github.repository == 'allenai/allennlp-models'
     runs-on: [self-hosted, GPU]
     env:
-      # Required to use the setup-python action.
-      AGENT_TOOLSDIRECTORY: '/opt/hostedtoolcache'
       # Our self-hosted runner currently is currently compatible with CUDA 11.*.
       TORCH_VERSION: 'torch==1.9.0+cu111 torchvision==0.10.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html'
       # Disable tokenizers parallelism because this doesn't help.
