@@ -29,7 +29,9 @@ class DialogQATest(ModelTestCase):
         assert "followup" in output_dict and "yesno" in output_dict
 
     def test_model_can_train_save_and_load(self):
-        self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-4)
+        self.ensure_model_can_train_save_and_load(
+            self.param_file, tolerance=1e-4, gradients_to_ignore={"_matrix_attention._bias"}
+        )
 
     def test_batch_predictions_are_consistent(self):
         self.ensure_batch_predictions_are_consistent()
