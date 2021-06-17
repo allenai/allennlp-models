@@ -48,17 +48,17 @@ clean :
 	rm -rf build/
 	find . | grep -E '(\.mypy_cache|__pycache__|\.pyc|\.pyo$$)' | xargs rm -rf
 
-.PHONY : lint
-lint :
-	flake8
+.PHONY : flake8
+flake8 :
+	flake8 allennlp_models tests scripts
 
 .PHONY : format
 format :
-	black --check .
+	black --check allennlp_models tests scripts
 
 .PHONY : typecheck
 typecheck :
-	mypy allennlp_models tests --ignore-missing-imports --no-strict-optional --no-site-packages --cache-dir=/dev/null
+	mypy allennlp_models tests scripts --ignore-missing-imports --no-strict-optional --no-site-packages --cache-dir=/dev/null
 
 .PHONY : test
 test :
