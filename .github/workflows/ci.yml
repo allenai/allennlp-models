@@ -104,7 +104,7 @@ jobs:
           run: make test-pretrained
 
         - name: Validate Configs
-          runs_on: ubuntu-latest
+          runs_on: [self-hosted, CPU-only]
           coverage_report: true
           torch_platform: cpu
           run: make test-configs
@@ -241,6 +241,16 @@ jobs:
     name: Docs
     runs-on: ubuntu-latest
     if: github.repository == 'allenai/allennlp-models'
+    timeout-minutes: 20
+    env:
+      # NOTE: Need to update `TORCH_VERSION` and `TORCH_VISION_VERSION` for new torch releases.
+      TORCH_VERSION: 1.9.0
+      TORCH_VISION_VERSION: 0.10.0
+      TORCH_PLATFORM: cpu
+      # Disable tokenizers parallelism because this doesn't help, and can cause issues in distributed tests.
+      TOKENIZERS_PARALLELISM: 'false'
+      # Disable multithreading with OMP because this can lead to dead-locks in distributed tests.
+      OMP_NUM_THREADS: '1'
 
     steps:
     - uses: actions/checkout@v1
@@ -254,26 +264,49 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.7
+        python-version: 3.8
+
+    - name: Install prerequisites
+      run: |
+        pip install --upgrade pip setuptools wheel virtualenv
+
+    - name: Set build variables
+      shell: bash
+      run: |
+        echo "PYTHON_VERSION=$(python --version)" >> $GITHUB_ENV
+        echo "RUNNER_ARCH=$(uname -m)" >> $GITHUB_ENV
 
     - uses: actions/cache@v2
+      id: virtualenv-cache
       with:
-        path: ${{ env.pythonLocation }}
-        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}-v2
+        path: .venv
+        key: v2-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+
+    - name: Setup virtual environment
+      if: steps.virtualenv-cache.outputs.cache-hit != 'true'
+      run: |
+        virtualenv -p $(which python) .venv
+        . .venv/bin/activate
 
     - name: Install requirements
       run: |
-        pip install --upgrade pip setuptools wheel
+        . .venv/bin/activate
+        pip install torch==${{ env.TORCH_VERSION }}+${{ env.TORCH_PLATFORM }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{ env.TORCH_PLATFORM }} -f https://download.pytorch.org/whl/torch_stable.html
         pip uninstall -y allennlp
         pip install --upgrade --upgrade-strategy eager -r requirements.txt
         pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
 
-    - name: Debug info
+    - name: Show environment info
       run: |
+        . .venv/bin/activate
+        echo $AGENT_TOOLSDIRECTORY
+        which python
+        python --version
         pip freeze
 
-    - name: Prepare environment
+    - name: Prepare build environment
       run: |
+        . .venv/bin/activate
         echo "BASE_MODULE=allennlp_models" >> $GITHUB_ENV
         if [[ $GITHUB_EVENT_NAME == 'release' ]]; then
             echo "DOCS_FOLDER=models/${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV;
@@ -285,6 +318,7 @@ jobs:
 
     - name: Build docs
       run: |
+        . .venv/bin/activate
         make build-docs
 
     - name: Configure Git
@@ -312,6 +346,7 @@ jobs:
       run: |
         # Fail immediately if any step fails.
         set -e
+        . .venv/bin/activate
 
         LATEST=models/$(./scripts/get_version.py latest)
         STABLE=models/$(./scripts/get_version.py stable)
@@ -359,6 +394,16 @@ jobs:
     name: Build package
     if: github.repository == 'allenai/allennlp-models'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # NOTE: Need to update `TORCH_VERSION` and `TORCH_VISION_VERSION` for new torch releases.
+      TORCH_VERSION: 1.9.0
+      TORCH_VISION_VERSION: 0.10.0
+      TORCH_PLATFORM: cpu
+      # Disable tokenizers parallelism because this doesn't help, and can cause issues in distributed tests.
+      TOKENIZERS_PARALLELISM: 'false'
+      # Disable multithreading with OMP because this can lead to dead-locks in distributed tests.
+      OMP_NUM_THREADS: '1'
 
     steps:
     - uses: actions/checkout@v2
@@ -366,16 +411,53 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.7
+        python-version: 3.8
+
+    - name: Install prerequisites
+      run: |
+        pip install --upgrade pip setuptools wheel virtualenv
+
+    - name: Set build variables
+      shell: bash
+      run: |
+        echo "PYTHON_VERSION=$(python --version)" >> $GITHUB_ENV
+        echo "RUNNER_ARCH=$(uname -m)" >> $GITHUB_ENV
+
+    - uses: actions/cache@v2
+      id: virtualenv-cache
+      with:
+        path: .venv
+        key: v2-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+
+    - name: Setup virtual environment
+      if: steps.virtualenv-cache.outputs.cache-hit != 'true'
+      run: |
+        virtualenv -p $(which python) .venv
+        . .venv/bin/activate
+
+    - name: Install requirements
+      run: |
+        . .venv/bin/activate
+        pip install torch==${{ env.TORCH_VERSION }}+${{ env.TORCH_PLATFORM }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{ env.TORCH_PLATFORM }} -f https://download.pytorch.org/whl/torch_stable.html
+        pip uninstall -y allennlp
+        pip install --upgrade --upgrade-strategy eager -r requirements.txt
+        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
+
+    - name: Show environment info
+      run: |
+        . .venv/bin/activate
+        echo $AGENT_TOOLSDIRECTORY
+        which python
+        python --version
+        pip freeze
 
     - name: Check and set nightly version
       if: github.event_name == 'schedule'
       run: |
-        # The get_version.py script requires the 'requests' package.
-        pip install requests
+        # Verify that current version is ahead of the last release.
+        . .venv/bin/activate
         LATEST=$(scripts/get_version.py latest)
         CURRENT=$(scripts/get_version.py current)
-        # Verify that current version is ahead of the last release.
         if [ "$CURRENT" == "$LATEST" ]; then
             echo "Current version needs to be ahead of latest release in order to build nightly release";
             exit 1;
@@ -386,6 +468,7 @@ jobs:
       if: github.event_name == 'release'
       run: |
         # Remove 'refs/tags/' to get the actual tag from the release.
+        . .venv/bin/activate
         TAG=${GITHUB_REF#refs/tags/};
         VERSION=$(scripts/get_version.py current)
         if [ "$TAG" != "$VERSION" ]; then
@@ -400,24 +483,9 @@ jobs:
         echo "Setting ALLENNLP_VERSION_OVERRIDE to $ALLENNLP_VERSION_OVERRIDE"
         echo "ALLENNLP_VERSION_OVERRIDE=$ALLENNLP_VERSION_OVERRIDE" >> $GITHUB_ENV
 
-    - uses: actions/cache@v2
-      with:
-        path: ${{ env.pythonLocation }}
-        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}-v2
-
-    - name: Install requirements
-      run: |
-        pip install --upgrade pip setuptools wheel
-        pip uninstall -y allennlp
-        pip install -e .
-        pip install -r dev-requirements.txt
-
-    - name: Show pip freeze
-      run: |
-        pip freeze
-
     - name: Build Package
       run: |
+        . .venv/bin/activate
         python setup.py bdist_wheel sdist
 
     - name: Save package
