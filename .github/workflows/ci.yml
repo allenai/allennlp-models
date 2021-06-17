@@ -109,7 +109,10 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Setup Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
+      env:
+        # Log useful debugging information.
+        ACTIONS_STEP_DEBUG: 'true'
       with:
         python-version: 3.8
 
@@ -235,7 +238,7 @@ jobs:
         ssh-private-key: ${{ secrets.DOCS_DEPLOY_KEY }}
 
     - name: Setup Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: 3.7
 
@@ -347,7 +350,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Setup Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: 3.7
 
@@ -428,7 +431,7 @@ jobs:
         rm -rf allennlp_models/
 
     - name: Setup Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python }}
 
@@ -478,7 +481,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Setup Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: 3.7
 
@@ -530,7 +533,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Setup Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: 3.8
 
