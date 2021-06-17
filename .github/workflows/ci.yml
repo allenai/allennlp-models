@@ -19,6 +19,15 @@ on:
   # release will be a dependency.
   - cron: '48 12 * * 1,2,3,4,5'  # early morning (12:48 UTC / 5:48 AM PDT) Monday - Friday
 
+env:
+  # NOTE: Need to update `TORCH_VERSION` and `TORCH_VISION_VERSION` for new torch releases.
+  TORCH_VERSION: 1.9.0
+  TORCH_VISION_VERSION: 0.10.0
+  # Disable tokenizers parallelism because this doesn't help, and can cause issues in distributed tests.
+  TOKENIZERS_PARALLELISM: 'false'
+  # Disable multithreading with OMP because this can lead to dead-locks in distributed tests.
+  OMP_NUM_THREADS: '1'
+
 jobs:
   changelog:
     name: CHANGELOG
@@ -115,14 +124,6 @@ jobs:
           torch_platform: cu111  # Our self-hosted GPU runners currently support CUDA 11.*
           run: make gpu-tests
 
-    env:
-      # NOTE: Need to update `TORCH_VERSION` and `TORCH_VISION_VERSION` for new torch releases.
-      TORCH_VERSION: 1.9.0
-      TORCH_VISION_VERSION: 0.10.0
-      # Disable tokenizers parallelism because this doesn't help, and can cause issues in distributed tests.
-      TOKENIZERS_PARALLELISM: 'false'
-      # Disable multithreading with OMP because this can lead to dead-locks in distributed tests.
-      OMP_NUM_THREADS: '1'
     steps:
     - uses: actions/checkout@v2
 
@@ -245,15 +246,7 @@ jobs:
     if: github.repository == 'allenai/allennlp-models'
     timeout-minutes: 20
     env:
-      # NOTE: Need to update `TORCH_VERSION` and `TORCH_VISION_VERSION` for new torch releases.
-      TORCH_VERSION: 1.9.0
-      TORCH_VISION_VERSION: 0.10.0
       TORCH_PLATFORM: cpu
-      # Disable tokenizers parallelism because this doesn't help, and can cause issues in distributed tests.
-      TOKENIZERS_PARALLELISM: 'false'
-      # Disable multithreading with OMP because this can lead to dead-locks in distributed tests.
-      OMP_NUM_THREADS: '1'
-
     steps:
     - uses: actions/checkout@v1
 
@@ -292,7 +285,6 @@ jobs:
 
     - name: Install requirements
       run: |
-        which python
         . .venv/bin/activate
         pip install torch==${{ env.TORCH_VERSION }}+${{ env.TORCH_PLATFORM }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{ env.TORCH_PLATFORM }} -f https://download.pytorch.org/whl/torch_stable.html
         pip uninstall -y allennlp
@@ -399,15 +391,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      # NOTE: Need to update `TORCH_VERSION` and `TORCH_VISION_VERSION` for new torch releases.
-      TORCH_VERSION: 1.9.0
-      TORCH_VISION_VERSION: 0.10.0
       TORCH_PLATFORM: cpu
-      # Disable tokenizers parallelism because this doesn't help, and can cause issues in distributed tests.
-      TOKENIZERS_PARALLELISM: 'false'
-      # Disable multithreading with OMP because this can lead to dead-locks in distributed tests.
-      OMP_NUM_THREADS: '1'
-
     steps:
     - uses: actions/checkout@v2
 
