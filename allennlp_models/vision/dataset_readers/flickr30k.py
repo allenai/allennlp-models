@@ -400,6 +400,7 @@ class Flickr30kReader(VisionReader):
             cache_id not in self._hard_negative_features_cache
             or cache_id not in self._hard_negative_coordinates_cache
         ):
+            logger.info("cache miss")
             _, indices = (
                 -torch.cdist(
                     averaged_features, averaged_features[image_index].unsqueeze(0)
