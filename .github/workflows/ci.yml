@@ -152,12 +152,13 @@ jobs:
       with:
         path: .venv
         key: ${{ env.CACHE_PREFIX }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ matrix.task.torch_platform }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+        restore-keys: |
+          ${{ env.CACHE_PREFIX }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ matrix.task.torch_platform }}-
 
     - name: Create virtual environment
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
       run: |
-        virtualenv -p $(which python) --copies --reset-app-data .venv
-        . .venv/bin/activate
+        test -d .venv || virtualenv -p $(which python) --copies --reset-app-data .venv
 
     - name: Install requirements
       run: |
@@ -275,12 +276,13 @@ jobs:
       with:
         path: .venv
         key: ${{ env.CACHE_PREFIX }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+        restore-keys: |
+          ${{ env.CACHE_PREFIX }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-
 
     - name: Create virtual environment
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
       run: |
-        virtualenv -p $(which python) --copies --reset-app-data .venv
-        . .venv/bin/activate
+        test -d .venv || virtualenv -p $(which python) --copies --reset-app-data .venv
 
     - name: Install requirements
       run: |
@@ -412,12 +414,13 @@ jobs:
       with:
         path: .venv
         key: ${{ env.CACHE_PREFIX }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+        restore-keys: |
+          ${{ env.CACHE_PREFIX }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-
 
     - name: Create virtual environment
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
       run: |
-        virtualenv -p $(which python) --copies --reset-app-data .venv
-        . .venv/bin/activate
+        test -d .venv || virtualenv -p $(which python) --copies --reset-app-data .venv
 
     - name: Install requirements
       run: |
