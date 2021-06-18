@@ -24,7 +24,7 @@ env:
   TORCH_VERSION: 1.9.0
   TORCH_VISION_VERSION: 0.10.0
   # Change this to invalidate the current cache.
-  CACHE_PREFIX: v1
+  CACHE_PREFIX: v0
   # Disable tokenizers parallelism because this doesn't help, and can cause issues in distributed tests.
   TOKENIZERS_PARALLELISM: 'false'
   # Disable multithreading with OMP because this can lead to dead-locks in distributed tests.
@@ -195,6 +195,12 @@ jobs:
       with:
         name: ${{ matrix.task.name }}-coverage
         path: ./coverage
+
+    - name: Clean up
+      if: always()
+      run: |
+        . .venv/bin/activate
+        pip uninstall -y allennlp
 
   upload_coverage:
     name: Upload Coverage Report
@@ -388,6 +394,12 @@ jobs:
         git commit -m "automated update of the models docs"
         git push
 
+    - name: Clean up
+      if: always()
+      run: |
+        . .venv/bin/activate
+        pip uninstall -y allennlp
+
   build_package:
     name: Build package
     if: github.repository == 'allenai/allennlp-models'
@@ -483,6 +495,12 @@ jobs:
       with:
         name: models-package
         path: dist
+
+    - name: Clean up
+      if: always()
+      run: |
+        . .venv/bin/activate
+        pip uninstall -y allennlp
 
   test_package:
     name: Test Package
