@@ -417,6 +417,8 @@ class Flickr30kReader(VisionReader):
                     hard_negative_tensors.append(averaged_features[i])
                     i += 1
 
+            print(hard_negative_tensors)
+            logger.info(hard_negative_tensors)
             hard_negative_image_index = index_to_image_index[
                 torch.argmax(
                     torch.stack(hard_negative_tensors, dim=0)
