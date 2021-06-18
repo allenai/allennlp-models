@@ -134,7 +134,7 @@ class Flickr30kReader(VisionReader):
         self.is_evaluation = is_evaluation
         self.n = n
 
-        if not featurize_captions:
+        if self.featurize_captions:
             self.model = transformers.AutoModel.from_pretrained("bert-large-uncased").to(
                 self.cuda_device
             )
