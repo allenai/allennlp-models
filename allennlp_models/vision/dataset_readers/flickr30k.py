@@ -112,7 +112,7 @@ class Flickr30kReader(VisionReader):
         max_instances: Optional[int] = None,
         image_processing_batch_size: int = 8,
         write_to_cache: bool = True,
-        featurize_captions: bool = False,
+        featurize_captions: bool = True,
         is_evaluation: bool = False,
         n: int = 100,
     ) -> None:

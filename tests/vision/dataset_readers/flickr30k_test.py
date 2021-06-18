@@ -24,6 +24,7 @@ class TestFlickr30kReader(AllenNlpTestCase):
             region_detector=Lazy(RandomRegionDetector),
             tokenizer=WhitespaceTokenizer(),
             token_indexers={"tokens": SingleIdTokenIndexer()},
+            featurize_captions=False,
             n=4,
         )
 
@@ -78,6 +79,7 @@ class TestFlickr30kReader(AllenNlpTestCase):
             region_detector=Lazy(RandomRegionDetector),
             tokenizer=WhitespaceTokenizer(),
             token_indexers={"tokens": SingleIdTokenIndexer()},
+            featurize_captions=False,
             is_evaluation=True,
             n=4,
         )
