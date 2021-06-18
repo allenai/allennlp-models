@@ -4,7 +4,7 @@ local vocab_size = 30522;     // for bert-*-uncased models
 local num_gpus = 1;
 local gpu_batch_size = 16;
 local effective_batch_size = gpu_batch_size * num_gpus;
-local num_epochs = 20;
+local num_epochs = 40;
 local patience = 5;
 local num_instances = 148915;
 local num_gradient_accumulation_steps = 128 / gpu_batch_size;
@@ -87,9 +87,13 @@ local dataset = "data";
   "data_loader": {
     "batch_size": gpu_batch_size,
     "shuffle": true,
+    "batches_per_epoch": 5 * std.ceil(num_instances / gpu_batch_size),
+    # TODO: set num batches per epoch
   },
   "validation_data_loader": {
     "batch_size": 1,
+    "batches_per_epoch": 5000,
+    # TODO: could also use a callback to set batches per epoch to a low number
   },
   [if num_gpus > 1 then "distributed"]: {
     "cuda_devices": std.range(0, num_gpus - 1)
