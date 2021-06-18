@@ -53,7 +53,12 @@
         "preprocessing": null
     },
     "quantitative_analyses": {
-        "unitary_results": null,
+        "unitary_results": {
+            "net_neutral": 0.49562665820121765,
+            "fraction_neutral": 0.5068705677986145,
+            "threshold_0.5": 0.47600528597831726,
+            "threshold_0.7": 0.3036800026893616
+        },
         "intersectional_results": null
     },
     "model_caveats_and_recommendations": {
