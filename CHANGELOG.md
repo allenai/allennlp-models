@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added support for NLVR2 visual entailment, including a data loader, two models, and training configs.
 - Added `StanfordSentimentTreeBankDatasetReader.apply_token_indexers()` to add token_indexers rather than in `text_to_instance` 
+- Added `AdversarialBiasMitigator` tests.
+- Added `adversarial-binary-gender-bias-mitigated-roberta-snli` model.
 
 ### Fixed
 
