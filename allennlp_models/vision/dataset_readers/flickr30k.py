@@ -412,16 +412,12 @@ class Flickr30kReader(VisionReader):
             for idx in indices.tolist():
                 if idx != image_index:
                     index_to_image_index[i] = idx
-                    print(averaged_features[i].shape)
-                    logger.info(averaged_features[i].shape)
-                    hard_negative_tensors.append(averaged_features[i])
+                    hard_negative_tensors.append(averaged_features[i].unsqueeze(0))
                     i += 1
 
-            print(len(hard_negative_tensors))
-            logger.info(len(hard_negative_tensors))
             hard_negative_image_index = index_to_image_index[
                 torch.argmax(
-                    torch.stack(hard_negative_tensors, dim=0)
+                    torch.cat(hard_negative_tensors, dim=0)
                     @ caption_tensor[image_index][caption_index]
                 ).item()
             ]
