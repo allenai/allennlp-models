@@ -70,8 +70,7 @@ def get_caption_data(filename):
                 else:
                     words.append(token)
 
-        # result_captions.append(utils.preprocess_answer(" ".join(words)))
-        result_captions.append(" ".join(words))
+        result_captions.append(utils.preprocess_answer(" ".join(words)))
 
     caption_data = {"image_id": image_id, "captions": result_captions}
     return caption_data
