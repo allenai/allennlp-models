@@ -242,8 +242,10 @@ class VisionReader(DatasetReader):
     def _hard_negative_features_cache(self) -> MutableMapping[str, Tensor]:
         if self._hard_negative_features_cache_instance is None:
             if self.hard_negative_features_cache_dir is None:
+                logger.info("could not find feature cache dir")
                 self._hard_negative_features_cache_instance = {}
             else:
+                logger.info("found feature cache dir")
                 os.makedirs(self.feature_cache_dir, exist_ok=True)  # type: ignore
                 self._hard_negative_features_cache_instance = TensorCache(
                     os.path.join(self.feature_cache_dir, "hard_negative_features"),  # type: ignore
