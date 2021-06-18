@@ -412,6 +412,8 @@ class Flickr30kReader(VisionReader):
             for idx in indices.tolist():
                 if idx != image_index:
                     index_to_image_index[i] = idx
+                    print(averaged_features[i].shape)
+                    logger.info(averaged_features[i].shape)
                     hard_negative_tensors.append(averaged_features[i])
                     i += 1
 
