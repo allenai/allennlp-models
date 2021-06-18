@@ -1,0 +1,70 @@
+{
+    "id": "pair-classification-adversarial-binary-gender-bias-mitigated-roberta-snli",
+    "registered_model_name": "adversarial_bias_mitigator",
+    "registered_predictor_name": "textual_entailment",
+    "display_name": "Adversarial Binary Gender Bias-Mitigated RoBERTa SNLI",
+    "task_id": "textual_entailment",
+    "model_details": {
+        "description": "This `Model` implements a basic text classifier and feedforward regression adversary with an adversarial bias mitigator wrapper. The text is embedded into a text field using a RoBERTa-large model. The resulting sequence is pooled using a cls_pooler `Seq2VecEncoder` and then passed to a linear classification layer, which projects into the label space. Subsequently, a `FeedForwardRegressionAdversary` attempts to recover the coefficient of the static text embedding in the binary gender bias subspace. While the adversary's parameter updates are computed normally, the predictor's parameters are updated such that the predictor will not aid the adversary and will make it more difficult for the adversary to recover protected variables.",
+        "short_description": "RoBERTa finetuned on SNLI with adversarial binary gender bias mitigation.",
+        "developed_by": "Zhang at al",
+        "contributed_by": "Arjun Subramonian",
+        "date": "2021-06-17",
+        "version": "1",
+        "model_type": "RoBERTa",
+        "paper": {
+            "citation": "\n@article{Zhang2018MitigatingUB,\ntitle={Mitigating Unwanted Biases with Adversarial Learning},\nauthor={B. H. Zhang and B. Lemoine and Margaret Mitchell},\njournal={Proceedings of the 2018 AAAI/ACM Conference on AI, Ethics, and Society},\nyear={2018}\n}",
+            "title": "Mitigating Unwanted Biases with Adversarial Learning",
+            "url": "https://api.semanticscholar.org/CorpusID:9424845"
+        },
+        "license": null,
+        "contact": "allennlp-contact@allenai.org"
+    },
+    "intended_use": {
+        "primary_uses": null,
+        "primary_users": null,
+        "out_of_scope_use_cases": null
+    },
+    "factors": {
+        "relevant_factors": null,
+        "evaluation_factors": null
+    },
+    "metrics": {
+        "model_performance_measures": "Accuracy, Net Neutral, Fraction Neutral, Threshold:tau",
+        "decision_thresholds": null,
+        "variation_approaches": null
+    },
+    "evaluation_data": {
+        "dataset": {
+            "name": "On Measuring and Mitigating Biased Gender-Occupation Inferences SNLI Dataset",
+            "url": "https://github.com/sunipa/On-Measuring-and-Mitigating-Biased-Inferences-of-Word-Embeddings",
+            "processed_url": "https://storage.googleapis.com/allennlp-public-models/binary-gender-bias-mitigated-snli-dataset.jsonl"
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "training_data": {
+        "dataset": {
+            "name": "Stanford Natural Language Inference (SNLI) train set",
+            "url": "https://nlp.stanford.edu/projects/snli/",
+            "processed_url": "https://allennlp.s3.amazonaws.com/datasets/snli/snli_1.0_train.jsonl"
+        },
+        "motivation": null,
+        "preprocessing": null
+    },
+    "quantitative_analyses": {
+        "unitary_results": "Net Neutral: 0.613096454815352, Fraction Neutral: 0.6704967487937075, Threshold:0.5: 0.6637061892722586, Threshold:0.7: 0.49490217463150243",
+        "intersectional_results": null
+    },
+    "model_caveats_and_recommendations": {
+        "caveats_and_recommendations": null
+    },
+    "model_ethical_considerations": {
+        "ethical_considerations": "Adversarial binary gender bias mitigation has been applied to this model. Nonetheless, the model will contain residual biases and bias mitigation does not guarantee entirely bias-free inferences."
+    },
+    "model_usage": {
+        "archive_file": "adversarial-binary-gender-bias-mitigated-snli-roberta.2021-06-17.tar.gz",
+        "training_config": "pair_classification/adversarial_binary_gender_bias_mitigated_snli_roberta.jsonnet",
+        "install_instructions": "pip install allennlp allennlp-models"
+    }
+}
