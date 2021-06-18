@@ -8,6 +8,7 @@ local num_epochs = 40;
 local patience = 5;
 local num_instances = 148915;
 local num_gradient_accumulation_steps = 128 / gpu_batch_size;
+local epoch_multiplier = 5;
 
 local dataset = "data";
 
@@ -87,7 +88,7 @@ local dataset = "data";
   "data_loader": {
     "batch_size": gpu_batch_size,
     "shuffle": true,
-    "batches_per_epoch": 5 * std.ceil(num_instances / gpu_batch_size),
+    "batches_per_epoch": epoch_multiplier * std.ceil(num_instances / gpu_batch_size),
     # TODO: set num batches per epoch
   },
   "validation_data_loader": {
@@ -123,8 +124,8 @@ local dataset = "data";
     },
     "learning_rate_scheduler": {
       "type": "linear_with_warmup",
-      // "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size),
-      "warmup_steps": 5000,
+      "warmup_steps" : std.ceil(0.1 * epoch_multiplier * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size),
+      // "warmup_steps": 5000,
     },
     "validation_metric": "+accuracy",
     "patience": patience,
