@@ -87,7 +87,7 @@ local dataset = "data";
   "data_loader": {
     "batch_size": gpu_batch_size,
     "shuffle": true,
-    "batches_per_epoch": 5 * std.ceil(num_instances / gpu_batch_size),
+    // "batches_per_epoch": 5 * std.ceil(num_instances / gpu_batch_size),
     # TODO: set num batches per epoch
   },
   "validation_data_loader": {
