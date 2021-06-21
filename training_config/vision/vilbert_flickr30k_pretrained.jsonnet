@@ -124,7 +124,7 @@ local dataset = "data";
     },
     "learning_rate_scheduler": {
       "type": "linear_with_warmup",
-      "warmup_steps" : std.ceil(0.1 * epoch_multiplier * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size),
+      "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size),
       // "warmup_steps": 5000,
     },
     "validation_metric": "+accuracy",
