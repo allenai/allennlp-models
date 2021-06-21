@@ -92,7 +92,7 @@ class ImageRetrievalVilbert(VisionTextModel):
     ) -> Dict[str, torch.Tensor]:
         batch_size = box_features.shape[0]
 
-        if self.training or True:
+        if self.training:
             # Shape: (batch_size, num_images, pooled_output_dim)
             pooled_output = self.backbone(box_features, box_coordinates, box_mask, caption)[
                 "pooled_boxes_and_text"
