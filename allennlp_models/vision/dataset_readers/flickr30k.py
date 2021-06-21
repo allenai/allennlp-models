@@ -198,7 +198,7 @@ class Flickr30kReader(VisionReader):
         features_list_field = ListField(feature_field_list)
         coordinates_list_field = ListField(coordinate_field_list)
 
-        if self.is_evaluation:
+        if self.is_evaluation and False:
             masks_list = []
             for image_index in range(len(caption_dicts)):
                 current_feature = features_list[image_index]
@@ -277,7 +277,7 @@ class Flickr30kReader(VisionReader):
         hard_negative_coordinates: Optional[Tensor] = None,
         label: int = 0,
     ):
-        if self.is_evaluation:
+        if self.is_evaluation and False:
             caption_fields = [
                 TextField(
                     self._tokenizer.tokenize(caption_dicts[image_index]["captions"][caption_index]),
