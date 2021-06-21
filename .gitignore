@@ -41,6 +41,7 @@ __pycache__
 
 .coverage
 .pytest_cache/
+coverage.xml
 
 # doc stuff
 mkdocs.yml
