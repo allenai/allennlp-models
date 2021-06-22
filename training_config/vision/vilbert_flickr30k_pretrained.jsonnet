@@ -23,6 +23,8 @@ local dataset = "data";
     "image_loader": "torch",
     // "image_featurizer": "resnet_backbone",
     // "region_detector": "faster_rcnn",
+    "image_featurizer": null,
+    "region_detector": null,
     "tokenizer": {
       "type": "pretrained_transformer",
       "model_name": model_name
