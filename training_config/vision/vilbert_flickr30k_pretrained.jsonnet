@@ -20,9 +20,10 @@ local dataset = "data";
     // "feature_cache_dir": "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache",
     // "feature_cache_dir": "/home/jacobm/local_feature_cache/",
     "feature_cache_dir": "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache_jiasens_magic",
-    "image_loader": "torch",
+    // "image_loader": "torch",
     // "image_featurizer": "resnet_backbone",
     // "region_detector": "faster_rcnn",
+    "image_loader": null,
     "image_featurizer": null,
     "region_detector": null,
     "tokenizer": {
