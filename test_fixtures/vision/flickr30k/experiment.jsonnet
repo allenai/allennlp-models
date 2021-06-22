@@ -4,8 +4,10 @@ local model_name = "epwalsh/bert-xsmall-dummy";
   "dataset_reader": {
     "type": "flickr30k",
     "image_dir": "test_fixtures/vision/images/flickr30k",
+    "data_dir": "test_fixtures/vision/flickr30k/sentences",
     "image_loader": "torch",
     "image_featurizer": "null",
+    "featurize_captions": false,
     "region_detector": {
       "type": "random",
       "seed": 322
@@ -24,7 +26,7 @@ local model_name = "epwalsh/bert-xsmall-dummy";
   "train_data_path": "test_fixtures/vision/flickr30k/tiny-dev.txt",
   "validation_data_path": "test_fixtures/vision/flickr30k/tiny-dev.txt",
   "model": {
-    "type": "flickr30k",
+    "type": "vilbert_ir",
     "text_embeddings": {
       "vocab_size": 250,
       "embedding_size": 20,
@@ -74,5 +76,5 @@ local model_name = "epwalsh/bert-xsmall-dummy";
       "lr": 0.00005
     },
     "num_epochs": 1,
-  },
+  }
 }

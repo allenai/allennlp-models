@@ -235,15 +235,15 @@ class Flickr30kReader(VisionReader):
 
             for image_index, caption_dict in enumerate(caption_dicts):
                 for caption_index in range(len(caption_dict["captions"])):
-                    # hard_negative_features, hard_negative_coordinates = self.get_hard_negatives(
-                    #     image_index,
-                    #     caption_index,
-                    #     caption_dicts,
-                    #     averaged_features,
-                    #     features_list,
-                    #     coordinates_list,
-                    #     caption_tensor,
-                    # )
+                    hard_negative_features, hard_negative_coordinates = self.get_hard_negatives(
+                        image_index,
+                        caption_index,
+                        caption_dicts,
+                        averaged_features,
+                        features_list,
+                        coordinates_list,
+                        caption_tensor,
+                    )
 
                     instance = self.text_to_instance(
                         caption_dicts=caption_dicts,
@@ -252,8 +252,8 @@ class Flickr30kReader(VisionReader):
                         features_list=features_list,
                         coordinates_list=coordinates_list,
                         averaged_features=averaged_features,
-                        # hard_negative_features=hard_negative_features,
-                        # hard_negative_coordinates=hard_negative_coordinates,
+                        hard_negative_features=hard_negative_features,
+                        hard_negative_coordinates=hard_negative_coordinates,
                     )
 
                     if instance is not None:
@@ -271,8 +271,8 @@ class Flickr30kReader(VisionReader):
         coordinates_list_field: Optional[ListField] = None,
         masks_list: Optional[Tensor] = None,
         averaged_features: Optional[torch.Tensor] = None,
-        # hard_negative_features: Optional[Tensor] = None,
-        # hard_negative_coordinates: Optional[Tensor] = None,
+        hard_negative_features: Optional[Tensor] = None,
+        hard_negative_coordinates: Optional[Tensor] = None,
         label: int = 0,
     ):
         if self.is_evaluation:
@@ -310,6 +310,8 @@ class Flickr30kReader(VisionReader):
                     dtype=torch.bool,
                 )
             ]
+
+            ## TODO: #s 2 and 3 are causing my test to fail
 
             # 2. Correct image, random wrong caption
             random_image_index = randint(0, len(caption_dicts) - 2)
@@ -355,20 +357,20 @@ class Flickr30kReader(VisionReader):
                 )
             )
 
-            # # 4. Hard negative image, correct caption
-            # caption_fields.append(caption_field)
-            # features.append(TensorField(hard_negative_features))
-            # coords.append(TensorField(hard_negative_coordinates))
-            # masks.append(
-            #     ArrayField(
-            #         hard_negative_features.new_ones(
-            #             (hard_negative_features.shape[0],),
-            #             dtype=torch.bool,
-            #         ),
-            #         padding_value=False,
-            #         dtype=torch.bool,
-            #     )
-            # )
+            # 4. Hard negative image, correct caption
+            caption_fields.append(caption_field)
+            features.append(TensorField(hard_negative_features))
+            coords.append(TensorField(hard_negative_coordinates))
+            masks.append(
+                ArrayField(
+                    hard_negative_features.new_ones(
+                        (hard_negative_features.shape[0],),
+                        dtype=torch.bool,
+                    ),
+                    padding_value=False,
+                    dtype=torch.bool,
+                )
+            )
 
             fields: Dict[str, Field] = {
                 "caption": ListField(caption_fields),
@@ -435,13 +437,14 @@ class Flickr30kReader(VisionReader):
             return torch.ones(len(captions), 5, 10)
 
         captions_as_text = [c for caption_dict in captions for c in caption_dict["captions"]]
-        captions_hash = util.hash_object(captions_as_text)
-        captions_cache_file = (
-            Path(self.feature_cache_dir) / f"CaptionsCache-{captions_hash[:12]}.pt"
-        )
-        if captions_cache_file.exists():
-            with captions_cache_file.open("rb") as f:
-                return torch.load(f, map_location=torch.device("cpu"))
+        if self.feature_cache_dir is not None:
+            captions_hash = util.hash_object(captions_as_text)
+            captions_cache_file = (
+                Path(self.feature_cache_dir) / f"CaptionsCache-{captions_hash[:12]}.pt"
+            )
+            if captions_cache_file.exists():
+                with captions_cache_file.open("rb") as f:
+                    return torch.load(f, map_location=torch.device("cpu"))
 
         features = []
         batch_size = 64
@@ -459,16 +462,17 @@ class Flickr30kReader(VisionReader):
                 features.append(embeddings.cpu())
         features = torch.cat(features)
         features = features.view(len(captions), 5, -1)
-        temp_captions_cache_file = captions_cache_file.with_suffix(".tmp")
-        try:
-            torch.save(features, temp_captions_cache_file)
-            temp_captions_cache_file.replace(captions_cache_file)
-        finally:
+        if self.feature_cache_dir is not None:
+            temp_captions_cache_file = captions_cache_file.with_suffix(".tmp")
             try:
-                temp_captions_cache_file.unlink()
-            except FileNotFoundError:
-                pass
-        return features
+                torch.save(features, temp_captions_cache_file)
+                temp_captions_cache_file.replace(captions_cache_file)
+            finally:
+                try:
+                    temp_captions_cache_file.unlink()
+                except FileNotFoundError:
+                    pass
+            return features
 
     @overrides
     def apply_token_indexers(self, instance: Instance) -> None:

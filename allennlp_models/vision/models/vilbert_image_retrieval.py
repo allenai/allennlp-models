@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 @Model.register("vilbert_ir")
-@Model.register("ir_vilbert_from_huggingface", constructor="from_huggingface_model_name")
+@Model.register("vilbert_ir_from_huggingface", constructor="from_huggingface_model_name")
 class ImageRetrievalVilbert(VisionTextModel):
     """
     Model for image retrieval task based on the VilBERT paper.
