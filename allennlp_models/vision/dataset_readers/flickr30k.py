@@ -235,15 +235,15 @@ class Flickr30kReader(VisionReader):
 
             for image_index, caption_dict in enumerate(caption_dicts):
                 for caption_index in range(len(caption_dict["captions"])):
-                    hard_negative_features, hard_negative_coordinates = self.get_hard_negatives(
-                        image_index,
-                        caption_index,
-                        caption_dicts,
-                        averaged_features,
-                        features_list,
-                        coordinates_list,
-                        caption_tensor,
-                    )
+                    # hard_negative_features, hard_negative_coordinates = self.get_hard_negatives(
+                    #     image_index,
+                    #     caption_index,
+                    #     caption_dicts,
+                    #     averaged_features,
+                    #     features_list,
+                    #     coordinates_list,
+                    #     caption_tensor,
+                    # )
 
                     instance = self.text_to_instance(
                         caption_dicts=caption_dicts,
@@ -252,9 +252,8 @@ class Flickr30kReader(VisionReader):
                         features_list=features_list,
                         coordinates_list=coordinates_list,
                         averaged_features=averaged_features,
-                        caption_tensor=caption_tensor,
-                        hard_negative_features=hard_negative_features,
-                        hard_negative_coordinates=hard_negative_coordinates,
+                        # hard_negative_features=hard_negative_features,
+                        # hard_negative_coordinates=hard_negative_coordinates,
                     )
 
                     if instance is not None:
@@ -272,9 +271,8 @@ class Flickr30kReader(VisionReader):
         coordinates_list_field: Optional[ListField] = None,
         masks_list: Optional[Tensor] = None,
         averaged_features: Optional[torch.Tensor] = None,
-        caption_tensor: Optional[Tensor] = None,
-        hard_negative_features: Optional[Tensor] = None,
-        hard_negative_coordinates: Optional[Tensor] = None,
+        # hard_negative_features: Optional[Tensor] = None,
+        # hard_negative_coordinates: Optional[Tensor] = None,
         label: int = 0,
     ):
         if self.is_evaluation:
@@ -357,20 +355,20 @@ class Flickr30kReader(VisionReader):
                 )
             )
 
-            # 4. Hard negative image, correct caption
-            caption_fields.append(caption_field)
-            features.append(TensorField(hard_negative_features))
-            coords.append(TensorField(hard_negative_coordinates))
-            masks.append(
-                ArrayField(
-                    hard_negative_features.new_ones(
-                        (hard_negative_features.shape[0],),
-                        dtype=torch.bool,
-                    ),
-                    padding_value=False,
-                    dtype=torch.bool,
-                )
-            )
+            # # 4. Hard negative image, correct caption
+            # caption_fields.append(caption_field)
+            # features.append(TensorField(hard_negative_features))
+            # coords.append(TensorField(hard_negative_coordinates))
+            # masks.append(
+            #     ArrayField(
+            #         hard_negative_features.new_ones(
+            #             (hard_negative_features.shape[0],),
+            #             dtype=torch.bool,
+            #         ),
+            #         padding_value=False,
+            #         dtype=torch.bool,
+            #     )
+            # )
 
             fields: Dict[str, Field] = {
                 "caption": ListField(caption_fields),

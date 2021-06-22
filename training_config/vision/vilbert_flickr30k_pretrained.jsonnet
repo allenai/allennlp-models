@@ -8,7 +8,7 @@ local num_epochs = 40;
 local patience = 5;
 local num_instances = 148915;
 local num_gradient_accumulation_steps = 128 / gpu_batch_size;
-local epoch_multiplier = 5;
+local epoch_multiplier = 1; // 5;
 
 local dataset = "data";
 
@@ -18,10 +18,11 @@ local dataset = "data";
     "image_dir": "/net/nfs2.allennlp/data/vision/flickr30k/images/",
     "data_dir": "/net/nfs2.allennlp/data/vision/flickr30k/captions/",
     // "feature_cache_dir": "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache",
-    "feature_cache_dir": "/home/jacobm/local_feature_cache/",
+    // "feature_cache_dir": "/home/jacobm/local_feature_cache/",
+    "feature_cache_dir": "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache_jiasens_magic",
     "image_loader": "torch",
-    "image_featurizer": "resnet_backbone",
-    "region_detector": "faster_rcnn",
+    // "image_featurizer": "resnet_backbone",
+    // "region_detector": "faster_rcnn",
     "tokenizer": {
       "type": "pretrained_transformer",
       "model_name": model_name
@@ -53,7 +54,8 @@ local dataset = "data";
       "dropout": 0.1
     },
     "image_embeddings": {
-      "feature_size": 1024,
+      // "feature_size": 1024,
+      "feature_size": 2048,
       "embedding_size": 1024
     },
     "encoder": {
