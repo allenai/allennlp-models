@@ -8,11 +8,13 @@ local datadir = "/net/s3/allennlp/akshitab/data/SNLI-VE/data/";
 {
   "dataset_reader": {
     "type": "visual-entailment",
-    "image_dir": datadir + "Flickr30K/flickr30k_images",
-    "feature_cache_dir": datadir + "/feature_cache_torchvision",
-    "image_loader": "torch",
-    "image_featurizer": "resnet_backbone",
-    "region_detector": "faster_rcnn",
+    // "image_dir": datadir + "Flickr30K/flickr30k_images",
+    // "feature_cache_dir": datadir + "/feature_cache_torchvision",
+    "image_dir": "/net/nfs2.allennlp/data/vision/flickr30k/images/",
+    "feature_cache_dir": "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache_jiasens_magic",
+    "image_loader": null, // "torch",
+    "image_featurizer": null, // "resnet_backbone",
+    "region_detector": null, // "faster_rcnn",
     "tokenizer": {
       "type": "pretrained_transformer",
       "model_name": model_name
@@ -31,7 +33,7 @@ local datadir = "/net/s3/allennlp/akshitab/data/SNLI-VE/data/";
   "model": {
     "type": "ve_vilbert_from_huggingface",
     "model_name": model_name,
-    "image_feature_dim": 1024,
+    "image_feature_dim": 2048,
     "image_hidden_size": 1024,
     "image_num_attention_heads": 8,
     "image_num_hidden_layers": 6,
