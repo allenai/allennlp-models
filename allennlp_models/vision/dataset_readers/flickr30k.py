@@ -160,7 +160,7 @@ class Flickr30kReader(VisionReader):
         # TODO: This'll have to be changed to work better with validation on multiple GPUs
         # TODO: right now, in validation, it won't have the full set of images in every instance
         # need to change.
-        caption_dicts = list(self.shard_iterable(captions))
+        caption_dicts = captions # list(self.shard_iterable(captions))
 
         processed_images: Iterable[Optional[Tuple[Tensor, Tensor]]]
         if self.produce_featurized_images:
