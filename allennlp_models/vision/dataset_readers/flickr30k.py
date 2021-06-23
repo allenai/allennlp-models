@@ -257,7 +257,7 @@ class Flickr30kReader(VisionReader):
     @overrides
     def text_to_instance(
         self,
-        caption_dicts: Dict[str, Dict[str, Any]],
+        caption_dicts: List[Dict[str, Any]],
         image_index: int,
         caption_index: int,
         features_list: List[Tensor] = [],
@@ -380,7 +380,7 @@ class Flickr30kReader(VisionReader):
         self,
         image_index: int,
         caption_index: int,
-        caption_dicts: List[Any],
+        caption_dicts: List[Dict[str, Any]],
         averaged_features: Tensor,
         features_list: List[Tensor],
         coordinates_list: List[Tensor],
