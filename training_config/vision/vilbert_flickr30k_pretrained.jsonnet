@@ -9,7 +9,6 @@ local num_epochs = 40;
 local patience = 5;
 local num_instances = 148915;
 local num_gradient_accumulation_steps = 128 / effective_batch_size;
-local epoch_multiplier = 1; // 5;
 
 local dataset = "data";
 
@@ -24,10 +23,6 @@ local dataset = "data";
     "image_loader": "torch",
     "image_featurizer": "resnet_backbone",
     "region_detector": "faster_rcnn",
-    // "feature_cache_dir": "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache_jiasens_magic",
-    // "image_loader": null,
-    // "image_featurizer": null,
-    // "region_detector": null,
     "tokenizer": {
       "type": "pretrained_transformer",
       "model_name": model_name
@@ -61,7 +56,6 @@ local dataset = "data";
     },
     "image_embeddings": {
       "feature_size": 1024,
-      // "feature_size": 2048,
       "embedding_size": 1024
     },
     "encoder": {
@@ -96,13 +90,11 @@ local dataset = "data";
   "data_loader": {
     "batch_size": gpu_batch_size,
     "shuffle": true,
-    "batches_per_epoch": epoch_multiplier * std.ceil(num_instances / gpu_batch_size),
-    # TODO: set num batches per epoch
+    // "batches_per_epoch": 3 * std.ceil(num_instances / gpu_batch_size),
   },
   "validation_data_loader": {
     "batch_size": 1,
-    "batches_per_epoch": 5000,
-    # TODO: could also use a callback to set batches per epoch to a low number
+    // "batches_per_epoch": 5000,
   },
   [if num_gpus > 1 then "distributed"]: {
     "cuda_devices": std.range(0, num_gpus - 1)
