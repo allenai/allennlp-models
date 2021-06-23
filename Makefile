@@ -48,25 +48,25 @@ clean :
 	rm -rf build/
 	find . | grep -E '(\.mypy_cache|__pycache__|\.pyc|\.pyo$$)' | xargs rm -rf
 
-.PHONY : lint
-lint :
-	flake8
+.PHONY : flake8
+flake8 :
+	flake8 allennlp_models tests scripts
 
 .PHONY : format
 format :
-	black --check .
+	black --check allennlp_models tests scripts
 
 .PHONY : typecheck
 typecheck :
-	mypy allennlp_models tests --ignore-missing-imports --no-strict-optional --no-site-packages --cache-dir=/dev/null
+	mypy allennlp_models tests scripts --ignore-missing-imports --no-strict-optional --no-site-packages --cache-dir=/dev/null
 
 .PHONY : test
 test :
 	pytest -v --color=yes -rf --durations=40 -m "not pretrained_model_test and not pretrained_config_test"
 
-.PHONY : gpu-test
-gpu-test :
-	pytest -v --color=yes -v -rf -m gpu
+.PHONY : gpu-tests
+gpu-tests :
+	pytest -v --color=yes -v -rf --durations=20 -m gpu --cov-config=.coveragerc --cov=$(COV) --cov-report=xml
 
 .PHONY : test-with-cov
 test-with-cov :
@@ -78,11 +78,11 @@ test-with-cov :
 
 .PHONY : test-pretrained
 test-pretrained :
-	pytest -v -n2 --forked --color=yes --durations=10 -m "pretrained_model_test"
+	pytest -v -n2 --forked --color=yes --durations=10 -m "pretrained_model_test" --cov-config=.coveragerc --cov=$(COV) --cov-report=xml
 
 .PHONY : test-configs
 test-configs :
-	pytest -v -n2 --forked --color=yes --durations=10 -m "pretrained_config_test"
+	pytest -v -n2 --forked --color=yes --durations=10 -m "pretrained_config_test" --cov-config=.coveragerc --cov=$(COV) --cov-report=xml
 
 .PHONY : build-all-api-docs
 build-all-api-docs : scripts/py2md.py
