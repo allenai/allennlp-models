@@ -23,7 +23,7 @@ from allennlp.common.file_utils import cached_path
 from allennlp.common.lazy import Lazy
 from allennlp.common import util
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
-from allennlp.data.fields import ArrayField, LabelField, ListField, TextField, TensorField
+from allennlp.data.fields import ArrayField, Field, LabelField, ListField, TextField, TensorField
 from allennlp.data.image_loader import ImageLoader
 from allennlp.data.instance import Instance
 from allennlp.data.token_indexers import TokenIndexer
@@ -35,6 +35,7 @@ from allennlp_models.vision.dataset_readers import utils
 from allennlp_models.vision.dataset_readers.vision_reader import VisionReader
 
 logger = logging.getLogger(__name__)
+
 
 # Parse caption file
 def get_caption_data(filename):

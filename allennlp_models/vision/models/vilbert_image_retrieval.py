@@ -2,7 +2,6 @@ import logging
 from typing import Dict
 
 from overrides import overrides
-import numpy as np
 import torch
 
 from allennlp.data import TextFieldTensors, Vocabulary
@@ -69,10 +68,6 @@ class ImageRetrievalVilbert(VisionTextModel):
             ignore_text=ignore_text,
             ignore_image=ignore_image,
         )
-
-        from allennlp.training.metrics import F1MultiLabelMeasure
-        from allennlp_models.vision.metrics.vqa import VqaMeasure
-
         self.classifier = torch.nn.Linear(pooled_output_dim, 1)
 
         self.accuracy = CategoricalAccuracy()
