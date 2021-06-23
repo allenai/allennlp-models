@@ -128,6 +128,8 @@ class Flickr30kReader(VisionReader):
             max_instances=max_instances,
             image_processing_batch_size=image_processing_batch_size,
             write_to_cache=write_to_cache,
+            manual_distributed_sharding=False,
+            manual_multiprocess_sharding=False,
         )
         self.data_dir = data_dir
         self.featurize_captions = featurize_captions
@@ -311,8 +313,6 @@ class Flickr30kReader(VisionReader):
                 )
             ]
 
-            ## TODO: #s 2 and 3 are causing my test to fail
-
             # 2. Correct image, random wrong caption
             random_image_index = randint(0, len(caption_dicts) - 2)
             if random_image_index == image_index:
@@ -392,8 +392,8 @@ class Flickr30kReader(VisionReader):
         coordinates_list: List[Tensor],
         caption_tensor: Tensor,
     ) -> List[Tuple[Tensor, Tensor]]:
-        image_id = caption_dicts[image_index]["image_id"]
-        caption = caption_dicts[image_index]["captions"][caption_index]
+        image_id = caption_dicts[image_index]["image_id"] #
+        caption = caption_dicts[image_index]["captions"][caption_index] #
         cache_id = f"{image_id}-{util.hash_object(caption)}"
 
         if (
@@ -411,7 +411,7 @@ class Flickr30kReader(VisionReader):
             i = 0
             for idx in indices.tolist():
                 if idx != image_index:
-                    index_to_image_index[i] = idx
+                    index_to_image_index[i] = idx #
                     hard_negative_tensors.append(averaged_features[i])
                     i += 1
 

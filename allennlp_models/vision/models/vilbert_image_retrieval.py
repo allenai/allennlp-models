@@ -120,7 +120,6 @@ class ImageRetrievalVilbert(VisionTextModel):
                 scores = self.classifier(pooled_output).squeeze(-1)
 
                 # Shape: (batch_size, k)
-                # TODO: check if topk works with k == 1
                 rel_scores, indices = scores.topk(self.k, dim=-1)
 
                 # Shape: (batch_size)
