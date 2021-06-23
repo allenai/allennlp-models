@@ -6,21 +6,18 @@ from typing import (
     Dict,
     Union,
     Optional,
-    Set,
     Tuple,
     Iterable,
     List,
 )
-import json
 import os
-import heapq
 import tqdm
 
 from overrides import overrides
 import torch
 from torch import Tensor
 import transformers
-from random import sample, choices, randint
+from random import randint
 
 from allennlp.common.file_utils import cached_path
 from allennlp.common.lazy import Lazy
@@ -50,12 +47,7 @@ def get_caption_data(filename):
         if not caption:
             continue
 
-        first_word = []
-        phrases = []
-        phrase_id = []
-        phrase_type = []
         words = []
-        current_phrase = []
         add_to_phrase = False
         for token in caption.split():
             if add_to_phrase:
