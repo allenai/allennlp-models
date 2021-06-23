@@ -17,7 +17,8 @@ local dataset = "data";
   "dataset_reader": {
     "type": "flickr30k",
     "image_dir": "/net/nfs2.allennlp/data/vision/flickr30k/images/",
-    "data_dir": "/net/nfs2.allennlp/data/vision/flickr30k/captions/",
+    // "data_dir": "/net/nfs2.allennlp/data/vision/flickr30k/captions/",
+    "data_dir": "https://github.com/BryanPlummer/flickr30k_entities/raw/master/annotations.zip!Sentences/",
     // "feature_cache_dir": "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache",
     "feature_cache_dir": "/home/jacobm/local_feature_cache/",
     "image_loader": "torch",
