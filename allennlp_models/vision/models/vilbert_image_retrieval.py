@@ -11,7 +11,6 @@ from allennlp.modules.transformer import (
     ImageFeatureEmbeddings,
     BiModalEncoder,
 )
-from allennlp.nn import util
 from allennlp.training.metrics import CategoricalAccuracy
 from allennlp.training.metrics import FBetaMeasure
 from torch.nn import CrossEntropyLoss
