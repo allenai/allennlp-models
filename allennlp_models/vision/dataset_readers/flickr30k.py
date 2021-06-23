@@ -277,15 +277,16 @@ class Flickr30kReader(VisionReader):
                     None,
                 )
             ] * len(caption_dicts)
-            fields: Dict[str, Field] = {
-                "caption": ListField(caption_fields),
-                "box_features": features_list_field,
-                "box_coordinates": coordinates_list_field,
-                "box_mask": ListField(masks_list),
-                "label": LabelField(label, skip_indexing=True),
-            }
 
-            return Instance(fields)
+            return Instance(
+                {
+                    "caption": ListField(caption_fields),
+                    "box_features": features_list_field,
+                    "box_coordinates": coordinates_list_field,
+                    "box_mask": ListField(masks_list),
+                    "label": LabelField(label, skip_indexing=True),
+                }
+            )
 
         else:
             # 1. Correct answer
@@ -365,26 +366,26 @@ class Flickr30kReader(VisionReader):
                 )
             )
 
-            fields: Dict[str, Field] = {
-                "caption": ListField(caption_fields),
-                "box_features": ListField(features),
-                "box_coordinates": ListField(coords),
-                "box_mask": ListField(masks),
-                "label": LabelField(label, skip_indexing=True),
-            }
-
-            return Instance(fields)
+            return Instance(
+                {
+                    "caption": ListField(caption_fields),
+                    "box_features": ListField(features),
+                    "box_coordinates": ListField(coords),
+                    "box_mask": ListField(masks),
+                    "label": LabelField(label, skip_indexing=True),
+                }
+            )
 
     def get_hard_negatives(
         self,
         image_index: int,
         caption_index: int,
-        caption_dicts: Dict[str, Any],
+        caption_dicts: List[Any],
         averaged_features: Tensor,
         features_list: List[Tensor],
         coordinates_list: List[Tensor],
         caption_tensor: Tensor,
-    ) -> List[Tuple[Tensor, Tensor]]:
+    ) -> Tuple[Tensor, Tensor]:
         image_id = caption_dicts[image_index]["image_id"]  #
         caption = caption_dicts[image_index]["captions"][caption_index]  #
         cache_id = f"{image_id}-{util.hash_object(caption)}"
