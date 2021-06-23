@@ -98,12 +98,10 @@ class ImageRetrievalVilbert(VisionTextModel):
             logger.info(box_features.shape)
             logger.info(box_coordinates.shape)
             logger.info(box_mask.shape)
-            logger.info(caption.shape)
             print("shapes:")
             print(box_features.shape)
             print(box_coordinates.shape)
             print(box_mask.shape)
-            print(caption.shape)
             pooled_output = self.backbone(box_features, box_coordinates, box_mask, caption)[
                 "pooled_boxes_and_text"
             ]

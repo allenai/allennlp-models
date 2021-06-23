@@ -20,13 +20,13 @@ local dataset = "data";
     "data_dir": "/net/nfs2.allennlp/data/vision/flickr30k/captions/",
     // "feature_cache_dir": "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache",
     "feature_cache_dir": "/home/jacobm/local_feature_cache/",
+    "image_loader": "torch",
+    "image_featurizer": "resnet_backbone",
+    "region_detector": "faster_rcnn",
     // "feature_cache_dir": "/net/nfs2.allennlp/data/vision/flickr30k/feature_cache_jiasens_magic",
-    // "image_loader": "torch",
-    // "image_featurizer": "resnet_backbone",
-    // "region_detector": "faster_rcnn",
-    "image_loader": null,
-    "image_featurizer": null,
-    "region_detector": null,
+    // "image_loader": null,
+    // "image_featurizer": null,
+    // "region_detector": null,
     "tokenizer": {
       "type": "pretrained_transformer",
       "model_name": model_name
@@ -59,8 +59,8 @@ local dataset = "data";
       "dropout": 0.1
     },
     "image_embeddings": {
-      // "feature_size": 1024,
-      "feature_size": 2048,
+      "feature_size": 1024,
+      // "feature_size": 2048,
       "embedding_size": 1024
     },
     "encoder": {
