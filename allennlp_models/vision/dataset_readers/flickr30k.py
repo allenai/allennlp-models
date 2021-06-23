@@ -160,7 +160,7 @@ class Flickr30kReader(VisionReader):
         # TODO: This'll have to be changed to work better with validation on multiple GPUs
         # TODO: right now, in validation, it won't have the full set of images in every instance
         # need to change.
-        caption_dicts = captions # list(self.shard_iterable(captions))
+        caption_dicts = captions  # list(self.shard_iterable(captions))
 
         processed_images: Iterable[Optional[Tuple[Tensor, Tensor]]]
         if self.produce_featurized_images:
@@ -392,8 +392,8 @@ class Flickr30kReader(VisionReader):
         coordinates_list: List[Tensor],
         caption_tensor: Tensor,
     ) -> List[Tuple[Tensor, Tensor]]:
-        image_id = caption_dicts[image_index]["image_id"] #
-        caption = caption_dicts[image_index]["captions"][caption_index] #
+        image_id = caption_dicts[image_index]["image_id"]  #
+        caption = caption_dicts[image_index]["captions"][caption_index]  #
         cache_id = f"{image_id}-{util.hash_object(caption)}"
 
         if (
@@ -411,7 +411,7 @@ class Flickr30kReader(VisionReader):
             i = 0
             for idx in indices.tolist():
                 if idx != image_index:
-                    index_to_image_index[i] = idx #
+                    index_to_image_index[i] = idx  #
                     hard_negative_tensors.append(averaged_features[i])
                     i += 1
 

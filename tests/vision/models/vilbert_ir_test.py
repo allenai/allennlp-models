@@ -30,7 +30,7 @@ class TestIRVilbert(ModelTestCase):
                 param_file,
                 overrides=overrides,
                 gradients_to_ignore={"classifier.weight", "classifier.bias"},
-                seed=12345
+                seed=12345,
             )
 
     def test_model_can_train_save_and_load_from_huggingface(self):
