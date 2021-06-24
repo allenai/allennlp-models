@@ -144,16 +144,11 @@ class Flickr30kReader(VisionReader):
             for line in f:
                 files_in_split.add(line.rstrip("\n"))
 
-        captions = []
+        caption_dicts = []
         for filename in os.listdir(self.data_dir):
             if filename.split(".")[0] in files_in_split:
                 full_file_path = os.path.join(self.data_dir, filename)
-                captions.append(get_caption_data(full_file_path))
-
-        # TODO: This'll have to be changed to work better with validation on multiple GPUs
-        # TODO: right now, in validation, it won't have the full set of images in every instance
-        # need to change.
-        caption_dicts = captions  # list(self.shard_iterable(captions))
+                caption_dicts.append(get_caption_data(full_file_path))
 
         processed_images: Iterable[Optional[Tuple[Tensor, Tensor]]]
         if self.produce_featurized_images:
