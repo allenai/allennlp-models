@@ -12,7 +12,6 @@ from allennlp.modules.transformer import (
     BiModalEncoder,
 )
 from allennlp.training.metrics import CategoricalAccuracy
-from allennlp.training.metrics import FBetaMeasure
 from torch.nn import CrossEntropyLoss
 
 from allennlp_models.vision.models.vision_text_model import VisionTextModel
@@ -48,7 +47,6 @@ class ImageRetrievalVilbert(VisionTextModel):
         pooled_output_dim: int,
         fusion_method: str = "mul",
         dropout: float = 0.1,
-        label_namespace: str = "answers",
         k: int = 1,
         *,
         ignore_text: bool = False,
@@ -62,7 +60,6 @@ class ImageRetrievalVilbert(VisionTextModel):
             pooled_output_dim,
             fusion_method,
             dropout,
-            label_namespace,
             is_multilabel=False,
             ignore_text=ignore_text,
             ignore_image=ignore_image,
@@ -71,7 +68,6 @@ class ImageRetrievalVilbert(VisionTextModel):
 
         self.accuracy = CategoricalAccuracy()
         self.loss = CrossEntropyLoss()
-        self.fbeta = FBetaMeasure(beta=1.0, average="macro")
 
         self.k = k
 
@@ -104,17 +100,15 @@ class ImageRetrievalVilbert(VisionTextModel):
         else:
             with torch.no_grad():
                 # Shape: (batch_size, num_images, pooled_output_dim)
-                self.backbone.eval()
                 pooled_output = self.backbone(box_features, box_coordinates, box_mask, caption)[
                     "pooled_boxes_and_text"
                 ]
-                self.backbone.train()
 
                 # Shape: (batch_size, num_images)
                 scores = self.classifier(pooled_output).squeeze(-1)
 
                 # Shape: (batch_size, k)
-                rel_scores, indices = scores.topk(self.k, dim=-1)
+                _, indices = scores.topk(self.k, dim=-1)
 
                 # Shape: (batch_size)
                 pre_logits = torch.sum((indices == label.reshape(-1, 1)), dim=-1).float()
@@ -151,13 +145,6 @@ class ImageRetrievalVilbert(VisionTextModel):
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:
-        batch_tokens = []
-        for batch_index, batch in enumerate(output_dict["probs"]):
-            tokens = {}
-            for i, prob in enumerate(batch):
-                tokens[self.vocab.get_token_from_index(i, self.label_namespace)] = float(prob)
-            batch_tokens.append(tokens)
-        output_dict["tokens"] = batch_tokens
         return output_dict
 
     default_predictor = "vilbert_ir"

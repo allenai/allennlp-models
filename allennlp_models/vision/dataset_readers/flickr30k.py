@@ -4,11 +4,12 @@ import logging
 from typing import (
     Any,
     Dict,
-    Union,
-    Optional,
-    Tuple,
     Iterable,
     List,
+    MutableMapping,
+    Optional,
+    Tuple,
+    Union,
 )
 import os
 import tqdm
@@ -22,6 +23,7 @@ from random import randint
 from allennlp.common.file_utils import cached_path
 from allennlp.common.lazy import Lazy
 from allennlp.common import util
+from allennlp.common.file_utils import TensorCache
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.fields import ArrayField, LabelField, ListField, TextField, TensorField
 from allennlp.data.image_loader import ImageLoader
@@ -38,11 +40,11 @@ logger = logging.getLogger(__name__)
 
 
 # Parse caption file
-def get_caption_data(filename):
+def get_caption_data(filename: str):
     with open(filename, "r") as f:
         captions = f.read().split("\n")
 
-    image_id = filename[filename.rfind("/") + 1 :].split(".")[0]
+    image_id = os.path.splitext(os.path.basename(filename))[0]
     result_captions = []
     for caption in captions:
         if not caption:
@@ -88,6 +90,12 @@ class Flickr30kReader(VisionReader):
         the captions and metadata for each task instance.
     tokenizer: `Tokenizer`, optional
     token_indexers: `Dict[str, TokenIndexer]`
+    featurize_captions: `bool`, optional
+        If we should featurize captions while calculating hard negatives, or use placeholder features.
+    is_evaluation: `bool`, optional
+        If the reader should return instances for evaluation or training.
+    n: int, optional
+        The number of potential hard negatives to consider.
     """
 
     def __init__(
@@ -124,7 +132,7 @@ class Flickr30kReader(VisionReader):
             manual_distributed_sharding=False,
             manual_multiprocess_sharding=False,
         )
-        self.data_dir = data_dir
+        self.data_dir = cached_path(data_dir, extract_archive=True)
         self.featurize_captions = featurize_captions
         self.is_evaluation = is_evaluation
         self.n = n
@@ -136,13 +144,55 @@ class Flickr30kReader(VisionReader):
             self.model.eval()
             self.tokenizer = transformers.AutoTokenizer.from_pretrained("bert-large-uncased")
 
+        # feature cache
+        self.hard_negative_features_cache_dir = feature_cache_dir
+        self.hard_negative_coordinates_cache_dir = feature_cache_dir
+        self._hard_negative_features_cache_instance: Optional[MutableMapping[str, Tensor]] = None
+        self._hard_negative_coordinates_cache_instance: Optional[MutableMapping[str, Tensor]] = None
+        if self.hard_negative_features_cache_dir and self.hard_negative_coordinates_cache_dir:
+            logger.info(f"Calculating hard negatives with a cache at {self.feature_cache_dir}")
+
+    @property
+    def _hard_negative_features_cache(self) -> MutableMapping[str, Tensor]:
+        if self._hard_negative_features_cache_instance is None:
+            if self.hard_negative_features_cache_dir is None:
+                logger.info("could not find feature cache dir")
+                self._hard_negative_features_cache_instance = {}
+            else:
+                logger.info("found feature cache dir")
+                os.makedirs(self.feature_cache_dir, exist_ok=True)  # type: ignore
+                self._hard_negative_features_cache_instance = TensorCache(
+                    os.path.join(self.feature_cache_dir, "hard_negative_features"),  # type: ignore
+                    read_only=not self.write_to_cache,
+                )
+
+        return self._hard_negative_features_cache_instance
+
+    @property
+    def _hard_negative_coordinates_cache(self) -> MutableMapping[str, Tensor]:
+        if self._hard_negative_coordinates_cache_instance is None:
+            if self.hard_negative_coordinates_cache_dir is None:
+                self._hard_negative_coordinates_cache_instance = {}
+            else:
+                os.makedirs(self.feature_cache_dir, exist_ok=True)  # type: ignore
+                self._hard_negative_coordinates_cache_instance = TensorCache(
+                    os.path.join(self.feature_cache_dir, "hard_negative_coordinates"),  # type: ignore
+                    read_only=not self.write_to_cache,
+                )
+
+        return self._hard_negative_coordinates_cache_instance
+
     @overrides
     def _read(self, file_path: str):
         file_path = cached_path(file_path, extract_archive=True)
         files_in_split = set()
+        i = 0
         with open(file_path, "r") as f:
             for line in f:
+                if self.max_instances is not None and i >= self.max_instances:
+                    break
                 files_in_split.add(line.rstrip("\n"))
+                i += 5
 
         caption_dicts = []
         for filename in os.listdir(self.data_dir):
@@ -151,55 +201,42 @@ class Flickr30kReader(VisionReader):
                 caption_dicts.append(get_caption_data(full_file_path))
 
         processed_images: Iterable[Optional[Tuple[Tensor, Tensor]]]
-        if self.produce_featurized_images:
-            filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in caption_dicts]
-            try:
-                processed_images = list(
-                    self._process_image_paths(
-                        self.images[filename]
-                        for filename in tqdm.tqdm(filenames, desc="Processing images")
-                    )
-                )
-            except KeyError as e:
-                missing_id = e.args[0]
-                raise KeyError(
-                    missing_id,
-                    f"We could not find an image with the id {missing_id}. "
-                    "Because of the size of the image datasets, we don't download them automatically. "
-                    "Please go to https://visualqa.org/download.html, download the datasets you need, "
-                    "and set the image_dir parameter to point to your download location. This dataset "
-                    "reader does not care about the exact directory structure. It finds the images "
-                    "wherever they are.",
-                )
-        else:
-            processed_images = [None for _ in range(len(caption_dicts))]
+        filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in caption_dicts]
+        try:
+            processed_images = self._process_image_paths(
+                self.images[filename] for filename in tqdm.tqdm(filenames, desc="Processing images")
+            )
+        except KeyError as e:
+            missing_id = e.args[0]
+            raise KeyError(
+                missing_id,
+                f"We could not find an image with the id {missing_id}. "
+                "Because of the size of the image datasets, we don't download them automatically. "
+                "Please go to https://visualqa.org/download.html, download the datasets you need, "
+                "and set the image_dir parameter to point to your download location. This dataset "
+                "reader does not care about the exact directory structure. It finds the images "
+                "wherever they are.",
+            )
 
         features_list = []
-        feature_field_list = []
         averaged_features_list = []
         coordinates_list = []
-        coordinate_field_list = []
+        masks_list = []
         for features, coords in processed_images:
-            features_list.append(features)
-            feature_field_list.append(TensorField(features))
+            features_list.append(TensorField(features))
             averaged_features_list.append(torch.mean(features, dim=0))
-            coordinates_list.append(coords)
-            coordinate_field_list.append(TensorField(coords))
-        features_list_field = ListField(feature_field_list)
-        coordinates_list_field = ListField(coordinate_field_list)
-
-        if self.is_evaluation:
-            masks_list = []
-            for image_index in range(len(caption_dicts)):
-                current_feature = features_list[image_index]
-                masks_list.append(
-                    TensorField(
-                        current_feature.new_ones((current_feature.shape[0],), dtype=torch.bool),
-                        padding_value=False,
-                        dtype=torch.bool,
-                    )
+            coordinates_list.append(TensorField(coords))
+            masks_list.append(
+                ArrayField(
+                    features.new_ones((features.shape[0],), dtype=torch.bool),
+                    padding_value=False,
+                    dtype=torch.bool,
                 )
+            )
 
+        # Validation instances are a 1000-way multiple choice,
+        # one for each image in the validation set.
+        if self.is_evaluation:
             for image_index in range(len(caption_dicts)):
                 caption_dict = caption_dicts[image_index]
                 for caption_index in range(len(caption_dict["captions"])):
@@ -207,8 +244,8 @@ class Flickr30kReader(VisionReader):
                         caption_dicts=caption_dicts,
                         image_index=image_index,
                         caption_index=caption_index,
-                        features_list_field=features_list_field,
-                        coordinates_list_field=coordinates_list_field,
+                        features_list=features_list,
+                        coordinates_list=coordinates_list,
                         masks_list=masks_list,
                         label=image_index,
                     )
@@ -241,7 +278,7 @@ class Flickr30kReader(VisionReader):
                         caption_index=caption_index,
                         features_list=features_list,
                         coordinates_list=coordinates_list,
-                        averaged_features=averaged_features,
+                        masks_list=masks_list,
                         hard_negative_features=hard_negative_features,
                         hard_negative_coordinates=hard_negative_coordinates,
                     )
@@ -255,12 +292,9 @@ class Flickr30kReader(VisionReader):
         caption_dicts: List[Dict[str, Any]],
         image_index: int,
         caption_index: int,
-        features_list: List[Tensor] = [],
-        features_list_field: Optional[ListField] = None,
+        features_list: List[TensorField] = [],
         coordinates_list: List[TensorField] = [],
-        coordinates_list_field: Optional[ListField] = None,
-        masks_list: Optional[Tensor] = None,
-        averaged_features: Optional[torch.Tensor] = None,
+        masks_list: List[TensorField] = [],
         hard_negative_features: Optional[Tensor] = None,
         hard_negative_coordinates: Optional[Tensor] = None,
         label: int = 0,
@@ -276,8 +310,8 @@ class Flickr30kReader(VisionReader):
             return Instance(
                 {
                     "caption": ListField(caption_fields),
-                    "box_features": features_list_field,
-                    "box_coordinates": coordinates_list_field,
+                    "box_features": ListField(features_list),
+                    "box_coordinates": ListField(coordinates_list),
                     "box_mask": ListField(masks_list),
                     "label": LabelField(label, skip_indexing=True),
                 }
@@ -290,17 +324,9 @@ class Flickr30kReader(VisionReader):
                 None,
             )
             caption_fields = [caption_field]
-            features = [TensorField(features_list[image_index])]
-            coords = [TensorField(coordinates_list[image_index])]
-            masks = [
-                ArrayField(
-                    features_list[image_index].new_ones(
-                        (features_list[image_index].shape[0],), dtype=torch.bool
-                    ),
-                    padding_value=False,
-                    dtype=torch.bool,
-                )
-            ]
+            features = [features_list[image_index]]
+            coords = [coordinates_list[image_index]]
+            masks = [masks_list[image_index]]
 
             # 2. Correct image, random wrong caption
             random_image_index = randint(0, len(caption_dicts) - 2)
@@ -316,17 +342,9 @@ class Flickr30kReader(VisionReader):
                     None,
                 )
             )
-            features.append(TensorField(features_list[image_index]))
-            coords.append(TensorField(coordinates_list[image_index]))
-            masks.append(
-                ArrayField(
-                    features_list[image_index].new_ones(
-                        (features_list[image_index].shape[0],), dtype=torch.bool
-                    ),
-                    padding_value=False,
-                    dtype=torch.bool,
-                )
-            )
+            features.append(features_list[image_index])
+            coords.append(coordinates_list[image_index])
+            masks.append(masks_list[image_index])
 
             # 3. Random wrong image, correct caption
             wrong_image_index = randint(0, len(features_list) - 2)
@@ -334,17 +352,9 @@ class Flickr30kReader(VisionReader):
                 wrong_image_index += 1
 
             caption_fields.append(caption_field)
-            features.append(TensorField(features_list[wrong_image_index]))
-            coords.append(TensorField(coordinates_list[wrong_image_index]))
-            masks.append(
-                ArrayField(
-                    features_list[wrong_image_index].new_ones(
-                        (features_list[wrong_image_index].shape[0],), dtype=torch.bool
-                    ),
-                    padding_value=False,
-                    dtype=torch.bool,
-                )
-            )
+            features.append(features_list[wrong_image_index])
+            coords.append(coordinates_list[wrong_image_index])
+            masks.append(masks_list[wrong_image_index])
 
             # 4. Hard negative image, correct caption
             caption_fields.append(caption_field)
@@ -377,12 +387,12 @@ class Flickr30kReader(VisionReader):
         caption_index: int,
         caption_dicts: List[Dict[str, Any]],
         averaged_features: Tensor,
-        features_list: List[Tensor],
-        coordinates_list: List[Tensor],
+        features_list: List[TensorField],
+        coordinates_list: List[TensorField],
         caption_tensor: Tensor,
     ) -> Tuple[Tensor, Tensor]:
-        image_id = caption_dicts[image_index]["image_id"]  #
-        caption = caption_dicts[image_index]["captions"][caption_index]  #
+        image_id = caption_dicts[image_index]["image_id"]
+        caption = caption_dicts[image_index]["captions"][caption_index]
         cache_id = f"{image_id}-{util.hash_object(caption)}"
 
         if (
@@ -411,10 +421,12 @@ class Flickr30kReader(VisionReader):
                 ).item()
             ]
 
-            self._hard_negative_features_cache[cache_id] = features_list[hard_negative_image_index]
+            self._hard_negative_features_cache[cache_id] = features_list[
+                hard_negative_image_index
+            ].tensor
             self._hard_negative_coordinates_cache[cache_id] = coordinates_list[
                 hard_negative_image_index
-            ]
+            ].tensor
 
         return (
             self._hard_negative_features_cache[cache_id],
