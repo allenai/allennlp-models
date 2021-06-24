@@ -66,7 +66,9 @@ class ImageRetrievalVilbert(VisionTextModel):
         )
         self.classifier = torch.nn.Linear(pooled_output_dim, 1)
 
-        self.accuracy = CategoricalAccuracy()
+        self.top_1_acc = CategoricalAccuracy()
+        self.top_5_acc = CategoricalAccuracy(top_k=5)
+        self.top_10_acc = CategoricalAccuracy(top_k=10)
         self.loss = CrossEntropyLoss()
 
         self.k = k
@@ -91,12 +93,6 @@ class ImageRetrievalVilbert(VisionTextModel):
             # Shape: (batch_size, num_images)
             logits = self.classifier(pooled_output).squeeze(-1)
             probs = torch.softmax(logits, dim=-1)
-
-            outputs = {"logits": logits, "probs": probs}
-            outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
-
-            return outputs
-
         else:
             with torch.no_grad():
                 # Shape: (batch_size, num_images, pooled_output_dim)
@@ -105,24 +101,12 @@ class ImageRetrievalVilbert(VisionTextModel):
                 ]
 
                 # Shape: (batch_size, num_images)
-                scores = self.classifier(pooled_output).squeeze(-1)
+                logits = self.classifier(pooled_output).squeeze(-1)
+                probs = torch.softmax(logits, dim=-1)
 
-                # Shape: (batch_size, k)
-                _, indices = scores.topk(self.k, dim=-1)
-
-                # Shape: (batch_size)
-                pre_logits = torch.sum((indices == label.reshape(-1, 1)), dim=-1).float()
-
-                # Shape: (batch_size, 2)
-                # 1st column == 1 if we found the image in the top k, 2nd column == 1 if we didn't
-                logits = torch.stack((pre_logits, (pre_logits == 0).float()), dim=1)
-
-                outputs = {"logits": logits}
-                outputs = self._compute_loss_and_metrics(
-                    batch_size, outputs, torch.zeros(batch_size).long().to(logits.device)
-                )
-
-                return outputs
+        outputs = {"logits": logits, "probs": probs}
+        outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
+        return outputs
 
     @overrides
     def _compute_loss_and_metrics(
@@ -131,14 +115,18 @@ class ImageRetrievalVilbert(VisionTextModel):
         outputs: torch.Tensor,
         labels: torch.Tensor,
     ):
-        outputs["loss"] = self.loss(outputs["logits"], labels)
-        self.accuracy(outputs["logits"], labels)
+        outputs["loss"] = self.loss(outputs["logits"], labels) / batch_size
+        self.top_1_acc(outputs["logits"], labels)
+        self.top_5_acc(outputs["logits"], labels)
+        self.top_10_acc(outputs["logits"], labels)
         return outputs
 
     @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return {
-            "accuracy": self.accuracy.get_metric(reset),
+            "top_1_acc": self.top_1_acc.get_metric(reset),
+            "top_5_acc": self.top_5_acc.get_metric(reset),
+            "top_10_acc": self.top_10_acc.get_metric(reset),
         }
 
     @overrides

@@ -84,7 +84,6 @@ local dataset = "data";
     },
     "pooled_output_dim": 1024,
     "fusion_method": "mul",
-    "k": 5
   },
   "data_loader": {
     "batch_size": gpu_batch_size,
@@ -126,7 +125,7 @@ local dataset = "data";
       "warmup_steps" : std.ceil(0.1 * num_instances * num_epochs * num_gradient_accumulation_steps / effective_batch_size),
       // "warmup_steps": 5000,
     },
-    "validation_metric": "+accuracy",
+    "validation_metric": ["+top_1_acc", "+top_5_acc", "+top_10_acc"],
     "patience": patience,
     "num_epochs": num_epochs,
     "num_gradient_accumulation_steps": num_gradient_accumulation_steps,
