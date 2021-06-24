@@ -394,3 +394,5 @@ class Bart(Model):
             metrics.update(self._rouge.get_metric(reset=reset))
             metrics.update(self._bleu.get_metric(reset=reset))
         return metrics
+
+    default_predictor = "seq2seq"

@@ -1,5 +1,5 @@
 from os import PathLike
-from typing import Optional, Dict, Any, Union
+from typing import Optional, Dict, Any, Union, List
 
 from overrides import overrides
 import torch
@@ -48,6 +48,18 @@ class T5(Model):
             ROUGE(exclude_indices=exclude_indices),
             BLEU(exclude_indices=exclude_indices),
         ]
+
+    @overrides
+    def _post_load_state_dict(self, missing_keys: List[str], unexpected_keys: List[str]) -> None:
+        missing_keys_to_ignore = [
+            "t5.encoder.token_embeddings.weight",
+            "t5.decoder.token_embeddings.weight",
+        ]
+        if self.t5._tie_word_embeddings:
+            missing_keys_to_ignore.append("t5.lm_head.weight")
+        for key in missing_keys_to_ignore:
+            if key in missing_keys:
+                missing_keys.remove(key)
 
     @property
     def tokenizer(self) -> PretrainedTransformerTokenizer:
@@ -137,3 +149,5 @@ class T5(Model):
             for metric in self._metrics:
                 metrics.update(metric.get_metric(reset=reset))
         return metrics
+
+    default_predictor = "seq2seq"
