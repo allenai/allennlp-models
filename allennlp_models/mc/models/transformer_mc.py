@@ -2,7 +2,6 @@ import logging
 from typing import Dict, List, Optional
 
 import torch
-from allennlp.common import cached_transformers
 from allennlp.data import Vocabulary
 from allennlp.models import Model
 from allennlp.modules.transformer import TransformerEmbeddings, TransformerStack, TransformerPooler
@@ -38,7 +37,7 @@ class TransformerMC(Model):
         super().__init__(vocab, **kwargs)
         transformer_kwargs = {
             "model_name": transformer_model,
-            "weights_path": override_weights_file
+            "weights_path": override_weights_file,
         }
         self.embeddings = TransformerEmbeddings.from_pretrained_module(**transformer_kwargs)
         self.transformer_stack = TransformerStack.from_pretrained_module(**transformer_kwargs)

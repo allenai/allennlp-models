@@ -1,7 +1,10 @@
 import logging
 from typing import List, Optional
 
+import torch
+from allennlp.common import cached_transformers
 from allennlp.data import DatasetReader, Instance
+from allennlp.data.fields import TransformerTextField
 from overrides import overrides
 
 logger = logging.getLogger(__name__)
@@ -13,7 +16,7 @@ class TransformerMCReader(DatasetReader):
     data for TransformerMC.
 
     Instances have two fields:
-     * `alternatives`, a ListField of TextField
+     * `alternatives`, a ListField of TransformerTextField
      * `correct_alternative`, IndexField with the correct answer among `alternatives`
 
     Parameters
@@ -28,14 +31,7 @@ class TransformerMCReader(DatasetReader):
         self, transformer_model_name: str = "roberta-large", length_limit: int = 512, **kwargs
     ) -> None:
         super().__init__(**kwargs)
-        from allennlp.data.tokenizers import PretrainedTransformerTokenizer
-
-        self._tokenizer = PretrainedTransformerTokenizer(
-            transformer_model_name, add_special_tokens=False
-        )
-        from allennlp.data.token_indexers import PretrainedTransformerIndexer
-
-        self._token_indexers = {"tokens": PretrainedTransformerIndexer(transformer_model_name)}
+        self._tokenizer = cached_transformers.get_tokenizer(transformer_model_name)
         self.length_limit = length_limit
 
     @overrides
@@ -46,27 +42,22 @@ class TransformerMCReader(DatasetReader):
         alternatives: List[str],
         label: Optional[int] = None,
     ) -> Instance:
-        # tokenize
-        start = self._tokenizer.tokenize(start)
+        start = start.strip()
+        alternatives = [f"{start} {a.strip()}" for a in alternatives]
 
-        sequences = []
-        for alternative in alternatives:
-            alternative = self._tokenizer.tokenize(alternative)
-            length_for_start = (
-                self.length_limit - len(alternative) - self._tokenizer.num_special_tokens_for_pair()
+        tokenized = self._tokenizer(
+            alternatives,
+            truncation="longest_first",
+            max_length=self.length_limit,
+            return_attention_mask=False,
+        )
+        sequences = [
+            TransformerTextField(
+                torch.IntTensor(input_ids), padding_token_id=self._tokenizer.pad_token_id
             )
-            if length_for_start < 0:
-                # If the alternative is too long by itself, we take the beginning and add no tokens from the start.
-                alternative = alternative[:length_for_start]
-                length_for_start = 0
-            sequences.append(
-                self._tokenizer.add_special_tokens(start[:length_for_start], alternative)
-            )
+            for input_ids in tokenized["input_ids"]
+        ]
 
-        # make fields
-        from allennlp.data.fields import TextField
-
-        sequences = [TextField(sequence, self._token_indexers) for sequence in sequences]
         from allennlp.data.fields import ListField
 
         sequences = ListField(sequences)
