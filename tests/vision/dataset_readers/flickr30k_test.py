@@ -94,7 +94,7 @@ class TestFlickr30kReader(AllenNlpTestCase):
         question_tokens = [t.text for t in instance["caption"][0]]
         assert question_tokens == [
             "girl",
-            "with",
+            "without",
             "brown",
             "hair",
             "sits",
