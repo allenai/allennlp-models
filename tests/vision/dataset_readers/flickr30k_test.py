@@ -14,7 +14,6 @@ from tests import FIXTURES_ROOT
 
 class TestFlickr30kReader(AllenNlpTestCase):
     def setup_method(self):
-        random.seed(12345)
         super().setup_method()
 
     def test_train_read(self):

@@ -194,7 +194,7 @@ class Flickr30kReader(VisionReader):
                 files_in_split.add(line.rstrip("\n"))
 
         caption_dicts = []
-        for filename in os.listdir(self.data_dir):
+        for filename in sorted(os.listdir(self.data_dir)):
             if filename.split(".")[0] in files_in_split:
                 full_file_path = os.path.join(self.data_dir, filename)
                 caption_dicts.append(get_caption_data(full_file_path))
