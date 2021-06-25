@@ -71,6 +71,8 @@ def patch_dataset_reader(params):
     if params["type"] == "multitask":
         for reader_params in params["readers"].values():
             reader_params["max_instances"] = 4
+    elif params["type"] == "flickr30k":
+        params["max_instances"] = 6
     else:
         params["max_instances"] = 4
 
