@@ -188,11 +188,10 @@ class Flickr30kReader(VisionReader):
         files_in_split = set()
         i = 0
         with open(file_path, "r") as f:
-            for line in f:
-                if self.max_instances is not None and i >= self.max_instances:
+            for i, line in enumerate(f):
+                if self.max_instances is not None and i * 5 >= self.max_instances:
                     break
                 files_in_split.add(line.rstrip("\n"))
-                i += 5
 
         caption_dicts = []
         for filename in os.listdir(self.data_dir):
@@ -212,7 +211,7 @@ class Flickr30kReader(VisionReader):
                 missing_id,
                 f"We could not find an image with the id {missing_id}. "
                 "Because of the size of the image datasets, we don't download them automatically. "
-                "Please go to https://visualqa.org/download.html, download the datasets you need, "
+                "Please go to https://shannon.cs.illinois.edu/DenotationGraph/, download the datasets you need, "
                 "and set the image_dir parameter to point to your download location. This dataset "
                 "reader does not care about the exact directory structure. It finds the images "
                 "wherever they are.",

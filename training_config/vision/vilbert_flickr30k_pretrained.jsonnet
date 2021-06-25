@@ -34,7 +34,7 @@ local dataset = "data";
     },
     // "max_instances": 1000, // DEBUG
     "image_processing_batch_size": 16,
-    "featurize_captions": false,
+    "featurize_captions": true,
   },
   "validation_dataset_reader": self.dataset_reader {
     "is_evaluation": true,
