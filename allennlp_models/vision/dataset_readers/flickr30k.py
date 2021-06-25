@@ -94,7 +94,7 @@ class Flickr30kReader(VisionReader):
         If we should featurize captions while calculating hard negatives, or use placeholder features.
     is_evaluation: `bool`, optional
         If the reader should return instances for evaluation or training.
-    n: int, optional
+    num_potential_hard_negatives: int, optional
         The number of potential hard negatives to consider.
     """
 
