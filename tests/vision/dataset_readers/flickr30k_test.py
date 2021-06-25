@@ -8,11 +8,13 @@ from allennlp_models.vision.dataset_readers.flickr30k import Flickr30kReader
 from allennlp.modules.vision.grid_embedder import NullGridEmbedder
 from allennlp.modules.vision.region_detector import RandomRegionDetector
 
+import random
 from tests import FIXTURES_ROOT
 
 
 class TestFlickr30kReader(AllenNlpTestCase):
     def setup_method(self):
+        random.seed(12345)
         super().setup_method()
 
     def test_train_read(self):
