@@ -115,7 +115,7 @@ class Flickr30kReader(VisionReader):
         write_to_cache: bool = True,
         featurize_captions: bool = True,
         is_evaluation: bool = False,
-        n: int = 100,
+        num_potential_hard_negatives: int = 100,
     ) -> None:
         super().__init__(
             image_dir,
@@ -135,7 +135,7 @@ class Flickr30kReader(VisionReader):
         self.data_dir = cached_path(data_dir, extract_archive=True)
         self.featurize_captions = featurize_captions
         self.is_evaluation = is_evaluation
-        self.n = n
+        self.num_potential_hard_negatives = num_potential_hard_negatives
 
         if self.featurize_captions:
             self.model = transformers.AutoModel.from_pretrained("bert-large-uncased").to(
@@ -402,7 +402,7 @@ class Flickr30kReader(VisionReader):
                 -torch.cdist(
                     averaged_features, averaged_features[image_index].unsqueeze(0)
                 ).squeeze(1)
-            ).topk(min(averaged_features.size(0), self.n))
+            ).topk(min(averaged_features.size(0), self.num_potential_hard_negatives))
 
             index_to_image_index = {}
             hard_negative_tensors = []
