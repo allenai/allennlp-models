@@ -1,3 +1,4 @@
+import itertools
 import logging
 from typing import List, Optional
 
@@ -53,9 +54,13 @@ class TransformerMCReader(DatasetReader):
         )
         sequences = [
             TransformerTextField(
-                torch.IntTensor(input_ids), padding_token_id=self._tokenizer.pad_token_id
+                torch.IntTensor(input_ids),
+                torch.IntTensor(token_type_ids),
+                padding_token_id=self._tokenizer.pad_token_id,
             )
-            for input_ids in tokenized["input_ids"]
+            for input_ids, token_type_ids in itertools.zip_longest(
+                tokenized["input_ids"], tokenized.get("token_type_ids", [])
+            )
         ]
 
         from allennlp.data.fields import ListField
