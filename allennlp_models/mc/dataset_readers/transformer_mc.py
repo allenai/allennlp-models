@@ -43,7 +43,7 @@ class TransformerMCReader(DatasetReader):
         label: Optional[int] = None,
     ) -> Instance:
         start = start.strip()
-        alternatives = [f"{start} {a.strip()}" for a in alternatives]
+        alternatives = [(start, a) for a in alternatives]
 
         tokenized = self._tokenizer(
             alternatives,
