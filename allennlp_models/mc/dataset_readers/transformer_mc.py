@@ -55,7 +55,7 @@ class TransformerMCReader(DatasetReader):
         sequences = [
             TransformerTextField(
                 torch.IntTensor(input_ids),
-                torch.IntTensor(token_type_ids),
+                torch.IntTensor(token_type_ids) if token_type_ids is not None else None,
                 padding_token_id=self._tokenizer.pad_token_id,
             )
             for input_ids, token_type_ids in itertools.zip_longest(
