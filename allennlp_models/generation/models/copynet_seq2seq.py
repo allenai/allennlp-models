@@ -458,7 +458,7 @@ class CopyNetSeq2Seq(Model):
                 -1, target_tokens.unsqueeze(1), 1.0 - self._label_smoothing
             )
             smoothed_targets = one_hot_targets + smoothing_value
-            generation_log_probs = -log_probs * smoothed_targets
+            generation_log_probs = log_probs * smoothed_targets
             # shape: (batch_size, 1)
             generation_log_probs = generation_log_probs.sum(-1, keepdim=True)
         else:
