@@ -96,11 +96,13 @@ class VisionReader(DatasetReader):
         max_instances: Optional[int] = None,
         image_processing_batch_size: int = 8,
         write_to_cache: bool = True,
+        manual_distributed_sharding: bool = True,
+        manual_multiprocess_sharding: bool = True,
     ) -> None:
         super().__init__(
             max_instances=max_instances,
-            manual_distributed_sharding=True,
-            manual_multiprocess_sharding=True,
+            manual_distributed_sharding=manual_distributed_sharding,
+            manual_multiprocess_sharding=manual_multiprocess_sharding,
         )
 
         # tokenizers and indexers

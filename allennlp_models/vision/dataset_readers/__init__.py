@@ -4,3 +4,4 @@ from allennlp_models.vision.dataset_readers.nlvr2 import Nlvr2Reader
 from allennlp_models.vision.dataset_readers.vgqa import VGQAReader
 from allennlp_models.vision.dataset_readers.vqav2 import VQAv2Reader
 from allennlp_models.vision.dataset_readers.visual_entailment import VisualEntailmentReader
+from allennlp_models.vision.dataset_readers.flickr30k import Flickr30kReader
