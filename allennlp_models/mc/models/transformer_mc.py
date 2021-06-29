@@ -5,6 +5,7 @@ import torch
 from allennlp.data import Vocabulary
 from allennlp.models import Model
 from allennlp.modules.transformer import TransformerEmbeddings, TransformerStack, TransformerPooler
+from torch.nn import Dropout
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +43,7 @@ class TransformerMC(Model):
         self.embeddings = TransformerEmbeddings.from_pretrained_module(**transformer_kwargs)
         self.transformer_stack = TransformerStack.from_pretrained_module(**transformer_kwargs)
         self.pooler = TransformerPooler.from_pretrained_module(**transformer_kwargs)
+        self.pooler_dropout = Dropout(p=0.1)
 
         self.linear_layer = torch.nn.Linear(self.pooler.get_output_dim(), 1)
         self.linear_layer.weight.data.normal_(mean=0.0, std=0.02)
@@ -92,6 +94,7 @@ class TransformerMC(Model):
             embedded_alternatives, alternatives["attention_mask"]
         )
         embedded_alternatives = self.pooler(embedded_alternatives.final_hidden_states)
+        embedded_alternatives = self.pooler_dropout(embedded_alternatives)
         logits = self.linear_layer(embedded_alternatives)
         logits = logits.view(batch_size, num_alternatives)
 
