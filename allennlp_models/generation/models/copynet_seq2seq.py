@@ -47,6 +47,11 @@ class CopyNetSeq2Seq(Model):
     attention : `Attention`, required
         This is used to get a dynamic summary of encoder outputs at each timestep
         when producing the "generation" scores for the target vocab.
+    label_smoothing : `float`, optional (default = `None`)
+        Whether or not to apply label smoothing to the cross-entropy loss.
+        For example, with a label smoothing value of 0.2, a 4 class classification
+        target would look like `[0.05, 0.05, 0.85, 0.05]` if the 3rd class was
+        the correct label.
     beam_search : `BeamSearch`, optional (default = `Lazy(BeamSearch)`)
         This is used to during inference to select the tokens of the decoded output sequence.
     target_embedding_dim : `int`, optional (default = `30`)
@@ -75,6 +80,7 @@ class CopyNetSeq2Seq(Model):
         source_embedder: TextFieldEmbedder,
         encoder: Seq2SeqEncoder,
         attention: Attention,
+        label_smoothing: float = None,
         beam_search: Lazy[BeamSearch] = Lazy(BeamSearch),
         target_embedding_dim: int = 30,
         copy_token: str = "@COPY@",
@@ -123,6 +129,7 @@ class CopyNetSeq2Seq(Model):
             num_embeddings=self._target_vocab_size, embedding_dim=target_embedding_dim
         )
         self._attention = attention
+        self._label_smoothing = label_smoothing
         self._input_projection_layer = Linear(
             target_embedding_dim + self.encoder_output_dim * 2, self.decoder_input_dim
         )
@@ -443,8 +450,23 @@ class CopyNetSeq2Seq(Model):
         gen_mask = (target_tokens != self._oov_index) | (target_to_source.sum(-1) == 0)
         log_gen_mask = (gen_mask + util.tiny_value_of_dtype(log_probs.dtype)).log().unsqueeze(-1)
         # Now we get the generation score for the gold target token.
-        # shape: (batch_size, 1)
-        generation_log_probs = log_probs.gather(1, target_tokens.unsqueeze(1)) + log_gen_mask
+        if self._label_smoothing is not None and self._label_smoothing > 0.0:
+            smoothing_value = self._label_smoothing / target_size
+            # Create the smoothed targets to be multiplied with `log_probs`
+            # shape: (batch_size, target_vocab_size + source_sequence_length)
+            smoothed_targets = torch.full_like(log_probs, smoothing_value).scatter_(
+                1, target_tokens.unsqueeze(1), 1.0 - self._label_smoothing + smoothing_value
+            )
+            generation_log_probs = log_probs * smoothed_targets
+            # shape: (batch_size, 1)
+            generation_log_probs = generation_log_probs.sum(-1, keepdim=True)
+        else:
+            # Contribution to the negative log likelihood only comes from the exact indices
+            # of the targets, as the target distributions are one-hot. Here we use torch.gather
+            # to extract the indices which contribute to the loss.
+            # shape: (batch_size, 1)
+            generation_log_probs = log_probs.gather(1, target_tokens.unsqueeze(1))
+        generation_log_probs = generation_log_probs + log_gen_mask
         # ... and add the copy score to get the step log likelihood.
         # shape: (batch_size, 1 + source_sequence_length)
         combined_gen_and_copy = torch.cat((generation_log_probs, copy_log_probs), dim=-1)
