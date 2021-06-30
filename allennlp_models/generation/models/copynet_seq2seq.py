@@ -452,12 +452,11 @@ class CopyNetSeq2Seq(Model):
         # Now we get the generation score for the gold target token.
         if self._label_smoothing is not None and self._label_smoothing > 0.0:
             smoothing_value = self._label_smoothing / target_size
-            # Fill all the correct indices with 1 - smoothing value.
+            # Create the smoothed targets to be multiplied with `log_probs`
             # shape: (batch_size, target_vocab_size + source_sequence_length)
-            one_hot_targets = torch.zeros_like(log_probs).scatter_(
-                -1, target_tokens.unsqueeze(1), 1.0 - self._label_smoothing
+            smoothed_targets = torch.full_like(log_probs, smoothing_value).scatter_(
+                -1, target_tokens.unsqueeze(1), 1.0 - self._label_smoothing + smoothing_value
             )
-            smoothed_targets = one_hot_targets + smoothing_value
             generation_log_probs = log_probs * smoothed_targets
             # shape: (batch_size, 1)
             generation_log_probs = generation_log_probs.sum(-1, keepdim=True)
