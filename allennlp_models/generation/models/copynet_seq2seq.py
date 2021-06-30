@@ -455,7 +455,7 @@ class CopyNetSeq2Seq(Model):
             # Create the smoothed targets to be multiplied with `log_probs`
             # shape: (batch_size, target_vocab_size + source_sequence_length)
             smoothed_targets = torch.full_like(log_probs, smoothing_value).scatter_(
-                -1, target_tokens.unsqueeze(1), 1.0 - self._label_smoothing + smoothing_value
+                1, target_tokens.unsqueeze(1), 1.0 - self._label_smoothing + smoothing_value
             )
             generation_log_probs = log_probs * smoothed_targets
             # shape: (batch_size, 1)
