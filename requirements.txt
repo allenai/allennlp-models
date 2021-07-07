@@ -1,4 +1,4 @@
-git+https://github.com/allenai/allennlp.git@fairscale
+git+https://github.com/allenai/allennlp.git@fairscale[all]
 
 torch>=1.7.0,<1.10.0
 
