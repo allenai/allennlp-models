@@ -1,15 +1,13 @@
 // =================== Configurable Settings ======================
 
-// In 'debug' mode, we only train t5-small over a few instances on 2 GPUs.
-// You probably want to start out on debug mode (the default) before attempting a full
-// training run.
-//
-// When debug=false, we train t5-11b on 8 GPUs (less than 8 GPUs probably
-// won't give you enough memory).
-//
-// You could also adapt this config to train on smaller t5 varients, in which case
-// you may not need to use the "fairscale_fsdp" DdpWrapper or the "fairscale" CheckpointWrapper.
 local debug = true;
+
+local model_name = if debug then "t5-small" else "t5-11b";
+
+local batch_size_per_gpu = if debug then 4 else 1;
+
+// To train "t5-11b" you will probably need 8 GPUs.
+local num_gpus = 8;
 
 // This is probably necessary for t5-11b unless you have more than 8 GPUs.
 local activation_checkpointing = true;
@@ -17,7 +15,7 @@ local activation_checkpointing = true;
 // Set to `false` if you want to skip validation.
 local validate = true;
 
-// AMP is currently unusably slow with t5-11b, which be due to a bug bug within
+// AMP is currently unusably slow with t5-11b, which may be due to a bug bug within
 // FairScale, but I'm not sure yet.
 local use_amp = false;
 
@@ -25,15 +23,12 @@ local use_amp = false;
 local source_length = 512;
 local target_length = 54;
 
-// Only set to `true` if you're running this on Beaker batch.
-local on_beaker = false;
+// Set to `true` to log to Weights & Biases.
+local use_wandb = false;
 
 // ================================================================
 
 // ------ !! You probably don't need to edit below here !! --------
-
-local model_name = if debug then "t5-small" else "t5-11b";
-local batch_size_per_gpu = if debug then 4 else 1;
 
 local data_base_url = "https://storage.googleapis.com/allennlp-public-data/cnndm-combined-data-2020.07.13.tar.gz";
 local train_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_train.txt";
@@ -84,8 +79,6 @@ local wandb_callback = {
     "model": {
         "type": "t5",
         "model_name": model_name,
-        // We get the big weights from a beaker dataset.
-        [if on_beaker then "weights_path"]: "/data/t5-11b-weights/t5-11b.bin",
         "beam_search": {
             "beam_size": 3,
             "max_steps": if debug then 5 else 50,
@@ -113,10 +106,10 @@ local wandb_callback = {
             "type": "huggingface_adafactor",
         },
         "grad_norm": 1.0,
-        [if !debug then "callbacks"]: [wandb_callback],
+        [if use_wandb then "callbacks"]: [wandb_callback],
     },
-    "distributed": {
-        "cuda_devices": if debug then [0, 1] else [0, 1, 2, 3, 4, 5, 6, 7],
+    [if num_gpus > 1 then "distributed"]: {
+        "cuda_devices": std.range(0, num_gpus - 1),
         "ddp_wrapper": {
             "type": "fairscale_fsdp",
             "mixed_precision": use_amp,
