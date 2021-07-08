@@ -109,7 +109,7 @@ local wandb_callback = {
     },
     [if num_gpus > 1 then "distributed"]: {
         "cuda_devices": std.range(0, num_gpus - 1),
-        "ddp_wrapper": {
+        "ddp_accelerator": {
             "type": "fairscale_fsdp",
             "mixed_precision": use_amp,
         },
