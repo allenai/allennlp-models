@@ -20,8 +20,15 @@ class BidirectionalAttentionFlowTest(ModelTestCase):
     def setup_method(self):
         super().setup_method()
         self.set_up_model(
-            FIXTURES_ROOT / "rc" / "bidaf" / "experiment.json", FIXTURES_ROOT / "rc" / "squad.json"
+            FIXTURES_ROOT / "rc" / "bidaf" / "experiment.json",
+            FIXTURES_ROOT / "rc" / "squad.json",
+            seed=27,
         )
+        torch.use_deterministic_algorithms(True)
+
+    def teardown_method(self):
+        super().teardown_method()
+        torch.use_deterministic_algorithms(False)
 
     @flaky
     def test_forward_pass_runs_correctly(self):
@@ -53,7 +60,11 @@ class BidirectionalAttentionFlowTest(ModelTestCase):
     # `masked_softmax`...) have made this _very_ flaky...
     @flaky(max_runs=5)
     def test_model_can_train_save_and_load(self):
-        self.ensure_model_can_train_save_and_load(self.param_file, tolerance=1e-4)
+        self.ensure_model_can_train_save_and_load(
+            self.param_file,
+            tolerance=1e-4,
+            gradients_to_ignore={"_span_start_predictor._module.bias"},
+        )
 
     @flaky
     def test_batch_predictions_are_consistent(self):
