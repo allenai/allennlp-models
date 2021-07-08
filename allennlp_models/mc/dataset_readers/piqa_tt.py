@@ -1,7 +1,6 @@
 import logging
 
 from allennlp.data import DatasetReader
-from overrides import overrides
 
 from allennlp_models.mc.dataset_readers.piqa import PiqaReader
 from allennlp_models.mc.dataset_readers.transformer_mc_tt import (
