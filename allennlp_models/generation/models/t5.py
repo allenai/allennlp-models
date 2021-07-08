@@ -1,5 +1,5 @@
 from os import PathLike
-from typing import Optional, Dict, Any, Union, List
+from typing import Optional, Dict, Any, Union, List, Tuple
 
 from overrides import overrides
 import torch
@@ -48,7 +48,9 @@ class T5(Model):
         ]
 
     @overrides
-    def _post_load_state_dict(self, missing_keys: List[str], unexpected_keys: List[str]) -> None:
+    def _post_load_state_dict(
+        self, missing_keys: List[str], unexpected_keys: List[str]
+    ) -> Tuple[List[str], List[str]]:
         missing_keys_to_ignore = [
             "t5.encoder.token_embeddings.weight",
             "t5.decoder.token_embeddings.weight",
@@ -58,6 +60,7 @@ class T5(Model):
         for key in missing_keys_to_ignore:
             if key in missing_keys:
                 missing_keys.remove(key)
+        return missing_keys, unexpected_keys
 
     @property
     def tokenizer(self) -> PretrainedTransformerTokenizer:
