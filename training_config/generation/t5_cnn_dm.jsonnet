@@ -92,7 +92,6 @@ local wandb_callback = {
     "data_loader": data_loader + {
         [if !debug then "max_instances_in_memory"]: batch_size_per_gpu * 128,
         [if !debug then "num_workers"]: 1,
-        [if !debug then "batches_per_epoch"]: 512,
     },
     "validation_data_loader": data_loader,
     "vocabulary": {
