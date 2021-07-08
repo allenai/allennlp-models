@@ -45,10 +45,9 @@ class TransformerMCReaderTransformerToolkit(DatasetReader):
         label: Optional[int] = None,
     ) -> Instance:
         start = start.strip()
-        alternatives = [(start, a) for a in alternatives]
 
         tokenized = self._tokenizer(
-            alternatives,
+            [(start, a) for a in alternatives],
             truncation="longest_first",
             max_length=self.length_limit,
             return_attention_mask=False,
