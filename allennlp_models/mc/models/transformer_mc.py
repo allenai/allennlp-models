@@ -53,7 +53,6 @@ class TransformerMC(Model):
         )
 
         self._linear_layer = torch.nn.Linear(self._text_field_embedder.get_output_dim(), 1)
-        torch.manual_seed(1234)
         self._linear_layer.weight.data.normal_(mean=0.0, std=0.02)
         self._linear_layer.bias.data.zero_()
 
@@ -90,8 +89,6 @@ class TransformerMC(Model):
         best_alternative : ``List[int]``
             The index of the highest scoring alternative for every instance in the batch
         """
-        self.eval()  # DEBUG
-
         embedded_alternatives = self._text_field_embedder(alternatives, num_wrapping_dims=1)
         flattened_embedded_alternatives = embedded_alternatives.view(
             embedded_alternatives.size(0) * embedded_alternatives.size(1),
