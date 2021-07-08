@@ -41,7 +41,7 @@ local gradient_accumulation_steps = batch_size / gpu_batch_size;
     "patience": 3,
     "validation_metric": "+acc",
   },
-  "random_seed": 42,
-  "numpy_seed": 42,
-  "pytorch_seed": 42,
+  "random_seed": 2,
+  "numpy_seed": 2,
+  "pytorch_seed": 2,
 }
