@@ -32,7 +32,7 @@ class T5(Model):
         self.t5 = T5Module.from_pretrained_module(
             model_name,
             beam_search=beam_search,
-            ddp_wrapper=self.ddp_wrapper,
+            ddp_accelerator=self.ddp_accelerator,
             checkpoint_wrapper=checkpoint_wrapper,
             weights_path=weights_path,
         )
