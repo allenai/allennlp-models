@@ -16,9 +16,9 @@ class PiqaInstances(Step):
     CACHEABLE = True
 
     def run(
-            self,
-            tokenizer_name: str,
-            max_length: int = 512,
+        self,
+        tokenizer_name: str,
+        max_length: int = 512,
     ) -> AllenNlpDataset:
         tokenizer = cached_transformers.get_tokenizer(tokenizer_name)
         assert tokenizer.pad_token_type_id == 0
