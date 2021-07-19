@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `adversarial-binary-gender-bias-mitigated-roberta-snli` model.
 - Added support for Flickr30k image retrieval, including a dataset reader, a model, and a training config.
 - Added `label_smoothing` parameter to `CopyNetSeq2Rel` to smooth generation targets.
+- Added `vocab` as argument to `beam_search.construct` in all `generation` models.
 
 ### Fixed
 
