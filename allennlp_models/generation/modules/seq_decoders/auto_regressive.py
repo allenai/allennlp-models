@@ -97,7 +97,9 @@ class AutoRegressiveSeqDecoder(SeqDecoder):
         if "max_decoding_steps" in kwargs:
             beam_search_extras["max_steps"] = kwargs["max_decoding_steps"]
             warnings.warn(deprecation_warning.format("max_decoding_steps"), DeprecationWarning)
-        self._beam_search = beam_search.construct(end_index=self._end_index, **beam_search_extras)
+        self._beam_search = beam_search.construct(
+            end_index=self._end_index, vocab=self._vocab, **beam_search_extras
+        )
 
         target_vocab_size = self._vocab.get_vocab_size(self._target_namespace)
 
