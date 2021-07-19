@@ -8,14 +8,14 @@ local gradient_accumulation_steps = batch_size / gpu_batch_size;
 
 {
   "dataset_reader": {
-      "type": "piqa",
+      "type": "piqa_tt",
       "transformer_model_name": transformer_model,
       //"max_instances": 2000  // debug setting
   },
   "train_data_path": "https://yonatanbisk.com/piqa/data/train.jsonl",
   "validation_data_path": "https://yonatanbisk.com/piqa/data/valid.jsonl",
   "model": {
-      "type": "transformer_mc",
+      "type": "transformer_mc_tt",
       "transformer_model": transformer_model
   },
   "data_loader": {
