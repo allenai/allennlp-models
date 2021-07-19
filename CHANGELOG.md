@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+Nothing so far
+
+
+## [v2.6.0](https://github.com/allenai/allennlp-models/releases/tag/v2.6.0) - 2021-07-19
+
 ### Added
 
 - Added some additional `__init__()` parameters to the `T5` model in `allennlp_models.generation` for customizing
@@ -18,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `adversarial-binary-gender-bias-mitigated-roberta-snli` model.
 - Added support for Flickr30k image retrieval, including a dataset reader, a model, and a training config.
 - Added `label_smoothing` parameter to `CopyNetSeq2Rel` to smooth generation targets.
+- Added `vocab` as argument to `beam_search.construct` in all `generation` models.
 
 ### Fixed
 
