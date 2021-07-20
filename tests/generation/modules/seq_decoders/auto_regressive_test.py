@@ -84,7 +84,7 @@ class TestAutoRegressiveSeqDecoder(AllenNlpTestCase):
             vocab,
             decoder_net,
             Embedding(num_embeddings=vocab.get_vocab_size(), embedding_dim=decoder_inout_dim),
-            beam_search=Lazy(BeamSearch, contructor_extras={"max_steps": 10}),
+            beam_search=Lazy(BeamSearch, constructor_extras={"max_steps": 10}),
         )
 
         with pytest.raises(ConfigurationError):
@@ -94,7 +94,7 @@ class TestAutoRegressiveSeqDecoder(AllenNlpTestCase):
                 Embedding(
                     num_embeddings=vocab.get_vocab_size(), embedding_dim=decoder_inout_dim + 1
                 ),
-                beam_search=Lazy(BeamSearch, contructor_extras={"max_steps": 10}),
+                beam_search=Lazy(BeamSearch, constructor_extras={"max_steps": 10}),
             )
 
     def test_auto_regressive_seq_decoder_forward(self):
@@ -105,7 +105,7 @@ class TestAutoRegressiveSeqDecoder(AllenNlpTestCase):
             vocab,
             decoder_net,
             Embedding(num_embeddings=vocab.get_vocab_size(), embedding_dim=decoder_inout_dim),
-            beam_search=Lazy(BeamSearch, contructor_extras={"max_steps": 10, "beam_size": 4}),
+            beam_search=Lazy(BeamSearch, constructor_extras={"max_steps": 10, "beam_size": 4}),
         )
 
         encoded_state = torch.rand(batch_size, time_steps, decoder_inout_dim)
@@ -128,7 +128,7 @@ class TestAutoRegressiveSeqDecoder(AllenNlpTestCase):
             vocab,
             decoder_net,
             Embedding(num_embeddings=vocab.get_vocab_size(), embedding_dim=decoder_inout_dim),
-            beam_search=Lazy(BeamSearch, contructor_extras={"max_steps": 10}),
+            beam_search=Lazy(BeamSearch, constructor_extras={"max_steps": 10}),
         )
 
         predictions = torch.tensor([[3, 2, 5, 0, 0], [2, 2, 3, 5, 0]])
@@ -145,7 +145,7 @@ class TestAutoRegressiveSeqDecoder(AllenNlpTestCase):
             vocab,
             decoder_net,
             Embedding(num_embeddings=vocab.get_vocab_size(), embedding_dim=decoder_inout_dim),
-            beam_search=Lazy(BeamSearch, contructor_extras={"max_steps": 10}),
+            beam_search=Lazy(BeamSearch, constructor_extras={"max_steps": 10}),
         )
 
         predictions = torch.tensor([[3, 2, 5, 0, 0], [2, 2, 3, 5, 0]])
@@ -169,7 +169,7 @@ class TestAutoRegressiveSeqDecoder(AllenNlpTestCase):
             vocab,
             decoder_net,
             Embedding(num_embeddings=vocab.get_vocab_size(), embedding_dim=decoder_inout_dim),
-            beam_search=Lazy(BeamSearch, contructor_extras={"max_steps": 10, "beam_size": 4}),
+            beam_search=Lazy(BeamSearch, constructor_extras={"max_steps": 10, "beam_size": 4}),
             tensor_based_metric=BLEU(),
             token_based_metric=DummyMetric(),
         ).eval()
