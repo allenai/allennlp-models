@@ -1,5 +1,5 @@
 import random
-from typing import Dict, Optional, Iterable
+from typing import Dict, Optional, List, Any, Iterable
 
 from datasets import load_dataset, Dataset
 from overrides import overrides
@@ -49,40 +49,47 @@ class CNNDailyMailDatasetReaderTransformerToolkit(DatasetReader):
             dataset = dataset.shard(self._worker_info.num_workers, self._worker_info.id)
             progress_prefix = f"[worker {self._worker_info.id}] "
 
-        article_dataset = dataset.map(
-            self._batch_tokenize_article,
+        dataset = dataset.map(
+            self._batch_tokenize,
             batched=True,
             num_proc=self._num_preprocessing_workers,
-            desc=progress_prefix + "Tokenizing articles",
-            remove_columns=["id", "article", "highlights"],
+            desc=progress_prefix + "Tokenizing dataset",
+            remove_columns=["id"],
         )
 
-        highlights_dataset = dataset.map(
-            self._batch_tokenize_highlights,
-            batched=True,
-            num_proc=self._num_preprocessing_workers,
-            desc=progress_prefix + "Tokenizing highlights",
-            remove_columns=["id", "article", "highlights"],
-        )
-
+        # Shuffling is broken in `datasets` so we have to do it our own way.
+        # See https://github.com/huggingface/datasets/issues/514.
+        # > dataset = dataset.shuffle(keep_in_memory=True)
         indices: Iterable[int] = range(len(dataset))
         if self._shuffle:
             indices = list(indices)
             random.shuffle(indices)
 
         for idx in indices:
-            article = article_dataset[idx]
-            highlights = highlights_dataset[idx]
+            example = dataset[idx]
             yield Instance(
                 {
-                    "source": TransformerTextField(  # type: ignore[arg-type]
-                        **article, padding_token_id=self._tokenizer.pad_token_id
+                    "source": TransformerTextField(
+                        **example["article"],  # type: ignore[call-overload]
+                        padding_token_id=self._tokenizer.pad_token_id,
                     ),
-                    "target": TransformerTextField(  # type: ignore[arg-type]
-                        **highlights, padding_token_id=self._tokenizer.pad_token_id
+                    "target": TransformerTextField(
+                        **example["highlights"],  # type: ignore[call-overload]
+                        padding_token_id=self._tokenizer.pad_token_id,
                     ),
                 }
             )
+
+    def _batch_tokenize(self, example):
+        return {
+            "article": self._split_batched_results(self._batch_tokenize_article(example)),
+            "highlights": self._split_batched_results(self._batch_tokenize_highlights(example)),
+        }
+
+    @staticmethod
+    def _split_batched_results(batched_result: Dict[str, List[Any]]) -> List[Dict[str, Any]]:
+        keys, batched_values = list(zip(*batched_result.items()))
+        return [{key: value for key, value in zip(keys, values)} for values in zip(*batched_values)]
 
     def _batch_tokenize_article(self, example):
         article_batch = example["article"]
