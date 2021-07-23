@@ -25,6 +25,7 @@ class CNNDailyMailDatasetReaderTransformerToolkit(DatasetReader):
         target_length_limit: int = 56,
         source_prefix: Optional[str] = None,
         shuffle: bool = False,
+        num_preprocessing_workers: Optional[int] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -35,6 +36,7 @@ class CNNDailyMailDatasetReaderTransformerToolkit(DatasetReader):
         self._target_length_limit = target_length_limit
         self._source_prefix = source_prefix
         self._shuffle = shuffle
+        self._num_preprocessing_workers = num_preprocessing_workers
 
     @overrides
     def _read(self, split: str):
@@ -44,7 +46,7 @@ class CNNDailyMailDatasetReaderTransformerToolkit(DatasetReader):
         if util.is_distributed():
             dataset = dataset.shard(dist.get_world_size(), dist.get_rank())
 
-        if self._worker_info is not None:
+        if self._worker_info is not None and self._worker_info.num_workers > 1:
             dataset = dataset.shard(self._worker_info.num_workers, self._worker_info.id)
             progress_prefix = f"[worker {self._worker_info.id}] "
 
@@ -52,11 +54,12 @@ class CNNDailyMailDatasetReaderTransformerToolkit(DatasetReader):
             return self.batch_tokenize_article(example["article"])
 
         def tokenize_hightlights_function(example):
-            return self.batch_tokenize_article(example["highlights"])
+            return self.batch_tokenize_highlights(example["highlights"])
 
         article_dataset = dataset.map(
             tokenize_article_function,
             batched=True,
+            num_proc=self._num_preprocessing_workers,
             desc=progress_prefix + "Tokenizing articles",
             remove_columns=["id", "article", "highlights"],
         )
@@ -64,6 +67,7 @@ class CNNDailyMailDatasetReaderTransformerToolkit(DatasetReader):
         highlights_dataset = dataset.map(
             tokenize_hightlights_function,
             batched=True,
+            num_proc=self._num_preprocessing_workers,
             desc=progress_prefix + "Tokenizing highlights",
             remove_columns=["id", "article", "highlights"],
         )
