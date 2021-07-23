@@ -14,6 +14,12 @@ Nothing so far
 - Added some additional `__init__()` parameters to the `T5` model in `allennlp_models.generation` for customizing
   beam search and other options.
 - Added a configuration file for fine-tuning `t5-11b` on CCN-DM (requires at least 8 GPUs).
+- Added a Transformer Toolkit version of the CNN/DM dataset reader called `CNNDailyMailDatasetReaderTransformerToolkit`, registered as "cnn_dm_tt".
+
+### Changed
+
+- The inputs to the `T5` model have changed. Then should now come from `TransformerTextField`s. For example, the `CNNDailyMailDatasetReaderTransformerToolkit`
+  dataset reader is compatible.
 
 
 ## [v2.6.0](https://github.com/allenai/allennlp-models/releases/tag/v2.6.0) - 2021-07-19
