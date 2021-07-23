@@ -1,9 +1,8 @@
 import random
-from typing import Dict, Optional, List, Iterable
+from typing import Dict, Optional, Iterable
 
 from datasets import load_dataset, Dataset
 from overrides import overrides
-import torch
 import torch.distributed as dist
 
 from allennlp.common import cached_transformers, util
@@ -50,14 +49,8 @@ class CNNDailyMailDatasetReaderTransformerToolkit(DatasetReader):
             dataset = dataset.shard(self._worker_info.num_workers, self._worker_info.id)
             progress_prefix = f"[worker {self._worker_info.id}] "
 
-        def tokenize_article_function(example):
-            return self.batch_tokenize_article(example["article"])
-
-        def tokenize_hightlights_function(example):
-            return self.batch_tokenize_highlights(example["highlights"])
-
         article_dataset = dataset.map(
-            tokenize_article_function,
+            self._batch_tokenize_article,
             batched=True,
             num_proc=self._num_preprocessing_workers,
             desc=progress_prefix + "Tokenizing articles",
@@ -65,7 +58,7 @@ class CNNDailyMailDatasetReaderTransformerToolkit(DatasetReader):
         )
 
         highlights_dataset = dataset.map(
-            tokenize_hightlights_function,
+            self._batch_tokenize_highlights,
             batched=True,
             num_proc=self._num_preprocessing_workers,
             desc=progress_prefix + "Tokenizing highlights",
@@ -91,7 +84,8 @@ class CNNDailyMailDatasetReaderTransformerToolkit(DatasetReader):
                 }
             )
 
-    def batch_tokenize_article(self, article_batch: List[str]) -> Dict[str, torch.Tensor]:
+    def _batch_tokenize_article(self, example):
+        article_batch = example["article"]
         if self._source_prefix is not None:
             article_batch = [self._source_prefix + article for article in article_batch]
         return self._tokenizer(
@@ -100,7 +94,8 @@ class CNNDailyMailDatasetReaderTransformerToolkit(DatasetReader):
             truncation=True,
         )
 
-    def batch_tokenize_highlights(self, highlights_batch: List[str]) -> Dict[str, torch.Tensor]:
+    def _batch_tokenize_highlights(self, example):
+        highlights_batch = example["highlights"]
         return self._tokenizer(
             highlights_batch,
             max_length=self._target_length_limit,
@@ -113,13 +108,21 @@ class CNNDailyMailDatasetReaderTransformerToolkit(DatasetReader):
     ) -> Instance:
         fields: Dict[str, Field] = {
             "source": TransformerTextField(
-                **self.batch_tokenize_article([article]),
+                **self._tokenizer(
+                    article,
+                    max_length=self._source_length_limit,
+                    truncation=True,
+                ),
                 padding_token_id=self._tokenizer.pad_token_id,
             )
         }
         if highlights is not None:
             fields["target"] = TransformerTextField(
-                **self.batch_tokenize_highlights([highlights]),
+                **self._tokenizer(
+                    highlights,
+                    max_length=self._target_length_limit,
+                    truncation=True,
+                ),
                 padding_token_id=self._tokenizer.pad_token_id,
             )
 
