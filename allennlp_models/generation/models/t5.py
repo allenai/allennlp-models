@@ -5,7 +5,7 @@ from overrides import overrides
 import torch
 
 from allennlp.common.lazy import Lazy
-from allennlp.data import TextFieldTensors, Vocabulary
+from allennlp.data import Vocabulary
 from allennlp.data.tokenizers import PretrainedTransformerTokenizer
 from allennlp.models.model import Model
 from allennlp.modules.transformer.t5 import T5 as T5Module, T5Output, IntT, BoolT
@@ -69,38 +69,38 @@ class T5(Model):
         return self._tokenizer
 
     def forward(  # type: ignore
-        self, source_tokens: TextFieldTensors, target_tokens: Optional[TextFieldTensors] = None
+        self, source: Dict[str, torch.Tensor], target: Optional[Dict[str, torch.Tensor]] = None
     ) -> Dict[str, torch.Tensor]:
         """
         Performs the forward step of T5.
 
         # Parameters
 
-        source_tokens : `TextFieldTensors`, required
-            The source tokens for the encoder. We assume they are stored under the `tokens` key/namespace.
+        source : `TextFieldTensors`, required
+            The source tokens for the encoder produced from a `TransformerTextField`.
 
         target_tokens : `TextFieldTensors`, optional (default = `None`)
-            The target tokens for the decoder. We assume they are also stored under the `tokens` key/namespace.
+            The target tokens for the decoder produced from a `TransformerTextField`.
             If no target tokens are given during training / validation, the source tokens are shifted
             to the right by 1.
 
         # Returns
 
         `Dict[str, torch.Tensor]`
-            Contains the `loss` when `target_tokens` is provided.
+            Contains the `loss` when `target` is provided.
             And during prediction, includes `predictions` and `predicted_log_probs` from beam search.
 
         """
         input_ids, attention_mask = (
-            source_tokens["tokens"]["token_ids"],
-            source_tokens["tokens"]["mask"],
+            source["input_ids"],
+            source["attention_mask"],
         )
         labels: Optional[IntT] = None
         decoder_attention_mask: Optional[BoolT] = None
-        if target_tokens is not None:
+        if target is not None:
             labels, decoder_attention_mask = (
-                target_tokens["tokens"]["token_ids"],  # type: ignore[assignment]
-                target_tokens["tokens"]["mask"],  # type: ignore[assignment]
+                target["input_ids"],  # type: ignore[assignment]
+                target["attention_mask"],  # type: ignore[assignment]
             )
         elif self.training:
             raise ValueError("'target_tokens' required during training")

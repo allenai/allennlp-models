@@ -30,25 +30,11 @@ local use_wandb = false;
 
 // ------ !! You probably don't need to edit below here !! --------
 
-local data_base_url = "https://storage.googleapis.com/allennlp-public-data/cnndm-combined-data-2020.07.13.tar.gz";
-local train_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_train.txt";
-local dev_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_val.txt";
-
 local dataset_reader = {
-    "type": "cnn_dm",
-    "source_tokenizer": {
-        "type": "pretrained_transformer",
-        "model_name": model_name,
-    },
-    "source_token_indexers": {
-        "tokens": {
-            "type": "pretrained_transformer",
-            "model_name": model_name,
-            "namespace": "tokens",
-        }
-    },
-    "source_max_tokens": source_length,
-    "target_max_tokens": target_length,
+    "type": "cnn_dm_tt",
+    "transformer_model_name": model_name,
+    "source_length_limit": source_length,
+    "target_length_limit": target_length,
     "source_prefix": "summarize: ",
 };
 
@@ -68,8 +54,8 @@ local wandb_callback = {
 };
 
 {
-    "train_data_path": train_data,
-    [if validate then "validation_data_path"]: dev_data,
+    "train_data_path": "train",
+    [if validate then "validation_data_path"]: "validation",
     "dataset_reader": dataset_reader + {
         [if debug then "max_instances"]: batch_size_per_gpu * 40,
     },
