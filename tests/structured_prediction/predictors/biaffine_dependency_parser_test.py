@@ -137,16 +137,16 @@ class TestBiaffineDependencyParser(AllenNlpTestCase):
         inputs = {"sentence": "Dogs eat cats."}
         instance_with_ud_pos = predictor._json_to_instance(inputs)
         tags = instance_with_ud_pos.fields["pos_tags"].labels
-        if spacy.__version__ < "3.0":
-            assert tags == ["NOUN", "VERB", "NOUN", "PUNCT"]
-        else:
+        if "3.0" < spacy.__version__ <= "3.1":
             assert tags == ["PROPN", "VERB", "NOUN", "PUNCT"]
+        else:
+            assert tags == ["NOUN", "VERB", "NOUN", "PUNCT"]
 
         predictor._dataset_reader.use_language_specific_pos = True
 
         instance_with_ptb_pos = predictor._json_to_instance(inputs)
         tags = instance_with_ptb_pos.fields["pos_tags"].labels
-        if spacy.__version__ < "3.0":
-            assert tags == ["NNS", "VBP", "NNS", "."]
-        else:
+        if "3.0" < spacy.__version__ <= "3.1":
             assert tags == ["NNP", "VBP", "NNS", "."]
+        else:
+            assert tags == ["NNS", "VBP", "NNS", "."]
