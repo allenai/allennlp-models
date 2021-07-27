@@ -297,6 +297,12 @@ class CrfTagger(Model):
         return output_dict
 
     @overrides
+    def cuda(self, device=None):
+        super().cuda(device)
+        self.crf.cuda(device)
+        return self
+
+    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         metrics_to_return = {
             metric_name: metric.get_metric(reset) for metric_name, metric in self.metrics.items()
