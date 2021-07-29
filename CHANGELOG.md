@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed tests for Spacy versions greater than 3.1
 
+### Changed
+
+- Updated `VisionReader` to yield all of `RegionDetectorOutput`'s keys in processing.
+
 ## [v2.6.0](https://github.com/allenai/allennlp-models/releases/tag/v2.6.0) - 2021-07-19
 
 ### Added

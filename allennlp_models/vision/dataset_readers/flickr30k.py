@@ -199,7 +199,9 @@ class Flickr30kReader(VisionReader):
                 full_file_path = os.path.join(self.data_dir, filename)
                 caption_dicts.append(get_caption_data(full_file_path))
 
-        processed_images: Iterable[Optional[Tuple[Tensor, Tensor]]]
+        processed_images: Iterable[
+            Optional[Tuple[Tensor, Tensor, Optional[Tensor], Optional[Tensor]]]
+        ]
         filenames = [f"{caption_dict['image_id']}.jpg" for caption_dict in caption_dicts]
         try:
             processed_images = self._process_image_paths(
@@ -221,7 +223,7 @@ class Flickr30kReader(VisionReader):
         averaged_features_list = []
         coordinates_list = []
         masks_list = []
-        for features, coords in processed_images:
+        for features, coords, _, _ in processed_images:
             features_list.append(TensorField(features))
             averaged_features_list.append(torch.mean(features, dim=0))
             coordinates_list.append(TensorField(coords))

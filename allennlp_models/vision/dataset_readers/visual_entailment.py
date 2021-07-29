@@ -76,7 +76,7 @@ class VisualEntailmentReader(VisionReader):
     @overrides
     def text_to_instance(
         self,  # type: ignore
-        image: Union[str, Tuple[Tensor, Tensor]],
+        image: Union[str, Tuple[Tensor, Tensor, Optional[Tensor], Optional[Tensor]]],
         hypothesis: str,
         label: Optional[str] = None,
         *,
@@ -90,9 +90,11 @@ class VisualEntailmentReader(VisionReader):
 
         if image is not None:
             if isinstance(image, str):
-                features, coords = next(self._process_image_paths([image], use_cache=use_cache))
+                features, coords, _, _ = next(
+                    self._process_image_paths([image], use_cache=use_cache)
+                )
             else:
-                features, coords = image
+                features, coords, _, _ = image
 
             fields["box_features"] = ArrayField(features)
             fields["box_coordinates"] = ArrayField(coords)
