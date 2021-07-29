@@ -36,15 +36,14 @@ local transformer_model = "bert-base-cased";
         },
         "evaluation": {
             "type": "evaluation",
-            "produce_results": true,
             "dataset": {
                 "type": "ref",
                 "ref": "dataset"
-            },  # TODO: Figure out why this doesn't work as a string.
+            },
             "model": {
                 "type": "ref",
                 "ref": "trained_model"
-            }   # TODO: Figure out why this doesn't work as a string.
+            }
         }
     }
 }
