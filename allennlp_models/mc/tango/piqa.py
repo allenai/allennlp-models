@@ -12,7 +12,7 @@ from allennlp.tango.step import Step
 @Step.register("piqa_instances")
 class PiqaInstances(Step):
     DETERMINISTIC = True
-    VERSION = "002"
+    VERSION = "003"
     CACHEABLE = True
 
     def run(
