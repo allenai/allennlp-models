@@ -5,7 +5,7 @@ import torch
 from allennlp.common import cached_transformers
 from allennlp.data import Field, Instance, Vocabulary
 from allennlp.data.fields import ListField, TransformerTextField, IndexField
-from allennlp.tango.dataset import AllenNlpDataset
+from allennlp.tango.dataset import DatasetDict
 from allennlp.tango.step import Step
 
 
@@ -19,7 +19,7 @@ class PiqaInstances(Step):
         self,
         tokenizer_name: str,
         max_length: int = 512,
-    ) -> AllenNlpDataset:
+    ) -> DatasetDict:
         tokenizer = cached_transformers.get_tokenizer(tokenizer_name)
         assert tokenizer.pad_token_type_id == 0
 
@@ -79,4 +79,4 @@ class PiqaInstances(Step):
         vocab = Vocabulary.empty()
         vocab.add_transformer_vocab(tokenizer, "tokens")
 
-        return AllenNlpDataset(result, vocab)
+        return DatasetDict(result, vocab)
