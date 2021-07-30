@@ -1,5 +1,7 @@
 local transformer_model = "bert-base-cased";
 
+local debug = true;
+
 {
     "steps": {
         "dataset": {
@@ -11,7 +13,11 @@ local transformer_model = "bert-base-cased";
             "dataset": "dataset",
             "training_split": "train",
             "data_loader": {
-                "batch_size": 5
+                "type": "max_batches",
+                [if debug then "max_batches_per_epoch"]: 7,
+                "inner": {
+                    "batch_size": if debug then 5 else 32
+                }
             },
             "model": {
               "type": "transformer_mc_tt",
@@ -29,8 +35,7 @@ local transformer_model = "bert-base-cased";
               "type": "linear_with_warmup",
               "warmup_steps": 100
             },
-            // "grad_norm": 1.0,
-            "num_epochs": 20,
+            "num_epochs": if debug then 3 else 20,
             "patience": 3,
             "validation_metric": "+acc",
         },
@@ -43,7 +48,14 @@ local transformer_model = "bert-base-cased";
             "model": {
                 "type": "ref",
                 "ref": "trained_model"
-            }
+            },
+            [if debug then "data_loader"]: {
+                "type": "max_batches",
+                "max_batches_per_epoch": 7,
+                "inner": {
+                    "batch_size": 5
+                }
+            },
         }
     }
 }
