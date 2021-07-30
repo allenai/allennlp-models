@@ -2,6 +2,7 @@ import glob
 import logging
 from os import PathLike
 from typing import (
+    Any,
     Dict,
     List,
     Union,
@@ -211,60 +212,43 @@ class VisionReader(DatasetReader):
             self._region_detector.eval()  # type: ignore[attr-defined]
         return self._region_detector  # type: ignore[return-value]
 
+    def _create_cache(
+        self,
+        cache_name: str,
+        cache_dir: Optional[Union[str, PathLike]] = None,
+    ) -> MutableMapping[str, Tensor]:
+        if cache_dir is None:
+            return {}
+        os.makedirs(cache_dir, exist_ok=True)
+        return TensorCache(
+            os.path.join(cache_dir, cache_name),
+            read_only=not self.write_to_cache,
+        )
+
     @property
     def _feature_cache(self) -> MutableMapping[str, Tensor]:
-        if self._feature_cache_instance is None:
-            if self.feature_cache_dir is None:
-                self._feature_cache_instance = {}
-            else:
-                os.makedirs(self.feature_cache_dir, exist_ok=True)
-                self._feature_cache_instance = TensorCache(
-                    os.path.join(self.feature_cache_dir, "features"),
-                    read_only=not self.write_to_cache,
-                )
-
+        self._feature_cache_instance = self._create_cache("features", self.feature_cache_dir)
         return self._feature_cache_instance
 
     @property
     def _coordinates_cache(self) -> MutableMapping[str, Tensor]:
-        if self._coordinates_cache_instance is None:
-            if self.coordinates_cache_dir is None:
-                self._coordinates_cache_instance = {}
-            else:
-                os.makedirs(self.feature_cache_dir, exist_ok=True)  # type: ignore
-                self._coordinates_cache_instance = TensorCache(
-                    os.path.join(self.feature_cache_dir, "coordinates"),  # type: ignore
-                    read_only=not self.write_to_cache,
-                )
-
+        self._coordinates_cache_instance = self._create_cache(
+            "coordinates", self.coordinates_cache_dir
+        )
         return self._coordinates_cache_instance
 
     @property
     def _class_probs_cache(self) -> MutableMapping[str, Tensor]:
-        if self._class_probs_cache_instance is None:
-            if self.class_probs_cache_dir is None:
-                self._class_probs_cache_instance = {}
-            else:
-                os.makedirs(self.feature_cache_dir, exist_ok=True)  # type: ignore
-                self._class_probs_cache_instance = TensorCache(
-                    os.path.join(self.feature_cache_dir, "class_probs"),  # type: ignore
-                    read_only=not self.write_to_cache,
-                )
-
+        self._class_probs_cache_instance = self._create_cache(
+            "class_probs", self.class_probs_cache_dir
+        )
         return self._class_probs_cache_instance
 
     @property
     def _class_labels_cache(self) -> MutableMapping[str, Tensor]:
-        if self._class_labels_cache_instance is None:
-            if self.class_labels_cache_dir is None:
-                self._class_labels_cache_instance = {}
-            else:
-                os.makedirs(self.feature_cache_dir, exist_ok=True)  # type: ignore
-                self._class_labels_cache_instance = TensorCache(
-                    os.path.join(self.feature_cache_dir, "class_labels"),  # type: ignore
-                    read_only=not self.write_to_cache,
-                )
-
+        self._class_labels_cache_instance = self._create_cache(
+            "class_labels", self.class_labels_cache_dir
+        )
         return self._class_labels_cache_instance
 
     def _process_image_paths(
