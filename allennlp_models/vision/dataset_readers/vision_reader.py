@@ -2,7 +2,6 @@ import glob
 import logging
 from os import PathLike
 from typing import (
-    Any,
     Dict,
     List,
     Union,
