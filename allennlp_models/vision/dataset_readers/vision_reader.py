@@ -226,28 +226,32 @@ class VisionReader(DatasetReader):
 
     @property
     def _feature_cache(self) -> MutableMapping[str, Tensor]:
-        self._feature_cache_instance = self._create_cache("features", self.feature_cache_dir)
+        if self._feature_cache_instance is None:
+            self._feature_cache_instance = self._create_cache("features", self.feature_cache_dir)
         return self._feature_cache_instance
 
     @property
     def _coordinates_cache(self) -> MutableMapping[str, Tensor]:
-        self._coordinates_cache_instance = self._create_cache(
-            "coordinates", self.coordinates_cache_dir
-        )
+        if self._coordinates_cache_instance is None:
+            self._coordinates_cache_instance = self._create_cache(
+                "coordinates", self.coordinates_cache_dir
+            )
         return self._coordinates_cache_instance
 
     @property
     def _class_probs_cache(self) -> MutableMapping[str, Tensor]:
-        self._class_probs_cache_instance = self._create_cache(
-            "class_probs", self.class_probs_cache_dir
-        )
+        if self._class_probs_cache_instance is None:
+            self._class_probs_cache_instance = self._create_cache(
+                "class_probs", self.class_probs_cache_dir
+            )
         return self._class_probs_cache_instance
 
     @property
     def _class_labels_cache(self) -> MutableMapping[str, Tensor]:
-        self._class_labels_cache_instance = self._create_cache(
-            "class_labels", self.class_labels_cache_dir
-        )
+        if self._class_labels_cache_instance is None:
+            self._class_labels_cache_instance = self._create_cache(
+                "class_labels", self.class_labels_cache_dir
+            )
         return self._class_labels_cache_instance
 
     def _process_image_paths(
