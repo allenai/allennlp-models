@@ -10,7 +10,7 @@ local debug = true;
         },
         "trained_model": {
             "type": "training",
-            "dataset": "dataset",
+            "dataset": {"ref": "dataset"},
             "training_split": "train",
             "data_loader": {
                 "type": "max_batches",
