@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added some additional `__init__()` parameters to the `T5` model in `allennlp_models.generation` for customizing
   beam search and other options.
 - Added a configuration file for fine-tuning `t5-11b` on CCN-DM (requires at least 8 GPUs).
+- Added a configuration to train on the PIQA dataset with AllenNLP Tango.
 
 ### Fixed
 
