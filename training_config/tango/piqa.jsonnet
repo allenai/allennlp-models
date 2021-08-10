@@ -12,11 +12,14 @@ local debug = true;
             "type": "training",
             "dataset": {"ref": "dataset"},
             "training_split": "train",
-            "data_loader": {
+            [if !debug then "data_loader"]: {
+                "batch_size": 32
+            },
+            [if debug then "data_loader"]: {
                 "type": "max_batches",
-                [if debug then "max_batches_per_epoch"]: 7,
+                "max_batches_per_epoch": 7,
                 "inner": {
-                    "batch_size": if debug then 5 else 32
+                    "batch_size": 5
                 }
             },
             "model": {
