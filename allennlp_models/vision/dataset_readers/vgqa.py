@@ -139,7 +139,9 @@ class VGQAReader(VisionReader):
         questions = questions[question_slice]
 
         question_dicts = list(self.shard_iterable(questions))
-        processed_images: Iterable[Optional[Tuple[Tensor, Tensor]]]
+        processed_images: Iterable[
+            Optional[Tuple[Tensor, Tensor, Optional[Tensor], Optional[Tensor]]]
+        ]
         if self.produce_featurized_images:
             # It would be much easier to just process one image at a time, but it's faster to process
             # them in batches. So this code gathers up instances until it has enough to fill up a batch
@@ -196,7 +198,7 @@ class VGQAReader(VisionReader):
         qa_id: int,
         question: str,
         answer: Optional[str],
-        image: Union[str, Tuple[Tensor, Tensor]],
+        image: Union[str, Tuple[Tensor, Tensor, Optional[Tensor], Optional[Tensor]]],
         use_cache: bool = True,
         keep_impossible_questions: bool = True,
     ) -> Optional[Instance]:
@@ -207,9 +209,9 @@ class VGQAReader(VisionReader):
         }
 
         if isinstance(image, str):
-            features, coords = next(self._process_image_paths([image], use_cache=use_cache))
+            features, coords, _, _ = next(self._process_image_paths([image], use_cache=use_cache))
         else:
-            features, coords = image
+            features, coords, _, _ = image
 
         fields["box_features"] = ArrayField(features)
         fields["box_coordinates"] = ArrayField(coords)

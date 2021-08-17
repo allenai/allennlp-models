@@ -18,9 +18,16 @@ CONFIGS_TO_IGNORE = {
     "constituency_parser_transformer_elmo.jsonnet",
 }
 
+FOLDERS_TO_IGNORE = {
+    # TODO (epwalsh/dirkg): need to test tango configs differently.
+    "tango",
+}
+
 
 def find_configs():
     for item in os.walk("training_config/"):
+        if os.path.basename(item[0]) in FOLDERS_TO_IGNORE:
+            continue
         for pattern in ("*.json", "*.jsonnet"):
             for path in glob(os.path.join(item[0], pattern)):
                 if os.path.basename(path) == "common.jsonnet":
