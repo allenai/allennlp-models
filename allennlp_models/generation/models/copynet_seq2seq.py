@@ -522,9 +522,7 @@ class CopyNetSeq2Seq(Model):
             input_choices = target_tokens["tokens"]["tokens"][:, timestep]
             # Get mask tensor indicating which instances were copied.
             # shape: (batch_size,)
-            copied = (
-                (input_choices == self._oov_index) & (target_to_source.sum(-1) > 0)
-            ).long()
+            copied = ((input_choices == self._oov_index) & (target_to_source.sum(-1) > 0)).long()
             # shape: (batch_size,)
             input_choices = input_choices * (1 - copied) + copy_input_choices * copied
             # shape: (batch_size, source_sequence_length)

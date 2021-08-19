@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed tests for Spacy versions greater than 3.1
+- Fixed the last step decoding when training CopyNet
 
 ### Changed
 
