@@ -492,8 +492,7 @@ class CopyNetSeq2Seq(Model):
         # shape: (batch_size, source_sequence_length)
         source_mask = state["source_mask"]
 
-        # The last input from the target is either padding or the end symbol.
-        # Either way, we don't have to process it.
+        # We have a decoding step for every target token except the "START" token.
         num_decoding_steps = target_sequence_length - 1
         # We use this to fill in the copy index when the previous input was copied.
         # shape: (batch_size,)
