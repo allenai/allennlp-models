@@ -492,8 +492,7 @@ class CopyNetSeq2Seq(Model):
         # shape: (batch_size, source_sequence_length)
         source_mask = state["source_mask"]
 
-        # The last input from the target is either padding or the end symbol.
-        # Either way, we don't have to process it.
+        # We have a decoding step for every target token except the "START" token.
         num_decoding_steps = target_sequence_length - 1
         # We use this to fill in the copy index when the previous input was copied.
         # shape: (batch_size,)
@@ -520,21 +519,15 @@ class CopyNetSeq2Seq(Model):
         for timestep in range(num_decoding_steps):
             # shape: (batch_size,)
             input_choices = target_tokens["tokens"]["tokens"][:, timestep]
-            # If the previous target token was copied, we use the special copy token.
-            # But the end target token will always be THE end token, so we know
-            # it was not copied.
-            if timestep < num_decoding_steps - 1:
-                # Get mask tensor indicating which instances were copied.
-                # shape: (batch_size,)
-                copied = (
-                    (input_choices == self._oov_index) & (target_to_source.sum(-1) > 0)
-                ).long()
-                # shape: (batch_size,)
-                input_choices = input_choices * (1 - copied) + copy_input_choices * copied
-                # shape: (batch_size, source_sequence_length)
-                target_to_source = state["source_token_ids"] == target_token_ids[
-                    :, timestep + 1
-                ].unsqueeze(-1)
+            # Get mask tensor indicating which instances were copied.
+            # shape: (batch_size,)
+            copied = ((input_choices == self._oov_index) & (target_to_source.sum(-1) > 0)).long()
+            # shape: (batch_size,)
+            input_choices = input_choices * (1 - copied) + copy_input_choices * copied
+            # shape: (batch_size, source_sequence_length)
+            target_to_source = state["source_token_ids"] == target_token_ids[
+                :, timestep + 1
+            ].unsqueeze(-1)
             # Update the decoder state by taking a step through the RNN.
             state = self._decoder_step(input_choices, selective_weights, state)
             # Get generation scores for each token in the target vocab.
