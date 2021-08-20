@@ -32,7 +32,7 @@ class TransformerClassificationTransformerToolkit(Model):
         num_labels: Optional[int] = None,
         label_namespace: str = "labels",
         override_weights_file: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ) -> None:
         super().__init__(vocab, **kwargs)
         transformer_kwargs = {
