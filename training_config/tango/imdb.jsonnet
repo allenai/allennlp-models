@@ -6,8 +6,17 @@ local transformer_model = if debug then "roberta-base" else "roberta-large";
 {
     "steps": {
         "dataset": {
-            "type": "imdb_instances",
-            "tokenizer_name": transformer_model
+            "type": "dataset_remix",
+            "input": {
+                "type": "imdb_instances",
+                "tokenizer_name": transformer_model
+            },
+            "new_splits": {
+                 "train": "train[:20000]",
+                 "validation": "train[20000:]",
+                 "test": "test"
+            },
+            "keep_old_splits": false
         },
         "trained_model": {
             "type": "training",
