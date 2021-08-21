@@ -22,6 +22,7 @@ local transformer_model = if debug then "roberta-base" else "roberta-large";
             "type": "training",
             "dataset": {"ref": "dataset"},
             "training_split": "train",
+            "validation_split": "validation",
             [if !debug then "data_loader"]: {
                 "batch_size": 32
             },
