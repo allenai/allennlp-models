@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 @Model.register("transformer_classification_tt")
-class TransformerClassificationTransformerToolkit(Model):
+class TransformerClassificationTT(Model):
     """
     This class implements a classification patterned after the proposed model in
     [RoBERTa: A Robustly Optimized BERT Pretraining Approach (Liu et al)]

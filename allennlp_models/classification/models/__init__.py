@@ -2,5 +2,5 @@ from allennlp_models.classification.models.biattentive_classification_network im
     BiattentiveClassificationNetwork,
 )
 from allennlp_models.classification.models.transformer_classification_tt import (
-    TransformerClassificationTransformerToolkit,
+    TransformerClassificationTT,
 )
