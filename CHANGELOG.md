@@ -9,15 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added some additional `__init__()` parameters to the `T5` model in `allennlp_models.generation` for customizing
+- Added some additional `__init__()` parameters to the `T5` model in `allennlp_models.generation` for customizing.
   beam search and other options.
 - Added a configuration file for fine-tuning `t5-11b` on CCN-DM (requires at least 8 GPUs).
 - Added a configuration to train on the PIQA dataset with AllenNLP Tango.
 
 ### Fixed
 
-- Fixed tests for Spacy versions greater than 3.1
-- Fixed the last step decoding when training CopyNet
+- Fixed tests for Spacy versions greater than 3.1.
+- Fixed the last step decoding when training CopyNet.
+- Allow singleton clusters in `ConllCorefScores`.
 
 ### Changed
 
