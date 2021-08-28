@@ -12,7 +12,7 @@ from allennlp.tango.step import Step
 @Step.register("piqa_instances")
 class PiqaInstances(Step):
     DETERMINISTIC = True
-    VERSION = "003"
+    VERSION = "004"
     CACHEABLE = True
 
     def run(
@@ -63,6 +63,7 @@ class PiqaInstances(Step):
                             torch.tensor(
                                 tokenized_alts["token_type_ids"][alt_index], dtype=torch.int32
                             ),
+                            padding_token_id=tokenizer.pad_token_id,
                         )
                         for alt_index in [2 * i, 2 * i + 1]
                     ]
