@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   beam search and other options.
 - Added a configuration file for fine-tuning `t5-11b` on CCN-DM (requires at least 8 GPUs).
 - Added a configuration to train on the PIQA dataset with AllenNLP Tango.
+- Added a transformer classification model.
+- Added a configuration to train on the IMDB dataset with AllenNLP Tango.
 
 ### Fixed
 
