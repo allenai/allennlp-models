@@ -566,7 +566,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        cuda: ['10.1', '10.2', '11.1']
+        cuda: ['10.2', '11.1']
 
     steps:
     - uses: actions/checkout@v2
