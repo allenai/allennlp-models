@@ -96,6 +96,6 @@ setup(
             "structured_prediction/tools/srl-eval.pl",
         ]
     },
-    python_requires=">=3.6.1",
+    python_requires=">=3.7.1",
     zip_safe=False,
 )
