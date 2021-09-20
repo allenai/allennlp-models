@@ -47,25 +47,25 @@ class SimpleSeq2SeqTest(ModelTestCase):
         )
 
     def test_bidirectional_model_can_train_save_and_load(self):
-        param_overrides = json.dumps({"model": {"encoder": {"bidirectional": True}}})
+        param_overrides = json.dumps({"model.encoder.bidirectional": True})
         self.ensure_model_can_train_save_and_load(
             self.param_file, tolerance=1e-2, overrides=param_overrides
         )
 
     def test_multi_layer_decoder_model_can_train_save_and_load(self):
-        param_overrides = json.dumps({"model": {"target_decoder_layers": 2}})
+        param_overrides = json.dumps({"model.target_decoder_layers": 2})
         self.ensure_model_can_train_save_and_load(
             self.param_file, tolerance=1e-2, overrides=param_overrides
         )
 
     def test_no_attention_model_can_train_save_and_load(self):
-        param_overrides = json.dumps({"model": {"attention": None}})
+        param_overrides = json.dumps({"model.attention": None})
         self.ensure_model_can_train_save_and_load(
             self.param_file, tolerance=1e-2, overrides=param_overrides
         )
 
     def test_greedy_model_can_train_save_and_load(self):
-        param_overrides = json.dumps({"model": {"beam_search": {"beam_size": 1}}})
+        param_overrides = json.dumps({"model.beam_search.beam_size": 1})
         self.ensure_model_can_train_save_and_load(
             self.param_file, tolerance=1e-2, overrides=param_overrides
         )
