@@ -20,10 +20,9 @@ class ComposedSeq2SeqTest(ModelTestCase):
 
         param_overrides = json.dumps(
             {
-                "model": {
-                    "encoder": {"bidirectional": True},
-                    "decoder": {"decoder_net": {"decoding_dim": 20, "bidirectional_input": True}},
-                }
+                "model.encoder.bidirectional": True,
+                "model.decoder.decoder_net.decoding_dim": 20,
+                "model.decoder.decoder_net.bidirectional_input": True,
             }
         )
         self.ensure_model_can_train_save_and_load(
@@ -31,13 +30,13 @@ class ComposedSeq2SeqTest(ModelTestCase):
         )
 
     def test_no_attention_model_can_train_save_and_load(self):
-        param_overrides = json.dumps({"model": {"decoder": {"decoder_net": {"attention": None}}}})
+        param_overrides = json.dumps({"model.decoder.decoder_net.attention": None})
         self.ensure_model_can_train_save_and_load(
             self.param_file, tolerance=1e-2, overrides=param_overrides
         )
 
     def test_greedy_model_can_train_save_and_load(self):
-        param_overrides = json.dumps({"model": {"decoder": {"beam_search": {"beam_size": 1}}}})
+        param_overrides = json.dumps({"model.decoder.beam_search.beam_size": 1})
         self.ensure_model_can_train_save_and_load(
             self.param_file, tolerance=1e-2, overrides=param_overrides
         )
