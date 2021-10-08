@@ -21,7 +21,7 @@ class TestIRVilbert(ModelTestCase):
         import tempfile
 
         with tempfile.TemporaryDirectory(prefix=self.__class__.__name__) as d:
-            overrides = {"dataset_reader": {"feature_cache_dir": str(d)}}
+            overrides = {"dataset_reader.feature_cache_dir": str(d)}
             import json
 
             overrides = json.dumps(overrides)
