@@ -21,10 +21,10 @@ on:
 
 env:
   # NOTE: Need to update `TORCH_VERSION` and `TORCH_VISION_VERSION` for new torch releases.
-  TORCH_VERSION: 1.9.0
-  TORCH_VISION_VERSION: 0.10.0
+  TORCH_VERSION: 1.9.1
+  TORCH_VISION_VERSION: 0.10.1
   # Change this to invalidate the current cache.
-  CACHE_PREFIX: v0
+  CACHE_PREFIX: v1
   # Disable tokenizers parallelism because this doesn't help, and can cause issues in distributed tests.
   TOKENIZERS_PARALLELISM: 'false'
   # Disable multithreading with OMP because this can lead to dead-locks in distributed tests.
@@ -169,8 +169,7 @@ jobs:
         . .venv/bin/activate
         pip install torch==${{ env.TORCH_VERSION }}+${{ matrix.task.torch_platform }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{matrix.task.torch_platform}} -f https://download.pytorch.org/whl/torch_stable.html
         pip uninstall -y allennlp
-        pip install --upgrade --upgrade-strategy eager -r requirements.txt
-        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
+        pip install --upgrade -r requirements.txt -r dev-requirements.txt
 
     - name: Show environment info
       if: always()
