@@ -1,4 +1,4 @@
-git+https://github.com/allenai/allennlp.git@main
+git+https://github.com/allenai/allennlp.git@dependabot/pip/torch-gte-1.6.0-and-lt-1.11.0
 
 torch>=1.7.0,<1.11.0
 
