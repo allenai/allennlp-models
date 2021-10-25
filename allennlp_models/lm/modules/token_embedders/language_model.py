@@ -66,7 +66,7 @@ class LanguageModelTokenEmbedder(TokenEmbedder):
     ) -> None:
         super().__init__()
 
-        overrides = {"model": {"contextualizer": {"return_all_layers": True}}}
+        overrides = {"model.contextualizer.return_all_layers": True}
 
         # Import here to avoid circular dependency.
         from allennlp.models.archival import load_archive

@@ -7,15 +7,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [v2.7.0](https://github.com/allenai/allennlp-models/releases/tag/v2.7.0) - 2021-09-01
+
+### Added
+
+- Added `superglue_record` to the rc readers for SuperGLUE's Reading Comprehension with Commonsense Reasoning task 
+- Added some additional `__init__()` parameters to the `T5` model in `allennlp_models.generation` for customizing.
+  beam search and other options.
+- Added a configuration file for fine-tuning `t5-11b` on CCN-DM (requires at least 8 GPUs).
+- Added a configuration to train on the PIQA dataset with AllenNLP Tango.
+- Added a transformer classification model.
+- Added a configuration to train on the IMDB dataset with AllenNLP Tango.
+
+### Fixed
+
+- Fixed tests for Spacy versions greater than 3.1.
+- Fixed the last step decoding when training CopyNet.
+- Allow singleton clusters in `ConllCorefScores`.
+
+### Changed
+
+- Updated `VisionReader` to yield all of `RegionDetectorOutput`'s keys in processing.
+
+## [v2.6.0](https://github.com/allenai/allennlp-models/releases/tag/v2.6.0) - 2021-07-19
+
 ### Added
 
 - Added support for NLVR2 visual entailment, including a data loader, two models, and training configs.
 - Added `StanfordSentimentTreeBankDatasetReader.apply_token_indexers()` to add token_indexers rather than in `text_to_instance` 
+- Added `AdversarialBiasMitigator` tests.
+- Added `adversarial-binary-gender-bias-mitigated-roberta-snli` model.
+- Added support for Flickr30k image retrieval, including a dataset reader, a model, and a training config.
+- Added `label_smoothing` parameter to `CopyNetSeq2Rel` to smooth generation targets.
+- Added `vocab` as argument to `beam_search.construct` in all `generation` models.
 
 ### Fixed
 
 - Fixed `binary-gender-bias-mitigated-roberta-snli` model card to indicate that model requires `allennlp@v2.5.0`.
 - Fixed registered model name in the `pair-classification-roberta-rte` and `vgqa-vilbert` model cards.
+
+### Changed
+
+- The multiple choice models now use the new `TransformerTextField` and the transformer toolkit generally.
+
 
 ## [v2.5.0](https://github.com/allenai/allennlp-models/releases/tag/v2.5.0) - 2021-06-03
 
