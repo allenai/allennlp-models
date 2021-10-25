@@ -156,20 +156,17 @@ jobs:
       with:
         path: .venv
         key: ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ matrix.task.torch_platform }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
-        restore-keys: |
-          ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ matrix.task.torch_platform }}-
 
     - name: Create virtual environment
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
       run: |
         test -d .venv || virtualenv -p $(which python) --copies --reset-app-data .venv
+        pip install torch==${{ env.TORCH_VERSION }}+${{ matrix.task.torch_platform }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{matrix.task.torch_platform}} -f https://download.pytorch.org/whl/torch_stable.html
 
     - name: Install requirements
       run: |
         . .venv/bin/activate
-        pip install torch==${{ env.TORCH_VERSION }}+${{ matrix.task.torch_platform }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{matrix.task.torch_platform}} -f https://download.pytorch.org/whl/torch_stable.html
-        pip uninstall -y allennlp
-        pip install --upgrade -r requirements.txt -r dev-requirements.txt
+        pip install -r requirements.txt -r dev-requirements.txt
 
     - name: Show environment info
       if: always()
@@ -286,21 +283,17 @@ jobs:
       with:
         path: .venv
         key: ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
-        restore-keys: |
-          ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-
 
     - name: Create virtual environment
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
       run: |
         test -d .venv || virtualenv -p $(which python) --copies --reset-app-data .venv
+        pip install torch==${{ env.TORCH_VERSION }}+${{ env.TORCH_PLATFORM }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{ env.TORCH_PLATFORM }} -f https://download.pytorch.org/whl/torch_stable.html
 
     - name: Install requirements
       run: |
         . .venv/bin/activate
-        pip install torch==${{ env.TORCH_VERSION }}+${{ env.TORCH_PLATFORM }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{ env.TORCH_PLATFORM }} -f https://download.pytorch.org/whl/torch_stable.html
-        pip uninstall -y allennlp
-        pip install --upgrade --upgrade-strategy eager -r requirements.txt
-        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
+        pip install -r requirements.txt -r dev-requirements.txt
 
     - name: Show environment info
       run: |
@@ -431,21 +424,17 @@ jobs:
       with:
         path: .venv
         key: ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
-        restore-keys: |
-          ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-
 
     - name: Create virtual environment
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
       run: |
         test -d .venv || virtualenv -p $(which python) --copies --reset-app-data .venv
+        pip install torch==${{ env.TORCH_VERSION }}+${{ env.TORCH_PLATFORM }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{ env.TORCH_PLATFORM }} -f https://download.pytorch.org/whl/torch_stable.html
 
     - name: Install requirements
       run: |
         . .venv/bin/activate
-        pip install torch==${{ env.TORCH_VERSION }}+${{ env.TORCH_PLATFORM }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{ env.TORCH_PLATFORM }} -f https://download.pytorch.org/whl/torch_stable.html
-        pip uninstall -y allennlp
-        pip install --upgrade --upgrade-strategy eager -r requirements.txt
-        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
+        pip install -r requirements.txt -r dev-requirements.txt
 
     - name: Show environment info
       run: |
