@@ -35,14 +35,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added support for NLVR2 visual entailment, including a data loader, two models, and training configs.
 - Added `StanfordSentimentTreeBankDatasetReader.apply_token_indexers()` to add token_indexers rather than in `text_to_instance` 
-<<<<<<< HEAD
-=======
 - Added `AdversarialBiasMitigator` tests.
 - Added `adversarial-binary-gender-bias-mitigated-roberta-snli` model.
 - Added support for Flickr30k image retrieval, including a dataset reader, a model, and a training config.
 - Added `label_smoothing` parameter to `CopyNetSeq2Rel` to smooth generation targets.
 - Added `vocab` as argument to `beam_search.construct` in all `generation` models.
->>>>>>> 39557dd8a85ffedd195033ef760c1ac53caaccf9
 
 ### Fixed
 
