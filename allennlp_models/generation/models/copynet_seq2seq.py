@@ -47,6 +47,11 @@ class CopyNetSeq2Seq(Model):
     attention : `Attention`, required
         This is used to get a dynamic summary of encoder outputs at each timestep
         when producing the "generation" scores for the target vocab.
+    label_smoothing : `float`, optional (default = `None`)
+        Whether or not to apply label smoothing to the cross-entropy loss.
+        For example, with a label smoothing value of 0.2, a 4 class classification
+        target would look like `[0.05, 0.05, 0.85, 0.05]` if the 3rd class was
+        the correct label.
     beam_search : `BeamSearch`, optional (default = `Lazy(BeamSearch)`)
         This is used to during inference to select the tokens of the decoded output sequence.
     target_embedding_dim : `int`, optional (default = `30`)
@@ -75,6 +80,7 @@ class CopyNetSeq2Seq(Model):
         source_embedder: TextFieldEmbedder,
         encoder: Seq2SeqEncoder,
         attention: Attention,
+        label_smoothing: float = None,
         beam_search: Lazy[BeamSearch] = Lazy(BeamSearch),
         target_embedding_dim: int = 30,
         copy_token: str = "@COPY@",
@@ -123,6 +129,7 @@ class CopyNetSeq2Seq(Model):
             num_embeddings=self._target_vocab_size, embedding_dim=target_embedding_dim
         )
         self._attention = attention
+        self._label_smoothing = label_smoothing
         self._input_projection_layer = Linear(
             target_embedding_dim + self.encoder_output_dim * 2, self.decoder_input_dim
         )
@@ -154,7 +161,9 @@ class CopyNetSeq2Seq(Model):
         if "max_decoding_steps" in kwargs:
             beam_search_extras["max_steps"] = kwargs["max_decoding_steps"]
             warnings.warn(deprecation_warning.format("max_decoding_steps"), DeprecationWarning)
-        self._beam_search = beam_search.construct(end_index=self._end_index, **beam_search_extras)
+        self._beam_search = beam_search.construct(
+            end_index=self._end_index, vocab=self.vocab, **beam_search_extras
+        )
 
         initializer(self)
 
@@ -443,8 +452,23 @@ class CopyNetSeq2Seq(Model):
         gen_mask = (target_tokens != self._oov_index) | (target_to_source.sum(-1) == 0)
         log_gen_mask = (gen_mask + util.tiny_value_of_dtype(log_probs.dtype)).log().unsqueeze(-1)
         # Now we get the generation score for the gold target token.
-        # shape: (batch_size, 1)
-        generation_log_probs = log_probs.gather(1, target_tokens.unsqueeze(1)) + log_gen_mask
+        if self._label_smoothing is not None and self._label_smoothing > 0.0:
+            smoothing_value = self._label_smoothing / target_size
+            # Create the smoothed targets to be multiplied with `log_probs`
+            # shape: (batch_size, target_vocab_size + source_sequence_length)
+            smoothed_targets = torch.full_like(log_probs, smoothing_value).scatter_(
+                1, target_tokens.unsqueeze(1), 1.0 - self._label_smoothing + smoothing_value
+            )
+            generation_log_probs = log_probs * smoothed_targets
+            # shape: (batch_size, 1)
+            generation_log_probs = generation_log_probs.sum(-1, keepdim=True)
+        else:
+            # Contribution to the negative log likelihood only comes from the exact indices
+            # of the targets, as the target distributions are one-hot. Here we use torch.gather
+            # to extract the indices which contribute to the loss.
+            # shape: (batch_size, 1)
+            generation_log_probs = log_probs.gather(1, target_tokens.unsqueeze(1))
+        generation_log_probs = generation_log_probs + log_gen_mask
         # ... and add the copy score to get the step log likelihood.
         # shape: (batch_size, 1 + source_sequence_length)
         combined_gen_and_copy = torch.cat((generation_log_probs, copy_log_probs), dim=-1)
@@ -468,8 +492,7 @@ class CopyNetSeq2Seq(Model):
         # shape: (batch_size, source_sequence_length)
         source_mask = state["source_mask"]
 
-        # The last input from the target is either padding or the end symbol.
-        # Either way, we don't have to process it.
+        # We have a decoding step for every target token except the "START" token.
         num_decoding_steps = target_sequence_length - 1
         # We use this to fill in the copy index when the previous input was copied.
         # shape: (batch_size,)
@@ -496,21 +519,15 @@ class CopyNetSeq2Seq(Model):
         for timestep in range(num_decoding_steps):
             # shape: (batch_size,)
             input_choices = target_tokens["tokens"]["tokens"][:, timestep]
-            # If the previous target token was copied, we use the special copy token.
-            # But the end target token will always be THE end token, so we know
-            # it was not copied.
-            if timestep < num_decoding_steps - 1:
-                # Get mask tensor indicating which instances were copied.
-                # shape: (batch_size,)
-                copied = (
-                    (input_choices == self._oov_index) & (target_to_source.sum(-1) > 0)
-                ).long()
-                # shape: (batch_size,)
-                input_choices = input_choices * (1 - copied) + copy_input_choices * copied
-                # shape: (batch_size, source_sequence_length)
-                target_to_source = state["source_token_ids"] == target_token_ids[
-                    :, timestep + 1
-                ].unsqueeze(-1)
+            # Get mask tensor indicating which instances were copied.
+            # shape: (batch_size,)
+            copied = ((input_choices == self._oov_index) & (target_to_source.sum(-1) > 0)).long()
+            # shape: (batch_size,)
+            input_choices = input_choices * (1 - copied) + copy_input_choices * copied
+            # shape: (batch_size, source_sequence_length)
+            target_to_source = state["source_token_ids"] == target_token_ids[
+                :, timestep + 1
+            ].unsqueeze(-1)
             # Update the decoder state by taking a step through the RNN.
             state = self._decoder_step(input_choices, selective_weights, state)
             # Get generation scores for each token in the target vocab.

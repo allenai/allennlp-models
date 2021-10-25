@@ -16,8 +16,9 @@ class ConllCorefScores(Metric):
 
     supports_distributed = True
 
-    def __init__(self) -> None:
+    def __init__(self, allow_singletons=False) -> None:
         self.scorers = [Scorer(m) for m in (Scorer.muc, Scorer.b_cubed, Scorer.ceafe)]
+        self.allow_singletons = allow_singletons
 
     @overrides
     def __call__(
@@ -56,7 +57,7 @@ class ConllCorefScores(Metric):
         for i, metadata in enumerate(metadata_list):
             gold_clusters, mention_to_gold = self.get_gold_clusters(metadata["clusters"])
             predicted_clusters, mention_to_predicted = self.get_predicted_clusters(
-                top_spans[i], antecedent_indices[i], predicted_antecedents[i]
+                top_spans[i], antecedent_indices[i], predicted_antecedents[i], self.allow_singletons
             )
             for scorer in self.scorers:
                 scorer.update(
@@ -91,6 +92,7 @@ class ConllCorefScores(Metric):
         top_spans: torch.Tensor,  # (num_spans, 2)
         antecedent_indices: torch.Tensor,  # (num_spans, num_antecedents)
         predicted_antecedents: torch.Tensor,  # (num_spans,)
+        allow_singletons: bool,
     ) -> Tuple[
         List[Tuple[Tuple[int, int], ...]], Dict[Tuple[int, int], Tuple[Tuple[int, int], ...]]
     ]:
@@ -104,7 +106,10 @@ class ConllCorefScores(Metric):
             # Find predicted index in the antecedent spans.
             predicted_index = antecedent_indices[i, predicted_antecedent]
             # Must be a previous span.
-            assert i > predicted_index
+            if allow_singletons:
+                assert i >= predicted_index
+            else:
+                assert i > predicted_index
             antecedent_span: Tuple[int, int] = tuple(  # type: ignore
                 top_spans[predicted_index].tolist()
             )

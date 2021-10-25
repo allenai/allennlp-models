@@ -17,7 +17,7 @@ class ConllCorefScoresTest(AllenNlpTestCase):
         antecedent_indices = torch.tensor([[-1, -1, -1], [0, -1, -1], [0, 1, -1]], device=device)
         predicted_antecedents = torch.tensor([-1, -1, 1], device=device)
         clusters, mention_to_cluster = ConllCorefScores.get_predicted_clusters(
-            top_spans, antecedent_indices, predicted_antecedents
+            top_spans, antecedent_indices, predicted_antecedents, allow_singletons=False
         )
         assert len(clusters) == 1
         assert set(clusters[0]) == {(4, 6), (8, 9)}

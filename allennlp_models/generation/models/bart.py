@@ -165,7 +165,9 @@ class Bart(Model):
         if "max_decoding_steps" in kwargs:
             beam_search_extras["max_steps"] = kwargs["max_decoding_steps"]
             warnings.warn(deprecation_warning.format("max_decoding_steps"), DeprecationWarning)
-        self._beam_search = beam_search.construct(end_index=self._end_id, **beam_search_extras)
+        self._beam_search = beam_search.construct(
+            end_index=self._end_id, vocab=self.vocab, **beam_search_extras
+        )
 
         self._rouge = ROUGE(exclude_indices={self._start_id, self._pad_id, self._end_id})
         self._bleu = BLEU(exclude_indices={self._start_id, self._pad_id, self._end_id})
@@ -394,3 +396,5 @@ class Bart(Model):
             metrics.update(self._rouge.get_metric(reset=reset))
             metrics.update(self._bleu.get_metric(reset=reset))
         return metrics
+
+    default_predictor = "seq2seq"

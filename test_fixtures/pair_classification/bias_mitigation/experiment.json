@@ -32,7 +32,7 @@
       },
       "seq2vec_encoder": {
         "type": "cls_pooler",
-        "embedding_dim": 20,
+        "embedding_dim": 20
       },
       "feedforward": {
         "input_dim": 20,

@@ -96,11 +96,13 @@ class VisionReader(DatasetReader):
         max_instances: Optional[int] = None,
         image_processing_batch_size: int = 8,
         write_to_cache: bool = True,
+        manual_distributed_sharding: bool = True,
+        manual_multiprocess_sharding: bool = True,
     ) -> None:
         super().__init__(
             max_instances=max_instances,
-            manual_distributed_sharding=True,
-            manual_multiprocess_sharding=True,
+            manual_distributed_sharding=manual_distributed_sharding,
+            manual_multiprocess_sharding=manual_multiprocess_sharding,
         )
 
         # tokenizers and indexers
@@ -120,6 +122,9 @@ class VisionReader(DatasetReader):
         # feature cache
         self.feature_cache_dir = feature_cache_dir
         self.coordinates_cache_dir = feature_cache_dir
+        self.class_probs_cache_dir = feature_cache_dir
+        self.class_labels_cache_dir = feature_cache_dir
+
         if feature_cache_dir:
             self.write_to_cache = write_to_cache
         else:
@@ -128,6 +133,8 @@ class VisionReader(DatasetReader):
             self.write_to_cache = True
         self._feature_cache_instance: Optional[MutableMapping[str, Tensor]] = None
         self._coordinates_cache_instance: Optional[MutableMapping[str, Tensor]] = None
+        self._class_probs_cache_instance: Optional[MutableMapping[str, Tensor]] = None
+        self._class_labels_cache_instance: Optional[MutableMapping[str, Tensor]] = None
 
         # image processors
         self.image_loader = None
@@ -204,37 +211,52 @@ class VisionReader(DatasetReader):
             self._region_detector.eval()  # type: ignore[attr-defined]
         return self._region_detector  # type: ignore[return-value]
 
+    def _create_cache(
+        self,
+        cache_name: str,
+        cache_dir: Optional[Union[str, PathLike]] = None,
+    ) -> MutableMapping[str, Tensor]:
+        if cache_dir is None:
+            return {}
+        os.makedirs(cache_dir, exist_ok=True)
+        return TensorCache(
+            os.path.join(cache_dir, cache_name),
+            read_only=not self.write_to_cache,
+        )
+
     @property
     def _feature_cache(self) -> MutableMapping[str, Tensor]:
         if self._feature_cache_instance is None:
-            if self.feature_cache_dir is None:
-                self._feature_cache_instance = {}
-            else:
-                os.makedirs(self.feature_cache_dir, exist_ok=True)
-                self._feature_cache_instance = TensorCache(
-                    os.path.join(self.feature_cache_dir, "features"),
-                    read_only=not self.write_to_cache,
-                )
-
+            self._feature_cache_instance = self._create_cache("features", self.feature_cache_dir)
         return self._feature_cache_instance
 
     @property
     def _coordinates_cache(self) -> MutableMapping[str, Tensor]:
         if self._coordinates_cache_instance is None:
-            if self.coordinates_cache_dir is None:
-                self._coordinates_cache_instance = {}
-            else:
-                os.makedirs(self.feature_cache_dir, exist_ok=True)  # type: ignore
-                self._coordinates_cache_instance = TensorCache(
-                    os.path.join(self.feature_cache_dir, "coordinates"),  # type: ignore
-                    read_only=not self.write_to_cache,
-                )
-
+            self._coordinates_cache_instance = self._create_cache(
+                "coordinates", self.coordinates_cache_dir
+            )
         return self._coordinates_cache_instance
+
+    @property
+    def _class_probs_cache(self) -> MutableMapping[str, Tensor]:
+        if self._class_probs_cache_instance is None:
+            self._class_probs_cache_instance = self._create_cache(
+                "class_probs", self.class_probs_cache_dir
+            )
+        return self._class_probs_cache_instance
+
+    @property
+    def _class_labels_cache(self) -> MutableMapping[str, Tensor]:
+        if self._class_labels_cache_instance is None:
+            self._class_labels_cache_instance = self._create_cache(
+                "class_labels", self.class_labels_cache_dir
+            )
+        return self._class_labels_cache_instance
 
     def _process_image_paths(
         self, image_paths: Iterable[str], *, use_cache: bool = True
-    ) -> Iterator[Tuple[Tensor, Tensor]]:
+    ) -> Iterator[Tuple[Tensor, Tensor, Optional[Tensor], Optional[Tensor]]]:
         """
         Processes the given image paths and returns featurized images.
 
@@ -256,7 +278,7 @@ class VisionReader(DatasetReader):
             "an image featurizer, and a region detector."
         )
 
-        batch: List[Union[str, Tuple[Tensor, Tensor]]] = []
+        batch: List[Union[str, Tuple[Tensor, Tensor, Optional[Tensor], Optional[Tensor]]]] = []
         unprocessed_paths: Set[str] = set()
 
         def yield_batch():
@@ -270,16 +292,44 @@ class VisionReader(DatasetReader):
                 detector_results = self.region_detector(images, sizes, featurized_images)
                 features = detector_results.features
                 coordinates = detector_results.boxes
+                class_probs = detector_results.class_probs
+                class_labels = detector_results.class_labels
 
             # store the processed results in memory, so we can complete the batch
-            paths_to_tensors = {path: (features[i], coordinates[i]) for i, path in enumerate(paths)}
+            paths_to_tensors = {}
+            for i, path in enumerate(paths):
+                if class_probs:
+                    class_probs_tensor = class_probs[i]
+                else:
+                    class_probs_tensor = None
+
+                if class_labels:
+                    class_labels_tensor = class_labels[i]
+                else:
+                    class_labels_tensor = None
+
+                paths_to_tensors[path] = (
+                    features[i],
+                    coordinates[i],
+                    class_probs_tensor,
+                    class_labels_tensor,
+                )
 
             # store the processed results in the cache
             if use_cache and self.write_to_cache:
-                for path, (features, coordinates) in paths_to_tensors.items():
+                for path, (
+                    features,
+                    coordinates,
+                    class_probs,
+                    class_labels,
+                ) in paths_to_tensors.items():
                     basename = os.path.basename(path)
                     self._feature_cache[basename] = features
                     self._coordinates_cache[basename] = coordinates
+                    if class_probs is not None:
+                        self._class_probs_cache[basename] = class_probs
+                    if class_labels is not None:
+                        self._class_labels_cache[basename] = class_labels
 
             # yield the batch
             for b in batch:
@@ -294,10 +344,12 @@ class VisionReader(DatasetReader):
                 if use_cache:
                     features: Tensor = self._feature_cache[basename]
                     coordinates: Tensor = self._coordinates_cache[basename]
+                    class_probs: Optional[Tensor] = self._class_probs_cache.get(basename)
+                    class_labels: Optional[Tensor] = self._class_labels_cache.get(basename)
                     if len(batch) <= 0:
-                        yield features, coordinates
+                        yield features, coordinates, class_probs, class_labels
                     else:
-                        batch.append((features, coordinates))
+                        batch.append((features, coordinates, class_probs, class_labels))
                 else:
                     # If we're not using the cache, we pretend we had a cache miss here.
                     raise KeyError

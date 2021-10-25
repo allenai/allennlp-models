@@ -13,12 +13,13 @@ class TransformerMCReader(DatasetReader):
     data for TransformerMC.
 
     Instances have two fields:
-     * `alternatives`, a ListField of TextField
-     * `correct_alternative`, IndexField with the correct answer among `alternatives`
+     * `alternatives`, a `ListField` of `TextField`
+     * `correct_alternative`, `IndexField` with the correct answer among `alternatives`
+     * `qid`, a `MetadataField` containing question ids
 
     Parameters
     ----------
-    transformer_model_name : `str`, optional (default=`roberta-large`)
+    transformer_model_name : `str`, optional (default=`"roberta-large"`)
         This reader chooses tokenizer and token indexer according to this setting.
     length_limit : `int`, optional (default=`512`)
         We will make sure that the length of an alternative never exceeds this many word pieces.

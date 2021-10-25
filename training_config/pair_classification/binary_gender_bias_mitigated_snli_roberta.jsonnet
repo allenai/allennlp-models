@@ -2,7 +2,7 @@ local transformer_model = "roberta-large";
 local transformer_dim = 1024;
 
 {
-  "dataset_reader":{
+  "dataset_reader": {
     "type": "snli",
     "tokenizer": {
       "type": "pretrained_transformer",

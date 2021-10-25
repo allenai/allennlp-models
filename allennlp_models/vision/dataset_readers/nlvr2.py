@@ -125,8 +125,12 @@ class Nlvr2Reader(VisionReader):
             blobs.append(json_blob)
 
         blob_dicts = list(self.shard_iterable(blobs))
-        processed_images1: Iterable[Optional[Tuple[Tensor, Tensor]]]
-        processed_images2: Iterable[Optional[Tuple[Tensor, Tensor]]]
+        processed_images1: Iterable[
+            Optional[Tuple[Tensor, Tensor, Optional[Tensor], Optional[Tensor]]]
+        ]
+        processed_images2: Iterable[
+            Optional[Tuple[Tensor, Tensor, Optional[Tensor], Optional[Tensor]]]
+        ]
         if self.produce_featurized_images:
             # It would be much easier to just process one image at a time, but it's faster to process
             # them in batches. So this code gathers up instances until it has enough to fill up a batch
@@ -169,11 +173,15 @@ class Nlvr2Reader(VisionReader):
                 yield instance
         logger.info(f"Successfully yielded {attempted_instances} instances")
 
-    def extract_image_features(self, image: Union[str, Tuple[Tensor, Tensor]], use_cache: bool):
+    def extract_image_features(
+        self,
+        image: Union[str, Tuple[Tensor, Tensor, Optional[Tensor], Optional[Tensor]]],
+        use_cache: bool,
+    ):
         if isinstance(image, str):
-            features, coords = next(self._process_image_paths([image], use_cache=use_cache))
+            features, coords, _, _ = next(self._process_image_paths([image], use_cache=use_cache))
         else:
-            features, coords = image
+            features, coords, _, _ = image
 
         return (
             ArrayField(features),
@@ -190,8 +198,8 @@ class Nlvr2Reader(VisionReader):
         self,  # type: ignore
         identifier: Optional[str],
         hypothesis: str,
-        image1: Union[str, Tuple[Tensor, Tensor]],
-        image2: Union[str, Tuple[Tensor, Tensor]],
+        image1: Union[str, Tuple[Tensor, Tensor, Optional[Tensor], Optional[Tensor]]],
+        image2: Union[str, Tuple[Tensor, Tensor, Optional[Tensor], Optional[Tensor]]],
         label: bool,
         use_cache: bool = True,
     ) -> Instance:

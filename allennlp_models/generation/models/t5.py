@@ -1,23 +1,41 @@
-from typing import Optional, Dict, Any
+from os import PathLike
+from typing import Optional, Dict, Any, Union, List, Tuple
 
 from overrides import overrides
 import torch
 
+from allennlp.common.lazy import Lazy
 from allennlp.data import TextFieldTensors, Vocabulary
 from allennlp.data.tokenizers import PretrainedTransformerTokenizer
 from allennlp.models.model import Model
 from allennlp.modules.transformer.t5 import T5 as T5Module, T5Output, IntT, BoolT
+from allennlp.nn.beam_search import BeamSearch
+from allennlp.nn.checkpoint import CheckpointWrapper
 from allennlp.training.metrics import ROUGE, BLEU
 
 
 @Model.register("t5")
 class T5(Model):
-    def __init__(self, vocab: Vocabulary, model_name: str, **kwargs) -> None:
+    def __init__(
+        self,
+        vocab: Vocabulary,
+        model_name: str,
+        beam_search: Lazy[BeamSearch] = Lazy(BeamSearch, beam_size=3, max_steps=50),
+        checkpoint_wrapper: Optional[CheckpointWrapper] = None,
+        weights_path: Optional[Union[str, PathLike]] = None,
+        **kwargs
+    ) -> None:
         super().__init__(vocab, **kwargs)
         self._model_name = model_name
         # We only instantiate this when we need it.
         self._tokenizer: Optional[PretrainedTransformerTokenizer] = None
-        self.t5 = T5Module.from_pretrained_module(model_name)
+        self.t5 = T5Module.from_pretrained_module(
+            model_name,
+            beam_search=beam_search,
+            ddp_accelerator=self.ddp_accelerator,
+            checkpoint_wrapper=checkpoint_wrapper,
+            weights_path=weights_path,
+        )
 
         exclude_indices = {
             self.t5.pad_token_id,
@@ -28,6 +46,21 @@ class T5(Model):
             ROUGE(exclude_indices=exclude_indices),
             BLEU(exclude_indices=exclude_indices),
         ]
+
+    @overrides
+    def _post_load_state_dict(
+        self, missing_keys: List[str], unexpected_keys: List[str]
+    ) -> Tuple[List[str], List[str]]:
+        missing_keys_to_ignore = [
+            "t5.encoder.token_embeddings.weight",
+            "t5.decoder.token_embeddings.weight",
+        ]
+        if self.t5._tie_word_embeddings:
+            missing_keys_to_ignore.append("t5.lm_head.weight")
+        for key in missing_keys_to_ignore:
+            if key in missing_keys:
+                missing_keys.remove(key)
+        return missing_keys, unexpected_keys
 
     @property
     def tokenizer(self) -> PretrainedTransformerTokenizer:
@@ -117,3 +150,5 @@ class T5(Model):
             for metric in self._metrics:
                 metrics.update(metric.get_metric(reset=reset))
         return metrics
+
+    default_predictor = "seq2seq"
