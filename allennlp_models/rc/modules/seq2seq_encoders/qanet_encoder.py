@@ -254,7 +254,7 @@ class QaNetEncoderBlock(Seq2SeqEncoder):
 
         for conv_norm_layer, conv_layer in zip(self._conv_norm_layers, self._conv_layers):
             conv_norm_out = self.dropout(conv_norm_layer(output))
-            conv_out = self.dropout(conv_layer(conv_norm_out.transpose_(1, 2)).transpose_(1, 2))
+            conv_out = self.dropout(conv_layer(conv_norm_out.transpose(1, 2)).transpose(1, 2))
             sublayer_count += 1
             output = self.residual_with_layer_dropout(
                 output, conv_out, sublayer_count, total_sublayers

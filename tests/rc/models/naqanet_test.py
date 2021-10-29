@@ -14,6 +14,9 @@ class NumericallyAugmentedQaNetTest(ModelTestCase):
         )
 
     def test_model_can_train_save_and_load(self):
+        import torch
+
+        torch.autograd.set_detect_anomaly(True)
         self.ensure_model_can_train_save_and_load(
             self.param_file,
             # Due to numerical instability, these scalar tensors might sometimes
