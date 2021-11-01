@@ -85,10 +85,6 @@ class CNNDailyMailDatasetReader(DatasetReader):
 
         sentence_endings = [".", "!", "?", "...", "'", "`", '"', ")", "\u2019", "\u201d"]
 
-        # CNN stories always start with "(CNN)"
-        if line.startswith("(CNN)"):
-            line = line[len("(CNN)") :]
-
         # Highlight are essentially bullet points and don't have proper sentence endings
         if line[-1] not in sentence_endings:
             line += "."
@@ -104,6 +100,11 @@ class CNNDailyMailDatasetReader(DatasetReader):
         with open(story_path, "r") as f:
             for line in f:
                 line = line.strip()
+
+                # CNN stories always start with "(CNN)"
+                if line.startswith("(CNN)"):
+                    line = line[len("(CNN)") :]
+
                 if line == "":
                     continue
 
