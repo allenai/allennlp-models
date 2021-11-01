@@ -106,10 +106,8 @@ class Seq2SeqDatasetReader(DatasetReader):
             if source_add_start_token or source_add_end_token:
                 self._check_start_end_tokens(start_symbol, end_symbol, self._source_tokenizer)
             if (
-                target_add_start_token
-                or target_add_end_token
-                and self._target_tokenizer != self._source_tokenizer
-            ):
+                target_add_start_token or target_add_end_token
+            ) and self._target_tokenizer != self._source_tokenizer:
                 self._check_start_end_tokens(start_symbol, end_symbol, self._target_tokenizer)
         self._start_token = Token(start_symbol)
         self._end_token = Token(end_symbol)
