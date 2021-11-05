@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [v2.8.0](https://github.com/allenai/allennlp-models/releases/tag/v2.8.0) - 2021-11-05
+
 ### Changed
 
 - Seperate start/end token check in `Seq2SeqDatasetReader` for source and target tokenizers.
