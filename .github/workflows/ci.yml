@@ -554,7 +554,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        cuda: ['10.2', '11.1']
+        cuda: ['11.3']
 
     steps:
     - uses: actions/checkout@v2
@@ -597,7 +597,7 @@ jobs:
     - name: Upload latest image
       # HACK: we don't publish images for releases in the core library at the moment so this step would fail.
       # The CUDA condition is because CUDA 10.2 is currently our default.
-      if: github.event_name == 'release' && matrix.cuda == '10.2'
+      if: github.event_name == 'release' && matrix.cuda == '11.3'
       run: |
         docker tag $DOCKER_IMAGE_NAME allennlp/models:latest
         docker push allennlp/models:latest
