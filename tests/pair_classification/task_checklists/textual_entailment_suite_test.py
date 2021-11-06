@@ -1,3 +1,5 @@
+import random
+
 import pytest
 from allennlp.confidence_checks.task_checklists.textual_entailment_suite import (
     TextualEntailmentSuite,
@@ -5,6 +7,8 @@ from allennlp.confidence_checks.task_checklists.textual_entailment_suite import 
 from allennlp.common.testing import AllenNlpTestCase
 from allennlp.models.archival import load_archive
 from allennlp.predictors import Predictor
+import torch
+import numpy
 
 from allennlp_models.pair_classification.predictors import *  # noqa: F403
 from tests import FIXTURES_ROOT
@@ -19,6 +23,9 @@ class TestTextualEntailmentSuite(AllenNlpTestCase):
         ],
     )
     def test_run(self, model: str):
+        torch.manual_seed(1)
+        numpy.random.seed(1)
+        random.seed(1)
 
         archive = load_archive(
             FIXTURES_ROOT / "pair_classification" / model / "serialization" / "model.tar.gz"

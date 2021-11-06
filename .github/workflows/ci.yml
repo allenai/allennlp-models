@@ -21,10 +21,10 @@ on:
 
 env:
   # NOTE: Need to update `TORCH_VERSION` and `TORCH_VISION_VERSION` for new torch releases.
-  TORCH_VERSION: 1.9.0
-  TORCH_VISION_VERSION: 0.10.0
+  TORCH_VERSION: 1.10.0
+  TORCH_VISION_VERSION: 0.11.1
   # Change this to invalidate the current cache.
-  CACHE_PREFIX: v0
+  CACHE_PREFIX: v1
   # Disable tokenizers parallelism because this doesn't help, and can cause issues in distributed tests.
   TOKENIZERS_PARALLELISM: 'false'
   # Disable multithreading with OMP because this can lead to dead-locks in distributed tests.
@@ -156,21 +156,17 @@ jobs:
       with:
         path: .venv
         key: ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ matrix.task.torch_platform }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
-        restore-keys: |
-          ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ matrix.task.torch_platform }}-
 
     - name: Create virtual environment
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
       run: |
         test -d .venv || virtualenv -p $(which python) --copies --reset-app-data .venv
+        pip install torch==${{ env.TORCH_VERSION }}+${{ matrix.task.torch_platform }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{matrix.task.torch_platform}} -f https://download.pytorch.org/whl/torch_stable.html
 
     - name: Install requirements
       run: |
         . .venv/bin/activate
-        pip install torch==${{ env.TORCH_VERSION }}+${{ matrix.task.torch_platform }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{matrix.task.torch_platform}} -f https://download.pytorch.org/whl/torch_stable.html
-        pip uninstall -y allennlp
-        pip install --upgrade --upgrade-strategy eager -r requirements.txt
-        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
+        pip install -r requirements.txt -r dev-requirements.txt
 
     - name: Show environment info
       if: always()
@@ -287,21 +283,17 @@ jobs:
       with:
         path: .venv
         key: ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
-        restore-keys: |
-          ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-
 
     - name: Create virtual environment
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
       run: |
         test -d .venv || virtualenv -p $(which python) --copies --reset-app-data .venv
+        pip install torch==${{ env.TORCH_VERSION }}+${{ env.TORCH_PLATFORM }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{ env.TORCH_PLATFORM }} -f https://download.pytorch.org/whl/torch_stable.html
 
     - name: Install requirements
       run: |
         . .venv/bin/activate
-        pip install torch==${{ env.TORCH_VERSION }}+${{ env.TORCH_PLATFORM }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{ env.TORCH_PLATFORM }} -f https://download.pytorch.org/whl/torch_stable.html
-        pip uninstall -y allennlp
-        pip install --upgrade --upgrade-strategy eager -r requirements.txt
-        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
+        pip install -r requirements.txt -r dev-requirements.txt
 
     - name: Show environment info
       run: |
@@ -432,21 +424,17 @@ jobs:
       with:
         path: .venv
         key: ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
-        restore-keys: |
-          ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-
 
     - name: Create virtual environment
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
       run: |
         test -d .venv || virtualenv -p $(which python) --copies --reset-app-data .venv
+        pip install torch==${{ env.TORCH_VERSION }}+${{ env.TORCH_PLATFORM }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{ env.TORCH_PLATFORM }} -f https://download.pytorch.org/whl/torch_stable.html
 
     - name: Install requirements
       run: |
         . .venv/bin/activate
-        pip install torch==${{ env.TORCH_VERSION }}+${{ env.TORCH_PLATFORM }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{ env.TORCH_PLATFORM }} -f https://download.pytorch.org/whl/torch_stable.html
-        pip uninstall -y allennlp
-        pip install --upgrade --upgrade-strategy eager -r requirements.txt
-        pip install --upgrade --upgrade-strategy eager -r dev-requirements.txt
+        pip install -r requirements.txt -r dev-requirements.txt
 
     - name: Show environment info
       run: |
@@ -566,7 +554,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        cuda: ['10.2', '11.1']
+        cuda: ['11.3']
 
     steps:
     - uses: actions/checkout@v2
@@ -609,7 +597,7 @@ jobs:
     - name: Upload latest image
       # HACK: we don't publish images for releases in the core library at the moment so this step would fail.
       # The CUDA condition is because CUDA 10.2 is currently our default.
-      if: github.event_name == 'release' && matrix.cuda == '10.2'
+      if: github.event_name == 'release' && matrix.cuda == '11.3'
       run: |
         docker tag $DOCKER_IMAGE_NAME allennlp/models:latest
         docker push allennlp/models:latest
