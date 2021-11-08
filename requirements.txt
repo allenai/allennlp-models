@@ -8,7 +8,7 @@ conllu==4.4.1
 # For RC models
 word2number>=1.1
 py-rouge==1.1
-nltk<3.6.5
+nltk<3.6.6
 
 # For CNN/DailyMail dataset reader
 ftfy
