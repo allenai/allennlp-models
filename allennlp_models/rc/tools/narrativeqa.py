@@ -37,7 +37,7 @@ def bleu_4(p, g):
 
 
 def meteor(p, g):
-    return meteor_score(g, p)
+    return meteor_score([x.split() for x in g], p.split())
 
 
 def rouge_l(p, g):
