@@ -56,6 +56,14 @@ class CopyNetSeq2Seq(Model):
         This is used to during inference to select the tokens of the decoded output sequence.
     target_embedding_dim : `int`, optional (default = `30`)
         The size of the embeddings for the target vocabulary.
+    scheduled_sampling_ratio : `float`, optional (default = `0.`)
+        At each timestep during training, we sample a random number between 0 and 1, and if it is
+        not less than this value, we use the ground truth labels for the whole batch. Else, we use
+        the predictions from the previous time step for the whole batch. If this value is 0.0
+        (default), this corresponds to teacher forcing, and if it is 1.0, it corresponds to not
+        using target side ground truth labels.  See the following paper for more information:
+        [Scheduled Sampling for Sequence Prediction with Recurrent Neural Networks. Bengio et al.,
+        2015](https://arxiv.org/abs/1506.03099).
     copy_token : `str`, optional (default = `'@COPY@'`)
         The token used to indicate that a target token was copied from the source.
         If this token is not already in your target vocabulary, it will be added.
@@ -83,6 +91,7 @@ class CopyNetSeq2Seq(Model):
         label_smoothing: float = None,
         beam_search: Lazy[BeamSearch] = Lazy(BeamSearch),
         target_embedding_dim: int = 30,
+        scheduled_sampling_ratio: float = 0.0,
         copy_token: str = "@COPY@",
         target_namespace: str = "target_tokens",
         tensor_based_metric: Metric = None,
@@ -92,6 +101,7 @@ class CopyNetSeq2Seq(Model):
     ) -> None:
         super().__init__(vocab)
         self._target_namespace = target_namespace
+        self._scheduled_sampling_ratio = scheduled_sampling_ratio
         self._start_index = self.vocab.get_token_index(START_SYMBOL, self._target_namespace)
         self._end_index = self.vocab.get_token_index(END_SYMBOL, self._target_namespace)
         self._oov_index = self.vocab.get_token_index(self.vocab._oov_token, self._target_namespace)
@@ -515,13 +525,29 @@ class CopyNetSeq2Seq(Model):
             (batch_size, self._target_vocab_size), fill_value=1.0, dtype=torch.bool
         )
 
+        # Initialize target predictions with the start index.
+        # shape: (batch_size,)
+        last_predictions = source_mask.new_full(
+            (batch_size,), fill_value=self._start_index, dtype=torch.long
+        )
+
         step_log_likelihoods = []
         for timestep in range(num_decoding_steps):
-            # shape: (batch_size,)
-            input_choices = target_tokens["tokens"]["tokens"][:, timestep]
-            # Get mask tensor indicating which instances were copied.
-            # shape: (batch_size,)
-            copied = ((input_choices == self._oov_index) & (target_to_source.sum(-1) > 0)).long()
+            if self.training and torch.rand(1).item() < self._scheduled_sampling_ratio:
+                # Use gold tokens at test time and at a rate of 1 - _scheduled_sampling_ratio
+                # during training.
+                # shape: (batch_size,)
+                input_choices = last_predictions
+                # Get mask tensor indicating which instances were copied.
+                # shape: (batch_size,)
+                copied = (input_choices >= self._target_vocab_size).long()
+            else:
+                # shape: (batch_size,)
+                input_choices = target_tokens["tokens"]["tokens"][:, timestep]
+                # shape: (batch_size,)
+                copied = (
+                    (input_choices == self._oov_index) & (target_to_source.sum(-1) > 0)
+                ).long()
             # shape: (batch_size,)
             input_choices = input_choices * (1 - copied) + copy_input_choices * copied
             # shape: (batch_size, source_sequence_length)
