@@ -4,9 +4,8 @@ import datasets
 from allennlp.common import cached_transformers
 from allennlp.data import Vocabulary, Instance
 from allennlp.data.fields import TransformerTextField, LabelField
-from allennlp.tango.dataset import DatasetDict
-from allennlp.tango.sqlite_format import SqliteDictFormat
-from allennlp.tango.step import Step
+from tango import Step
+from tango.common import DatasetDict
 
 
 @Step.register("imdb_instances")

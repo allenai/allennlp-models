@@ -1,5 +1,7 @@
 git+https://github.com/allenai/allennlp.git@main
 
+ai2-tango @ git+https://github.com/allenai/tango.git@main
+
 torch>=1.7.0,<1.11.0
 
 # For structured prediction.
@@ -12,3 +14,6 @@ nltk>=3.6.5
 
 # For CNN/DailyMail dataset reader
 ftfy
+
+# For sentiment tree bank
+datasets
