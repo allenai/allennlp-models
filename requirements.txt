@@ -1,6 +1,6 @@
-git+https://github.com/allenai/allennlp.git@main
+allennlp
 
-ai2-tango @ git+https://github.com/allenai/tango.git@main
+ai2-tango @ git+https://github.com/allenai/tango.git@SqliteDictFormat
 
 torch>=1.7.0,<1.11.0
 
