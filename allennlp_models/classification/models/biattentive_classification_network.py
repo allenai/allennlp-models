@@ -201,7 +201,7 @@ class BiattentiveClassificationNetwork(Model):
         self.loss = torch.nn.CrossEntropyLoss()
         initializer(self)
 
-    @overrides
+    @overrides(check_signature=False)
     def forward(
         self,  # type: ignore
         tokens: TextFieldTensors,
