@@ -6,6 +6,7 @@ from allennlp.data import Vocabulary, Instance
 from allennlp.data.fields import TransformerTextField, LabelField
 from tango import Step
 from tango.common import DatasetDict
+from tango import SqliteDictFormat
 
 
 @Step.register("imdb_instances")
@@ -61,4 +62,4 @@ class ImdbInstances(Step):
         vocab.add_transformer_vocab(tokenizer, "tokens")
         vocab.add_tokens_to_namespace(["neg", "pos"], "labels")
 
-        return DatasetDict(results, vocab)
+        return DatasetDict(results, metadata={"vocab": vocab})
