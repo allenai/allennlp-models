@@ -21,7 +21,7 @@ local transformer_model = if debug then "roberta-base" else "roberta-large";
             "shuffle_before": true,
         },
         "trained_model": {
-            "type": "training",
+            "type": "torch::train",
             "dataset": { "ref": "remixed_dataset" },
             "training_split": "train",
             "validation_split": "validation",
@@ -56,7 +56,7 @@ local transformer_model = if debug then "roberta-base" else "roberta-large";
         },
         "evaluation": {
             "type": "evaluation",
-            "dataset": { "ref": "dataset" },
+            "dataset": { "ref": "remixed_dataset" },
             "model": { "ref": "trained_model" },
             "split": "test",
             [if debug then "data_loader"]: {
