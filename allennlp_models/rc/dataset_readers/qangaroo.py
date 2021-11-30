@@ -2,7 +2,7 @@ import json
 import logging
 
 from typing import Dict, List
-from overrides import overrides
+
 
 from allennlp.common.file_utils import cached_path
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
@@ -44,7 +44,6 @@ class QangarooReader(DatasetReader):
         self._tokenizer = tokenizer or SpacyTokenizer()
         self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
 
-    @overrides
     def _read(self, file_path: str):
         # if `file_path` is a URL, redirect to the cache
         file_path = cached_path(file_path)
@@ -68,7 +67,6 @@ class QangarooReader(DatasetReader):
 
             yield instance
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         candidates: List[str],

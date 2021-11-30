@@ -1,6 +1,6 @@
 from typing import Dict, Optional, List, Any, cast
 
-from overrides import overrides
+
 import torch
 from torch.nn.modules.linear import Linear
 
@@ -166,7 +166,6 @@ class CrfTagger(Model):
             )
         initializer(self)
 
-    @overrides
     def forward(
         self,  # type: ignore
         tokens: TextFieldTensors,
@@ -268,7 +267,6 @@ class CrfTagger(Model):
             output["words"] = [x["words"] for x in metadata]
         return output
 
-    @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:
@@ -296,7 +294,6 @@ class CrfTagger(Model):
 
         return output_dict
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         metrics_to_return = {
             metric_name: metric.get_metric(reset) for metric_name, metric in self.metrics.items()

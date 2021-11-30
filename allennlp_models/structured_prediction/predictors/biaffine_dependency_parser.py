@@ -1,6 +1,5 @@
 from typing import Dict, Any, List, Tuple
 
-from overrides import overrides
 
 from allennlp.common.util import JsonDict, sanitize
 from allennlp.data import DatasetReader, Instance
@@ -103,7 +102,6 @@ class BiaffineDependencyParserPredictor(Predictor):
         """
         return self.predict_json({"sentence": sentence})
 
-    @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         """
         Expects JSON that looks like `{"sentence": "..."}`.
@@ -118,7 +116,6 @@ class BiaffineDependencyParserPredictor(Predictor):
             pos_tags = [token.pos_ for token in spacy_tokens]
         return self._dataset_reader.text_to_instance(sentence_text, pos_tags)
 
-    @overrides
     def predict_instance(self, instance: Instance) -> JsonDict:
         outputs = self._model.forward_on_instance(instance)
 
@@ -129,7 +126,6 @@ class BiaffineDependencyParserPredictor(Predictor):
         outputs["hierplane_tree"] = self._build_hierplane_tree(words, heads, tags, pos)
         return sanitize(outputs)
 
-    @overrides
     def predict_batch_instance(self, instances: List[Instance]) -> List[JsonDict]:
         outputs = self._model.forward_on_instances(instances)
         for output in outputs:

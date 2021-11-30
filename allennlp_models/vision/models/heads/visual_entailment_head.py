@@ -1,7 +1,7 @@
 from typing import Dict, Optional
 
 import torch
-from overrides import overrides
+
 
 from allennlp.data.vocabulary import Vocabulary
 from allennlp.models.heads.head import Head
@@ -22,7 +22,6 @@ class VisualEntailmentHead(Head):
         self.accuracy = CategoricalAccuracy()
         self.fbeta = FBetaMeasure(beta=1.0, average="macro")
 
-    @overrides
     def forward(
         self,  # type: ignore
         encoded_boxes: torch.Tensor,
@@ -48,7 +47,6 @@ class VisualEntailmentHead(Head):
 
         return output
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         result = self.fbeta.get_metric(reset)
         result["acc"] = self.accuracy.get_metric(reset)

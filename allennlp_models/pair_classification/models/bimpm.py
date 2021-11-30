@@ -4,7 +4,7 @@ BiMPM (Bilateral Multi-Perspective Matching) model implementation.
 
 from typing import Dict, List, Any
 
-from overrides import overrides
+
 import torch
 
 from allennlp.common.checks import check_dimensions_match
@@ -116,7 +116,6 @@ class BiMpm(Model):
 
         initializer(self)
 
-    @overrides
     def forward(
         self,  # type: ignore
         premise: TextFieldTensors,
@@ -225,13 +224,11 @@ class BiMpm(Model):
 
         return output_dict
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return {
             metric_name: metric.get_metric(reset) for metric_name, metric in self.metrics.items()
         }
 
-    @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:

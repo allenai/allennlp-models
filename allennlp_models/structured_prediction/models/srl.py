@@ -1,7 +1,7 @@
 from typing import Dict, List, TextIO, Optional, Any
 import warnings
 
-from overrides import overrides
+
 import torch
 from torch.nn.modules import Linear, Dropout
 import torch.nn.functional as F
@@ -346,7 +346,6 @@ class SemanticRoleLabeler(Model):
             output_dict["verb"] = list(verbs)
         return output_dict
 
-    @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:

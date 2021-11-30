@@ -2,7 +2,6 @@ from typing import Optional, Dict
 import logging
 import csv
 
-from overrides import overrides
 
 from allennlp.common.file_utils import cached_path
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
@@ -57,7 +56,6 @@ class QuoraParaphraseDatasetReader(DatasetReader):
         else:
             self._combine_input_fields = isinstance(self._tokenizer, PretrainedTransformerTokenizer)
 
-    @overrides
     def _read(self, file_path):
         logger.info("Reading instances from lines in file at: %s", file_path)
         with open(cached_path(file_path), "r") as data_file:
@@ -66,7 +64,6 @@ class QuoraParaphraseDatasetReader(DatasetReader):
                 if len(row) == 4:
                     yield self.text_to_instance(premise=row[1], hypothesis=row[2], label=row[0])
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         premise: str,

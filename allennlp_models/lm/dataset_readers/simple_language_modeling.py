@@ -2,7 +2,6 @@ from typing import Dict, Iterable, Union, Optional, List
 import logging
 import math
 
-from overrides import overrides
 
 from allennlp.data.tokenizers import Token
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
@@ -61,7 +60,6 @@ class SimpleLanguageModelingDatasetReader(DatasetReader):
         logger.info("Creating SimpleLanguageModelingDatasetReader")
         logger.info("max_sequence_length=%s", max_sequence_length)
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         sentence: str,
@@ -75,7 +73,6 @@ class SimpleLanguageModelingDatasetReader(DatasetReader):
         return_instance = Instance({"source": TextField(tokenized_with_ends, self._token_indexers)})
         return return_instance
 
-    @overrides
     def _read(self, file_path: str) -> Iterable[Instance]:
 
         logger.info("Loading data from %s", file_path)

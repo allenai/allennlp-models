@@ -13,7 +13,7 @@ from allennlp.modules.token_embedders import Embedding
 from allennlp.nn import InitializerApplicator, util
 from allennlp.nn.beam_search import BeamSearch
 from allennlp.training.metrics import BLEU, Metric
-from overrides import overrides
+
 from torch.nn.modules.linear import Linear
 from torch.nn.modules.rnn import LSTMCell
 
@@ -167,7 +167,6 @@ class CopyNetSeq2Seq(Model):
 
         initializer(self)
 
-    @overrides
     def forward(
         self,  # type: ignore
         source_tokens: TextFieldTensors,
@@ -928,7 +927,6 @@ class CopyNetSeq2Seq(Model):
                 predicted_tokens.append(batch_predicted_tokens)
         return predicted_tokens
 
-    @overrides
     def make_output_human_readable(self, output_dict: Dict[str, torch.Tensor]) -> Dict[str, Any]:
         """
         Finalize predictions.
@@ -943,7 +941,6 @@ class CopyNetSeq2Seq(Model):
         output_dict["predicted_tokens"] = predicted_tokens
         return output_dict
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         all_metrics: Dict[str, float] = {}
         if not self.training:

@@ -14,7 +14,7 @@ from typing import (
 import json
 import re
 
-from overrides import overrides
+
 import torch
 from torch import Tensor
 
@@ -154,7 +154,6 @@ class VQAv2Reader(VisionReader):
 
         self.multiple_answers_per_question = multiple_answers_per_question
 
-    @overrides
     def _read(self, splits_or_list_of_splits: Union[str, List[str]]):
         # if we are given a list of splits, concatenate them
         if isinstance(splits_or_list_of_splits, str):
@@ -277,7 +276,6 @@ class VQAv2Reader(VisionReader):
                         f"{failed_instances_fraction*100:.0f}% of instances have no answers."
                     )
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         question: str,
@@ -326,7 +324,6 @@ class VQAv2Reader(VisionReader):
 
         return Instance(fields)
 
-    @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
         instance["question"].token_indexers = self._token_indexers  # type: ignore
 

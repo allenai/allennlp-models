@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Following a breaking change in the NLTK API, we now depend on the most recent version only.
 
+### Removed
+
+- Removed the dependency on the `overrides` package
+
 
 ## [v2.8.0](https://github.com/allenai/allennlp-models/releases/tag/v2.8.0) - 2021-11-05
 

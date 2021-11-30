@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, List, Optional
 
-from overrides import overrides
+
 import numpy as np
 import torch
 
@@ -138,7 +138,6 @@ class VisionTextModel(Model):
             ignore_image=ignore_image,
         )
 
-    @overrides
     def forward(
         self,  # type: ignore
         box_features: torch.Tensor,
@@ -209,18 +208,16 @@ class VisionTextModel(Model):
     def _compute_loss_and_metrics(
         self,
         batch_size: int,
-        outputs: torch.Tensor,
+        outputs: Dict[str, torch.Tensor],
         label: torch.Tensor,
         label_weights: Optional[torch.Tensor] = None,
-    ):
+    ) -> Dict[str, torch.Tensor]:
         return outputs
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         result = self.accuracy.get_metric(reset)
         return {"accuracy": result}
 
-    @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:

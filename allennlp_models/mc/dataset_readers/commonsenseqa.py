@@ -1,7 +1,7 @@
 import logging
 
 from allennlp.data import DatasetReader
-from overrides import overrides
+
 
 from allennlp_models.mc.dataset_readers.transformer_mc import TransformerMCReader
 
@@ -14,7 +14,6 @@ class CommonsenseQaReader(TransformerMCReader):
     Reads the input data for the CommonsenseQA dataset (https://arxiv.org/abs/1811.00937).
     """
 
-    @overrides
     def _read(self, file_path: str):
         from allennlp.common.file_utils import cached_path
 
