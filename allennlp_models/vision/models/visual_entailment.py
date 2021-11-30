@@ -70,8 +70,8 @@ class VisualEntailmentModel(VisionTextModel):
         self.accuracy = CategoricalAccuracy()
         self.fbeta = FBetaMeasure(beta=1.0, average="macro")
 
-    def forward(
-        self,  # type: ignore
+    def forward(  # type: ignore
+        self,
         box_features: torch.Tensor,
         box_coordinates: torch.Tensor,
         box_mask: torch.Tensor,

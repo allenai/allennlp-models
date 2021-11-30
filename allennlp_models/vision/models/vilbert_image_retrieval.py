@@ -1,6 +1,5 @@
 import logging
-from typing import Dict
-
+from typing import Dict, Optional
 
 import torch
 
@@ -73,8 +72,8 @@ class ImageRetrievalVilbert(VisionTextModel):
 
         self.k = k
 
-    def forward(
-        self,  # type: ignore
+    def forward(  # type: ignore
+        self,
         box_features: torch.Tensor,
         box_coordinates: torch.Tensor,
         box_mask: torch.Tensor,
@@ -110,9 +109,12 @@ class ImageRetrievalVilbert(VisionTextModel):
     def _compute_loss_and_metrics(
         self,
         batch_size: int,
-        outputs: torch.Tensor,
+        outputs: Dict[str, torch.Tensor],
         labels: torch.Tensor,
-    ):
+        label_weights: Optional[torch.Tensor] = None,
+    ) -> Dict[str, torch.Tensor]:
+        if label_weights is not None:
+            raise NotImplementedError("This implementation does not support label_weights.")
         outputs["loss"] = self.loss(outputs["logits"], labels) / batch_size
         self.top_1_acc(outputs["logits"], labels)
         self.top_5_acc(outputs["logits"], labels)

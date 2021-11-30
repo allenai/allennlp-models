@@ -286,7 +286,7 @@ class Flickr30kReader(VisionReader):
                     if instance is not None:
                         yield instance
 
-    def text_to_instance(
+    def text_to_instance(  # type: ignore
         self,
         caption_dicts: List[Dict[str, Any]],
         image_index: int,

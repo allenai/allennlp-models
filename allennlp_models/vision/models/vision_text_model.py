@@ -208,10 +208,10 @@ class VisionTextModel(Model):
     def _compute_loss_and_metrics(
         self,
         batch_size: int,
-        outputs: torch.Tensor,
+        outputs: Dict[str, torch.Tensor],
         label: torch.Tensor,
         label_weights: Optional[torch.Tensor] = None,
-    ):
+    ) -> Dict[str, torch.Tensor]:
         return outputs
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:

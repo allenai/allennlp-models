@@ -192,13 +192,13 @@ class Nlvr2Reader(VisionReader):
             ),
         )
 
-    def text_to_instance(
-        self,  # type: ignore
+    def text_to_instance(  # type: ignore
+        self,
         identifier: Optional[str],
         hypothesis: str,
         image1: Union[str, Tuple[Tensor, Tensor, Optional[Tensor], Optional[Tensor]]],
         image2: Union[str, Tuple[Tensor, Tensor, Optional[Tensor], Optional[Tensor]]],
-        label: bool,
+        label: Optional[bool] = None,
         use_cache: bool = True,
     ) -> Instance:
         hypothesis_field = TextField(self._tokenizer.tokenize(hypothesis), None)

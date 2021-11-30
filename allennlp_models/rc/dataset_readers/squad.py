@@ -1,7 +1,6 @@
 import json
 import logging
-from typing import Any, Dict, List, Tuple, Optional
-
+from typing import Any, Dict, List, Tuple, Optional, Iterable
 
 from allennlp.common.file_utils import cached_path
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
@@ -146,7 +145,7 @@ class SquadReader(DatasetReader):
         question_text: str,
         passage_text: str,
         is_impossible: bool = None,
-        char_spans: List[Tuple[int, int]] = None,
+        char_spans: Iterable[Tuple[int, int]] = None,
         answer_texts: List[str] = None,
         passage_tokens: List[Token] = None,
         additional_metadata: Dict[str, Any] = None,

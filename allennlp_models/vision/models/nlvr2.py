@@ -108,9 +108,12 @@ class Nlvr2Model(VisionTextModel):
     def _compute_loss_and_metrics(
         self,
         batch_size: int,
-        outputs: torch.Tensor,
+        outputs: Dict[str, torch.Tensor],
         label: torch.Tensor,
-    ):
+        label_weights: Optional[torch.Tensor] = None,
+    ) -> Dict[str, torch.Tensor]:
+        if label_weights is not None:
+            raise NotImplementedError("This implementation does not support label_weights.")
         if label is not None:
             outputs["loss"] = (
                 torch.nn.functional.cross_entropy(outputs["logits"], label) / batch_size
