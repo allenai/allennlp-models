@@ -1,7 +1,7 @@
 import warnings
 from typing import Dict, List, Any, Union
 
-from overrides import overrides
+
 import torch
 from torch.nn.modules import Linear, Dropout
 import torch.nn.functional as F
@@ -199,7 +199,6 @@ class SrlBert(Model):
             output_dict["loss"] = loss
         return output_dict
 
-    @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:

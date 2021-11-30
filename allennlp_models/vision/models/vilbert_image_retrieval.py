@@ -1,7 +1,7 @@
 import logging
 from typing import Dict
 
-from overrides import overrides
+
 import torch
 
 from allennlp.data import TextFieldTensors, Vocabulary
@@ -73,7 +73,6 @@ class ImageRetrievalVilbert(VisionTextModel):
 
         self.k = k
 
-    @overrides
     def forward(
         self,  # type: ignore
         box_features: torch.Tensor,
@@ -108,7 +107,6 @@ class ImageRetrievalVilbert(VisionTextModel):
         outputs = self._compute_loss_and_metrics(batch_size, outputs, label)
         return outputs
 
-    @overrides
     def _compute_loss_and_metrics(
         self,
         batch_size: int,
@@ -121,7 +119,6 @@ class ImageRetrievalVilbert(VisionTextModel):
         self.top_10_acc(outputs["logits"], labels)
         return outputs
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return {
             "top_1_acc": self.top_1_acc.get_metric(reset),
@@ -129,7 +126,6 @@ class ImageRetrievalVilbert(VisionTextModel):
             "top_10_acc": self.top_10_acc.get_metric(reset),
         }
 
-    @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:

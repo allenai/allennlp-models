@@ -1,7 +1,7 @@
 import logging
 
 from allennlp.data import DatasetReader
-from overrides import overrides
+
 
 from allennlp_models.mc.dataset_readers.transformer_mc import TransformerMCReader
 
@@ -14,7 +14,6 @@ class PiqaReader(TransformerMCReader):
     Reads the input data for the PIQA dataset (https://arxiv.org/abs/1911.11641).
     """
 
-    @overrides
     def _read(self, file_path: str):
         import re
 

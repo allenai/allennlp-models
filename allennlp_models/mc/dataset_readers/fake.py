@@ -2,7 +2,7 @@ import logging
 from typing import List
 
 from allennlp.data import DatasetReader, Instance
-from overrides import overrides
+
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +43,6 @@ class FakeReader(DatasetReader):
         self._token_indexers = {"tokens": PretrainedTransformerIndexer(transformer_model_name)}
         self.length_limit = length_limit
 
-    @overrides
     def _read(self, file_path: str):
         logger.info("Ignoring file at %s", file_path)
 
@@ -53,7 +52,6 @@ class FakeReader(DatasetReader):
             texts[label] = f"This is the true choice {i}."
             yield self.text_to_instance(texts, label)
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         alternatives: List[str],

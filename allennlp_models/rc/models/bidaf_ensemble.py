@@ -1,6 +1,6 @@
 from typing import Dict, List, Any, Optional
 
-from overrides import overrides
+
 import torch
 
 from allennlp.common.checks import ConfigurationError
@@ -36,7 +36,6 @@ class BidafEnsemble(Model):
 
         self._squad_metrics = SquadEmAndF1()
 
-    @overrides
     def forward(
         self,  # type: ignore
         question: Dict[str, torch.LongTensor],

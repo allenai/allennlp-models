@@ -3,7 +3,6 @@ import itertools
 import logging
 import warnings
 
-from overrides import overrides
 
 from allennlp.common.checks import ConfigurationError
 from allennlp.common.file_utils import cached_path
@@ -111,7 +110,6 @@ class Conll2000DatasetReader(DatasetReader):
         self.label_namespace = label_namespace
         self._original_coding_scheme = "BIO"
 
-    @overrides
     def _read(self, file_path: str) -> Iterable[Instance]:
         # if `file_path` is a URL, redirect to the cache
         file_path = cached_path(file_path)

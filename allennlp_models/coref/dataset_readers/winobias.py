@@ -2,7 +2,6 @@ import logging
 import collections
 from typing import Any, Dict, List, Optional, Tuple, DefaultDict
 
-from overrides import overrides
 
 from allennlp.common.file_utils import cached_path
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
@@ -67,7 +66,6 @@ class WinobiasReader(DatasetReader):
         self._max_span_width = max_span_width
         self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
 
-    @overrides
     def _read(self, file_path: str):
 
         for sentence in open(cached_path(file_path), "r"):
@@ -104,7 +102,6 @@ class WinobiasReader(DatasetReader):
 
             yield self.text_to_instance([Token(x) for x in words], [x for x in clusters.values()])
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         sentence: List[Token],

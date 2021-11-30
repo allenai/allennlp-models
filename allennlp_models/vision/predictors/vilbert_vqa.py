@@ -1,6 +1,6 @@
 from typing import List, Dict
 
-from overrides import overrides
+
 import numpy
 
 from allennlp.common.file_utils import cached_path
@@ -15,7 +15,6 @@ class VilbertVqaPredictor(Predictor):
         image = cached_path(image)
         return self.predict_json({"question": question, "image": image})
 
-    @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         from allennlp_models.vision.dataset_readers.vqav2 import VQAv2Reader
         from allennlp_models.vision import GQAReader
@@ -32,7 +31,6 @@ class VilbertVqaPredictor(Predictor):
                 f"Expected {VQAv2Reader.__name__}."
             )
 
-    @overrides
     def predictions_to_labeled_instances(
         self, instance: Instance, outputs: Dict[str, numpy.ndarray]
     ) -> List[Instance]:

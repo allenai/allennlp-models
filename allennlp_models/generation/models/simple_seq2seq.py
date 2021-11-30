@@ -2,7 +2,7 @@ import warnings
 from typing import Dict, List, Tuple, Iterable, Any
 
 import numpy
-from overrides import overrides
+
 import torch
 import torch.nn.functional as F
 from torch.nn.modules.linear import Linear
@@ -216,7 +216,6 @@ class SimpleSeq2Seq(Model):
 
         return class_log_probabilities, state
 
-    @overrides
     def forward(
         self,  # type: ignore
         source_tokens: TextFieldTensors,
@@ -260,7 +259,6 @@ class SimpleSeq2Seq(Model):
 
         return output_dict
 
-    @overrides
     def make_output_human_readable(self, output_dict: Dict[str, Any]) -> Dict[str, Any]:
         """
         Finalize predictions.
@@ -550,7 +548,6 @@ class SimpleSeq2Seq(Model):
 
         return util.sequence_cross_entropy_with_logits(logits, relevant_targets, relevant_mask)
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         all_metrics: Dict[str, float] = {}
         if self._bleu and not self.training:

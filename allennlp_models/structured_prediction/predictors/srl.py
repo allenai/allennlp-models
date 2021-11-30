@@ -1,7 +1,7 @@
 from typing import List, Dict
 
 import numpy
-from overrides import overrides
+
 from spacy.tokens import Doc
 
 from allennlp.common.util import JsonDict, sanitize, group_by_count
@@ -98,7 +98,6 @@ class SemanticRoleLabelerPredictor(Predictor):
 
         return " ".join(frame)
 
-    @overrides
     def _json_to_instance(self, json_dict: JsonDict):
         raise NotImplementedError("The SRL model uses a different API for creating instances.")
 
@@ -139,7 +138,6 @@ class SemanticRoleLabelerPredictor(Predictor):
         tokens = self._tokenizer.tokenize(sentence)
         return self.tokens_to_instances(tokens)
 
-    @overrides
     def predict_batch_json(self, inputs: List[JsonDict]) -> List[JsonDict]:
         """
         Expects JSON that looks like `[{"sentence": "..."}, {"sentence": "..."}, ...]`
@@ -231,7 +229,6 @@ class SemanticRoleLabelerPredictor(Predictor):
 
         return sanitize(results)
 
-    @overrides
     def predict_json(self, inputs: JsonDict) -> JsonDict:
         """
         Expects JSON that looks like `{"sentence": "..."}`

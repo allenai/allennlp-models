@@ -1,6 +1,6 @@
 from typing import List, Dict
 
-from overrides import overrides
+
 from spacy.tokens import Doc
 import numpy
 
@@ -79,7 +79,6 @@ class CorefPredictor(Predictor):
         instance = self._words_list_to_instance(tokenized_document)
         return self.predict_instance(instance)
 
-    @overrides
     def predictions_to_labeled_instances(
         self, instance: Instance, outputs: Dict[str, numpy.ndarray]
     ) -> List[Instance]:
@@ -193,7 +192,6 @@ class CorefPredictor(Predictor):
         instance = self._dataset_reader.text_to_instance(sentences)
         return instance
 
-    @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         """
         Expects JSON that looks like `{"document": "string of document text"}`

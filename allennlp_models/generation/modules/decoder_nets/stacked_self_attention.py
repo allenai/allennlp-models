@@ -4,7 +4,7 @@ from typing import Dict, Optional, Tuple
 
 import torch
 import torch.nn.functional as F
-from overrides import overrides
+
 from torch import nn
 from torch.autograd import Variable
 
@@ -89,13 +89,11 @@ class StackedSelfAttentionDecoderNet(DecoderNet):
             num_layers,
         )
 
-    @overrides
     def init_decoder_state(
         self, encoder_out: Dict[str, torch.LongTensor]
     ) -> Dict[str, torch.Tensor]:
         return {}
 
-    @overrides
     def forward(
         self,
         previous_state: Dict[str, torch.Tensor],
@@ -136,7 +134,6 @@ class Decoder(nn.Module):
         self.layers = nn_util.clone(layer, num_layers)
         self.norm = LayerNorm(layer.size)
 
-    @overrides
     def forward(
         self,
         x: torch.Tensor,

@@ -1,7 +1,7 @@
 from typing import Dict, Union
 
 import numpy
-from overrides import overrides
+
 import torch
 from torch import nn
 import torch.nn.functional as F
@@ -201,7 +201,6 @@ class BiattentiveClassificationNetwork(Model):
         self.loss = torch.nn.CrossEntropyLoss()
         initializer(self)
 
-    @overrides
     def forward(
         self,  # type: ignore
         tokens: TextFieldTensors,
@@ -319,7 +318,6 @@ class BiattentiveClassificationNetwork(Model):
 
         return output_dict
 
-    @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:
@@ -333,7 +331,6 @@ class BiattentiveClassificationNetwork(Model):
         output_dict["label"] = labels
         return output_dict
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return {
             metric_name: metric.get_metric(reset) for metric_name, metric in self.metrics.items()

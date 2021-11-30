@@ -2,7 +2,6 @@ import json
 import logging
 from typing import Any, Dict, List, Tuple, Optional
 
-from overrides import overrides
 
 from allennlp.common.file_utils import cached_path
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
@@ -100,7 +99,6 @@ class SquadReader(DatasetReader):
         self.skip_impossible_questions = skip_impossible_questions
         self.no_answer_token = no_answer_token
 
-    @overrides
     def _read(self, file_path: str):
         # if `file_path` is a URL, redirect to the cache
         file_path = cached_path(file_path)
@@ -143,7 +141,6 @@ class SquadReader(DatasetReader):
                     if instance is not None:
                         yield instance
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         question_text: str,

@@ -2,7 +2,7 @@ import logging
 from os import PathLike
 from typing import Any, Dict, Iterable, Tuple, Union, Optional
 
-from overrides import overrides
+
 import torch
 from torch import Tensor
 
@@ -113,7 +113,6 @@ class Nlvr2Reader(VisionReader):
             "unbalanced_test": f"{data_dir}/balanced/unbalanced_test1.json",
         }
 
-    @overrides
     def _read(self, split_or_filename: str):
         filename = self.splits.get(split_or_filename, split_or_filename)
 
@@ -193,7 +192,6 @@ class Nlvr2Reader(VisionReader):
             ),
         )
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         identifier: Optional[str],
@@ -222,7 +220,6 @@ class Nlvr2Reader(VisionReader):
 
         return Instance(fields)
 
-    @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
         instance["hypothesis"][0].token_indexers = self._token_indexers  # type: ignore
         instance["hypothesis"][1].token_indexers = self._token_indexers  # type: ignore

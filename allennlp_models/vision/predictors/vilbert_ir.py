@@ -1,6 +1,6 @@
 from typing import List, Dict
 
-from overrides import overrides
+
 import numpy
 
 from allennlp.common.file_utils import cached_path
@@ -16,7 +16,6 @@ class VilbertImageRetrievalPredictor(Predictor):
         image = cached_path(image)
         return self.predict_json({"caption": caption, "image": image})
 
-    @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         from allennlp_models.vision.dataset_readers.flickr30k import Flickr30kReader
 
@@ -30,7 +29,6 @@ class VilbertImageRetrievalPredictor(Predictor):
                 f"Expected {Flickr30kReader.__name__}."
             )
 
-    @overrides
     def predictions_to_labeled_instances(
         self, instance: Instance, outputs: Dict[str, numpy.ndarray]
     ) -> List[Instance]:
