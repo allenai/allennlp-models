@@ -1,7 +1,7 @@
 from typing import List, Dict
 
 import numpy
-from overrides import overrides
+
 
 from allennlp.common.util import JsonDict
 from allennlp.data import Instance
@@ -37,7 +37,6 @@ class TextualEntailmentPredictor(Predictor):
         """
         return self.predict_json({"premise": premise, "hypothesis": hypothesis})
 
-    @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         """
         Expects JSON that looks like `{"premise": "...", "hypothesis": "..."}`.
@@ -46,7 +45,6 @@ class TextualEntailmentPredictor(Predictor):
         hypothesis_text = json_dict["hypothesis"]
         return self._dataset_reader.text_to_instance(premise_text, hypothesis_text)
 
-    @overrides
     def predictions_to_labeled_instances(
         self, instance: Instance, outputs: Dict[str, numpy.ndarray]
     ) -> List[Instance]:

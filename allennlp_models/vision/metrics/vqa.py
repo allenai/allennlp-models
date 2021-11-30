@@ -1,5 +1,5 @@
 import torch
-from overrides import overrides
+
 
 from allennlp.training.metrics.metric import Metric
 import torch.distributed as dist
@@ -22,7 +22,6 @@ class VqaMeasure(Metric):
         self._sum_of_scores = 0.0
         self._score_count = 0
 
-    @overrides
     def __call__(self, logits: torch.Tensor, labels: torch.Tensor, label_weights: torch.Tensor):
         """
         # Parameters
@@ -55,7 +54,6 @@ class VqaMeasure(Metric):
         self._sum_of_scores += local_sum_of_scores.item()
         self._score_count += local_score_count.item()
 
-    @overrides
     def get_metric(self, reset: bool = False):
         if self._score_count > 0:
             result = self._sum_of_scores / self._score_count
@@ -66,7 +64,6 @@ class VqaMeasure(Metric):
             self.reset()
         return result_dict
 
-    @overrides
     def reset(self) -> None:
         self._sum_of_scores = 0.0
         self._score_count = 0

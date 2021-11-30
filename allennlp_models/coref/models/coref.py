@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Tuple
 
 import torch
 import torch.nn.functional as F
-from overrides import overrides
+
 
 from allennlp.data import TextFieldTensors, Vocabulary
 from allennlp.models.model import Model
@@ -133,7 +133,6 @@ class CoreferenceResolver(Model):
             self._lexical_dropout = lambda x: x
         initializer(self)
 
-    @overrides
     def forward(
         self,  # type: ignore
         text: TextFieldTensors,
@@ -382,7 +381,6 @@ class CoreferenceResolver(Model):
             output_dict["document"] = [x["original_text"] for x in metadata]
         return output_dict
 
-    @overrides
     def make_output_human_readable(self, output_dict: Dict[str, torch.Tensor]):
         """
         Converts the list of spans and predicted antecedent indices into clusters
@@ -465,7 +463,6 @@ class CoreferenceResolver(Model):
         output_dict["clusters"] = batch_clusters
         return output_dict
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         mention_recall = self._mention_recall.get_metric(reset)
         coref_precision, coref_recall, coref_f1 = self._conll_coref_scores.get_metric(reset)

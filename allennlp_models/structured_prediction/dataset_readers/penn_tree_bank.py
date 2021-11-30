@@ -2,7 +2,6 @@ from typing import Dict, List, Tuple
 import logging
 import os
 
-from overrides import overrides
 
 # NLTK is so performance orientated (ha ha) that they have lazy imports. Why? Who knows.
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
@@ -80,7 +79,6 @@ class PennTreeBankConstituencySpanDatasetReader(DatasetReader):
         self._label_namespace_prefix = label_namespace_prefix
         self._pos_label_namespace = pos_label_namespace
 
-    @overrides
     def _read(self, file_path):
         # if `file_path` is a URL, redirect to the cache
         file_path = cached_path(file_path)
@@ -96,7 +94,6 @@ class PennTreeBankConstituencySpanDatasetReader(DatasetReader):
             pos_tags = [x[1] for x in parse.pos()] if self._use_pos_tags else None
             yield self.text_to_instance(parse.leaves(), pos_tags, parse)
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         tokens: List[str],

@@ -8,7 +8,7 @@ from typing import (
     Tuple,
 )
 
-from overrides import overrides
+
 import torch
 from torch import Tensor
 
@@ -29,7 +29,6 @@ class VisualEntailmentReader(VisionReader):
     The dataset reader for visual entailment.
     """
 
-    @overrides
     def _read(self, file_path: str):
         split_prefix = "https://storage.googleapis.com/allennlp-public-data/snli-ve/"
         splits = {
@@ -73,7 +72,6 @@ class VisualEntailmentReader(VisionReader):
             instance = self.text_to_instance(processed_image, hypothesis, answer)
             yield instance
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         image: Union[str, Tuple[Tensor, Tensor, Optional[Tensor], Optional[Tensor]]],
@@ -109,6 +107,5 @@ class VisualEntailmentReader(VisionReader):
 
         return Instance(fields)
 
-    @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
         instance["hypothesis"].token_indexers = self._token_indexers  # type: ignore

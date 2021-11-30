@@ -6,7 +6,6 @@ import tempfile
 import subprocess
 import shutil
 
-from overrides import overrides
 
 from allennlp.common.util import is_distributed
 from allennlp.common.checks import ConfigurationError
@@ -49,7 +48,6 @@ class SrlEvalScorer(Metric):
         self._false_positives: Dict[str, int] = defaultdict(int)
         self._false_negatives: Dict[str, int] = defaultdict(int)
 
-    @overrides
     def __call__(
         self,  # type: ignore
         batch_verb_indices: List[Optional[int]],

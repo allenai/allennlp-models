@@ -1,6 +1,6 @@
 from typing import List
 
-from overrides import overrides
+
 from nltk import Tree
 
 from allennlp.common.util import JsonDict, sanitize
@@ -85,7 +85,6 @@ class ConstituencyParserPredictor(Predictor):
         """
         return self.predict_json({"sentence": sentence})
 
-    @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         """
         Expects JSON that looks like `{"sentence": "..."}`.
@@ -95,7 +94,6 @@ class ConstituencyParserPredictor(Predictor):
         pos_tags = [token.tag_ for token in spacy_tokens]
         return self._dataset_reader.text_to_instance(sentence_text, pos_tags)
 
-    @overrides
     def predict_instance(self, instance: Instance) -> JsonDict:
         outputs = self._model.forward_on_instance(instance)
 
@@ -105,7 +103,6 @@ class ConstituencyParserPredictor(Predictor):
         outputs["trees"] = tree.pformat(margin=1000000)
         return sanitize(outputs)
 
-    @overrides
     def predict_batch_instance(self, instances: List[Instance]) -> List[JsonDict]:
         outputs = self._model.forward_on_instances(instances)
         for output in outputs:

@@ -1,6 +1,6 @@
 from typing import List
 
-from overrides import overrides
+
 import torch
 from torch.nn import Dropout
 
@@ -121,19 +121,15 @@ class StackedSelfAttentionEncoder(Seq2SeqEncoder):
         self._input_dim = input_dim
         self._output_dim = self._attention_layers[-1].get_output_dim()
 
-    @overrides
     def get_input_dim(self) -> int:
         return self._input_dim
 
-    @overrides
     def get_output_dim(self) -> int:
         return self._output_dim
 
-    @overrides
     def is_bidirectional(self):
         return False
 
-    @overrides
     def forward(self, inputs: torch.Tensor, mask: torch.BoolTensor):
         if self._use_positional_encoding:
             output = add_positional_features(inputs)

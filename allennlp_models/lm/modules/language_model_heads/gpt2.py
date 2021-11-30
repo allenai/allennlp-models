@@ -1,4 +1,3 @@
-from overrides import overrides
 from transformers.models.gpt2.modeling_gpt2 import GPT2Config, GPT2LMHeadModel
 import torch
 
@@ -26,11 +25,9 @@ class Gpt2LanguageModelHead(LanguageModelHead):
         gpt2_model = GPT2LMHeadModel.from_pretrained(model_name)
         self.gpt2_lm_head = gpt2_model.lm_head
 
-    @overrides
     def get_input_dim(self) -> int:
         return self.input_dim
 
-    @overrides
     def get_output_dim(self) -> int:
         return self.output_dim
 

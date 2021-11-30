@@ -1,6 +1,6 @@
 from typing import Dict
 
-from overrides import overrides
+
 import numpy
 
 from allennlp.common.util import JsonDict
@@ -14,7 +14,6 @@ class NextTokenLMPredictor(Predictor):
     def predict(self, sentence: str) -> JsonDict:
         return self.predict_json({"sentence": sentence})
 
-    @overrides
     def predictions_to_labeled_instances(
         self, instance: Instance, outputs: Dict[str, numpy.ndarray]
     ):
@@ -29,7 +28,6 @@ class NextTokenLMPredictor(Predictor):
         )
         return [new_instance]
 
-    @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         """
         Expects JSON that looks like `{"sentence": "..."}`.

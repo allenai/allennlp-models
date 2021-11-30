@@ -3,7 +3,7 @@ import logging
 from typing import Optional, Iterable, Dict
 
 from allennlp.common.file_utils import cached_path
-from overrides import overrides
+
 from allennlp.data import DatasetReader, Tokenizer, TokenIndexer, Instance, Field
 from allennlp.data.tokenizers import WhitespaceTokenizer
 from allennlp.data.token_indexers import SingleIdTokenIndexer
@@ -38,7 +38,6 @@ class BoolQDatasetReader(DatasetReader):
         self.tokenizer = tokenizer or WhitespaceTokenizer()
         self.token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
 
-    @overrides
     def _read(self, file_path) -> Iterable[Instance]:
         file_path = cached_path(file_path, extract_archive=True)
         with open(file_path) as f:
@@ -51,7 +50,6 @@ class BoolQDatasetReader(DatasetReader):
                     label=record.get("label"),
                 )
 
-    @overrides
     def text_to_instance(  # type: ignore
         self, passage: str, question: str, label: Optional[bool] = None
     ) -> Instance:
