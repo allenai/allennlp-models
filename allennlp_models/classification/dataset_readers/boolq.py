@@ -51,6 +51,7 @@ class BoolQDatasetReader(DatasetReader):
                     label=record.get("label"),
                 )
 
+    @overrides
     def text_to_instance(  # type: ignore
         self, passage: str, question: str, label: Optional[bool] = None
     ) -> Instance:
