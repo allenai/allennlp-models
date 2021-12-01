@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added Python 3.9 to the testing matrix
+
 ### Changed
 
 - Following a breaking change in the NLTK API, we now depend on the most recent version only.
