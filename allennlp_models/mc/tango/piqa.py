@@ -2,11 +2,12 @@ from typing import Dict
 
 import datasets
 import torch
+from tango import Step
+from tango.common import DatasetDict
+
 from allennlp.common import cached_transformers
 from allennlp.data import Field, Instance, Vocabulary
 from allennlp.data.fields import ListField, TransformerTextField, IndexField
-from allennlp.tango.dataset import DatasetDict
-from allennlp.tango.step import Step
 
 
 @Step.register("piqa_instances")
