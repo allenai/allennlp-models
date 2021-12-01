@@ -10,7 +10,7 @@ from typing import (
 )
 import json
 
-from overrides import overrides
+
 import torch
 from torch import Tensor
 
@@ -122,7 +122,6 @@ class VGQAReader(VisionReader):
                 for a in answer_vocab.get_token_to_index_vocabulary("answers").keys()
             )
 
-    @overrides
     def _read(self, file_path: str):
         # if the splits are using slicing syntax, honor it
         question_slice, file_path = utils.get_data_slice(file_path)
@@ -192,7 +191,6 @@ class VGQAReader(VisionReader):
         failed_instances_fraction = failed_instances_count / attempted_instances_count
         logger.warning(f"{failed_instances_fraction*100:.0f}% of instances failed.")
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         qa_id: int,
@@ -236,6 +234,5 @@ class VGQAReader(VisionReader):
 
         return Instance(fields)
 
-    @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
         instance["question"].token_indexers = self._token_indexers  # type: ignore

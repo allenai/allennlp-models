@@ -1,7 +1,7 @@
 import logging
 
 from allennlp.data import DatasetReader
-from overrides import overrides
+
 
 from allennlp_models.mc.dataset_readers.transformer_mc import TransformerMCReader
 
@@ -14,7 +14,6 @@ class SwagReader(TransformerMCReader):
     Reads the input data for the SWAG dataset (https://arxiv.org/abs/1808.05326).
     """
 
-    @overrides
     def _read(self, file_path: str):
         from allennlp.common.file_utils import cached_path
 

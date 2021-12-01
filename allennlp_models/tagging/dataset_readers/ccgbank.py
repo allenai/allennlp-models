@@ -2,7 +2,6 @@ from typing import Dict, List, Sequence
 import logging
 import re
 
-from overrides import overrides
 
 from allennlp.common.checks import ConfigurationError
 from allennlp.common.file_utils import cached_path
@@ -77,7 +76,6 @@ class CcgBankDatasetReader(DatasetReader):
 
         self.label_namespace = label_namespace
 
-    @overrides
     def _read(self, file_path):
         # if `file_path` is a URL, redirect to the cache
         file_path = cached_path(file_path)
@@ -110,7 +108,6 @@ class CcgBankDatasetReader(DatasetReader):
                         predicate_arg_categories,
                     )
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         tokens: List[str],

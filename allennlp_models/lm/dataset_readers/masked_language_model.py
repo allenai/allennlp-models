@@ -2,7 +2,6 @@ from typing import Dict, List
 import logging
 import copy
 
-from overrides import overrides
 
 from allennlp.data.instance import Instance
 from allennlp.data.tokenizers.tokenizer import Tokenizer
@@ -62,7 +61,6 @@ class MaskedLanguageModelingReader(DatasetReader):
 
         self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
 
-    @overrides
     def _read(self, file_path: str):
         import sys
 
@@ -76,7 +74,6 @@ class MaskedLanguageModelingReader(DatasetReader):
                 tokens[0] = Token("[MASK]")
                 yield self.text_to_instance(sentence, tokens, [target])
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         sentence: str = None,

@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from overrides import overrides
+
 import numpy
 
 from allennlp.common.util import JsonDict
@@ -43,7 +43,6 @@ class ReadingComprehensionPredictor(Predictor):
         """
         return self.predict_json({"passage": passage, "question": question})
 
-    @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         """
         Expects JSON that looks like ``{"question": "...", "passage": "..."}``.
@@ -52,7 +51,6 @@ class ReadingComprehensionPredictor(Predictor):
         passage_text = json_dict["passage"]
         return self._dataset_reader.text_to_instance(question_text, passage_text)
 
-    @overrides
     def predictions_to_labeled_instances(
         self, instance: Instance, outputs: Dict[str, numpy.ndarray]
     ) -> List[Instance]:

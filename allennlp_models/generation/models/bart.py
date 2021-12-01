@@ -1,6 +1,6 @@
 import warnings
 from typing import Dict, Tuple, Any, cast
-from overrides import overrides
+
 
 from allennlp.data import Vocabulary
 from allennlp.data.fields.text_field import TextFieldTensors
@@ -48,19 +48,15 @@ class BartEncoder(Seq2SeqEncoder):
             (x.shape[0], x.shape[1], self.hidden_dim), dtype=torch.float32
         )
 
-    @overrides
     def get_input_dim(self) -> int:
         return self.hidden_dim
 
-    @overrides
     def get_output_dim(self) -> int:
         return self.hidden_dim
 
-    @overrides
     def is_bidirectional(self) -> bool:
         return False
 
-    @overrides
     def forward(self, inputs: torch.Tensor, mask: torch.BoolTensor):
         # The first element is always the last encoder states for each input token.
         # Depending on the config, the second output will contain a list of the encoder states
@@ -99,7 +95,6 @@ class _BartEncoderWrapper(nn.Module):
         # assert not bart_config.output_attentions
         # assert not bart_config.output_hidden_states
 
-    @overrides
     def forward(
         self,
         input_ids,
@@ -184,7 +179,6 @@ class Bart(Model):
                 self.bart.model.encoder.embed_positions,
             )
 
-    @overrides
     def forward(
         self, source_tokens: TextFieldTensors, target_tokens: TextFieldTensors = None
     ) -> Dict[str, torch.Tensor]:
@@ -358,7 +352,6 @@ class Bart(Model):
 
         return log_probabilities, state
 
-    @overrides
     def make_output_human_readable(self, output_dict: Dict[str, torch.Tensor]) -> Dict[str, Any]:
         """
 
@@ -389,7 +382,6 @@ class Bart(Model):
 
         return output_dict
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         metrics: Dict[str, float] = {}
         if not self.training:

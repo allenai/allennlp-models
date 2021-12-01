@@ -1,5 +1,5 @@
 from typing import Dict, Tuple, List, NamedTuple, Any
-from overrides import overrides
+
 
 import torch
 from torch.nn.modules.linear import Linear
@@ -134,7 +134,6 @@ class SpanConstituencyParser(Model):
             self._evalb_score = None
         initializer(self)
 
-    @overrides
     def forward(
         self,  # type: ignore
         tokens: TextFieldTensors,
@@ -254,7 +253,6 @@ class SpanConstituencyParser(Model):
 
         return output_dict
 
-    @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:
@@ -487,7 +485,6 @@ class SpanConstituencyParser(Model):
         tree = assemble_subtree(0, len(sentence))
         return tree[0]
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         all_metrics = {}
         all_metrics["tag_accuracy"] = self.tag_accuracy.get_metric(reset=reset)

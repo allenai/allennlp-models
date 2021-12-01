@@ -1,7 +1,7 @@
 from typing import Tuple, Union, List, cast
 
 from allennlp.nn.util import dist_reduce_sum
-from overrides import overrides
+
 
 from allennlp.training.metrics.metric import Metric
 from allennlp_models.rc.tools import squad
@@ -20,7 +20,6 @@ class SquadEmAndF1(Metric):
         self._total_f1 = 0.0
         self._count = 0
 
-    @overrides
     def __call__(
         self,
         best_span_strings: Union[str, List[str]],
@@ -52,7 +51,6 @@ class SquadEmAndF1(Metric):
         self._total_f1 += dist_reduce_sum(f1_score)
         self._count += dist_reduce_sum(count)
 
-    @overrides
     def get_metric(self, reset: bool = False) -> Tuple[float, float]:
         """
         Returns
@@ -66,7 +64,6 @@ class SquadEmAndF1(Metric):
             self.reset()
         return exact_match, f1_score
 
-    @overrides
     def reset(self):
         self._total_em = 0.0
         self._total_f1 = 0.0

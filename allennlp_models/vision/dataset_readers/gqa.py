@@ -9,7 +9,7 @@ from typing import (
 import json
 import os
 
-from overrides import overrides
+
 import torch
 from torch import Tensor
 
@@ -91,7 +91,6 @@ class GQAReader(VisionReader):
                 answer_vocab.get_token_to_index_vocabulary("answers").keys()
             )
 
-    @overrides
     def _read(self, split_or_filename: str):
 
         if not self.data_dir:
@@ -168,7 +167,6 @@ class GQAReader(VisionReader):
                 if instance is not None:
                     yield instance
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         question: str,
@@ -212,6 +210,5 @@ class GQAReader(VisionReader):
 
         return Instance(fields)
 
-    @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
         instance["question"].token_indexers = self._token_indexers  # type: ignore

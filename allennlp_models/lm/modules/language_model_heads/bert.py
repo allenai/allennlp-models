@@ -1,4 +1,3 @@
-from overrides import overrides
 from transformers.models.bert.modeling_bert import BertConfig, BertForMaskedLM
 import torch
 
@@ -26,11 +25,9 @@ class BertLanguageModelHead(LanguageModelHead):
         bert_model = BertForMaskedLM.from_pretrained(model_name)
         self.bert_lm_head = bert_model.cls
 
-    @overrides
     def get_input_dim(self) -> int:
         return self.input_dim
 
-    @overrides
     def get_output_dim(self) -> int:
         return self.output_dim
 

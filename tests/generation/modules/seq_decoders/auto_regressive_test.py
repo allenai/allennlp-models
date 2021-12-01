@@ -2,7 +2,7 @@ from typing import Any, Iterable, Dict
 
 import pytest
 import torch
-from overrides import overrides
+
 
 from allennlp.common import Lazy, Params
 from allennlp.common.checks import ConfigurationError
@@ -50,14 +50,12 @@ class DummyMetric(Metric):
         r = true_positive_count / len(expected)
         return (2 * p * r) / (p + r)
 
-    @overrides
     def __call__(self, best_span_strings, answer_strings):
         for best_span_string, answer_string in zip(best_span_strings, answer_strings):
             self._total_em += best_span_string == answer_string
             self._total_f1 += self.f1(best_span_string, answer_string)
             self._count += 1
 
-    @overrides
     def get_metric(self, reset: bool = False) -> Dict[str, float]:
         exact_match = self._total_em / self._count if self._count > 0 else 0
         f1_score = self._total_f1 / self._count if self._count > 0 else 0
@@ -65,7 +63,6 @@ class DummyMetric(Metric):
             self.reset()
         return {"em": exact_match, "f1": f1_score}
 
-    @overrides
     def reset(self):
         self._total_em = 0.0
         self._total_f1 = 0.0

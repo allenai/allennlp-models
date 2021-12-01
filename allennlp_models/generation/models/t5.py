@@ -1,7 +1,7 @@
 from os import PathLike
 from typing import Optional, Dict, Any, Union, List, Tuple
 
-from overrides import overrides
+
 import torch
 
 from allennlp.common.lazy import Lazy
@@ -47,7 +47,6 @@ class T5(Model):
             BLEU(exclude_indices=exclude_indices),
         ]
 
-    @overrides
     def _post_load_state_dict(
         self, missing_keys: List[str], unexpected_keys: List[str]
     ) -> Tuple[List[str], List[str]]:
@@ -135,7 +134,6 @@ class T5(Model):
 
         return output_dict
 
-    @overrides
     def make_output_human_readable(self, output_dict: Dict[str, torch.Tensor]) -> Dict[str, Any]:
         predictions = output_dict["predictions"]
         output_dict["predicted_text"] = self.tokenizer.tokenizer.batch_decode(
@@ -143,7 +141,6 @@ class T5(Model):
         )
         return output_dict
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         metrics: Dict[str, float] = {}
         if not self.training:

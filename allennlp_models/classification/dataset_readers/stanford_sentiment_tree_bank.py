@@ -2,7 +2,7 @@ from typing import Dict, List, Optional, Union
 import logging
 
 from allennlp.data import Tokenizer
-from overrides import overrides
+
 from nltk.tree import Tree
 
 from allennlp.common.file_utils import cached_path
@@ -72,7 +72,6 @@ class StanfordSentimentTreeBankDatasetReader(DatasetReader):
             )
         self._granularity = granularity
 
-    @overrides
     def _read(self, file_path):
         with open(cached_path(file_path), "r") as data_file:
             logger.info("Reading instances from lines in file at: %s", file_path)
@@ -91,7 +90,6 @@ class StanfordSentimentTreeBankDatasetReader(DatasetReader):
                     if instance is not None:
                         yield instance
 
-    @overrides
     def text_to_instance(self, tokens: List[str], sentiment: str = None) -> Optional[Instance]:
         """
         We take `pre-tokenized` input here, because we might not have a tokenizer in this class.
@@ -154,6 +152,5 @@ class StanfordSentimentTreeBankDatasetReader(DatasetReader):
             fields["label"] = LabelField(sentiment)
         return Instance(fields)
 
-    @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
         instance.fields["tokens"].token_indexers = self._token_indexers

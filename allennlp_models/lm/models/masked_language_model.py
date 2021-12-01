@@ -1,6 +1,6 @@
 from typing import Dict
 
-from overrides import overrides
+
 import torch
 
 from allennlp.common.checks import check_dimensions_match
@@ -144,7 +144,6 @@ class MaskedLanguageModel(Model):
     def get_metrics(self, reset: bool = False):
         return {"perplexity": self._perplexity.get_metric(reset=reset)}
 
-    @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:
