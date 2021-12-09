@@ -85,8 +85,7 @@ local wandb_callback = {
         },
         [if activation_checkpointing then "checkpoint_wrapper"]: {
             "type": "fairscale",
-            "offload_to_cpu": true,
-            "maintain_forward_counter": true,
+            "offload_to_cpu": true
         },
     },
     "data_loader": data_loader + {

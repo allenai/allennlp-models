@@ -2,7 +2,7 @@ from typing import Dict, Tuple, Any, List
 import logging
 import copy
 
-from overrides import overrides
+
 import torch
 import torch.nn.functional as F
 from torch.nn.modules import Dropout
@@ -164,7 +164,6 @@ class BiaffineDependencyParser(Model):
         self._attachment_scores = AttachmentScores()
         initializer(self)
 
-    @overrides
     def forward(
         self,  # type: ignore
         words: TextFieldTensors,
@@ -265,7 +264,6 @@ class BiaffineDependencyParser(Model):
 
         return output_dict
 
-    @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:
@@ -679,7 +677,6 @@ class BiaffineDependencyParser(Model):
             new_mask = new_mask & ~label_mask
         return new_mask
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return self._attachment_scores.get_metric(reset)
 

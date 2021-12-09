@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, Optional
 
-from overrides import overrides
+
 import torch
 
 from allennlp.data import TextFieldTensors, Vocabulary
@@ -70,7 +70,6 @@ class VqaVilbert(VisionTextModel):
         self.f1_metric = F1MultiLabelMeasure(average="micro")
         self.vqa_metric = VqaMeasure()
 
-    @overrides
     def forward(
         self,  # type: ignore
         box_features: torch.Tensor,
@@ -90,7 +89,6 @@ class VqaVilbert(VisionTextModel):
             label_weights=label_weights,
         )
 
-    @overrides
     def _compute_loss_and_metrics(
         self,
         batch_size: int,
@@ -129,13 +127,11 @@ class VqaVilbert(VisionTextModel):
 
         return outputs
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         result = self.f1_metric.get_metric(reset)
         result["vqa_score"] = self.vqa_metric.get_metric(reset)["score"]
         return result
 
-    @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:

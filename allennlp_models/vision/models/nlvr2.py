@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, Optional, List, Any
 
-from overrides import overrides
+
 import numpy as np
 import torch
 
@@ -77,7 +77,6 @@ class Nlvr2Model(VisionTextModel):
         self.accuracy = CategoricalAccuracy()
         self.fbeta = FBetaMeasure(beta=1.0, average="macro")
 
-    @overrides
     def forward(
         self,  # type: ignore
         box_features: torch.Tensor,
@@ -106,13 +105,15 @@ class Nlvr2Model(VisionTextModel):
 
         return outputs
 
-    @overrides
     def _compute_loss_and_metrics(
         self,
         batch_size: int,
-        outputs: torch.Tensor,
+        outputs: Dict[str, torch.Tensor],
         label: torch.Tensor,
-    ):
+        label_weights: Optional[torch.Tensor] = None,
+    ) -> Dict[str, torch.Tensor]:
+        if label_weights is not None:
+            raise NotImplementedError("This implementation does not support label_weights.")
         if label is not None:
             outputs["loss"] = (
                 torch.nn.functional.cross_entropy(outputs["logits"], label) / batch_size
@@ -121,14 +122,12 @@ class Nlvr2Model(VisionTextModel):
             self.fbeta(outputs["probs"], label)
         return outputs
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         metrics = self.fbeta.get_metric(reset)
         accuracy = self.accuracy.get_metric(reset)
         metrics.update({"accuracy": accuracy})
         return metrics
 
-    @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:

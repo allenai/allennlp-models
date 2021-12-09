@@ -2,7 +2,7 @@ import logging
 from typing import Dict, List, Iterable
 
 from allennlp.data.dataset_readers.dataset_utils import to_bioul
-from overrides import overrides
+
 
 from allennlp.common.file_utils import cached_path
 from allennlp.common.checks import ConfigurationError
@@ -74,7 +74,6 @@ class OntonotesNamedEntityRecognition(DatasetReader):
             )
         self._coding_scheme = coding_scheme
 
-    @overrides
     def _read(self, file_path: str):
         # if `file_path` is a URL, redirect to the cache
         file_path = cached_path(file_path)
@@ -107,7 +106,6 @@ class OntonotesNamedEntityRecognition(DatasetReader):
             ) and "/pt/" not in conll_file:
                 yield from ontonotes_reader.sentence_iterator(conll_file)
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         tokens: List[Token],

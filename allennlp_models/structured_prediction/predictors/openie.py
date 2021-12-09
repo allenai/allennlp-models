@@ -1,6 +1,5 @@
 from typing import List, Dict
 
-from overrides import overrides
 
 from allennlp.common.util import JsonDict, sanitize
 from allennlp.data import DatasetReader, Instance
@@ -205,7 +204,6 @@ class OpenIePredictor(Predictor):
         verb_labels[predicate_index] = 1
         return self._dataset_reader.text_to_instance(tokens, verb_labels)
 
-    @overrides
     def predict_json(self, inputs: JsonDict) -> JsonDict:
         """
         Create instance(s) after predicting the format. One sentence containing multiple verbs

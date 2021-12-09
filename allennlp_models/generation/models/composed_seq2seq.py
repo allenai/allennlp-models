@@ -1,7 +1,7 @@
 from typing import Dict, Optional
 
 import torch
-from overrides import overrides
+
 
 from allennlp.common.checks import ConfigurationError
 from allennlp.data import TextFieldTensors, Vocabulary
@@ -92,7 +92,6 @@ class ComposedSeq2Seq(Model):
             ] = self._decoder.target_embedder
         initializer(self)
 
-    @overrides
     def forward(
         self,  # type: ignore
         source_tokens: TextFieldTensors,
@@ -120,7 +119,6 @@ class ComposedSeq2Seq(Model):
 
         return self._decoder(state, target_tokens)
 
-    @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:
@@ -155,7 +153,6 @@ class ComposedSeq2Seq(Model):
         encoder_outputs = self._encoder(embedded_input, source_mask)
         return {"source_mask": source_mask, "encoder_outputs": encoder_outputs}
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return self._decoder.get_metrics(reset)
 

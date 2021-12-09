@@ -3,7 +3,7 @@ from typing import Tuple, List, Union
 from allennlp.nn.util import dist_reduce_sum
 
 from allennlp.training.metrics.metric import Metric
-from overrides import overrides
+
 
 from allennlp_models.rc.tools.drop import (
     get_metrics as drop_em_and_f1,
@@ -26,7 +26,6 @@ class DropEmAndF1(Metric):
         self._total_f1 = 0.0
         self._count = 0
 
-    @overrides
     def __call__(self, prediction: Union[str, List], ground_truths: List):  # type: ignore
         """
         Parameters
@@ -51,7 +50,6 @@ class DropEmAndF1(Metric):
         self._total_f1 += dist_reduce_sum(f1_score)
         self._count += dist_reduce_sum(1)
 
-    @overrides
     def get_metric(self, reset: bool = False) -> Tuple[float, float]:
         """
         Returns
@@ -65,7 +63,6 @@ class DropEmAndF1(Metric):
             self.reset()
         return exact_match, f1_score
 
-    @overrides
     def reset(self):
         self._total_em = 0.0
         self._total_f1 = 0.0

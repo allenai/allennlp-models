@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, List, Iterable, Tuple, Any
 
-from overrides import overrides
+
 from transformers.models.bert.tokenization_bert import BertTokenizer
 
 from allennlp.common.file_utils import cached_path
@@ -203,7 +203,6 @@ class SrlReader(DatasetReader):
 
         return wordpieces, end_offsets, start_offsets
 
-    @overrides
     def _read(self, file_path: str):
         # if `file_path` is a URL, redirect to the cache
         file_path = cached_path(file_path)

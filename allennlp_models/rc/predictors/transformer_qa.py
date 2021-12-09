@@ -1,7 +1,7 @@
 import logging
 from typing import List, Dict, Any, Optional
 
-from overrides import overrides
+
 import numpy
 
 from allennlp.models import Model
@@ -53,7 +53,6 @@ class TransformerQAPredictor(Predictor):
         assert len(results) == 1
         return results[0]
 
-    @overrides
     def predictions_to_labeled_instances(
         self, instance: Instance, outputs: Dict[str, numpy.ndarray]
     ) -> List[Instance]:
@@ -75,7 +74,6 @@ class TransformerQAPredictor(Predictor):
         new_instance.add_field("answer_span", answer_span)
         return [new_instance]
 
-    @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         logger.warning(
             "This method is implemented only for use in interpret modules."
@@ -109,21 +107,18 @@ class TransformerQAPredictor(Predictor):
             self._next_qid += 1
         return result
 
-    @overrides
     def _batch_json_to_instances(self, json_dicts: List[JsonDict]) -> List[Instance]:
         instances = []
         for json_dict in json_dicts:
             instances.extend(self._json_to_instances(json_dict))
         return instances
 
-    @overrides
     def predict_batch_json(self, inputs: List[JsonDict]) -> List[JsonDict]:
         instances = self._batch_json_to_instances(inputs)
         result = self.predict_batch_instance(instances)
         assert len(result) == len(inputs)
         return result
 
-    @overrides
     def predict_batch_instance(self, instances: List[Instance]) -> List[JsonDict]:
         outputs = self._model.forward_on_instances(instances)
 

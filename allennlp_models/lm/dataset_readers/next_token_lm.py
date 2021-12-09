@@ -2,7 +2,6 @@ from typing import Dict, List, cast
 import logging
 import copy
 
-from overrides import overrides
 
 from allennlp.data.instance import Instance
 from allennlp.data.tokenizers.tokenizer import Tokenizer
@@ -61,7 +60,6 @@ class NextTokenLMReader(DatasetReader):
         self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
         self._max_tokens = max_tokens
 
-    @overrides
     def _read(self, file_path: str):
         import sys
 
@@ -77,7 +75,6 @@ class NextTokenLMReader(DatasetReader):
                 target = "the"
                 yield self.text_to_instance(sentence, tokens, target)
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         sentence: str = None,

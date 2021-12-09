@@ -2,7 +2,7 @@ import logging
 from typing import List, Optional
 
 from allennlp.data import DatasetReader, Instance
-from overrides import overrides
+
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,6 @@ class TransformerMCReader(DatasetReader):
         self._token_indexers = {"tokens": PretrainedTransformerIndexer(transformer_model_name)}
         self.length_limit = length_limit
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         qid: str,
