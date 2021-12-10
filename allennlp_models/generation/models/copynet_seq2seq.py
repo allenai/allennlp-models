@@ -1,6 +1,6 @@
 import logging
 import warnings
-from typing import Any, Dict, List, Tuple, Union, Optional
+from typing import Any, Dict, List, Tuple, Union
 
 import numpy
 import torch
@@ -56,11 +56,11 @@ class CopyNetSeq2Seq(Model):
         This is used to during inference to select the tokens of the decoded output sequence.
     target_embedding_dim : `int`, optional (default = `30`)
         The size of the embeddings for the target vocabulary.
-    scheduled_sampling_ratio : `float`, optional (default = `None`)
+    scheduled_sampling_ratio : `float`, optional (default = `0.`)
         At each timestep during training, we sample a random number between 0 and 1, and if it is
         not less than this value, we use the ground truth labels for the whole batch. Else, we use
-        the predictions from the previous time step for the whole batch. If this value is 0.0 or
-        None (default), this corresponds to teacher forcing, and if it is 1.0, it corresponds to not
+        the predictions from the previous time step for the whole batch. If this value is 0.0
+        (default), this corresponds to teacher forcing, and if it is 1.0, it corresponds to not
         using target side ground truth labels.  See the following paper for more information:
         [Scheduled Sampling for Sequence Prediction with Recurrent Neural Networks. Bengio et al.,
         2015](https://arxiv.org/abs/1506.03099).
@@ -91,7 +91,7 @@ class CopyNetSeq2Seq(Model):
         label_smoothing: float = None,
         beam_search: Lazy[BeamSearch] = Lazy(BeamSearch),
         target_embedding_dim: int = 30,
-        scheduled_sampling_ratio: Optional[float] = None,
+        scheduled_sampling_ratio: float = 0.0,
         copy_token: str = "@COPY@",
         target_namespace: str = "target_tokens",
         tensor_based_metric: Metric = None,
