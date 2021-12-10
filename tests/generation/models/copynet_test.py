@@ -44,6 +44,13 @@ class CopyNetTest(ModelTestCase):
             overrides="{'trainer.use_amp':true,'trainer.cuda_device':0}",
         )
 
+    def test_model_can_train_with_scheduled_sampling_ratio(self):
+        train_model_from_file(
+            self.param_file,
+            self.TEST_DIR,
+            overrides="{'model.scheduled_sampling_ratio':0.5}",
+        )
+
     def test_vocab(self):
         vocab = self.model.vocab
         assert vocab.get_vocab_size(self.model._target_namespace) == 8
