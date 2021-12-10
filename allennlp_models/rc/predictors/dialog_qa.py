@@ -1,5 +1,5 @@
 import json
-from overrides import overrides
+
 
 from allennlp.common.util import JsonDict
 from allennlp.data import DatasetReader, Instance
@@ -35,7 +35,6 @@ class DialogQAPredictor(Predictor):
         """
         return self.predict_json(json.loads(jsonline))
 
-    @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         """
         Expects json that looks like the original quac data file.

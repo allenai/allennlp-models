@@ -3,7 +3,6 @@ from typing import Dict, Optional
 import logging
 import copy
 
-from overrides import overrides
 
 from allennlp.common.checks import ConfigurationError
 from allennlp.common.file_utils import cached_path
@@ -119,7 +118,6 @@ class Seq2SeqDatasetReader(DatasetReader):
         self._target_max_exceeded = 0
         self.quoting = quoting
 
-    @overrides
     def _read(self, file_path: str):
         # Reset exceeded counts
         self._source_max_exceeded = 0
@@ -150,7 +148,6 @@ class Seq2SeqDatasetReader(DatasetReader):
                 self._target_max_tokens,
             )
 
-    @overrides
     def text_to_instance(
         self, source_string: str, target_string: str = None
     ) -> Instance:  # type: ignore
@@ -177,7 +174,6 @@ class Seq2SeqDatasetReader(DatasetReader):
         else:
             return Instance({"source_tokens": source_field})
 
-    @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
         instance.fields["source_tokens"]._token_indexers = self._source_token_indexers  # type: ignore
         if "target_tokens" in instance.fields:

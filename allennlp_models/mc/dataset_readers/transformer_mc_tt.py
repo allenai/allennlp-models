@@ -6,7 +6,7 @@ import torch
 from allennlp.common import cached_transformers
 from allennlp.data import DatasetReader, Instance
 from allennlp.data.fields import TransformerTextField
-from overrides import overrides
+
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +36,6 @@ class TransformerMCReaderTransformerToolkit(DatasetReader):
         self._tokenizer = cached_transformers.get_tokenizer(transformer_model_name)
         self.length_limit = length_limit
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         qid: str,

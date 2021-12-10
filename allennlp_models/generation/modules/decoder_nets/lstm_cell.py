@@ -1,5 +1,5 @@
 from typing import Tuple, Dict, Optional
-from overrides import overrides
+
 
 import torch
 from torch.nn import LSTMCell
@@ -96,7 +96,6 @@ class LstmCellDecoderNet(DecoderNet):
             #                  shape: (batch_size, decoder_output_dim)
         }
 
-    @overrides
     def forward(
         self,
         previous_state: Dict[str, torch.Tensor],

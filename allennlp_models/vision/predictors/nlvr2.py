@@ -1,6 +1,6 @@
 from typing import List, Dict
 
-from overrides import overrides
+
 import numpy
 
 from allennlp.common.file_utils import cached_path
@@ -17,7 +17,6 @@ class Nlvr2Predictor(Predictor):
         image2 = cached_path(image2)
         return self.predict_json({"image1": image1, "image2": image2, "hypothesis": hypothesis})
 
-    @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         from allennlp_models.vision.dataset_readers.nlvr2 import Nlvr2Reader
 
@@ -26,7 +25,7 @@ class Nlvr2Predictor(Predictor):
         hypothesis = json_dict["hypothesis"]
         if isinstance(self._dataset_reader, Nlvr2Reader):
             return self._dataset_reader.text_to_instance(
-                hypothesis, image1, image2, use_cache=False
+                None, hypothesis, image1, image2, use_cache=False
             )
         else:
             raise ValueError(
@@ -34,7 +33,6 @@ class Nlvr2Predictor(Predictor):
                 f"Expected {Nlvr2Reader.__name__}."
             )
 
-    @overrides
     def predictions_to_labeled_instances(
         self, instance: Instance, outputs: Dict[str, numpy.ndarray]
     ) -> List[Instance]:

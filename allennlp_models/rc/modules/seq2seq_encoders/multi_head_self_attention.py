@@ -1,4 +1,3 @@
-from overrides import overrides
 import torch
 from torch.nn import Dropout, Linear
 
@@ -80,11 +79,9 @@ class MultiHeadSelfAttention(Seq2SeqEncoder):
     def get_output_dim(self):
         return self._output_dim
 
-    @overrides
     def is_bidirectional(self):
         return False
 
-    @overrides
     def forward(self, inputs: torch.Tensor, mask: torch.BoolTensor = None) -> torch.FloatTensor:
         """
         # Parameters

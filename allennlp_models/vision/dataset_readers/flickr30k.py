@@ -14,7 +14,7 @@ from typing import (
 import os
 import tqdm
 
-from overrides import overrides
+
 import torch
 from torch import Tensor
 import transformers
@@ -182,7 +182,6 @@ class Flickr30kReader(VisionReader):
 
         return self._hard_negative_coordinates_cache_instance
 
-    @overrides
     def _read(self, file_path: str):
         file_path = cached_path(file_path, extract_archive=True)
         files_in_split = set()
@@ -287,8 +286,7 @@ class Flickr30kReader(VisionReader):
                     if instance is not None:
                         yield instance
 
-    @overrides
-    def text_to_instance(
+    def text_to_instance(  # type: ignore
         self,
         caption_dicts: List[Dict[str, Any]],
         image_index: int,
@@ -476,7 +474,6 @@ class Flickr30kReader(VisionReader):
                     pass
             return features
 
-    @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
         for caption in instance["caption"]:
             caption.token_indexers = self._token_indexers  # type: ignore

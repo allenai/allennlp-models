@@ -1,7 +1,6 @@
 import logging
 from typing import Any, Dict
 
-from overrides import overrides
 
 from allennlp.data.fields import MetadataField, TextField, LabelField
 from allennlp.common.file_utils import cached_path
@@ -54,7 +53,6 @@ class TransformerSuperGlueRteReader(DatasetReader):
             )
         }
 
-    @overrides
     def _read(self, file_path: str):
         # if `file_path` is a URL, redirect to the cache
         file_path = cached_path(file_path, extract_archive=True)
@@ -78,7 +76,6 @@ class TransformerSuperGlueRteReader(DatasetReader):
             yield instance
             yielded_relation_count += 1
 
-    @overrides
     def text_to_instance(
         self,
         index: int,
@@ -112,6 +109,5 @@ class TransformerSuperGlueRteReader(DatasetReader):
 
         return Instance(fields)
 
-    @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
         instance["tokens"].token_indexers = self._token_indexers

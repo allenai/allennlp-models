@@ -2,7 +2,6 @@ import logging
 import collections
 from typing import Dict, List, Optional, Tuple, DefaultDict
 
-from overrides import overrides
 
 from allennlp.common.file_utils import cached_path
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
@@ -69,7 +68,6 @@ class ConllCorefReader(DatasetReader):
         self._max_sentences = max_sentences
         self._remove_singleton_clusters = remove_singleton_clusters
 
-    @overrides
     def _read(self, file_path: str):
         # if `file_path` is a URL, redirect to the cache
         file_path = cached_path(file_path)
@@ -90,7 +88,6 @@ class ConllCorefReader(DatasetReader):
 
             yield self.text_to_instance([s.words for s in sentences], list(clusters.values()))
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         sentences: List[List[str]],

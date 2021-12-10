@@ -5,7 +5,7 @@ Utilities for reading comprehension dataset readers.
 from collections import Counter, defaultdict
 import logging
 import string
-from typing import Any, Dict, List, Tuple, Optional
+from typing import Any, Dict, List, Tuple, Optional, Union
 
 from allennlp.data.fields import (
     Field,
@@ -263,8 +263,8 @@ def make_reading_comprehension_instance_quac(
     token_indexers: Dict[str, TokenIndexer],
     passage_text: str,
     token_span_lists: List[List[Tuple[int, int]]] = None,
-    yesno_list: List[int] = None,
-    followup_list: List[int] = None,
+    yesno_list: Union[List[int], List[str]] = None,
+    followup_list: Union[List[int], List[str]] = None,
     additional_metadata: Dict[str, Any] = None,
     num_context_answers: int = 0,
 ) -> Instance:

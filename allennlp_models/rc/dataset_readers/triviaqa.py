@@ -4,7 +4,6 @@ import os
 import tarfile
 from typing import Dict, List, Tuple
 
-from overrides import overrides
 
 from allennlp.common.file_utils import cached_path
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
@@ -65,7 +64,6 @@ class TriviaQaReader(DatasetReader):
         self._tokenizer = tokenizer or SpacyTokenizer()
         self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
 
-    @overrides
     def _read(self, file_path: str):
         logger.info("Opening base tarball file at %s", self._base_tarball_path)
         base_tarball = tarfile.open(cached_path(self._base_tarball_path), "r")
@@ -147,7 +145,6 @@ class TriviaQaReader(DatasetReader):
             paragraphs.append(paragraph)
         return paragraphs
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         question_text: str,

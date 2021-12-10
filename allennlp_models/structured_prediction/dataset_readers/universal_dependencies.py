@@ -1,7 +1,7 @@
 from typing import Dict, Tuple, List
 import logging
 
-from overrides import overrides
+
 from conllu import parse_incr
 
 from allennlp.common.file_utils import cached_path
@@ -44,7 +44,6 @@ class UniversalDependenciesDatasetReader(DatasetReader):
         self.use_language_specific_pos = use_language_specific_pos
         self.tokenizer = tokenizer
 
-    @overrides
     def _read(self, file_path: str):
         # if `file_path` is a URL, redirect to the cache
         file_path = cached_path(file_path)
@@ -69,7 +68,6 @@ class UniversalDependenciesDatasetReader(DatasetReader):
                     pos_tags = [x["upostag"] for x in annotation]
                 yield self.text_to_instance(words, pos_tags, list(zip(tags, heads)))
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         words: List[str],

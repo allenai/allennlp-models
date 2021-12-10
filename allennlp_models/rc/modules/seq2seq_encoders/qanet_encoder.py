@@ -1,4 +1,3 @@
-from overrides import overrides
 import torch
 from torch.nn import Dropout
 from torch.nn import LayerNorm
@@ -100,19 +99,15 @@ class QaNetEncoder(Seq2SeqEncoder):
         self._input_dim = input_dim
         self._output_dim = hidden_dim
 
-    @overrides
     def get_input_dim(self) -> int:
         return self._input_dim
 
-    @overrides
     def get_output_dim(self) -> int:
         return self._output_dim
 
-    @overrides
     def is_bidirectional(self) -> bool:
         return False
 
-    @overrides
     def forward(self, inputs: torch.Tensor, mask: torch.BoolTensor = None) -> torch.Tensor:
         inputs = self._input_projection_layer(inputs)
         output = inputs
@@ -230,19 +225,15 @@ class QaNetEncoderBlock(Seq2SeqEncoder):
         self._input_dim = input_dim
         self._output_dim = hidden_dim
 
-    @overrides
     def get_input_dim(self) -> int:
         return self._input_dim
 
-    @overrides
     def get_output_dim(self) -> int:
         return self._output_dim
 
-    @overrides
     def is_bidirectional(self):
         return False
 
-    @overrides
     def forward(self, inputs: torch.Tensor, mask: torch.BoolTensor = None) -> torch.Tensor:
         if self._use_positional_encoding:
             output = add_positional_features(inputs)

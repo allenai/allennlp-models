@@ -1,6 +1,6 @@
 from typing import Dict, Optional, List, Any
 
-from overrides import overrides
+
 import torch
 
 from allennlp.common.checks import check_dimensions_match
@@ -201,7 +201,6 @@ class DecomposableAttention(Model):
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return {"accuracy": self._accuracy.get_metric(reset)}
 
-    @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:

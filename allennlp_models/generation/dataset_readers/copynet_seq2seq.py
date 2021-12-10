@@ -3,7 +3,7 @@ from typing import List, Dict
 import warnings
 
 import torch
-from overrides import overrides
+
 
 from allennlp.common.file_utils import cached_path
 from allennlp.common.util import START_SYMBOL, END_SYMBOL
@@ -118,7 +118,6 @@ class CopyNetDatasetReader(DatasetReader):
                 UserWarning,
             )
 
-    @overrides
     def _read(self, file_path):
         with open(cached_path(file_path), "r") as data_file:
             logger.info("Reading instances from lines in file at: %s", file_path)
@@ -144,7 +143,6 @@ class CopyNetDatasetReader(DatasetReader):
             out.append(ids.setdefault(token.text, len(ids)))
         return out
 
-    @overrides
     def text_to_instance(
         self,
         source_string: str,
@@ -207,7 +205,6 @@ class CopyNetDatasetReader(DatasetReader):
 
         return Instance(fields_dict)
 
-    @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
         instance.fields["source_tokens"]._token_indexers = self._source_token_indexers  # type: ignore
         if "target_tokens" in instance.fields:

@@ -6,7 +6,6 @@ import glob
 import hashlib
 import ftfy
 
-from overrides import overrides
 
 from allennlp.common.checks import ConfigurationError
 from allennlp.common.file_utils import cached_path
@@ -120,7 +119,6 @@ class CNNDailyMailDatasetReader(DatasetReader):
     def _strip_extension(filename: str) -> str:
         return os.path.splitext(filename)[0]
 
-    @overrides
     def _read(self, file_path: str):
         # Reset exceeded counts
         self._source_max_exceeded = 0
@@ -157,7 +155,6 @@ class CNNDailyMailDatasetReader(DatasetReader):
 
                 yield self.text_to_instance(article, summary)
 
-    @overrides
     def text_to_instance(
         self, source_sequence: str, target_sequence: str = None
     ) -> Instance:  # type: ignore
@@ -183,7 +180,6 @@ class CNNDailyMailDatasetReader(DatasetReader):
         else:
             return Instance({"source_tokens": source_field})
 
-    @overrides
     def apply_token_indexers(self, instance: Instance) -> None:
         instance.fields["source_tokens"]._token_indexers = self._source_token_indexers  # type: ignore
         if "target_tokens" in instance.fields:

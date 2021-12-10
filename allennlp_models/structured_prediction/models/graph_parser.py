@@ -2,7 +2,7 @@ from typing import Dict, Tuple, Any, List
 import logging
 import copy
 
-from overrides import overrides
+
 import torch
 from torch.nn.modules import Dropout
 import numpy
@@ -142,7 +142,6 @@ class GraphParser(Model):
         self._tag_loss = torch.nn.CrossEntropyLoss(reduction="none")
         initializer(self)
 
-    @overrides
     def forward(
         self,  # type: ignore
         tokens: TextFieldTensors,
@@ -229,7 +228,6 @@ class GraphParser(Model):
 
         return output_dict
 
-    @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:
@@ -358,6 +356,5 @@ class GraphParser(Model):
         arc_tag_probs = torch.nn.functional.softmax(arc_tag_logits, dim=-1)
         return arc_probs, arc_tag_probs
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return self._unlabelled_f1.get_metric(reset)

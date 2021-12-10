@@ -1,7 +1,7 @@
 import logging
 from typing import Any, Dict, List, Optional
 import numpy as np
-from overrides import overrides
+
 import torch
 import torch.nn.functional as F
 from torch.nn.functional import nll_loss
@@ -479,7 +479,6 @@ class DialogQA(Model):
             output_dict["followup"].append(per_dialog_followup_list)
         return output_dict
 
-    @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:

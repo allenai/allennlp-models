@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional
 
-from overrides import overrides
+
 import torch
 
 from allennlp.data import TextFieldTensors
@@ -22,7 +22,6 @@ class TransformerBeamSearchGenerator(BeamSearchGenerator):
         super().__init__(*args, **kwargs)
         self._namespace: Optional[str] = namespace
 
-    @overrides
     def validate_text_field_embedder(self, text_field_embedder: TextFieldEmbedder):
         assert isinstance(text_field_embedder, BasicTextFieldEmbedder)
         assert len(text_field_embedder._token_embedders) == 1
@@ -30,7 +29,6 @@ class TransformerBeamSearchGenerator(BeamSearchGenerator):
         assert isinstance(text_field_embedder._token_embedders[key], PretrainedTransformerEmbedder)
         self._namespace = key
 
-    @overrides
     def prepare_step_input(
         self, predictions: torch.Tensor, state: Dict[str, torch.Tensor]
     ) -> TextFieldTensors:
