@@ -534,7 +534,7 @@ class CopyNetSeq2Seq(Model):
         for timestep in range(num_decoding_steps):
             if (
                 self.training
-                and self._scheduled_sampling_ratio
+                and self._scheduled_sampling_ratio > 0.0
                 and torch.rand(1).item() < self._scheduled_sampling_ratio
             ):
                 # Use gold tokens at test time and at a rate of 1 - _scheduled_sampling_ratio
