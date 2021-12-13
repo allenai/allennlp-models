@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a configuration to train on the PIQA dataset with AllenNLP Tango.
 - Added a transformer classification model.
 - Added a configuration to train on the IMDB dataset with AllenNLP Tango.
+- Added `scheduled_sampling_ratio` argument to `CopyNetSeq2Seq` to use scheduled sampling during training.
 
 ### Fixed
 
