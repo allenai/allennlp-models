@@ -401,7 +401,7 @@ class CopyNetSeq2Seq(Model):
         target_tokens: torch.Tensor,
         target_to_source: torch.Tensor,
         source_mask: torch.BoolTensor,
-    ) -> Tuple[torch.Tensor, torch.Tensor]:
+    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """
         Get the log-likelihood contribution from a single timestep.
 
@@ -484,7 +484,7 @@ class CopyNetSeq2Seq(Model):
         # shape: (batch_size,)
         step_log_likelihood = util.logsumexp(combined_gen_and_copy)
 
-        return step_log_likelihood, selective_weights
+        return step_log_likelihood, selective_weights, log_probs
 
     def _forward_loss(
         self,
@@ -568,7 +568,7 @@ class CopyNetSeq2Seq(Model):
             copy_scores = self._get_copy_scores(state)
             # shape: (batch_size,)
             step_target_tokens = target_tokens["tokens"]["tokens"][:, timestep + 1]
-            step_log_likelihood, selective_weights = self._get_ll_contrib(
+            step_log_likelihood, selective_weights, log_probs = self._get_ll_contrib(
                 generation_scores,
                 generation_scores_mask,
                 copy_scores,
@@ -577,6 +577,8 @@ class CopyNetSeq2Seq(Model):
                 source_mask,
             )
             step_log_likelihoods.append(step_log_likelihood.unsqueeze(1))
+            # shape (predicted_classes): (batch_size,)
+            _, last_predictions = torch.max(log_probs, 1)
 
         # Gather step log-likelihoods.
         # shape: (batch_size, num_decoding_steps = target_sequence_length - 1)
