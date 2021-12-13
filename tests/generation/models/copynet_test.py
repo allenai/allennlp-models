@@ -140,7 +140,7 @@ class CopyNetTest(ModelTestCase):
         generation_scores_mask = generation_scores.new_full(
             generation_scores.size(), True, dtype=torch.bool
         )
-        ll_actual, selective_weights_actual = self.model._get_ll_contrib(
+        ll_actual, selective_weights_actual, _ = self.model._get_ll_contrib(
             generation_scores,
             generation_scores_mask,
             copy_scores,
