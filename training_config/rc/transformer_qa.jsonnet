@@ -46,6 +46,7 @@ local seed = 100;
     "grad_clipping": 1.0,
     "num_epochs": epochs,
     "validation_metric": "+per_instance_f1",
+    "callbacks": [ "tensorboard" ]
   },
   "random_seed": seed,
   "numpy_seed": seed,
