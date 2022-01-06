@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Following a breaking change in the NLTK API, we now depend on the most recent version only.
+- Added Tensorboard callbacks to the RC models
 
 ### Removed
 
