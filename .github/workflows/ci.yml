@@ -167,6 +167,7 @@ jobs:
       run: |
         . .venv/bin/activate
         pip install -r requirements.txt -r dev-requirements.txt
+        python -c 'import nltk; nltk.download("omw-1.4")'
 
     - name: Show environment info
       if: always()
