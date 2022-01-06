@@ -518,7 +518,6 @@ jobs:
     - name: Install requirements
       run: |
         pip install --upgrade pip setuptools wheel
-        python -c 'import nltk; nltk.download("omw-1.4")'
 
     - name: Download models package
       uses: actions/download-artifact@v1
@@ -529,6 +528,7 @@ jobs:
     - name: Install models package
       run: |
         pip install $(ls dist/*.whl)
+        python -c 'import nltk; nltk.download("omw-1.4")'
 
     - name: Patch AllenNLP dependency
       if: github.event_name == 'push' || github.event_name == 'pull_request'
