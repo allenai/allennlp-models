@@ -518,6 +518,7 @@ jobs:
     - name: Install requirements
       run: |
         pip install --upgrade pip setuptools wheel
+        python -c 'import nltk; nltk.download("omw-1.4")'
 
     - name: Download models package
       uses: actions/download-artifact@v1
