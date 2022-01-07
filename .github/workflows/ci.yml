@@ -167,6 +167,7 @@ jobs:
       run: |
         . .venv/bin/activate
         pip install -r requirements.txt -r dev-requirements.txt
+        python -c 'import nltk; nltk.download("omw-1.4")'
 
     - name: Show environment info
       if: always()
@@ -527,6 +528,7 @@ jobs:
     - name: Install models package
       run: |
         pip install $(ls dist/*.whl)
+        python -c 'import nltk; nltk.download("omw-1.4")'
 
     - name: Patch AllenNLP dependency
       if: github.event_name == 'push' || github.event_name == 'pull_request'
