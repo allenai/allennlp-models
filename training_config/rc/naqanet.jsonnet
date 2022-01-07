@@ -146,6 +146,7 @@
         "moving_average": {
             "type": "exponential",
             "decay": 0.9999
-        }
+        },
+        "callbacks": [ "tensorboard" ]
     }
 }
