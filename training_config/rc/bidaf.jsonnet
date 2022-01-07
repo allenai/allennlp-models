@@ -100,6 +100,7 @@
     "optimizer": {
       "type": "adam",
       "betas": [0.9, 0.9]
-    }
+    },
+    "callbacks": [ "tensorboard" ]
   }
 }
