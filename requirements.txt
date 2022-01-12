@@ -12,3 +12,6 @@ nltk>=3.6.5
 
 # For CNN/DailyMail dataset reader
 ftfy
+
+# For sentiment tree bank
+datasets
