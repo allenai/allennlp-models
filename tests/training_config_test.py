@@ -18,10 +18,7 @@ CONFIGS_TO_IGNORE = {
     "constituency_parser_transformer_elmo.jsonnet",
 }
 
-FOLDERS_TO_IGNORE = {
-    # TODO (epwalsh/dirkg): need to test tango configs differently.
-    "tango",
-}
+FOLDERS_TO_IGNORE = set()
 
 
 def find_configs():
