@@ -1,7 +1,7 @@
 from pathlib import Path
 from glob import glob
 import os
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Set
 
 import pytest
 
@@ -18,7 +18,7 @@ CONFIGS_TO_IGNORE = {
     "constituency_parser_transformer_elmo.jsonnet",
 }
 
-FOLDERS_TO_IGNORE = set()
+FOLDERS_TO_IGNORE: Set[str] = set()
 
 
 def find_configs():
