@@ -14,11 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Following a breaking change in the NLTK API, we now depend on the most recent version only.
-- Uses Tango from https://github.com/allenai/tango instead of from AllenNLP
+- Added Tensorboard callbacks to the RC models
 
 ### Removed
 
 - Removed the dependency on the `overrides` package
+- Removed Tango components, since they now live at https://github.com/allenai/tango
 
 
 ## [v2.8.0](https://github.com/allenai/allennlp-models/releases/tag/v2.8.0) - 2021-11-05
@@ -38,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a configuration to train on the PIQA dataset with AllenNLP Tango.
 - Added a transformer classification model.
 - Added a configuration to train on the IMDB dataset with AllenNLP Tango.
+- Added `scheduled_sampling_ratio` argument to `CopyNetSeq2Seq` to use scheduled sampling during training.
 
 ### Fixed
 

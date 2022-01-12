@@ -46,6 +46,13 @@ class SimpleSeq2SeqTest(ModelTestCase):
             overrides="{'trainer.use_amp':true,'trainer.cuda_device':0}",
         )
 
+    def test_model_can_train_with_scheduled_sampling_ratio(self):
+        train_model_from_file(
+            self.param_file,
+            self.TEST_DIR,
+            overrides="{'model.scheduled_sampling_ratio':0.5}",
+        )
+
     def test_bidirectional_model_can_train_save_and_load(self):
         param_overrides = json.dumps({"model.encoder.bidirectional": True})
         self.ensure_model_can_train_save_and_load(
