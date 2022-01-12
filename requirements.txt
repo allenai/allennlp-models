@@ -1,4 +1,4 @@
-git+https://github.com/allenai/allennlp.git@NoTango
+allennlp @ git+https://github.com/allenai/allennlp.git@NoTango
 
 ai2-tango @ git+https://github.com/allenai/tango.git@SqliteDictFormat
 
