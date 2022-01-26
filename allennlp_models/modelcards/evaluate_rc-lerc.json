@@ -67,6 +67,6 @@
     "model_usage": {
         "archive_file": "lerc-2020-11-18.tar.gz",
         "training_config": null,
-        "install_instructions": "pip install allennlp==1.0.0 allennlp-models==1.0.0"
+        "install_instructions": "The model is available at https://github.com/anthonywchen/MOCHA."
     }
 }
