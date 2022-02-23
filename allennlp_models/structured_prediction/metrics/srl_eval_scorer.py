@@ -104,9 +104,14 @@ class SrlEvalScorer(Metric):
                     gold_tag_sequence,
                 )
         perl_script_command = ["perl", self._srl_eval_path, gold_path, predicted_path]
-        completed_process = subprocess.run(
-            perl_script_command, stdout=subprocess.PIPE, universal_newlines=True, check=True
-        )
+        try:
+            completed_process = subprocess.run(
+                perl_script_command, stdout=subprocess.PIPE, universal_newlines=True, check=True
+            )
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                "'File not found' while running the evaluation. Do you have perl installed?"
+            )
         for line in completed_process.stdout.split("\n"):
             stripped = line.strip().split()
             if len(stripped) == 7:
