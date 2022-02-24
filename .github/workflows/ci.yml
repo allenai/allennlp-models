@@ -166,7 +166,7 @@ jobs:
     - name: Install requirements
       run: |
         . .venv/bin/activate
-        pip install allennlp[all] @ git+https://github.com/allenai/allennlp.git@main
+        pip install "allennlp[all] @ git+https://github.com/allenai/allennlp.git@main"
         pip install -r requirements.txt -r dev-requirements.txt
         python -c 'import nltk; nltk.download("omw-1.4")'
 
@@ -534,7 +534,7 @@ jobs:
     - name: Patch AllenNLP dependency
       if: github.event_name == 'push' || github.event_name == 'pull_request'
       run: |
-        pip install --upgrade allennlp[all] @ git+https://github.com/allenai/allennlp.git@main
+        pip install --upgrade "allennlp[all] @ git+https://github.com/allenai/allennlp.git@main"
 
     - name: Debug info
       run: |
