@@ -32,6 +32,10 @@ with open("requirements.txt") as requirements_file:
             return True
         if re.match(r"^(git\+)?(https|ssh)://(git@)?github\.com/.*/allennlp\.git", req):
             return True
+        if re.match(
+            r"^allennlp\[.*\] @ (git\+)?(https|ssh)://(git@)?github\.com/.*/allennlp\.git", req
+        ):
+            return True
         return False
 
     def fix_url_dependencies(req: str) -> str:
