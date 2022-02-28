@@ -191,7 +191,7 @@ class VisionReader(DatasetReader):
                 image_extensions = {image_extensions}
             self.images = {
                 os.path.basename(filename): filename
-                for extension in {"png", "jpg"}
+                for extension in image_extensions
                 for filename in tqdm(
                     glob.iglob(os.path.join(image_dir, "**", f"*.{extension}"), recursive=True),
                     desc=f"Discovering {extension} images",
