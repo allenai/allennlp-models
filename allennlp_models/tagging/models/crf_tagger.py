@@ -12,7 +12,7 @@ from allennlp.modules.conditional_random_field import allowed_transitions
 from allennlp.models.model import Model
 from allennlp.nn import InitializerApplicator
 import allennlp.nn.util as util
-from allennlp.training.metrics import CategoricalAccuracy, SpanBasedF1Measure
+from allennlp.training.metrics import CategoricalAccuracy, SpanBasedF1Measure, FBetaMeasure
 
 
 @Model.register("crf_tagger")
@@ -160,6 +160,8 @@ class CrfTagger(Model):
         self.metrics = {
             "accuracy": CategoricalAccuracy(),
             "accuracy3": CategoricalAccuracy(top_k=3),
+            # TODO test for weighted CRF
+            "_f_beta_measure": FBetaMeasure()
         }
         self.calculate_span_f1 = calculate_span_f1
         if calculate_span_f1:
