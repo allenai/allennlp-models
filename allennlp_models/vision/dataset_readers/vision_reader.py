@@ -77,6 +77,8 @@ class VisionReader(DatasetReader):
         returns.
     image_processing_batch_size: `int`
         The number of images to process at one time while featurizing. Default is 8.
+    image_extensions: `Union[str, Sequence[str]]`
+        The set of image extensions to be loaded.
     write_to_cache: `bool`, optional (default = `True`)
         Allows the reader to write to the cache. Disabling this is useful if you don't want
         to accidentally overwrite a cache you already have, or if you don't have write
@@ -96,6 +98,7 @@ class VisionReader(DatasetReader):
         cuda_device: Optional[Union[int, torch.device]] = None,
         max_instances: Optional[int] = None,
         image_processing_batch_size: int = 8,
+        image_extensions: Union[str, Sequence[str]] = {"jpg", "png"},
         write_to_cache: bool = True,
         manual_distributed_sharding: bool = True,
         manual_multiprocess_sharding: bool = True,
@@ -184,6 +187,8 @@ class VisionReader(DatasetReader):
                     )
 
             logger.info("Discovering images ...")
+            if isinstance(image_extensions, str):
+                image_extensions = {image_extensions}
             self.images = {
                 os.path.basename(filename): filename
                 for extension in {"png", "jpg"}
