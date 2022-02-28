@@ -1,37 +1,38 @@
 import glob
 import logging
+import os
 from os import PathLike
 from typing import (
     Dict,
+    Iterable,
+    Iterator,
     List,
-    Union,
-    Optional,
     MutableMapping,
+    Optional,
+    Sequence,
     Set,
     Tuple,
-    Iterator,
-    Iterable,
+    Union
 )
-import os
 
 import torch
-from torch import Tensor
-from tqdm import tqdm
 import torch.distributed as dist
-
 from allennlp.common import util
-from allennlp.common.checks import check_for_gpu, ConfigurationError
+from allennlp.common.checks import ConfigurationError, check_for_gpu
+from allennlp.common.file_utils import TensorCache
 from allennlp.common.lazy import Lazy
 from allennlp.common.util import int_to_device
-from allennlp.common.file_utils import TensorCache
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.image_loader import ImageLoader
-from allennlp.data.token_indexers import PretrainedTransformerIndexer
-from allennlp.data.token_indexers import TokenIndexer
-from allennlp.data.tokenizers import PretrainedTransformerTokenizer
-from allennlp.data.tokenizers import Tokenizer
+from allennlp.data.token_indexers import (
+    PretrainedTransformerIndexer,
+    TokenIndexer
+)
+from allennlp.data.tokenizers import PretrainedTransformerTokenizer, Tokenizer
 from allennlp.modules.vision.grid_embedder import GridEmbedder
 from allennlp.modules.vision.region_detector import RegionDetector
+from torch import Tensor
+from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
 
