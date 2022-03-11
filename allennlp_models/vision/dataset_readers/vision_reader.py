@@ -9,10 +9,9 @@ from typing import (
     List,
     MutableMapping,
     Optional,
-    Sequence,
     Set,
     Tuple,
-    Union
+    Union,
 )
 
 import torch
@@ -24,10 +23,7 @@ from allennlp.common.lazy import Lazy
 from allennlp.common.util import int_to_device
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.image_loader import ImageLoader
-from allennlp.data.token_indexers import (
-    PretrainedTransformerIndexer,
-    TokenIndexer
-)
+from allennlp.data.token_indexers import PretrainedTransformerIndexer, TokenIndexer
 from allennlp.data.tokenizers import PretrainedTransformerTokenizer, Tokenizer
 from allennlp.modules.vision.grid_embedder import GridEmbedder
 from allennlp.modules.vision.region_detector import RegionDetector
@@ -77,7 +73,7 @@ class VisionReader(DatasetReader):
         returns.
     image_processing_batch_size: `int`
         The number of images to process at one time while featurizing. Default is 8.
-    image_extensions: `Union[str, Sequence[str]]`
+    image_extensions: `Union[str, Set[str]]`
         The set of image extensions to be loaded.
     write_to_cache: `bool`, optional (default = `True`)
         Allows the reader to write to the cache. Disabling this is useful if you don't want
@@ -98,7 +94,7 @@ class VisionReader(DatasetReader):
         cuda_device: Optional[Union[int, torch.device]] = None,
         max_instances: Optional[int] = None,
         image_processing_batch_size: int = 8,
-        image_extensions: Union[str, Sequence[str]] = {"jpg", "png"},
+        image_extensions: Union[str, Set[str]] = {"jpg", "png"},
         write_to_cache: bool = True,
         manual_distributed_sharding: bool = True,
         manual_multiprocess_sharding: bool = True,
