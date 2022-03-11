@@ -12,7 +12,7 @@ from allennlp.modules.conditional_random_field import allowed_transitions
 from allennlp.models.model import Model
 from allennlp.nn import InitializerApplicator
 import allennlp.nn.util as util
-from allennlp.training.metrics import CategoricalAccuracy, SpanBasedF1Measure, FBetaMeasure
+from allennlp.training.metrics import CategoricalAccuracy, SpanBasedF1Measure, FBetaMeasure2
 
 
 @Model.register("crf_tagger")
@@ -159,10 +159,9 @@ class CrfTagger(Model):
 
         self.metrics = {
             "accuracy": CategoricalAccuracy(),
-            "accuracy3": CategoricalAccuracy(top_k=3),
-            # TODO test for weighted CRF
-            "_f_beta_measure": FBetaMeasure()
+            "accuracy3": CategoricalAccuracy(top_k=3)
         }
+        
         self.calculate_span_f1 = calculate_span_f1
         if calculate_span_f1:
             if not label_encoding:
@@ -172,6 +171,10 @@ class CrfTagger(Model):
             self._f1_metric = SpanBasedF1Measure(
                 vocab, tag_namespace=label_namespace, label_encoding=label_encoding
             )
+        elif verbose_metrics:
+            # verbose metrics for token classification (not span-based)
+            self._f_beta_measure = FBetaMeasure2(index_to_label=vocab.get_index_to_token_vocabulary(label_namespace))
+
 
         check_dimensions_match(
             text_field_embedder.get_output_dim(),
@@ -285,6 +288,8 @@ class CrfTagger(Model):
                 metric(class_probabilities, tags, mask)
             if self.calculate_span_f1:
                 self._f1_metric(class_probabilities, tags, mask)
+            elif self._verbose_metrics:
+                self._f_beta_measure(class_probabilities, tags, mask)
         if metadata is not None:
             output["words"] = [x["words"] for x in metadata]
         return output
@@ -327,6 +332,11 @@ class CrfTagger(Model):
                 metrics_to_return.update(f1_dict)
             else:
                 metrics_to_return.update({x: y for x, y in f1_dict.items() if "overall" in x})
+        elif self._verbose_metrics:
+            # verbose metrics for token classification (not span-based)
+            f_beta_dict = self._f_beta_measure.get_metric(reset=reset)
+            metrics_to_return.update(f_beta_dict)
+
         return metrics_to_return
 
     default_predictor = "sentence_tagger"
