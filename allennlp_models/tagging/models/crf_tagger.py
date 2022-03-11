@@ -140,11 +140,6 @@ class CrfTagger(Model):
         else:
             constraints = None
 
-        self.include_start_end_transitions = include_start_end_transitions
-        self.crf = ConditionalRandomField(
-            self.num_tags, constraints, include_start_end_transitions=include_start_end_transitions
-        )
-
         # Label weights are given as a mapping {label -> weight}
         # We convert it to a list of weights for each label.
         # Weights for ommited labels are set to 1.
@@ -156,6 +151,13 @@ class CrfTagger(Model):
                     self.label_weights[label_to_index[label]] = weight
                 except KeyError:
                     raise KeyError(f"'{label}' not found in vocab namespace '{label_namespace}')")
+
+        self.include_start_end_transitions = include_start_end_transitions
+        self.crf = ConditionalRandomField(
+            self.num_tags, constraints, 
+            include_start_end_transitions=include_start_end_transitions, 
+            label_weights=self.label_weights
+        )
 
         self.metrics = {
             "accuracy": CategoricalAccuracy(),
