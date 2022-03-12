@@ -1,34 +1,37 @@
 import glob
 import logging
-import os
 from os import PathLike
 from typing import (
     Dict,
-    Iterable,
-    Iterator,
     List,
-    MutableMapping,
+    Union,
     Optional,
+    MutableMapping,
     Set,
     Tuple,
-    Union,
+    Iterator,
+    Iterable,
 )
+import os
 
 import torch
-import torch.distributed as dist
-from allennlp.common import util
-from allennlp.common.checks import ConfigurationError, check_for_gpu
-from allennlp.common.file_utils import TensorCache
-from allennlp.common.lazy import Lazy
-from allennlp.common.util import int_to_device
-from allennlp.data.dataset_readers.dataset_reader import DatasetReader
-from allennlp.data.image_loader import ImageLoader
-from allennlp.data.token_indexers import PretrainedTransformerIndexer, TokenIndexer
-from allennlp.data.tokenizers import PretrainedTransformerTokenizer, Tokenizer
-from allennlp.modules.vision.grid_embedder import GridEmbedder
-from allennlp.modules.vision.region_detector import RegionDetector
 from torch import Tensor
 from tqdm import tqdm
+import torch.distributed as dist
+
+from allennlp.common import util
+from allennlp.common.checks import check_for_gpu, ConfigurationError
+from allennlp.common.lazy import Lazy
+from allennlp.common.util import int_to_device
+from allennlp.common.file_utils import TensorCache
+from allennlp.data.dataset_readers.dataset_reader import DatasetReader
+from allennlp.data.image_loader import ImageLoader
+from allennlp.data.token_indexers import PretrainedTransformerIndexer
+from allennlp.data.token_indexers import TokenIndexer
+from allennlp.data.tokenizers import PretrainedTransformerTokenizer
+from allennlp.data.tokenizers import Tokenizer
+from allennlp.modules.vision.grid_embedder import GridEmbedder
+from allennlp.modules.vision.region_detector import RegionDetector
 
 logger = logging.getLogger(__name__)
 
@@ -73,8 +76,6 @@ class VisionReader(DatasetReader):
         returns.
     image_processing_batch_size: `int`
         The number of images to process at one time while featurizing. Default is 8.
-    image_extensions: `Union[str, Set[str]]`
-        The set of image extensions to be loaded.
     write_to_cache: `bool`, optional (default = `True`)
         Allows the reader to write to the cache. Disabling this is useful if you don't want
         to accidentally overwrite a cache you already have, or if you don't have write
@@ -94,7 +95,6 @@ class VisionReader(DatasetReader):
         cuda_device: Optional[Union[int, torch.device]] = None,
         max_instances: Optional[int] = None,
         image_processing_batch_size: int = 8,
-        image_extensions: Union[str, Set[str]] = {"jpg", "png"},
         write_to_cache: bool = True,
         manual_distributed_sharding: bool = True,
         manual_multiprocess_sharding: bool = True,
@@ -183,11 +183,9 @@ class VisionReader(DatasetReader):
                     )
 
             logger.info("Discovering images ...")
-            if isinstance(image_extensions, str):
-                image_extensions = {image_extensions}
             self.images = {
                 os.path.basename(filename): filename
-                for extension in image_extensions
+                for extension in {"png", "jpg"}
                 for filename in tqdm(
                     glob.iglob(os.path.join(image_dir, "**", f"*.{extension}"), recursive=True),
                     desc=f"Discovering {extension} images",
