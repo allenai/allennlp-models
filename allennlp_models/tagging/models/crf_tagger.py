@@ -142,10 +142,11 @@ class CrfTagger(Model):
 
         # Label weights are given as a mapping {label -> weight}
         # We convert it to a list of weights for each label.
-        # Weights for ommited labels are set to 1.
+        # Weights for omitted labels are set to 1.
+        self.label_weights = None
         if label_weights is not None:
             label_to_index = vocab.get_token_to_index_vocabulary(label_namespace)
-            self.label_weights = [1.0]*len(label_to_index)
+            self.label_weights = [1.0] * len(label_to_index)
             for label, weight in label_weights.items():
                 try:
                     self.label_weights[label_to_index[label]] = weight
@@ -154,16 +155,17 @@ class CrfTagger(Model):
 
         self.include_start_end_transitions = include_start_end_transitions
         self.crf = ConditionalRandomField(
-            self.num_tags, constraints, 
-            include_start_end_transitions=include_start_end_transitions, 
-            label_weights=self.label_weights
+            self.num_tags,
+            constraints,
+            include_start_end_transitions=include_start_end_transitions,
+            label_weights=self.label_weights,
         )
 
         self.metrics = {
             "accuracy": CategoricalAccuracy(),
-            "accuracy3": CategoricalAccuracy(top_k=3)
+            "accuracy3": CategoricalAccuracy(top_k=3),
         }
-        
+
         self.calculate_span_f1 = calculate_span_f1
         if calculate_span_f1:
             if not label_encoding:
@@ -175,8 +177,11 @@ class CrfTagger(Model):
             )
         elif verbose_metrics:
             # verbose metrics for token classification (not span-based)
-            self._f_beta_measure = FBetaMeasure2(index_to_label=vocab.get_index_to_token_vocabulary(label_namespace))
-
+            self._f_beta_measure = FBetaMeasure2(
+                index_to_label=vocab.get_index_to_token_vocabulary(label_namespace),
+                # TODO included to test weighted CRF but it should be included in CrfTagger options
+                average=["micro", "macro"],
+            )
 
         check_dimensions_match(
             text_field_embedder.get_output_dim(),
@@ -218,7 +223,7 @@ class CrfTagger(Model):
             A torch tensor representing the sequence of integer gold class labels of shape
             `(batch_size, num_tokens)`.
         metadata : `List[Dict[str, Any]]`, optional, (default = `None`)
-            metadata containg the original words in the sentence to be tagged under a 'words' key.
+            metadata containing the original words in the sentence to be tagged under a 'words' key.
         ignore_loss_on_o_tags : `Optional[bool]`, optional (default = `None`)
             If True, we compute the loss only for actual spans in `tags`, and not on `O` tokens.
             This is useful for computing gradients of the loss on a _single span_, for
