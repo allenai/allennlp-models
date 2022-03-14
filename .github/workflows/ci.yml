@@ -124,7 +124,7 @@ jobs:
         - name: GPU Tests
           runs_on: [self-hosted, GPU]
           coverage_report: true
-          torch_platform: cu111  # Our self-hosted GPU runners currently support CUDA 11.*
+          torch_platform: cu113  # Our self-hosted GPU runners currently support CUDA 11.*
           run: make gpu-tests
 
     steps:
