@@ -21,8 +21,8 @@ on:
 
 env:
   # NOTE: Need to update `TORCH_VERSION` and `TORCH_VISION_VERSION` for new torch releases.
-  TORCH_VERSION: 1.10.0
-  TORCH_VISION_VERSION: 0.11.1
+  TORCH_VERSION: 1.11.0
+  TORCH_VISION_VERSION: 0.12.0
   # Change this to invalidate the current cache.
   CACHE_PREFIX: v1
   # Disable tokenizers parallelism because this doesn't help, and can cause issues in distributed tests.
