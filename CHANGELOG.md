@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added `jpeg` extension to `__init__` of `VisionReader`.
+
 ## [v2.9.0](https://github.com/allenai/allennlp-models/releases/tag/v2.9.0) - 2022-01-27
 
 ### Added
