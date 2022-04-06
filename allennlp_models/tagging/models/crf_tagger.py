@@ -7,7 +7,12 @@ from torch.nn.modules.linear import Linear
 from allennlp.common.checks import check_dimensions_match, ConfigurationError
 from allennlp.data import TextFieldTensors, Vocabulary
 from allennlp.modules import Seq2SeqEncoder, TimeDistributed, TextFieldEmbedder
-from allennlp.modules import ConditionalRandomField, FeedForward
+from allennlp.modules import (
+    ConditionalRandomField,
+    ConditionalRandomFieldWeightTrans,
+    ConditionalRandomFieldLannoy,
+    FeedForward,
+)
 from allennlp.modules.conditional_random_field import allowed_transitions
 from allennlp.models.model import Model
 from allennlp.nn import InitializerApplicator
@@ -73,12 +78,20 @@ class CrfTagger(Model):
         This is useful for computing gradients of the loss on a _single span_, for
         interpretation / attacking.
     label_weights : `Dict[str, float]`, optional (default=`None`)
-        An optional mapping {label -> weight} to be used in the loss function in order to
+        A mapping {label : weight} to be used in the loss function in order to
         give different weights for each token depending on its label. This is useful to
-        deal with highly unbalanced datasets. The method implemented here was based on
-        the paper *Weighted conditional random fields for supervised interpatient heartbeat
-        classification* proposed by De Lannoy et. al (2019).
-        See https://perso.uclouvain.be/michel.verleysen/papers/ieeetbe12gdl.pdf
+        deal with highly unbalanced datasets. There are three available methods to deal
+        with weighted labels (see below).
+    weight_strategy : `str`, optional (default=`None`)
+        Only allowed when `label_weights` is not `None`. It indicates which strategy is
+        used to weight each tag. Valid options are: "emission", "emission_transition",
+        "lannoy". If `None` and `label_weights` is not `None`, then "emission" is assumed.
+        If "emission" then the emission score of each tag is multiplied by the
+        corresponding weight. If "emission_transition", both emission and transition
+        scores of each tag are multiplied by the corresponding weight. In this case,
+        a transition score `t(i,j)`, between consecutive tokens `i` and `j`, is multiplied
+        by `w[tags[i]]`, i.e., the weight related to the tag of token `i`.
+        If `weight_strategy` is "lannoy" then we use the strategy proposed by [Lannoy et al. (2019)](https://perso.uclouvain.be/michel.verleysen/papers/ieeetbe12gdl.pdf).
     """
 
     def __init__(
@@ -98,6 +111,7 @@ class CrfTagger(Model):
         top_k: int = 1,
         ignore_loss_on_o_tags: bool = False,
         label_weights: Optional[Dict[str, float]] = None,
+        weight_strategy: str = None,
         **kwargs,
     ) -> None:
         super().__init__(vocab, **kwargs)
@@ -153,13 +167,41 @@ class CrfTagger(Model):
                 except KeyError:
                     raise KeyError(f"'{label}' not found in vocab namespace '{label_namespace}')")
 
+            if weight_strategy is None or weight_strategy == "emission":
+                self.crf = ConditionalRandomField(
+                    self.num_tags,
+                    constraints,
+                    include_start_end_transitions=include_start_end_transitions,
+                    label_weights=self.label_weights,
+                )
+            elif weight_strategy == "emission_transition":
+                self.crf = ConditionalRandomFieldWeightTrans(
+                    self.num_tags,
+                    constraints,
+                    include_start_end_transitions=include_start_end_transitions,
+                    label_weights=self.label_weights,
+                )
+            elif weight_strategy == "lannoy":
+                self.crf = ConditionalRandomFieldLannoy(
+                    self.num_tags,
+                    constraints,
+                    include_start_end_transitions=include_start_end_transitions,
+                    label_weights=self.label_weights,
+                )
+            else:
+                raise ConfigurationError(
+                    "weight_strategy must be one of 'emission', 'emission_transition' or 'lannoy'"
+                )
+        elif weight_strategy is not None:
+            raise ConfigurationError("weight_strategy is given but label_weights is not")
+        else:
+            self.crf = ConditionalRandomField(
+                self.num_tags,
+                constraints,
+                include_start_end_transitions=include_start_end_transitions,
+            )
+
         self.include_start_end_transitions = include_start_end_transitions
-        self.crf = ConditionalRandomField(
-            self.num_tags,
-            constraints,
-            include_start_end_transitions=include_start_end_transitions,
-            label_weights=self.label_weights,
-        )
 
         self.metrics = {
             "accuracy": CategoricalAccuracy(),
