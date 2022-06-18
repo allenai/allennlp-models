@@ -9,6 +9,7 @@ from allennlp.data import TextFieldTensors, Vocabulary
 from allennlp.modules import Seq2SeqEncoder, TimeDistributed, TextFieldEmbedder
 from allennlp.modules import (
     ConditionalRandomField,
+    ConditionalRandomFieldWeightEmission,
     ConditionalRandomFieldWeightTrans,
     ConditionalRandomFieldLannoy,
     FeedForward,
@@ -17,7 +18,7 @@ from allennlp.modules.conditional_random_field import allowed_transitions
 from allennlp.models.model import Model
 from allennlp.nn import InitializerApplicator
 import allennlp.nn.util as util
-from allennlp.training.metrics import CategoricalAccuracy, SpanBasedF1Measure, FBetaMeasure2
+from allennlp.training.metrics import CategoricalAccuracy, SpanBasedF1Measure, FBetaVerboseMeasure
 
 
 @Model.register("crf_tagger")
@@ -80,18 +81,20 @@ class CrfTagger(Model):
     label_weights : `Dict[str, float]`, optional (default=`None`)
         A mapping {label : weight} to be used in the loss function in order to
         give different weights for each token depending on its label. This is useful to
-        deal with highly unbalanced datasets. There are three available methods to deal
-        with weighted labels (see below).
+        deal with highly unbalanced datasets. There are three available strategies to deal
+        with weighted labels (see below). The default strategy is "emission".
     weight_strategy : `str`, optional (default=`None`)
-        Only allowed when `label_weights` is not `None`. It indicates which strategy is
-        used to weight each tag. Valid options are: "emission", "emission_transition",
-        "lannoy". If `None` and `label_weights` is not `None`, then "emission" is assumed.
-        If "emission" then the emission score of each tag is multiplied by the
-        corresponding weight. If "emission_transition", both emission and transition
-        scores of each tag are multiplied by the corresponding weight. In this case,
-        a transition score `t(i,j)`, between consecutive tokens `i` and `j`, is multiplied
-        by `w[tags[i]]`, i.e., the weight related to the tag of token `i`.
-        If `weight_strategy` is "lannoy" then we use the strategy proposed by [Lannoy et al. (2019)](https://perso.uclouvain.be/michel.verleysen/papers/ieeetbe12gdl.pdf).
+        If `label_weights` is given and this is `None`, then it is the same as "emission".
+        It indicates which strategy is used to sample weighting. Valid options are:
+        "emission", "emission_transition", "lannoy". If "emission" then the emission score
+        of each tag is multiplied by the corresponding weight (as given by `label_weights`).
+        If "emission_transition", both emission and transition scores of each tag are multiplied
+        by the corresponding weight. In this case, a transition score `t(i,j)`, between consecutive
+        tokens `i` and `j`, is multiplied by `w[tags[i]]`, i.e., the weight related to the tag of token `i`.
+        If `weight_strategy` is "lannoy" then we use the strategy proposed by
+        [Lannoy et al. (2019)](https://perso.uclouvain.be/michel.verleysen/papers/ieeetbe12gdl.pdf).
+        You can see an experimental comparison among these three strategies and a brief discussion
+        of their differences [here](https://eraldoluis.github.io/2022/05/10/weighted-crf.html).
     """
 
     def __init__(
@@ -154,11 +157,21 @@ class CrfTagger(Model):
         else:
             constraints = None
 
-        # Label weights are given as a mapping {label -> weight}
-        # We convert it to a list of weights for each label.
-        # Weights for omitted labels are set to 1.
-        self.label_weights = None
-        if label_weights is not None:
+        # Label weights are given as a dict {label: weight} but we convert it to a list of weights for each label,
+        # and weights for omitted labels are set to 1.
+        if label_weights is None:
+            if weight_strategy is not None:
+                raise ConfigurationError(
+                    "`weight_strategy` can only be used when `label_weights` is given"
+                )
+
+            # ordinary CRF (not weighted)
+            self.crf = ConditionalRandomField(
+                self.num_tags,
+                constraints,
+                include_start_end_transitions,
+            )
+        else:  # label_weights is not None
             label_to_index = vocab.get_token_to_index_vocabulary(label_namespace)
             self.label_weights = [1.0] * len(label_to_index)
             for label, weight in label_weights.items():
@@ -168,38 +181,30 @@ class CrfTagger(Model):
                     raise KeyError(f"'{label}' not found in vocab namespace '{label_namespace}')")
 
             if weight_strategy is None or weight_strategy == "emission":
-                self.crf = ConditionalRandomField(
+                self.crf = ConditionalRandomFieldWeightEmission(
                     self.num_tags,
+                    self.label_weights,
                     constraints,
-                    include_start_end_transitions=include_start_end_transitions,
-                    label_weights=self.label_weights,
+                    include_start_end_transitions,
                 )
             elif weight_strategy == "emission_transition":
                 self.crf = ConditionalRandomFieldWeightTrans(
                     self.num_tags,
+                    self.label_weights,
                     constraints,
-                    include_start_end_transitions=include_start_end_transitions,
-                    label_weights=self.label_weights,
+                    include_start_end_transitions,
                 )
             elif weight_strategy == "lannoy":
                 self.crf = ConditionalRandomFieldLannoy(
                     self.num_tags,
+                    self.label_weights,
                     constraints,
-                    include_start_end_transitions=include_start_end_transitions,
-                    label_weights=self.label_weights,
+                    include_start_end_transitions,
                 )
             else:
                 raise ConfigurationError(
                     "weight_strategy must be one of 'emission', 'emission_transition' or 'lannoy'"
                 )
-        elif weight_strategy is not None:
-            raise ConfigurationError("weight_strategy is given but label_weights is not")
-        else:
-            self.crf = ConditionalRandomField(
-                self.num_tags,
-                constraints,
-                include_start_end_transitions=include_start_end_transitions,
-            )
 
         self.include_start_end_transitions = include_start_end_transitions
 
@@ -219,10 +224,8 @@ class CrfTagger(Model):
             )
         elif verbose_metrics:
             # verbose metrics for token classification (not span-based)
-            self._f_beta_measure = FBetaMeasure2(
+            self._f_beta_measure = FBetaVerboseMeasure(
                 index_to_label=vocab.get_index_to_token_vocabulary(label_namespace),
-                # TODO included to test weighted CRF but it should be included in CrfTagger options
-                average=["micro", "macro"],
             )
 
         check_dimensions_match(
