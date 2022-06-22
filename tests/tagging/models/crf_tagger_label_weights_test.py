@@ -21,10 +21,7 @@ class CrfTaggerLabelWeightsTest(ModelTestCase):
         save_dir = self.TEST_DIR / "save_and_load_test"
 
         # original CRF
-        model_original = train_model_from_file(
-            self.param_file, save_dir, force=True, return_model=True
-        )
-        output_dict_original = model_original(**training_tensors)
+        output_dict_original = self.model(**training_tensors)
 
         # weighted CRF
         model_weighted = train_model_from_file(
@@ -47,10 +44,7 @@ class CrfTaggerLabelWeightsTest(ModelTestCase):
         save_dir = self.TEST_DIR / "save_and_load_test"
 
         # original CRF
-        model_original = train_model_from_file(
-            self.param_file, save_dir, force=True, return_model=True
-        )
-        output_dict_original = model_original(**training_tensors)
+        output_dict_original = self.model(**training_tensors)
 
         # weighted CRF
         model_weighted = train_model_from_file(
@@ -76,10 +70,7 @@ class CrfTaggerLabelWeightsTest(ModelTestCase):
         save_dir = self.TEST_DIR / "save_and_load_test"
 
         # original CRF
-        model_original = train_model_from_file(
-            self.param_file, save_dir, force=True, return_model=True
-        )
-        output_dict_original = model_original(**training_tensors)
+        output_dict_original = self.model(**training_tensors)
 
         # weighted CRF
         model_weighted = train_model_from_file(
