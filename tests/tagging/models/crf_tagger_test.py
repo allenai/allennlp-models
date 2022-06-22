@@ -1,6 +1,7 @@
 from flaky import flaky
 import pytest
 
+from allennlp.commands.train import train_model_from_file
 from allennlp.common.testing import ModelTestCase
 from allennlp.common.checks import ConfigurationError
 from allennlp.common.params import Params
@@ -77,3 +78,25 @@ class CrfTaggerTest(ModelTestCase):
         params["model"]["encoder"]["input_size"] = 10
         with pytest.raises(ConfigurationError):
             Model.from_params(vocab=self.vocab, params=params.pop("model"))
+
+    def test_token_based_verbose_metrics(self):
+        training_tensors = self.dataset.as_tensor_dict()
+        save_dir = self.TEST_DIR / "save_and_load_test"
+
+        model = train_model_from_file(
+            self.param_file,
+            save_dir,
+            overrides={
+                "model.calculate_span_f1": False,
+                "model.verbose_metrics": True,
+            },
+            force=True,
+            return_model=True,
+        )
+        model(**training_tensors)
+        metrics = model.get_metrics()
+
+        # assert that metrics contain all verbose keys
+        for tag in ["O", "I-PER", "I-ORG", "I-LOC", "micro", "macro", "weighted"]:
+            for m in ["precision", "recall", "fscore"]:
+                assert f"{tag}-{m}" in metrics
