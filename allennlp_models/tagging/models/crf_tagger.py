@@ -178,7 +178,7 @@ class CrfTagger(Model):
                 try:
                     self.label_weights[label_to_index[label]] = weight
                 except KeyError:
-                    raise KeyError(f"'{label}' not found in vocab namespace '{label_namespace}')")
+                    raise ConfigurationError(f"'{label}' not found in vocab namespace '{label_namespace}')")
 
             if weight_strategy is None or weight_strategy == "emission":
                 self.crf = ConditionalRandomFieldWeightEmission(
