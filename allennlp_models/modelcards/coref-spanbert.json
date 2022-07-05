@@ -55,7 +55,7 @@
         "preprocessing": null
     },
     "quantitative_analyses": {
-        "unitary_results": null,
+        "unitary_results": "Conll-2012 dev: coref_precision: 0.80, coref_recall: 0.78, coref_f1: 0.79, mention_recall: 0.96\nConll-2012 test: coref_precision: 0.79, coref_recall: 0.78, coref_f1: 0.79, mention_recall: 0.97",
         "intersectional_results": null
     },
     "model_caveats_and_recommendations": {
