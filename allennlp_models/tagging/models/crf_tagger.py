@@ -9,12 +9,14 @@ from allennlp.data import TextFieldTensors, Vocabulary
 from allennlp.modules import Seq2SeqEncoder, TimeDistributed, TextFieldEmbedder
 from allennlp.modules import (
     ConditionalRandomField,
-    ConditionalRandomFieldWeightEmission,
-    ConditionalRandomFieldWeightTrans,
-    ConditionalRandomFieldLannoy,
     FeedForward,
 )
-from allennlp.modules.conditional_random_field import allowed_transitions
+from allennlp.modules.conditional_random_field import (
+    ConditionalRandomFieldWeightEmission,
+    ConditionalRandomFieldWeightTrans,
+    ConditionalRandomFieldWeightLannoy,
+)
+from allennlp.modules.conditional_random_field.conditional_random_field import allowed_transitions
 from allennlp.models.model import Model
 from allennlp.nn import InitializerApplicator
 import allennlp.nn.util as util
@@ -197,7 +199,7 @@ class CrfTagger(Model):
                     include_start_end_transitions,
                 )
             elif weight_strategy == "lannoy":
-                self.crf = ConditionalRandomFieldLannoy(
+                self.crf = ConditionalRandomFieldWeightLannoy(
                     self.num_tags,
                     self.label_weights,
                     constraints,
