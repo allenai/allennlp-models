@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fixed redundant TextField wrapping in `TransformerSuperGlueRteReader`.
+- Fixed redundant `TextField` wrapping in `TransformerSuperGlueRteReader`.
 
 ## [v2.10.0](https://github.com/allenai/allennlp-models/releases/tag/v2.10.0) - 2022-07-14
 
