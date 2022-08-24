@@ -91,7 +91,7 @@ class TransformerSuperGlueRteReader(DatasetReader):
         premise_and_hypothesis = TextField(
             self._tokenizer.add_special_tokens(tokenized_premise, tokenized_hypothesis),
         )
-        fields["tokens"] = TextField(premise_and_hypothesis)
+        fields["tokens"] = premise_and_hypothesis
 
         # make the metadata
         metadata = {
