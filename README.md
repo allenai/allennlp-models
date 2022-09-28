@@ -30,6 +30,13 @@
 ❗️ To file an issue, please open a ticket on <a href="https://github.com/allenai/allennlp/issues/new/choose">allenai/allennlp</a> and tag it with "Models". ❗️
 </div>
 
+<br>
+<br>
+
+⚠️ **NOTICE:** The AllenNLP ecosystem is now in maintenance mode. That means we are no longer adding new features or upgrading dependencies. We will still respond to questions and address bugs as they arise up until December 16th, 2022.
+
+<br>
+
 ## In this README
 
 - [About](#about)
