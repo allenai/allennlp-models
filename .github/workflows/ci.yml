@@ -21,8 +21,8 @@ on:
 
 env:
   # NOTE: Need to update `TORCH_VERSION` and `TORCH_VISION_VERSION` for new torch releases.
-  TORCH_VERSION: 1.11.0
-  TORCH_VISION_VERSION: 0.12.0
+  TORCH_VERSION: 1.12.0
+  TORCH_VISION_VERSION: 0.13.0
   # Change this to invalidate the current cache.
   CACHE_PREFIX: v1
   # Disable tokenizers parallelism because this doesn't help, and can cause issues in distributed tests.
@@ -161,7 +161,7 @@ jobs:
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
       run: |
         test -d .venv || virtualenv -p $(which python) --copies --reset-app-data .venv
-        pip install torch==${{ env.TORCH_VERSION }}+${{ matrix.task.torch_platform }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{matrix.task.torch_platform}} -f https://download.pytorch.org/whl/torch_stable.html
+        pip install torch==${{ env.TORCH_VERSION }} torchvision==${{ env.TORCH_VISION_VERSION }} --extra-index-url https://download.pytorch.org/whl/${{ matrix.task.torch_platform }}
 
     - name: Install requirements
       run: |
@@ -289,7 +289,7 @@ jobs:
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
       run: |
         test -d .venv || virtualenv -p $(which python) --copies --reset-app-data .venv
-        pip install torch==${{ env.TORCH_VERSION }}+${{ env.TORCH_PLATFORM }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{ env.TORCH_PLATFORM }} -f https://download.pytorch.org/whl/torch_stable.html
+        pip install torch==${{ env.TORCH_VERSION }} torchvision==${{ env.TORCH_VISION_VERSION }} -f https://download.pytorch.org/whl/${{ env.TORCH_PLATFORM }}
 
     - name: Install requirements
       run: |
@@ -430,7 +430,7 @@ jobs:
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
       run: |
         test -d .venv || virtualenv -p $(which python) --copies --reset-app-data .venv
-        pip install torch==${{ env.TORCH_VERSION }}+${{ env.TORCH_PLATFORM }} torchvision==${{ env.TORCH_VISION_VERSION }}+${{ env.TORCH_PLATFORM }} -f https://download.pytorch.org/whl/torch_stable.html
+        pip install torch==${{ env.TORCH_VERSION }} torchvision==${{ env.TORCH_VISION_VERSION }} -f https://download.pytorch.org/whl/${{ env.TORCH_PLATFORM }}
 
     - name: Install requirements
       run: |
