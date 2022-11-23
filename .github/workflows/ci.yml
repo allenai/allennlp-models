@@ -155,7 +155,7 @@ jobs:
       id: virtualenv-cache
       with:
         path: .venv
-        key: ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ matrix.task.torch_platform }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+        key: ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ matrix.task.torch_platform }}-${{ hashFiles('requirements.txt', 'constraints.txt') }}-${{ hashFiles('dev-requirements.txt') }}
 
     - name: Create virtual environment
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
@@ -166,7 +166,7 @@ jobs:
     - name: Install requirements
       run: |
         . .venv/bin/activate
-        pip install -r requirements.txt -r dev-requirements.txt
+        pip install -r requirements.txt -r dev-requirements.txt -c constraints.txt
         python -c 'import nltk; nltk.download("omw-1.4")'
 
     - name: Show environment info
@@ -283,7 +283,7 @@ jobs:
       id: virtualenv-cache
       with:
         path: .venv
-        key: ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+        key: ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-${{ hashFiles('requirements.txt', 'constraints.txt') }}-${{ hashFiles('dev-requirements.txt') }}
 
     - name: Create virtual environment
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
@@ -294,7 +294,7 @@ jobs:
     - name: Install requirements
       run: |
         . .venv/bin/activate
-        pip install -r requirements.txt -r dev-requirements.txt
+        pip install -r requirements.txt -r dev-requirements.txt -c constraints.txt
 
     - name: Show environment info
       run: |
@@ -424,7 +424,7 @@ jobs:
       id: virtualenv-cache
       with:
         path: .venv
-        key: ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+        key: ${{ env.CACHE_PREFIX }}-${{ env.WEEK_NUMBER }}-${{ runner.os }}-${{ env.RUNNER_ARCH }}-${{ env.PYTHON_VERSION }}-${{ env.TORCH_PLATFORM }}-${{ hashFiles('requirements.txt', 'constraints.txt') }}-${{ hashFiles('dev-requirements.txt') }}
 
     - name: Create virtual environment
       if: steps.virtualenv-cache.outputs.cache-hit != 'true'
@@ -435,7 +435,7 @@ jobs:
     - name: Install requirements
       run: |
         . .venv/bin/activate
-        pip install -r requirements.txt -r dev-requirements.txt
+        pip install -r requirements.txt -r dev-requirements.txt -c constraints.txt
 
     - name: Show environment info
       run: |

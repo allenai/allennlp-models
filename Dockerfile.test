@@ -21,10 +21,11 @@ RUN pip install --no-cache-dir torch==1.7.0+cu110 -f https://download.pytorch.or
 
 COPY requirements.txt requirements.txt
 COPY dev-requirements.txt dev-requirements.txt
+COPY constraints.txt constraints.txt
 
 ARG ALLENNLP_COMMIT_SHA
-RUN pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir -r dev-requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt -c constraints.txt && \
+    pip install --no-cache-dir -r dev-requirements.txt -c constraints.txt
 
 COPY . .
 

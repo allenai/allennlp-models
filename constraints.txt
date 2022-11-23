@@ -1,0 +1,4 @@
+torch<1.13.0
+
+# For structured prediction.
+conllu==4.4.2
