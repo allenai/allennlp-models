@@ -53,12 +53,12 @@ local hidden_size = 20;
     "data_loader": {
         "batch_sampler": {
             "type": "bucket",
-            "batch_size" : 2,
+            "batch_size" : 64,
         }
     },
     "trainer": {
         "optimizer": {
-            "type": "huggingface_adamw",
+            "type": "adamw",
             "weight_decay": 0.0,
             "parameter_groups": [[["bias", "LayerNorm\\.weight", "layer_norm\\.weight"], {"weight_decay": 0}]],
             "lr": 5e-5,
