@@ -105,7 +105,7 @@
     "data_loader": {
         "batch_sampler": {
             "type": "bucket",
-            "batch_size": 5,
+            "batch_size": 64,
             "padding_noise": 0.0
         }
     },
@@ -116,7 +116,7 @@
         "validation_metric": "+f1",
         "cuda_device": -1,
         "optimizer": {
-            "type": "adam",
+            "type": "adamw",
             "lr": 0.001,
             "betas": [
                 0.8,

@@ -473,7 +473,7 @@ class TestAllenNlpPretrainedModels(AllenNlpTestCase):
     def test_pretrained_models(self, model_id, model_card):
         assert model_card.model_usage.archive_file is not None
         models_without_training_configs = {"rc-nmn", "lm-next-token-lm-gpt2", "evaluate_rc-lerc"}
-        if model_id not in models_without_training_configs and not model_id.startswith("semparse"):
+        if model_id not in models_without_training_configs:
             assert model_card.model_usage.training_config is not None
         assert model_card.display_name is not None
         assert model_card.model_details.description is not None
